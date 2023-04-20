@@ -25,4 +25,4 @@ jobs:
       - name: Generate build
         run: npm run predeploy
       - name: Push to gh-pages branch of the right repo
-        run: npm run deploy-${{ steps.branch-name.outputs.current_branch }}"
+        run: npm run deploy-${{ steps.branch-name.outputs.current_branch }}
