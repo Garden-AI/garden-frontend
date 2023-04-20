@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./garden
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
