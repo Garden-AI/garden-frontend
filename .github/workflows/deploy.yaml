@@ -19,7 +19,6 @@ jobs:
             node-version: 18.x
         - name: Install dependencies
           run: npm install    
-        # TODO: add branch name extractor. Then call the right command
         - name: Generate build
           run: npm run predeploy
         - name: Generate build
