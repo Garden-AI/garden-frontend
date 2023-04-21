@@ -24,5 +24,43 @@ jobs:
         run: npm install    
       - name: Generate build
         run: npm run predeploy
-      - name: Push to gh-pages branch of the right repo
-        run: npm run deploy-${{ steps.branch-name.outputs.current_branch }}
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-github-actions-build
+          path: build
+      
+  prod-deploy:
+    if: steps.branch-name.outputs.current_branch == 'prod'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Download previously shared build
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-github-actions-build    
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: react-github-actions-build
+          commit_message: ${{ github.event.head_commit.message }}
+
+  staging-deploy:
+    if: steps.branch-name.outputs.current_branch == 'staging'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Download previously shared build
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-github-actions-build    
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          external_repository: Garden-AI/garden-frontend-staging
+          deploy_key: ${{ secrets.STAGING_DEPLOY_KEY }}
+          publish_dir: react-github-actions-build
+          commit_message: ${{ github.event.head_commit.message }}
