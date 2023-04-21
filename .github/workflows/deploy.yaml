@@ -36,7 +36,8 @@ jobs:
       - name: Get artifact
         uses: actions/download-artifact@v3
         with:
-          name: react-github-actions-build    
+          name: react-github-actions-build
+          path: build    
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
