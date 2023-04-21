@@ -25,7 +25,7 @@
     "deploy-prod": "gh-pages -d build",
     "experiment": "gh-pages --help",
     "start": "react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
-    "build": "react-scripts build & npx tailwindcss -i ./src/App.css -o public/main.css",
+    "build": "react-scripts build && npx tailwindcss -i ./src/App.css -o public/main.css",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
