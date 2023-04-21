@@ -25,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: react-github-actions-build
-          path: ./build
+          path: ./garden/build
       
   prod-deploy:
     if: github.ref == 'refs/heads/prod'
