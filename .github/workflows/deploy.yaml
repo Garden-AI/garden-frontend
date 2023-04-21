@@ -53,11 +53,12 @@ jobs:
       - name: Get artifact
         uses: actions/download-artifact@v3
         with:
-          name: react-github-actions-build    
+          name: react-github-actions-build
+          path: build   
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           external_repository: Garden-AI/garden-frontend-staging
           deploy_key: ${{ secrets.STAGING_DEPLOY_KEY }}
-          publish_dir: react-github-actions-build
+          publish_dir: build
           commit_message: ${{ github.event.head_commit.message }}
