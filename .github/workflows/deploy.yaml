@@ -11,9 +11,6 @@ jobs:
       run:
         working-directory: ./garden
     steps:
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v6
       - name: Clone repository
         uses: actions/checkout@v3
       - name: Use Node.js 18.x
@@ -28,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: react-github-actions-build
-          path: build
+          path: ./build
       
   prod-deploy:
     if: github.ref == 'refs/heads/prod'
