@@ -2,7 +2,7 @@
   "name": "garden",
   "version": "0.1.0",
   "homepage": ".",
-  "//":  "For homepage, see https://create-react-app.dev/docs/deployment/#serving-the-same-build-from-different-paths",
+  "//": "For homepage, see https://create-react-app.dev/docs/deployment/#serving-the-same-build-from-different-paths",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -12,6 +12,7 @@
     "@types/node": "^16.18.23",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
+    "purecss": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",

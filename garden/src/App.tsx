@@ -1,29 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import PlaceholderPage from './PlaceholderPage'
+import RealStuff from './RealStuff'
+import { HashRouter, Routes, Route } from "react-router-dom";
+
+// The App.css styles conflict with the placeholder,
+// but we can bring them back once we get rid of the placeholder.
+// import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <h1 className="text-3xl font-bold underline">
-          Hello world!
-        </h1>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<PlaceholderPage />}/>
+        <Route path="secret" element={<RealStuff />}/>
+      </Routes>
+    </HashRouter>
+      
+  )
 }
 
+
 export default App;
+
