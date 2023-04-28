@@ -13,8 +13,12 @@ The `staging` branch is the source of truth for development in this repo. `prod`
 1. When you pick up a feature or bug, make a branch off of staging. Like `will/45-new-page`.
 2. Make the needed changes on your branch and test them locally.
 3. Open a PR from your branch to `staging`.
-4. If the tests pass and another developer approves your change, merge in to staging. After merging, see if everything 
+4. If the tests pass and another developer approves your change, merge in to staging. After merging, see if everything is looking good on [the staging site](https://garden-ai.github.io/garden-frontend-staging/).
 5. If so, open a "deployment" PR from staging into prod and merge it
+
+# Getting started locally
+
+After cloning, run `npm install` to pull in dependencies and then `npm start` to test changes locally with hot reloading. More detailed instructions on npm commands are below from Create React App scaffolding.
 
 # Getting Started with Create React App
 
