@@ -7,6 +7,7 @@ import AboutPage from './pages/AboutPage';
 import SearchPage from './pages/SearchPage';
 import HomePage from './pages/HomePage';
 import PipelinePage from './pages/PipelinePage';
+import Navbar from './components/Navbar';
 
 // The App.css styles conflict with the placeholder,
 // but we can bring them back once we get rid of the placeholder.
@@ -15,12 +16,13 @@ import PipelinePage from './pages/PipelinePage';
 function App() {
   return (
     <HashRouter>
+      <Navbar />
       <Routes>
         <Route path="/" element={<PlaceholderPage />}/>
         <Route path="secret" element={<RealStuff />}/>
         <Route path="/home" element={<HomePage />}/>
         <Route path="/about" element={<AboutPage />}/>
-        <Route path="/search" element={<SearchPage />}/>
+        {/* <Route path="/search" element={<SearchPage />}/> */}
         <Route path="/garden/:uuid" element={<GardenPage />}/>
         <Route path="/pipeline/:uuid" element={<PipelinePage />}/>
       </Routes>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
-import Navbar from '../components/Navbar';
 import PipelineBox from '../components/PipelineBox';
 
 const GardenPage = () => {
@@ -16,7 +15,6 @@ const GardenPage = () => {
 
     return (
         <>
-            <Navbar />
             <div className='h-full w-full flex flex-col gap-10 px-36 py-24'>
                 {/* Place breadcrumbs here */}
 
@@ -41,7 +39,7 @@ const GardenPage = () => {
                     </div>
                     <div>
                         <h2 className='font-semibold'>DOI</h2>
-                        <p>{fakeData.doi}</p>
+                        <a href={`https://doi.org/${fakeData.doi}`} target="_blank" rel="noopener noreferrer">{fakeData.doi}</a>
                     </div>
                     <div>
                         <h2 className='font-semibold'>Description</h2>
