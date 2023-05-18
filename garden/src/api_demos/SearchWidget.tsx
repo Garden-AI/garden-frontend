@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants"
-import { fetchWithScope } from "@globus/sdk/dist/src/lib/core/fetch"
+import { fetchWithScope } from "../globusHelpers"
 
 export default function GardenWidget() {
     const [status, setStatus] = useState<string>("");
