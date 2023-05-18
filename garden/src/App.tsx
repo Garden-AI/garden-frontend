@@ -9,7 +9,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import { authorization } from "@globus/sdk";
-import { GLOBUS_NATIVE_CLIENT_ID, SEARCH_SCOPE, GARDEN_SCOPE } from './constants';
+import { GLOBUS_NATIVE_CLIENT_ID, SEARCH_SCOPE } from './constants';
 
 const pkce = authorization.pkce({
   client_id: GLOBUS_NATIVE_CLIENT_ID,
@@ -20,7 +20,7 @@ const pkce = authorization.pkce({
   /**
    * Any supported Globus scopes required by your application.
    */
-  requested_scopes: `openid profile email ${SEARCH_SCOPE} ${GARDEN_SCOPE}`,
+  requested_scopes: `openid profile email ${SEARCH_SCOPE}`,
 });
 
 function App() {
