@@ -78,15 +78,15 @@ const PipelinePage = () => {
                     <h2 className='text-3xl text-center'>Run this pipeline</h2>
                     <div className='flex justify-evenly py-2'>
                         <a href='https://wholetale.org/' target="_blank" rel="noopener noreferrer" className='border border-gray-200 shadow-sm rounded-lg hover:shadow-md flex flex-col gap-4 p-5 items-center justify-between hover:no-underline'>
-                            <img src='img/whole_tale_logo.svg' className='w-40 max-w-xs max-h-32 object-contain'></img>
+                            <img src='img/whole_tale_logo.svg' alt='Whole Tale logo' className='w-40 max-w-xs max-h-32 object-contain'></img>
                             <span className='text-center text-xl text-gray-600'>Open in<br></br>Whole Tale</span>
                         </a>
                         <a href='https://huggingface.co/' target="_blank" rel="noopener noreferrer" className='border border-gray-200 shadow-sm rounded-lg hover:shadow-md flex flex-col gap-4 p-5 items-center justify-between hover:no-underline'>
-                            <img src='img/hf-logo.png' className='w-40 max-h-32 object-contain'></img>
+                            <img src='img/hf-logo.png' alt='HuggingFace logo' className='w-40 max-h-32 object-contain'></img>
                             <span className='text-center text-xl text-gray-600'>Open in<br></br>HuggingFace</span>
                         </a>
                         <a href='https://colab.research.google.com/' target="_blank" rel="noopener noreferrer" className='border border-gray-200 shadow-sm rounded-lg hover:shadow-md flex flex-col gap-4 p-5 items-center justify-between hover:no-underline'>
-                            <img src='img/gcolab-logo.png' className='w-40 max-w-xs max-h-32 object-contain'></img>
+                            <img src='img/gcolab-logo.png' alt='Google Colab logo' className='w-40 max-w-xs max-h-32 object-contain'></img>
                             <span className='text-center text-xl text-gray-600'>Open in<br></br>Google Colab</span>
                         </a>
                     </div>
