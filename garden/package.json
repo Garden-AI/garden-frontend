@@ -5,6 +5,7 @@
   "//": "For homepage, see https://create-react-app.dev/docs/deployment/#serving-the-same-build-from-different-paths",
   "private": true,
   "dependencies": {
+    "@globus/sdk": "^0.0.4-alpha.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -25,6 +26,7 @@
     "deploy-staging": "gh-pages -d build -r https://github.com/Garden-AI/garden-frontend-staging",
     "deploy-prod": "gh-pages -d build",
     "start": "react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
+    "start-https": "HTTPS=true react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
     "build": "react-scripts build && npx tailwindcss -i ./src/App.css -o public/main.css",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
