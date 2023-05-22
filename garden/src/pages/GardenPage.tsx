@@ -4,6 +4,7 @@ import PipelineBox from '../components/PipelineBox';
 
 const GardenPage = () => {
     const { uuid } = useParams();
+    console.log(uuid);
     const fakeData = {
         uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
         name: "Crystal Garden",

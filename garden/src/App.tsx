@@ -4,7 +4,7 @@ import RealStuff from './RealStuff'
 import { HashRouter, Routes, Route } from "react-router-dom";
 import GardenPage from './pages/GardenPage';
 import AboutPage from './pages/AboutPage';
-import SearchPage from './pages/SearchPage';
+// import SearchPage from './pages/SearchPage';
 import HomePage from './pages/HomePage';
 import PipelinePage from './pages/PipelinePage';
 import Navbar from './components/Navbar';
@@ -54,7 +54,7 @@ function App() {
   return (
     <div>
       <HashRouter>
-        <Navbar />
+        {isAuthenticated ? <Navbar /> : null}
         <Routes>
           <Route path="/" element={isAuthenticated ? MainApp() : <PlaceholderPage />}/>
           <Route path="secret" element={MainApp()}/>

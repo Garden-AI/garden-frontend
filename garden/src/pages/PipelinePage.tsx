@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 const PipelinePage = () => {
     const { uuid } = useParams();
+    console.log(uuid);
     const fakeData = {
         uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
         name: "Crystal Structure Predictor",
