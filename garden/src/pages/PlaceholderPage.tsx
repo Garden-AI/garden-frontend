@@ -1,5 +1,5 @@
-import './placeholder.css';
-import 'purecss';
+import '../placeholder.css';
+// import 'purecss';
 
 function PlaceHolderPage() {
     return (

@@ -1,7 +1,13 @@
 import React from 'react';
-import PlaceholderPage from './PlaceholderPage'
+import PlaceholderPage from './pages/PlaceholderPage'
 import RealStuff from './RealStuff'
 import { HashRouter, Routes, Route } from "react-router-dom";
+import GardenPage from './pages/GardenPage';
+import AboutPage from './pages/AboutPage';
+// import SearchPage from './pages/SearchPage';
+import HomePage from './pages/HomePage';
+import PipelinePage from './pages/PipelinePage';
+import Navbar from './components/Navbar';
 
 // The App.css styles conflict with the placeholder,
 // but we can bring them back once we get rid of the placeholder.
@@ -47,12 +53,18 @@ function App() {
     const MainApp = () => <RealStuff isAuthenticated={isAuthenticated} handleLogOut={handleLogOut} handleLogin={handleLogin} />
   return (
     <div>
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={isAuthenticated ? MainApp() : <PlaceholderPage />}/>
-        <Route path="secret" element={MainApp()}/>
-      </Routes>
-    </HashRouter>
+      <HashRouter>
+        {isAuthenticated ? <Navbar /> : null}
+        <Routes>
+          <Route path="/" element={isAuthenticated ? MainApp() : <PlaceholderPage />}/>
+          <Route path="secret" element={MainApp()}/>
+          <Route path="/home" element={<HomePage />}/>
+          <Route path="/about" element={<AboutPage />}/>
+          {/* <Route path="/search" element={<SearchPage />}/> */}
+          <Route path="/garden/:uuid" element={<GardenPage />}/>
+          <Route path="/pipeline/:uuid" element={<PipelinePage />}/>
+        </Routes>
+      </HashRouter>
     </div>
   )
 }
