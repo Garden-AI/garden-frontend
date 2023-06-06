@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
+import GardenBox from "../components/GardenBox";
 
 const HomePage = () => {
   return (
@@ -9,7 +10,7 @@ const HomePage = () => {
         HomePage
       </div> */}
       <Navbar />
-      <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5 ">
+      <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
         <p className="font-semibold text-3xl sm:text-6xl text-center max-w-3xl">
           Build a garden where your model can thrive
         </p>
@@ -21,7 +22,7 @@ const HomePage = () => {
         </button> */}
         <Link
           to="/search"
-          className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white text-center flex justify-center items-center"
+          className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
         >
           Search
         </Link>
@@ -139,10 +140,30 @@ const HomePage = () => {
         </p>
       </div>
 
-      <div className="font-display">Featured Gardens</div>
+      {/* Featured Gardens */}
+      <div className="font-display py-8 px-5 sm:px-20">
+        <h1 className="text-center text-xl sm:text-4xl font-semibold underline underline-offset-4 decoration-green decoration-4 pb-10">
+          Featured Gardens
+        </h1>
+        <p className="text-md sm:text-xl">
+          Take a look at some popular gardens that have been getting a lot of
+          attention! You can view the models, datasets, papers, and anything
+          else associated with the garden. Additionally, you can run the models
+          to optimize your own workflow, gain inspiration, or for any other
+          reason you see fit.
+        </p>
 
+        <div id="Garden-Squares" className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-8">
+          <GardenBox/>
+          <GardenBox/>
+          <GardenBox/>
+          <GardenBox/>
+          <GardenBox/>
+          <GardenBox/>
+        </div>
+      </div>
 
-        {/* Bottom section/credits */}
+      {/* Bottom section/credits */}
       <div className="font-display bg-green pb-8">
         <p className="text-white text-lg sm:text-xl pt-8 text-center">
           This project was made possible by:
@@ -150,7 +171,11 @@ const HomePage = () => {
         <div className="bg-white my-8 mx-6 sm:mx-16 md:mx-16 rounded-xl md:flex items-center justify-evenly py-10">
           <section className="flex flex-col items-center">
             <a target="blank" href="https://materialsdatafacility.org/">
-              <img src="img/MDF-logo.png" className="max-w-[200px]" />
+              <img
+                src="img/MDF-logo.png"
+                alt="MDF logo"
+                className="max-w-[200px] hover:opacity-75"
+              />
             </a>
             <h1 className="font-bold text-md md:text-xl pt-6 text-center">
               MDF
@@ -165,7 +190,8 @@ const HomePage = () => {
             <a target="blank" href="https://www.nsf.gov/">
               <img
                 src="img/National-Science-Foundation-logo.jpeg"
-                className="max-w-[70px]"
+                className="max-w-[70px] hover:opacity-75"
+                alt="NSF logo"
               />
             </a>
             <h1 className="font-bold text-md md:text-xl pt-6 text-center">
@@ -180,9 +206,15 @@ const HomePage = () => {
 
           <section className="flex flex-col items-center">
             <a target="blank" href="https://foundry-ml.org/#/">
-              <img src="img/foundry-logo.png" className="max-w-[200px]" />
+              <img
+                src="img/foundry-logo.png"
+                alt="Foundry logo"
+                className="max-w-[200px] hover:opacity-75"
+              />
             </a>
-            <h1 className="font-bold text-md md:text-xl pt-6 text-center"> Foundry </h1>
+            <h1 className="font-bold text-md md:text-xl pt-6 text-center">
+              Foundry
+            </h1>
             <p className="text-center text-sm md:text-lg mx-5 pt-4 max-w-xs">
               An open source machine learning platform for scientists
             </p>
