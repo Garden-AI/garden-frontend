@@ -1,11 +1,14 @@
 import React from "react";
+import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   return (
     <>
-      <div className="container-max-w-full bg-gray-200 shadow border p-6">
+      {/* <div className="container-max-w-full bg-gray-200 shadow border p-6">
         HomePage
-      </div>
+      </div> */}
+      <Navbar />
       <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5 ">
         <p className="font-semibold text-3xl sm:text-6xl text-center max-w-3xl">
           Build a garden where your model can thrive
@@ -13,9 +16,15 @@ const HomePage = () => {
         <p className="pt-8 sm:pt-16 text-lg sm:text-3xl text-center max-w-lg">
           An ecosystem of ML models and datasets ready to be explored
         </p>
-        <button className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white">
+        {/* <button className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white">
           Search
-        </button>
+        </button> */}
+        <Link
+          to="/search"
+          className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white text-center flex justify-center items-center"
+        >
+          Search
+        </Link>
       </div>
 
       <div
@@ -128,6 +137,54 @@ const HomePage = () => {
           play a key role in the accessibility and reproducibility of a garden
           page.
         </p>
+      </div>
+
+      <div className="font-display">Featured Gardens</div>
+
+      <div className="font-display bg-green pb-8">
+        <p className="text-white text-xl pt-8 text-center">
+          This project was made possible by:
+        </p>
+        <div className="bg-white my-8 mx-16 rounded-xl flex items-center justify-evenly py-10">
+          <section className="flex flex-col items-center">
+            <a target="blank" href="https://materialsdatafacility.org/">
+              <img src="img/MDF-logo.png" className="max-w-[200px]" />
+            </a>
+            <h1 className="font-bold text-xl pt-6 text-center"> MDF </h1>
+            <p className="text-center mx-5 pt-4 max-w-xs">
+              Data services to help material scientists publish and discover
+              data
+            </p>
+          </section>
+
+          <section className="flex flex-col items-center">
+            <a target="blank" href="https://www.nsf.gov/">
+              <img
+                src="img/National-Science-Foundation-logo.jpeg"
+                className="max-w-[90px]"
+              />
+            </a>
+            <h1 className="font-bold text-xl pt-6 text-center">
+              {" "}
+              National Science Foundation{" "}
+            </h1>
+            <p className="text-center mx-5 pt-4 max-w-xs text-sm">
+              Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for
+              Publishing and Applying AI Models for Translational Research in
+              Science, Engineering, Education, and Industry”
+            </p>
+          </section>
+
+          <section className="flex flex-col items-center">
+            <a target="blank" href="https://foundry-ml.org/#/">
+              <img src="img/foundry-logo.png" className="max-w-[200px]" />
+            </a>
+            <h1 className="font-bold text-xl pt-6 text-center"> Foundry </h1>
+            <p className="text-center mx-5 pt-4 max-w-xs">
+              An open source machine learning platform for scientists
+            </p>
+          </section>
+        </div>
       </div>
     </>
   );
