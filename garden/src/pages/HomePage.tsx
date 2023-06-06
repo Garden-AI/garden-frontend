@@ -153,13 +153,16 @@ const HomePage = () => {
           reason you see fit.
         </p>
 
-        <div id="Garden-Squares" className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-8">
-          <GardenBox/>
-          <GardenBox/>
-          <GardenBox/>
-          <GardenBox/>
-          <GardenBox/>
-          <GardenBox/>
+        <div
+          id="Garden-Squares"
+          className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-8"
+        >
+          <GardenBox />
+          <GardenBox />
+          <GardenBox />
+          <GardenBox />
+          <GardenBox />
+          <GardenBox />
         </div>
       </div>
 
