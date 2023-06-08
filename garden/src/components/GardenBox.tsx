@@ -14,8 +14,7 @@ const GardenBox = () => {
       "10.2345.55557",
       "10.2345.55558",
     ],
-    description:
-      "Models for predicting crystal structure , this is a much longer description to try and see what will happen when there is noticable and a lot of text overflow so here are a few more words just to try and get that overflow to trigger we are almost there just a few more words and we should be all set but here is somthing else that i did ",
+    description: "Models for predicting crystal structure.",
     authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
     tags: ["fun, crystals, garden"],
   };
@@ -27,9 +26,11 @@ const GardenBox = () => {
     >
       <div className="flex flex-col gap-2">
         <h2 className="text-xl">{fakeData.name}</h2>
-        <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent max-h-[120px] overflow-y-hidden">
-          {fakeData.description}
-        </p>
+        <div className="max-h-[120px] overflow-y-hidden">
+          <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent h-[160px] overflow-y-hidden">
+            {fakeData.description}
+          </p>
+        </div>
       </div>
       <div className="text-gray-500 flex gap-2">
         <svg
