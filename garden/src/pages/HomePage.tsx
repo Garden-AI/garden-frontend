@@ -35,7 +35,6 @@ const HomePage = () => {
         {/* chart */}
         <div className="flex flex-col items-center">
           <svg
-            xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
@@ -56,7 +55,6 @@ const HomePage = () => {
         {/* Magnifying glass */}
         <div className="flex flex-col items-center">
           <svg
-            xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
@@ -77,7 +75,6 @@ const HomePage = () => {
         {/* Lightbulb */}
         <div className="flex flex-col items-center">
           <svg
-            xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
