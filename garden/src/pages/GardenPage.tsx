@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import PipelineBox from "../components/PipelineBox";
 import Navbar from "../components/Navbar";
+import Modal from "../components/Modal";
 
 const GardenPage = () => {
   const { uuid } = useParams();
   const [active, setActive] = useState("");
+  const [show, setShow] = useState(false);
   console.log(uuid);
   const fakeData = {
     uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
@@ -25,6 +27,14 @@ const GardenPage = () => {
     await navigator.clipboard.writeText(window.location.href);
     alert("Text copied");
   };
+
+  const showModal = () => {
+    setShow(true);
+  };
+
+  const closeModal = () => {
+    setShow(false)
+  }
 
   return (
     <>
@@ -52,20 +62,23 @@ const GardenPage = () => {
                 />
               </svg>
             </button>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-              />
-            </svg>
+            <button onClick={showModal}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                />
+              </svg>
+            </button>
+            <Modal show={show} close={closeModal} copy={copy} doi={fakeData.doi}/>
           </div>
         </div>
 
@@ -90,6 +103,8 @@ const GardenPage = () => {
             <p>{fakeData.description}</p>
           </div>
         </div>
+
+        <div></div>
 
         <div>
           {/* Tabs */}
