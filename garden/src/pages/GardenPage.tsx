@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import PipelineBox from "../components/PipelineBox";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
+import RelatedGardenBox from "../components/RelatedGardenBox";
 
 const GardenPage = () => {
   const { uuid } = useParams();
@@ -38,12 +39,12 @@ const GardenPage = () => {
 
   const leftScroll = () => {
     let sc = document.querySelector("#related");
-    sc!.scrollLeft = sc!.scrollLeft - 500;
+    sc!.scrollLeft = sc!.scrollLeft - 283;
   };
 
   const rightScroll = () => {
     let sc = document.querySelector("#related");
-    sc!.scrollLeft = sc!.scrollLeft + 500;
+    sc!.scrollLeft = sc!.scrollLeft + 283;
   };
 
   return (
@@ -185,9 +186,12 @@ const GardenPage = () => {
         </div> */}
       </div>
 
-      <h1 className="pl-14 text-3xl pb-6 font-semibold">Related Gardens</h1>
+      <h1 className="pl-36 text-3xl pb-6 ">Related Gardens</h1>
       <div className="relative flex items-center pb-12">
-        <button className="w-16 h-16 ml-12 mr-6 bg-gray-300" onClick={leftScroll}>
+        <button
+          className="w-16 h-16 ml-12 mr-6 bg-gray-100"
+          onClick={leftScroll}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -205,9 +209,16 @@ const GardenPage = () => {
         </button>
         <div
           id="related"
-          className="w-full h-full overflow-x-scroll scroll-smooth whitespace-nowrap"
+          className="w-full h-full overflow-x-scroll scroll-smooth whitespace-nowrap inline-flex gap-4"
         >
-          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+          <RelatedGardenBox />
+          <RelatedGardenBox />
+          <RelatedGardenBox />
+          <RelatedGardenBox />
+          <RelatedGardenBox />
+          <RelatedGardenBox />
+
+          {/* <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
             hello 1
           </div>
 
@@ -233,10 +244,13 @@ const GardenPage = () => {
 
           <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
             hello 7
-          </div>
+          </div> */}
         </div>
 
-        <button className="w-16 h-16 ml-6 mr-12 bg-gray-300" onClick={rightScroll}>
+        <button
+          className="w-16 h-16 ml-6 mr-12 bg-gray-100"
+          onClick={rightScroll}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
