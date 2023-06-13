@@ -185,9 +185,9 @@ const GardenPage = () => {
         </div> */}
       </div>
 
-      <h1 className="pl-16">Related Gardens</h1>
-      <div className="relative flex items-center">
-        <button className="w-16 h-16" onClick={leftScroll}>
+      <h1 className="pl-14 text-3xl pb-6 font-semibold">Related Gardens</h1>
+      <div className="relative flex items-center pb-12">
+        <button className="w-16 h-16 ml-12 mr-6" onClick={leftScroll}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -236,7 +236,7 @@ const GardenPage = () => {
           </div>
         </div>
 
-        <button className="w-16 h-16" onClick={rightScroll}>
+        <button className="w-16 h-16 ml-6 mr-12" onClick={rightScroll}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
