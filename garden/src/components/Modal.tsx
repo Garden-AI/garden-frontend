@@ -12,7 +12,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
 
   return (
     <div className="justify-center items-center flex fixed inset-0 z-50 bg-gray-500 bg-opacity-70 font-display">
-      <div className="w-[50vw] min-h-[50vh] bg-white">
+      <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] bg-white">
         <button
           className="float-right mr-4 mt-2"
           onClick={() => props.close()}
@@ -29,7 +29,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             <img
               src="/img/facebook-logo.png"
               alt="Facebook logo"
-              className="max-w-[3vw]"
+              className="max-w-[5vw] sm:max-w-[3vw]"
             />
           </a>
           <a
@@ -40,7 +40,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             <img
               src="/img/twitter-logo.png"
               alt="Twitter logo"
-              className="max-w-[3vw]"
+              className="max-w-[5vw] sm:max-w-[3vw]"
             />
           </a>
           <a
@@ -51,7 +51,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             <img
               src="/img/LinkedIn-logo.png"
               alt="LinkedIn logo"
-              className="max-w-[3vw]"
+              className="max-w-[5vw] sm:max-w-[3vw]"
             />
           </a>
           <a
@@ -62,7 +62,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             <img
               src="/img/reddit-logo.png"
               alt="Reddit logo"
-              className="max-w-[3vw]"
+              className="max-w-[5vw] sm:max-w-[3vw]"
             />
           </a>
           <a
@@ -73,7 +73,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             <img
               src="/img/github-logo.png"
               alt="Github logo"
-              className="max-w-[3vw]"
+              className="max-w-[5vw] sm:max-w-[3vw]"
             />
           </a>
           <a
@@ -84,7 +84,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             <img
               src="/img/discord-logo.png"
               alt="Discord logo"
-              className="max-w-[3vw]"
+              className="max-w-[5vw] sm:max-w-[3vw]"
             />
           </a>
         </div>

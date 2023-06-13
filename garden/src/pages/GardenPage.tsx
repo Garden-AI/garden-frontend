@@ -46,7 +46,7 @@ const GardenPage = () => {
         <div className="flex gap-8">
           <h1 className="text-3xl">{fakeData.name}</h1>
           <div className="flex gap-3 items-center">
-            <button onClick={copy}>
+            <button title="Copy link" onClick={copy}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -62,7 +62,7 @@ const GardenPage = () => {
                 />
               </svg>
             </button>
-            <button onClick={showModal}>
+            <button title="Share" onClick={showModal}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
