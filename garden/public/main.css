@@ -566,6 +566,10 @@ video {
   position: fixed;
 }
 
+.relative {
+  position: relative;
+}
+
 .inset-0 {
   inset: 0px;
 }
@@ -606,6 +610,10 @@ video {
   margin-top: 0.5rem;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 .flex {
   display: flex;
 }
@@ -632,6 +640,30 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-\[\] {
+  height: ;
+}
+
+.h-\[10vh\] {
+  height: 10vh;
+}
+
+.h-\[100vh\] {
+  height: 100vh;
+}
+
+.h-\[25vh\] {
+  height: 25vh;
+}
+
+.h-8 {
+  height: 2rem;
+}
+
+.h-16 {
+  height: 4rem;
 }
 
 .max-h-32 {
@@ -676,6 +708,18 @@ video {
 
 .w-\[75vw\] {
   width: 75vw;
+}
+
+.w-\[25vw\] {
+  width: 25vw;
+}
+
+.w-8 {
+  width: 2rem;
+}
+
+.w-16 {
+  width: 4rem;
 }
 
 .min-w-\[3vw\] {
@@ -774,8 +818,20 @@ video {
   overflow: auto;
 }
 
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
 .overflow-y-hidden {
   overflow-y: hidden;
+}
+
+.overflow-x-scroll {
+  overflow-x: scroll;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
 }
 
 .whitespace-nowrap {
@@ -961,6 +1017,10 @@ video {
 
 .pt-8 {
   padding-top: 2rem;
+}
+
+.pl-16 {
+  padding-left: 4rem;
 }
 
 .text-center {

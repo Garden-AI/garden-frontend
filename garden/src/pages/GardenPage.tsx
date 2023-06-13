@@ -33,11 +33,21 @@ const GardenPage = () => {
   };
 
   const closeModal = () => {
-    setShow(false)
-  }
+    setShow(false);
+  };
+
+  const leftScroll = () => {
+    let sc = document.querySelector("#related");
+    sc!.scrollLeft = sc!.scrollLeft - 500;
+  };
+
+  const rightScroll = () => {
+    let sc = document.querySelector("#related");
+    sc!.scrollLeft = sc!.scrollLeft + 500;
+  };
 
   return (
-    <>
+    <div className="font-display">
       <Navbar />
       <div className="h-full w-full flex flex-col gap-10 px-16 md:px-36 py-20 font-display">
         {/* Place breadcrumbs here */}
@@ -78,7 +88,12 @@ const GardenPage = () => {
                 />
               </svg>
             </button>
-            <Modal show={show} close={closeModal} copy={copy} doi={fakeData.doi}/>
+            <Modal
+              show={show}
+              close={closeModal}
+              copy={copy}
+              doi={fakeData.doi}
+            />
           </div>
         </div>
 
@@ -169,7 +184,76 @@ const GardenPage = () => {
           ))}
         </div> */}
       </div>
-    </>
+
+      <h1 className="pl-16">Related Gardens</h1>
+      <div className="relative flex items-center">
+        <button className="w-16 h-16" onClick={leftScroll}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="object-fit"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </button>
+        <div
+          id="related"
+          className="w-full h-full overflow-x-scroll scroll-smooth whitespace-nowrap"
+        >
+          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+            hello 1
+          </div>
+
+          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+            hello 2
+          </div>
+
+          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+            hello 3
+          </div>
+
+          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+            hello 4
+          </div>
+
+          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+            hello 5
+          </div>
+
+          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+            hello 6
+          </div>
+
+          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
+            hello 7
+          </div>
+        </div>
+
+        <button className="w-16 h-16" onClick={rightScroll}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="object-fit"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8.25 4.5l7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
   );
 };
 
