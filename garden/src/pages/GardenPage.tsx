@@ -4,6 +4,8 @@ import PipelineBox from "../components/PipelineBox";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
+import Breadcrumbs from "../components/Breadcrumbs";
+import CommentBox from "../components/CommentBox";
 
 const GardenPage = () => {
   const { uuid } = useParams();
@@ -23,6 +25,56 @@ const GardenPage = () => {
     description: "Models for predicting crystal structure",
     authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
   };
+  const fakeDatasetOne = {
+    type: "dataset",
+    doi: "10.3792.1234",
+    repository: "Foundry",
+    url: "https://foundry-ml.org/#/datasets",
+  };
+  const fakeDatasetTwo = {
+    type: "dataset",
+    doi: "10.3792.1234",
+    repository: "Zenodo",
+    url: "https://zenodo.org/",
+  };
+  const fakeComments = [
+    {
+      user: "Chase Jenkins",
+      body: "I love this garden!",
+      upvotes: 150,
+      downvotes: 50,
+      replies: [
+        {
+          user: "Chase Two",
+          body: "I agree",
+        },
+        {
+          user: "Chase Three",
+          body: "It is a great garden",
+        },
+        {
+          user: "Chase Four",
+          body: "Well said",
+        },
+      ],
+    },
+    {
+      user: "Jenkins Chase",
+      body: "I'm going to use this!",
+      upvotes: 150,
+      downvotes: 50,
+      replies: [
+        {
+          user: "Chase Two",
+          body: "Me too",
+        },
+        {
+          user: "Chase Three",
+          body: "This also relates to my work",
+        },
+      ],
+    },
+  ];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -31,6 +83,7 @@ const GardenPage = () => {
 
   const showModal = () => {
     setShow(true);
+    console.log(window.location.search);
   };
 
   const closeModal = () => {
@@ -50,9 +103,9 @@ const GardenPage = () => {
   return (
     <div className="font-display">
       <Navbar />
-      <div className="h-full w-full flex flex-col gap-10 px-16 md:px-36 py-20 font-display">
+      <div className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display">
         {/* Place breadcrumbs here */}
-
+        {/* <Breadcrumbs /> */}
         {/* Garden Header */}
         <div className="flex gap-8">
           <h1 className="text-3xl">{fakeData.name}</h1>
@@ -173,8 +226,71 @@ const GardenPage = () => {
                 ))}
               </div>
             )}
-            {active === "Discussion" && <p>Discussion</p>}
-            {active === "Datasets" && <p>Datasets</p>}
+            {active === "Discussion" && (
+              <div className="mx-16">
+                {fakeComments.map((comment) => (
+                  <CommentBox key={comment.body} comment={comment} />
+                ))}   
+              </div>
+            )}
+            {active === "Datasets" && (
+              <div>
+                <div className="pb-8">
+                  <p className="mx-16 pt-8 pb-2 text-xl">
+                    Find the dataset here:{" "}
+                    <a target="blank" href={fakeDatasetOne.url}>
+                      {fakeDatasetOne.url}
+                    </a>
+                  </p>
+                  <p className="mx-16 px-4 text-lg">
+                    -DOI: {fakeDatasetOne.doi}
+                  </p>
+                </div>
+                {fakeDatasetOne.repository === "Foundry" ? (
+                  <div>
+                    <p className="mx-16 text-xl pb-4">
+                      This dataset uses Foundry, here is how you can view it:
+                    </p>
+                    <div className="bg-gray-800 sm:mx-8 lg:mx-32 text-white pl-6 py-6 rounded-xl">
+                      <code className="leading-loose">
+                        <span className="text-gray-400">
+                          # Make sure you've imported and instantiated foundry{" "}
+                          <br />
+                        </span>
+                        <span className="text-purple">from</span> foundry{" "}
+                        <span className="text-purple">import</span> Foundry{" "}
+                        <br />
+                        f = Foundry()
+                        <br />
+                        <br />
+                        <span className="text-gray-400">
+                          # Load the data here <br />
+                        </span>
+                        f.load(
+                        <span className="text-green">
+                          '{fakeDatasetOne.doi}'
+                        </span>
+                        , globus=<span className="text-orange">False</span>)
+                        <br />
+                        res = f.load_data()
+                      </code>
+                    </div>
+                    <p className="mx-16 pt-8 text-xl">
+                      New to Foundry or need a refresher? Click{" "}
+                      <a
+                        target="blank"
+                        href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                      >
+                        here
+                      </a>{" "}
+                      to learn more.
+                    </p>
+                  </div>
+                ) : (
+                  <p></p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -186,7 +302,7 @@ const GardenPage = () => {
         </div> */}
       </div>
 
-      <h1 className="pl-36 text-3xl pb-6 ">Related Gardens</h1>
+      <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">Related Gardens</h1>
       <div className="relative flex items-center pb-12">
         <button
           className="w-16 h-16 ml-12 mr-6 bg-gray-100"
@@ -217,34 +333,6 @@ const GardenPage = () => {
           <RelatedGardenBox />
           <RelatedGardenBox />
           <RelatedGardenBox />
-
-          {/* <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
-            hello 1
-          </div>
-
-          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
-            hello 2
-          </div>
-
-          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
-            hello 3
-          </div>
-
-          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
-            hello 4
-          </div>
-
-          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
-            hello 5
-          </div>
-
-          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
-            hello 6
-          </div>
-
-          <div className="w-[25vw] h-[25vh] border border-3 border-black inline-block">
-            hello 7
-          </div> */}
         </div>
 
         <button

@@ -12,6 +12,9 @@ module.exports = {
       'white': '#ffffff',
       'transparent': 'transparent',
       'black': 'black',
+      'blue': 'blue',
+      'orange': 'orange',
+      'purple': 'magenta',
       'gray': {
         100: '#f3f4f6',
         200: '#e5e7eb',
