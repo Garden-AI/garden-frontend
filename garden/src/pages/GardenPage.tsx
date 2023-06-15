@@ -4,13 +4,14 @@ import PipelineBox from "../components/PipelineBox";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
-import Breadcrumbs from "../components/Breadcrumbs";
+// import Breadcrumbs from "../components/Breadcrumbs";
 import CommentBox from "../components/CommentBox";
 
 const GardenPage = () => {
   const { uuid } = useParams();
   const [active, setActive] = useState("");
   const [show, setShow] = useState(false);
+  const [showComment, setShowComment] = useState(true);
   console.log(uuid);
   const fakeData = {
     uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
@@ -40,7 +41,9 @@ const GardenPage = () => {
   const fakeComments = [
     {
       user: "Chase Jenkins",
-      body: "I love this garden!",
+      type: "Comment",
+      title: "This is a great garden",
+      body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.   lskdfj kdf kjfdlksdlk jsj lkslj kfsd jdsflkjsfdj sjlk fsdlk jfsklj fkljs fsdjklfsl dkjfjsk lfkjsljkf sjklfsdljkfdslkjfsdkljfsdl kjfsd fds jfdslk jfkl fds jfsd kljfsdlk jfsdlk jfdskl jfdsljk  kljdsflkj dsf klfdsklj dfjkldfsljk fdsjkl fdskjlfdsjkl dfsljk fdsljk dfsljk fdsljkdfskjfdjkl fdsklj fsdkljfdsklj fdsjkl fdsljfdsljk dsfljkfdsljkfdsljkfdsjlkfdsljk fdjlkfdsljk dfslkj ",
       upvotes: 150,
       downvotes: 50,
       replies: [
@@ -60,7 +63,9 @@ const GardenPage = () => {
     },
     {
       user: "Jenkins Chase",
-      body: "I'm going to use this!",
+      type: "Comment",
+      title: "This garden is very relevant to my work!",
+      body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
       upvotes: 150,
       downvotes: 50,
       replies: [
@@ -71,6 +76,24 @@ const GardenPage = () => {
         {
           user: "Chase Three",
           body: "This also relates to my work",
+        },
+      ],
+    },
+    {
+      user: "Jenkins Chase",
+      type: "Question",
+      title: "What are crystals?",
+      body: "I was just exploring this site, and came across this garden. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
+      upvotes: 150,
+      downvotes: 50,
+      replies: [
+        {
+          user: "Chase Two",
+          body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
+        },
+        {
+          user: "Chase Three",
+          body: "I had the same question",
         },
       ],
     },
@@ -98,6 +121,18 @@ const GardenPage = () => {
   const rightScroll = () => {
     let sc = document.querySelector("#related");
     sc!.scrollLeft = sc!.scrollLeft + 283;
+  };
+
+  const commentFilter = () => {
+    return fakeComments.filter((comment)=> comment.type === "Comment").map((comment) => (
+      <CommentBox key={comment.body} comment={comment} />
+    ));
+  };
+
+  const questionFilter = () => {
+    return fakeComments.filter((comment)=> comment.type === "Question").map((comment) => (
+      <CommentBox key={comment.body} comment={comment} />
+    ));
   };
 
   return (
@@ -228,9 +263,24 @@ const GardenPage = () => {
             )}
             {active === "Discussion" && (
               <div className="mx-16">
-                {fakeComments.map((comment) => (
+                <div className="flex pb-6 gap-6">
+                  <button
+                    className={showComment === true ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl":"border border-1 border-black w-max px-3 rounded-2xl"}
+                    onClick={() => setShowComment(true)}
+                  >
+                    <p>Comments</p>
+                  </button>
+                  <button
+                    className={showComment === false ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl":"border border-1 border-black w-max px-3 rounded-2xl"}
+                    onClick={() => setShowComment(false)}
+                  >
+                    <p>Questions</p>
+                  </button>
+                </div>
+                {/* {fakeComments.map((comment) => (
                   <CommentBox key={comment.body} comment={comment} />
-                ))}   
+                ))} */}
+                {showComment === true ? commentFilter() : questionFilter()}
               </div>
             )}
             {active === "Datasets" && (

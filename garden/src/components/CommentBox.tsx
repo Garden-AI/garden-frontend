@@ -1,16 +1,117 @@
-import React from "react"
+import React from "react";
+import { useState } from "react";
 
-const CommentBox = ({comment}: {comment: any}) =>{
+const CommentBox = ({ comment }: { comment: any }) => {
+  const [votes, setVotes] = useState(comment.upvotes - comment.downvotes)
+  const [isUpvoted,setIsUpvoted] = useState(false)
+  const [isDownvoted,setIsDownvoted] = useState(false)
 
-    
-    console.log(comment)
+  const upVote = () =>{
+    if(!isUpvoted){
+        if(isDownvoted){
+            setVotes(votes+2)
+        }
+        else{
+            setVotes(votes+1)  
+        }
+        setIsUpvoted(true)
+        setIsDownvoted(false)
+    }
+    else{
+        setVotes(votes-1)
+        setIsUpvoted(false)
+    }
+  }
 
-    return (
-        <div className="pb-6">
-           <p className="font-semibold"> {comment.user}</p>
-           <p>{comment.body}</p>
+  const downVote = () =>{
+    if(!isDownvoted){
+        if(isUpvoted){
+            setVotes(votes-2)
+        }
+        else{
+            setVotes(votes-1)
+        }
+        setIsDownvoted(true)
+        setIsUpvoted(false)
+    }
+    else{
+        setVotes(votes+1)
+        setIsDownvoted(false)
+    }
+  }
+
+  return (
+    <div>
+      <div className="mb-6 h-[13rem] w-full shadow-lg bg-gray-200">
+        <div className="flex flex-col gap-1 max-w-6 pl-4 pt-4 float-left">
+          <button onClick={upVote}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 m-0"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
+            />
+          </svg>
+          </button>
+          <span>{votes}</span>
+          <button onClick={downVote}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+            />
+          </svg>
+          </button>
         </div>
-    )
-}
+        <div className="ml-16 pl-6 pt-2 bg-white h-full relative">
+          <div className="pb-2 flex gap-3">
+            <section className="border border-1 border-black w-max px-3 rounded-2xl">
+              {comment.type}
+            </section>
+            <p className="text-gray-500">Posted by {comment.user}</p>
+          </div>
+          <div className="h-[8rem] overflow-y-hidden pb-4">
+          <h1 className="font-semibold text-xl pb-0.5">{comment.title}</h1>
+          <p>{comment.body}</p>
+          </div>
+          <div className="absolute bottom-0 left-6 pb-2">
+            <button className="flex items-center justify-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+              />
+            </svg>
+            <p className="pl-2">{comment.replies.length} Replies</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default CommentBox
+export default CommentBox;
