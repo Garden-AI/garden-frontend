@@ -6,12 +6,14 @@ import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 // import Breadcrumbs from "../components/Breadcrumbs";
 import CommentBox from "../components/CommentBox";
+import DatasetBox from "../components/DatasetBox";
 
 const GardenPage = () => {
   const { uuid } = useParams();
   const [active, setActive] = useState("");
   const [show, setShow] = useState(false);
   const [showComment, setShowComment] = useState(true);
+  const [showFoundry, setShowFoundry] = useState(false);
   console.log(uuid);
   const fakeData = {
     uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
@@ -26,24 +28,32 @@ const GardenPage = () => {
     description: "Models for predicting crystal structure",
     authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
   };
-  const fakeDatasetOne = {
-    type: "dataset",
-    doi: "10.3792.1234",
-    repository: "Foundry",
-    url: "https://foundry-ml.org/#/datasets",
-  };
-  const fakeDatasetTwo = {
-    type: "dataset",
-    doi: "10.3792.1234",
-    repository: "Zenodo",
-    url: "https://zenodo.org/",
-  };
+  const fakeDatasets = [
+    {
+      type: "dataset",
+      doi: "10.3792.1234",
+      repository: "Foundry",
+      url: "https://foundry-ml.org/#/datasets",
+    },
+    {
+      type: "dataset",
+      doi: "10.3792.1234",
+      repository: "Zenodo",
+      url: "https://zenodo.org/",
+    },
+  ];
+  // const fakeDatasetTwo = {
+  //   type: "dataset",
+  //   doi: "10.3792.1234",
+  //   repository: "Zenodo",
+  //   url: "https://zenodo.org/",
+  // };
   const fakeComments = [
     {
       user: "Chase Jenkins",
       type: "Comment",
       title: "This is a great garden",
-      body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.   lskdfj kdf kjfdlksdlk jsj lkslj kfsd jdsflkjsfdj sjlk fsdlk jfsklj fkljs fsdjklfsl dkjfjsk lfkjsljkf sjklfsdljkfdslkjfsdkljfsdl kjfsd fds jfdslk jfkl fds jfsd kljfsdlk jfsdlk jfdskl jfdsljk  kljdsflkj dsf klfdsklj dfjkldfsljk fdsjkl fdskjlfdsjkl dfsljk fdsljk dfsljk fdsljkdfskjfdjkl fdsklj fsdkljfdsklj fdsjkl fdsljfdsljk dsfljkfdsljkfdsljkfdsjlkfdsljk fdjlkfdsljk dfslkj ",
+      body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
       upvotes: 150,
       downvotes: 50,
       replies: [
@@ -60,11 +70,11 @@ const GardenPage = () => {
           body: "Well said",
         },
         {
-          user: "Chase Four",
-          body: "You are so right",
+          user: "Chase Five",
+          body: "Just came from the link you sent me! Thanks for sharing",
         },
         {
-          user: "Chase Four",
+          user: "Chase Six",
           body: "You are so right",
         },
       ],
@@ -132,21 +142,28 @@ const GardenPage = () => {
   };
 
   const commentFilter = () => {
-    return fakeComments.filter((comment)=> comment.type === "Comment").map((comment) => (
-      <CommentBox key={comment.body} comment={comment} />
-    ));
+    return fakeComments
+      .filter((comment) => comment.type === "Comment")
+      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
   };
 
   const questionFilter = () => {
-    return fakeComments.filter((comment)=> comment.type === "Question").map((comment) => (
-      <CommentBox key={comment.body} comment={comment} />
-    ));
+    return fakeComments
+      .filter((comment) => comment.type === "Question")
+      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
+  };
+
+  const foundry = () => {
+    setShowFoundry(true);
   };
 
   return (
     <div className="font-display">
       <Navbar />
-      <div className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display">
+      <div
+        autoFocus
+        className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display"
+      >
         {/* Place breadcrumbs here */}
         {/* <Breadcrumbs /> */}
         {/* Garden Header */}
@@ -273,13 +290,21 @@ const GardenPage = () => {
               <div className="mx-16">
                 <div className="flex pb-6 gap-6">
                   <button
-                    className={showComment === true ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl":"border border-1 border-black w-max px-3 rounded-2xl"}
+                    className={
+                      showComment === true
+                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
+                        : "border border-1 border-black w-max px-3 rounded-2xl"
+                    }
                     onClick={() => setShowComment(true)}
                   >
                     <p>Comments</p>
                   </button>
                   <button
-                    className={showComment === false ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl":"border border-1 border-black w-max px-3 rounded-2xl"}
+                    className={
+                      showComment === false
+                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
+                        : "border border-1 border-black w-max px-3 rounded-2xl"
+                    }
                     onClick={() => setShowComment(false)}
                   >
                     <p>Questions</p>
@@ -293,7 +318,17 @@ const GardenPage = () => {
             )}
             {active === "Datasets" && (
               <div>
-                <div className="pb-8">
+                <div className="mx-16 text-xl pb-4">
+                  Below are the datasets that are used in this garden. Clicking
+                  on the URL will take you to where they are hosted, and allow
+                  you to learn more about them and how to view them.
+                </div>
+                <div>
+                  {fakeDatasets.map((dataset) => (
+                    <DatasetBox dataset={dataset} showFoundry={foundry} />
+                  ))}
+                </div>
+                {/* <div className="pb-8">
                   <p className="mx-16 pt-8 pb-2 text-xl">
                     Find the dataset here:{" "}
                     <a target="blank" href={fakeDatasetOne.url}>
@@ -303,11 +338,12 @@ const GardenPage = () => {
                   <p className="mx-16 px-4 text-lg">
                     -DOI: {fakeDatasetOne.doi}
                   </p>
-                </div>
-                {fakeDatasetOne.repository === "Foundry" ? (
+                </div> */}
+                {showFoundry === true ? (
                   <div>
                     <p className="mx-16 text-xl pb-4">
-                      This dataset uses Foundry, here is how you can view it:
+                      *One or more of these datasets uses Foundry, here is how
+                      you can view it:
                     </p>
                     <div className="bg-gray-800 sm:mx-8 lg:mx-32 text-white pl-6 py-6 rounded-xl">
                       <code className="leading-loose">
@@ -325,10 +361,8 @@ const GardenPage = () => {
                           # Load the data here <br />
                         </span>
                         f.load(
-                        <span className="text-green">
-                          '{fakeDatasetOne.doi}'
-                        </span>
-                        , globus=<span className="text-orange">False</span>)
+                        <span className="text-green">'DOI goes here'</span>,
+                        globus=<span className="text-orange">False</span>)
                         <br />
                         res = f.load_data()
                       </code>

@@ -38,7 +38,9 @@ const CommentBox = ({ comment }: { comment: any }) => {
   };
 
   const loadReplies = () => {
-    setReplies(replies + 3);
+    if (replies === 0) {
+      setReplies(replies + 3);
+    }
   };
 
   return (
@@ -133,10 +135,16 @@ const CommentBox = ({ comment }: { comment: any }) => {
             })}
           {replies > 0 ? (
             <div className="pt-4">
-              <button className="mr-6 text-blue hover:underline" onClick={() => setReplies(replies +3)}>
+              <button
+                className="mr-6 text-blue hover:underline"
+                onClick={() => setReplies(replies + 3)}
+              >
                 Load more replies
               </button>
-              <button className="text-blue hover:underline" onClick={() => setReplies(0)}>
+              <button
+                className="text-blue hover:underline"
+                onClick={() => setReplies(0)}
+              >
                 Hide replies
               </button>
             </div>

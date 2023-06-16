@@ -644,6 +644,11 @@ video {
   margin-bottom: 2rem;
 }
 
+.mx-12 {
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+
 .mb-6 {
   margin-bottom: 1.5rem;
 }
@@ -698,6 +703,10 @@ video {
 
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
 }
 
 .flex {
@@ -1088,6 +1097,10 @@ video {
   object-fit: contain;
 }
 
+.object-fill {
+  object-fit: fill;
+}
+
 .p-16 {
   padding: 4rem;
 }
@@ -1176,6 +1189,11 @@ video {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.px-12 {
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 
 .pb-0 {
@@ -1308,6 +1326,11 @@ video {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 
 .font-bold {
