@@ -59,6 +59,14 @@ const GardenPage = () => {
           user: "Chase Four",
           body: "Well said",
         },
+        {
+          user: "Chase Four",
+          body: "You are so right",
+        },
+        {
+          user: "Chase Four",
+          body: "You are so right",
+        },
       ],
     },
     {
