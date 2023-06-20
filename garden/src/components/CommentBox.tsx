@@ -127,7 +127,7 @@ const CommentBox = ({ comment }: { comment: any }) => {
             })
             .map((reply: any) => {
               return (
-                <div className="">
+                <div key={reply.body} className="">
                   <p className="font-semibold">{reply.user}</p>
                   <p className="pb-2">{reply.body}</p>
                 </div>

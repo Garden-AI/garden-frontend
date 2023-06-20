@@ -37,7 +37,7 @@ const GardenPage = () => {
     },
     {
       type: "dataset",
-      doi: "10.3792.1234",
+      doi: "10.3792.1235",
       repository: "Zenodo",
       url: "https://zenodo.org/",
     },
@@ -119,12 +119,10 @@ const GardenPage = () => {
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
-    alert("Text copied");
   };
 
   const showModal = () => {
     setShow(true);
-    console.log(window.location.search);
   };
 
   const closeModal = () => {
@@ -241,10 +239,10 @@ const GardenPage = () => {
             <button
               className={
                 active === "Pipelines"
-                  ? "bg-gray-300 w-full border-r-4 border-black"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : active === ""
-                  ? "bg-gray-300 w-full border-r-4 border-black"
-                  : "bg-gray-100 w-full border-r-4 border-black hover:bg-gray-300"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
               }
               onClick={() => setActive("Pipelines")}
             >
@@ -253,8 +251,8 @@ const GardenPage = () => {
             <button
               className={
                 active === "Discussion"
-                  ? "bg-gray-300 w-full border-r-4 border-black"
-                  : "bg-gray-100 w-full border-r-4 border-black hover:bg-gray-300"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
               }
               onClick={() => setActive("Discussion")}
             >
@@ -263,8 +261,8 @@ const GardenPage = () => {
             <button
               className={
                 active === "Datasets"
-                  ? "bg-gray-300 w-full"
-                  : "bg-gray-100 w-full hover:bg-gray-300"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
               }
               onClick={() => setActive("Datasets")}
             >
@@ -325,7 +323,7 @@ const GardenPage = () => {
                 </div>
                 <div>
                   {fakeDatasets.map((dataset) => (
-                    <DatasetBox dataset={dataset} showFoundry={foundry} />
+                    <DatasetBox key={dataset.doi} dataset={dataset} showFoundry={foundry} />
                   ))}
                 </div>
                 {/* <div className="pb-8">

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const DatasetBox = (props: { dataset: any; showFoundry: Function }) => {
-  if (props.dataset.repository === "Foundry") {
-    props.showFoundry();
-  }
+  useEffect(() => {
+    if (props.dataset.repository === "Foundry") {
+      props.showFoundry();
+    }
+  },[props])
+  
   return (
     <div className="mb-8 pb-4 mx-16 border border-2 border-gray">
       <p className="mx-16 pt-4 pb-2 text-xl">

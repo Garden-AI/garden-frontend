@@ -7,7 +7,6 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
 
   const copyDOI = async () =>{
     await navigator.clipboard.writeText(props.doi)
-    alert("doi copied")
   }
 
   return (
