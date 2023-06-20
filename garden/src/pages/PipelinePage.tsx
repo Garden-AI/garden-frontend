@@ -141,7 +141,7 @@ const PipelinePage = () => {
         </div>
 
         {/* Run Pipeline */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-8">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
           <div className="sm:flex justify-center py-2 lg:pr-24 gap-20">
             <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
