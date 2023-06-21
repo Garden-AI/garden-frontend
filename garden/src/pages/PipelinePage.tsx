@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
+import AccordionSteps from "../components/AccordionSteps";
+import { Accordion } from "@szhsin/react-accordion";
 
 const PipelinePage = () => {
   const { uuid } = useParams();
@@ -16,7 +18,47 @@ const PipelinePage = () => {
     description: "This is a pipeline for predicting crystal structure!",
     authors: ["KJ Schmidt, Ben B"],
     repository: "https://github.com/",
-    steps: ["pre-process", "predict"],
+    steps: [
+      {
+        input_info: "{'input_data': <class 'object'>}",
+        func: "preprocessing_step: (input_data: object) -> object",
+        python_version: null,
+        description: " ",
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "preprocessing_step",
+        uuid: "abc4356e-b845-42f8-8276-fa2e6de7b3e5",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'data': <class 'object'>}",
+        func: "another_step: (data: object) -> object",
+        python_version: null,
+        description: null,
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "another_step",
+        uuid: "9015f3b0-fa71-4673-b3e4-fd80977a5a78",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'input_arg': <class 'object'>}",
+        func: "run_inference: (input_arg: object) -> object",
+        python_version: null,
+        description: null,
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "run_inference",
+        uuid: "bb71b032-c9dd-4dd0-9667-b0e9302f8218",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+    ],
     version: "0.0.1",
     year: 2023,
     tags: ["fun", "cool", "pipeline"],
@@ -142,8 +184,7 @@ const PipelinePage = () => {
           </div>
         </div>
 
-
-        <AccordionTop/>
+        <AccordionTop />
         {/* Run Pipeline */}
         <div className="flex flex-col gap-8">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
@@ -162,42 +203,43 @@ const PipelinePage = () => {
             </div>
 
             <div className="flex flex-col">
-            <a
-              href="https://wholetale.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-            >
-              <span className="text-center text-xl text-green">
-                Open in Whole Tale
-              </span>
-            </a>
-            <a
-              href="https://huggingface.co/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-            >
-              <span className="text-center text-xl text-green">
-                Open in HuggingFace
-              </span>
-            </a>
-            <a
-              href="https://colab.research.google.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-            >
-              <span className="text-center text-xl text-green">
-                Open in Google Colab
-              </span>
-            </a>
+              <a
+                href="https://wholetale.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+              >
+                <span className="text-center text-xl text-green">
+                  Open in Whole Tale
+                </span>
+              </a>
+              <a
+                href="https://huggingface.co/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+              >
+                <span className="text-center text-xl text-green">
+                  Open in HuggingFace
+                </span>
+              </a>
+              <a
+                href="https://colab.research.google.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+              >
+                <span className="text-center text-xl text-green">
+                  Open in Google Colab
+                </span>
+              </a>
             </div>
           </div>
           {/* For inserting code blocks, consider: https://github.com/rajinwonderland/react-code-blocks#-demo */}
         </div>
 
-        <div className="flex justify-evenly h-12 ">
+        <div>
+          <div className="flex justify-evenly h-12 ">
             <button
               className={
                 active === "Steps"
@@ -231,6 +273,21 @@ const PipelinePage = () => {
               Related
             </button>
           </div>
+          {active === "" && (
+            <Accordion className="px-12 pt-12">
+              {fakeData.steps.map((step, index) => (
+                <AccordionSteps step={step} index={index} />
+              ))}
+            </Accordion>
+          )}
+          {active === "Steps" && (
+            <Accordion className="px-12 pt-12">
+              {fakeData.steps.map((step, index) => (
+                <AccordionSteps step={step} index={index} />
+              ))}
+            </Accordion>
+          )}
+        </div>
 
         {/* Steps */}
         <div>
