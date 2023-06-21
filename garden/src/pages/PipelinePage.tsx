@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "../components/Modal";
+import AccordionTop from "../components/AccordionTop";
 
 const PipelinePage = () => {
   const { uuid } = useParams();
   const [show, setShow] = useState(false);
+  const [active, setActive] = useState("");
   console.log(uuid);
   const fakeData = {
     uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
@@ -34,7 +36,7 @@ const PipelinePage = () => {
 
   return (
     <>
-      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 py-24">
+      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 py-24 font-display">
         {/* Place breadcrumbs here */}
 
         {/* Pipeline Header */}
@@ -140,6 +142,8 @@ const PipelinePage = () => {
           </div>
         </div>
 
+
+        <AccordionTop/>
         {/* Run Pipeline */}
         <div className="flex flex-col gap-8">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
@@ -192,6 +196,41 @@ const PipelinePage = () => {
           </div>
           {/* For inserting code blocks, consider: https://github.com/rajinwonderland/react-code-blocks#-demo */}
         </div>
+
+        <div className="flex justify-evenly h-12 ">
+            <button
+              className={
+                active === "Steps"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : active === ""
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+              }
+              onClick={() => setActive("Steps")}
+            >
+              Steps
+            </button>
+            <button
+              className={
+                active === "Discussion"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+              }
+              onClick={() => setActive("Discussion")}
+            >
+              Discussion
+            </button>
+            <button
+              className={
+                active === "Related"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+              }
+              onClick={() => setActive("Related")}
+            >
+              Related
+            </button>
+          </div>
 
         {/* Steps */}
         <div>
