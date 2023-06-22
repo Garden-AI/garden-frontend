@@ -3,12 +3,22 @@ import { useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
 import AccordionSteps from "../components/AccordionSteps";
-import { Accordion } from "@szhsin/react-accordion";
+import {
+  ControlledAccordion,
+  useAccordionProvider,
+} from "@szhsin/react-accordion";
+import CommentBox from "../components/CommentBox";
+import RelatedGardenBox from "../components/RelatedGardenBox";
 
 const PipelinePage = () => {
   const { uuid } = useParams();
   const [show, setShow] = useState(false);
   const [active, setActive] = useState("");
+  const [showComment, setShowComment] = useState(true);
+  const providerValue = useAccordionProvider({
+    allowMultiple: true,
+  });
+  const { toggleAll } = providerValue;
   console.log(uuid);
   const fakeData = {
     uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
@@ -63,6 +73,74 @@ const PipelinePage = () => {
     year: 2023,
     tags: ["fun", "cool", "pipeline"],
   };
+  const fakeComments = [
+    {
+      user: "Chase Jenkins",
+      type: "Comment",
+      title: "This is a great garden",
+      body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
+      upvotes: 150,
+      downvotes: 50,
+      replies: [
+        {
+          user: "Chase Two",
+          body: "I agree",
+        },
+        {
+          user: "Chase Three",
+          body: "It is a great garden",
+        },
+        {
+          user: "Chase Four",
+          body: "Well said",
+        },
+        {
+          user: "Chase Five",
+          body: "Just came from the link you sent me! Thanks for sharing",
+        },
+        {
+          user: "Chase Six",
+          body: "You are so right",
+        },
+      ],
+    },
+    {
+      user: "Jenkins Chase",
+      type: "Comment",
+      title: "This garden is very relevant to my work!",
+      body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
+      upvotes: 150,
+      downvotes: 50,
+      replies: [
+        {
+          user: "Chase Two",
+          body: "Me too",
+        },
+        {
+          user: "Chase Three",
+          body: "This also relates to my work",
+        },
+      ],
+    },
+    {
+      user: "Jenkins Chase",
+      type: "Question",
+      title: "What are crystals?",
+      body: "I was just exploring this site, and came across this garden. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
+      upvotes: 150,
+      downvotes: 50,
+      replies: [
+        {
+          user: "Chase Two",
+          body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
+        },
+        {
+          user: "Chase Three",
+          body: "I had the same question",
+        },
+      ],
+    },
+  ];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -74,6 +152,18 @@ const PipelinePage = () => {
 
   const closeModal = () => {
     setShow(false);
+  };
+
+  const commentFilter = () => {
+    return fakeComments
+      .filter((comment) => comment.type === "Comment")
+      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
+  };
+
+  const questionFilter = () => {
+    return fakeComments
+      .filter((comment) => comment.type === "Question")
+      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
   };
 
   return (
@@ -112,12 +202,22 @@ const PipelinePage = () => {
                   className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    // strokeLinecap="round"
+                    // strokeLinejoin="round"
                     d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
                   />
                 </svg>
               </button>
+              {/* <button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill='none'
+                  viewBox="0 0 448 512"
+                  className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                >
+                  <path d="M0 216C0 149.7 53.7 96 120 96h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V320 288 216zm256 0c0-66.3 53.7-120 120-120h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H320c-35.3 0-64-28.7-64-64V320 288 216z" />
+                </svg>
+              </button> */}
               <Modal
                 show={show}
                 close={closeModal}
@@ -273,20 +373,224 @@ const PipelinePage = () => {
               Related
             </button>
           </div>
-          {active === "" && (
-            <Accordion className="px-12 pt-12">
-              {fakeData.steps.map((step, index) => (
-                <AccordionSteps step={step} index={index} />
-              ))}
-            </Accordion>
-          )}
-          {active === "Steps" && (
-            <Accordion className="px-12 pt-12">
-              {fakeData.steps.map((step, index) => (
-                <AccordionSteps step={step} index={index} />
-              ))}
-            </Accordion>
-          )}
+          <div className="pt-8">
+            {active === "" && (
+              <div>
+                <div className="flex justify-end pb-2 gap-4">
+                  <button
+                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
+                    onClick={() => toggleAll(true)}
+                  >
+                    <div className="flex flex-col gap-0 h-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                        />
+                      </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                        />
+                      </svg>
+                    </div>
+
+                    <p>Expand All</p>
+                  </button>
+                  <button
+                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
+                    onClick={() => toggleAll(false)}
+                  >
+                    <div className="flex flex-col gap-0 h-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                        />
+                      </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                        />
+                      </svg>
+                    </div>
+                    <p>Collapse All</p>
+                  </button>
+                </div>
+                <ControlledAccordion
+                  providerValue={providerValue}
+                  className="px-12"
+                >
+                  {fakeData.steps.map((step, index) => (
+                    <AccordionSteps step={step} index={index} />
+                  ))}
+                </ControlledAccordion>
+              </div>
+            )}
+            {active === "Steps" && (
+              <div>
+                <div className="flex justify-end pb-2 gap-4">
+                  <button
+                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
+                    onClick={() => toggleAll(true)}
+                  >
+                    <div className="flex flex-col gap-0 h-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                        />
+                      </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                        />
+                      </svg>
+                    </div>
+
+                    <p>Expand All</p>
+                  </button>
+                  <button
+                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
+                    onClick={() => toggleAll(false)}
+                  >
+                    <div className="flex flex-col gap-0 h-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                        />
+                      </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                        />
+                      </svg>
+                    </div>
+                    <p>Collapse All</p>
+                  </button>
+                </div>
+                <ControlledAccordion
+                  providerValue={providerValue}
+                  className="px-12"
+                >
+                  {fakeData.steps.map((step, index) => (
+                    <AccordionSteps step={step} index={index} />
+                  ))}
+                </ControlledAccordion>
+              </div>
+            )}
+
+            {active === "Discussion" && (
+              <div className="mx-16">
+                <div className="flex pb-6 gap-6">
+                  <button
+                    className={
+                      showComment === true
+                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
+                        : "border border-1 border-black w-max px-3 rounded-2xl"
+                    }
+                    onClick={() => setShowComment(true)}
+                  >
+                    <p>Comments</p>
+                  </button>
+                  <button
+                    className={
+                      showComment === false
+                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
+                        : "border border-1 border-black w-max px-3 rounded-2xl"
+                    }
+                    onClick={() => setShowComment(false)}
+                  >
+                    <p>Questions</p>
+                  </button>
+                </div>
+                {showComment === true ? commentFilter() : questionFilter()}
+              </div>
+            )}
+
+            {active === "Related" && (
+              <div className="px-6">
+                <h1 className="underline text-2xl pb-8">
+                  Appears in these other Gardens
+                </h1>
+                <div className=" grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
+                  <RelatedGardenBox />
+                  <RelatedGardenBox />
+                  <RelatedGardenBox />
+                  <RelatedGardenBox />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Steps */}
