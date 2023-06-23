@@ -77,8 +77,8 @@ const PipelinePage = () => {
     {
       user: "Chase Jenkins",
       type: "Comment",
-      title: "This is a great garden",
-      body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
+      title: "This is a great pipeline",
+      body: "I love this pipeline! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
       upvotes: 150,
       downvotes: 50,
       replies: [
@@ -88,7 +88,7 @@ const PipelinePage = () => {
         },
         {
           user: "Chase Three",
-          body: "It is a great garden",
+          body: "It is a great pipeline",
         },
         {
           user: "Chase Four",
@@ -107,7 +107,7 @@ const PipelinePage = () => {
     {
       user: "Jenkins Chase",
       type: "Comment",
-      title: "This garden is very relevant to my work!",
+      title: "This pipeline is very relevant to my work!",
       body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
       upvotes: 150,
       downvotes: 50,
@@ -126,7 +126,7 @@ const PipelinePage = () => {
       user: "Jenkins Chase",
       type: "Question",
       title: "What are crystals?",
-      body: "I was just exploring this site, and came across this garden. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
+      body: "I was just exploring this site, and came across this pipeline. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
       upvotes: 150,
       downvotes: 50,
       replies: [
@@ -283,9 +283,19 @@ const PipelinePage = () => {
             </a>
           </div>
         </div>
+        <div className="pl-4">
+              <p className=" border-b border-gray-300 text-2xl">&#128064; At a glance</p>
+              <p className="p-4">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum{" "}
+          </p>
+        </div>
 
-        <AccordionTop />
-        {/* Run Pipeline */}
         <div className="flex flex-col gap-8">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
           <div className="sm:flex justify-center py-2 lg:pr-24 gap-20">
@@ -337,6 +347,59 @@ const PipelinePage = () => {
           </div>
           {/* For inserting code blocks, consider: https://github.com/rajinwonderland/react-code-blocks#-demo */}
         </div>
+
+        <AccordionTop />
+        {/* Run Pipeline */}
+        {/* <div className="flex flex-col gap-8">
+          <h2 className="text-3xl text-center">Run this pipeline</h2>
+          <div className="sm:flex justify-center py-2 lg:pr-24 gap-20">
+            <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
+              <code className="leading-loose">
+                <span className="text-purple">from</span> garden_sdk{" "}
+                <span className="text-purple">import</span> GardenClient <br />
+                gc = GardenClient()
+                <br />
+                <br />
+                id = <span className="text-green">"{fakeData.doi}"</span>
+                <br />
+                gc.<span className="text-orange">run</span>(id, my_data)
+              </code>
+            </div>
+
+            <div className="flex flex-col">
+              <a
+                href="https://wholetale.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+              >
+                <span className="text-center text-xl text-green">
+                  Open in Whole Tale
+                </span>
+              </a>
+              <a
+                href="https://huggingface.co/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+              >
+                <span className="text-center text-xl text-green">
+                  Open in HuggingFace
+                </span>
+              </a>
+              <a
+                href="https://colab.research.google.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+              >
+                <span className="text-center text-xl text-green">
+                  Open in Google Colab
+                </span>
+              </a>
+            </div>
+          </div>
+        </div> */}
 
         <div>
           <div className="flex justify-evenly h-12 ">

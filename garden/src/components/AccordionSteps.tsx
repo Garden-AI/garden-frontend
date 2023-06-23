@@ -1,7 +1,5 @@
 import {
-  Accordion,
-  AccordionItem,
-  useAccordionProvider,
+  AccordionItem
 } from "@szhsin/react-accordion";
 
 const AccordionSteps = (props: { step: any; index: any }) => {
