@@ -174,15 +174,15 @@ const PipelinePage = () => {
         {/* Pipeline Header */}
         <div className="flex flex-col gap-1">
           <div className="flex gap-8">
-            <h1 className="text-3xl font-serif">{fakeData.name}</h1>
-            <div className="flex gap-3 items-center">
+            <h1 className="text-3xl font-display">{fakeData.name}</h1>
+            <div className="flex gap-4 items-center">
               <button title="Copy link" onClick={copy}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
+                  strokeWidth={2.0}
+                  stroke="gray"
                   className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
                 >
                   <path
@@ -197,27 +197,35 @@ const PipelinePage = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
+                  strokeWidth={2.0}
+                  stroke="gray"
                   className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
                 >
-                  <path
-                    // strokeLinecap="round"
-                    // strokeLinejoin="round"
-                    d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                  />
+                  <path d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
                 </svg>
               </button>
-              {/* <button>
+              <button title="Pin">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  fill='none'
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="gray"
+                  className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                >
+                  <path d="m16.114 1.553 6.333 6.333a1.75 1.75 0 0 1-.603 2.869l-1.63.633a5.67 5.67 0 0 0-3.395 3.725l-1.131 3.959a1.75 1.75 0 0 1-2.92.757L9 16.061l-5.595 5.594a.749.749 0 1 1-1.06-1.06L7.939 15l-3.768-3.768a1.75 1.75 0 0 1 .757-2.92l3.959-1.131a5.666 5.666 0 0 0 3.725-3.395l.633-1.63a1.75 1.75 0 0 1 2.869-.603ZM5.232 10.171l8.597 8.597a.25.25 0 0 0 .417-.108l1.131-3.959A7.17 7.17 0 0 1 19.67 9.99l1.63-.634a.25.25 0 0 0 .086-.409l-6.333-6.333a.25.25 0 0 0-.409.086l-.634 1.63a7.17 7.17 0 0 1-4.711 4.293L5.34 9.754a.25.25 0 0 0-.108.417Z"></path>
+                </svg>
+              </button>
+              <button title="Cite">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="gray"
                   viewBox="0 0 448 512"
                   className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
                 >
                   <path d="M0 216C0 149.7 53.7 96 120 96h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V320 288 216zm256 0c0-66.3 53.7-120 120-120h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H320c-35.3 0-64-28.7-64-64V320 288 216z" />
                 </svg>
-              </button> */}
+              </button>
               <Modal
                 show={show}
                 close={closeModal}
@@ -256,10 +264,81 @@ const PipelinePage = () => {
                 .reduce((prev, curr) => [prev, ", ", curr])}
             </div>
           </div>
+          <div className="flex gap-4">
+            <div className="flex gap-2 items-center" title="Total Citations">
+              <p className="text-lg">150 </p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="green"
+                viewBox="0 0 448 512"
+                className="w-6 h-6 text-gray-700"
+              >
+                <path d="M0 216C0 149.7 53.7 96 120 96h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V320 288 216zm256 0c0-66.3 53.7-120 120-120h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H320c-35.3 0-64-28.7-64-64V320 288 216z" />
+              </svg>
+              <span>|</span>
+            </div>
+
+            <div className="flex gap-2 items-center" title="Total Pins">
+              <p className="text-lg">150 </p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="green"
+                strokeWidth={1.5}
+                className="w-6 h-6"
+              >
+                <path d="m16.114 1.553 6.333 6.333a1.75 1.75 0 0 1-.603 2.869l-1.63.633a5.67 5.67 0 0 0-3.395 3.725l-1.131 3.959a1.75 1.75 0 0 1-2.92.757L9 16.061l-5.595 5.594a.749.749 0 1 1-1.06-1.06L7.939 15l-3.768-3.768a1.75 1.75 0 0 1 .757-2.92l3.959-1.131a5.666 5.666 0 0 0 3.725-3.395l.633-1.63a1.75 1.75 0 0 1 2.869-.603ZM5.232 10.171l8.597 8.597a.25.25 0 0 0 .417-.108l1.131-3.959A7.17 7.17 0 0 1 19.67 9.99l1.63-.634a.25.25 0 0 0 .086-.409l-6.333-6.333a.25.25 0 0 0-.409.086l-.634 1.63a7.17 7.17 0 0 1-4.711 4.293L5.34 9.754a.25.25 0 0 0-.108.417Z"></path>
+              </svg>
+              <span>|</span>
+            </div>
+            <div className="flex gap-2 items-center" title="Total Shares">
+              <p>175</p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="green"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                />
+              </svg>
+              <span>|</span>
+            </div>
+            <div className="flex gap-2 items-center" title="Total Runs">
+              <p>400</p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="green"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div className="flex gap-2 pt-4 text-lg">
+            <p className="font-semibold">Contributors:</p>
+            {fakeData.authors.map((author) => {
+              return(
+                <p>{author}</p>
+              )
+            })}
+          </div>
         </div>
 
         {/* Pipeline Overview */}
-        <div className="border-0 rounded-lg bg-gray-100 flex flex-col gap-5 p-4 text-sm text-gray-700">
+        {/* <div className="border-0 rounded-lg bg-gray-100 flex flex-col gap-5 p-4 text-sm text-gray-700">
           <div>
             <h2 className="font-semibold">Contributors</h2>
             <p>{fakeData.authors}</p>
@@ -282,17 +361,14 @@ const PipelinePage = () => {
               {fakeData.repository}
             </a>
           </div>
-        </div>
+        </div> */}
+
         <div className="pl-4">
-              <p className=" border-b border-gray-300 text-2xl">&#128064; At a glance</p>
-              <p className="p-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum{" "}
+          <p className=" border-b border-gray-300 text-2xl">
+            &#128064; At a glance
+          </p>
+          <p className="p-4">
+            {fakeData.description}
           </p>
         </div>
 

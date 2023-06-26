@@ -22,6 +22,7 @@ const AccordionTop = () => {
         "First Last",
       ],
       doi: "10.3792.1237",
+      citation: "Fang Ren et al. ,Accelerated discovery of metallic glasses through iteration of machine learning and high-throughput experiments.Sci. Adv.4,eaaq1566(2018).DOI:10.1126/sciadv.aaq1566"
     },
     {
       title: "Paper Title 2",
@@ -34,6 +35,7 @@ const AccordionTop = () => {
         "First Last",
       ],
       doi: "10.3792.1238",
+      citation: "Fang Ren et al. ,Accelerated discovery of metallic glasses through iteration of machine learning and high-throughput experiments.Sci. Adv.4,eaaq1566(2018).DOI:10.1126/sciadv.aaq1566"
     },
   ];
   const fakeRepo = {
@@ -49,10 +51,68 @@ const AccordionTop = () => {
     url: "https://github.com/",
   };
   const fakeContainer = {
+    title: "Container Image Name",
     id: "sidngrj329fm32",
     fileSize: "3.12 GB",
     status: "Running",
-    created: "3 Days ago"
+    created: "3 Days ago",
+    url: "https://google.com"
+  };
+  const fakeSoftwareTesting = [
+    {
+      test: "Python 3.9 - GPU",
+      status: "p",
+      date: "3 days ago",
+    },
+    {
+      test: "Python 3.9 - CPU",
+      status: "p",
+      date: "3 days ago",
+    },
+    {
+      test: "Python 3.8 - GPU",
+      status: "f",
+      date: "3 days ago",
+    },
+  ];
+  const fakeReliabilityTesting = [
+    {
+      test: "LIGO Validation Set 1",
+      status: "p",
+      date: "5 minutes ago",
+      accuracy: "0.95"
+    },
+    {
+      test: "LIGO Training Set",
+      status: "p",
+      date: "1 day ago",
+      accuracy: "1.0"
+    },
+    {
+      test: "LIGO Validation Set 2",
+      status: "f",
+      date: "2 days ago",
+      accuracy: "0.85"
+    },
+  ]
+  const fakePerformanceTesting = [
+    {
+      title: "CPU",
+      iterations: 20
+    },
+    {
+      title: "GPU",
+      iterations: 100
+    },
+    {
+      title: "Hardware Accelerator",
+      iterations: 500
+    }
+
+  ]
+
+  const copy = async (text: any) => {
+    await navigator.clipboard.writeText(text);
   };
 
   return (
@@ -281,7 +341,7 @@ const AccordionTop = () => {
           }}
         >
           {/* <p className="p-4">Materials</p> */}
-          <div className="grid grid-cols-2 py-4 gap-x-32 gap-y-12 px-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-x-12 lg:gap-x-32 gap-y-12 px-8 lg:px-16">
             {fakePapers.map((paper) => {
               return (
                 <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
@@ -314,7 +374,7 @@ const AccordionTop = () => {
                     </p>
                     <p className="py-2 flex gap-2">
                       DOI: {paper.doi}{" "}
-                      <button title="Copy DOI">
+                      <button title="Copy DOI" onClick={() => copy(paper.doi)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -331,7 +391,7 @@ const AccordionTop = () => {
                         </svg>
                       </button>
                     </p>
-                    <button className="flex gap-2" title="Copy Citation">
+                    <button className="flex gap-2" title="Copy Citation" onClick={() => copy(paper.citation)}>
                       Copy Citation
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -355,7 +415,11 @@ const AccordionTop = () => {
             {/* repo box */}
             <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
               <div className="flex items-center px-2 pt-2 pb-6 gap-4">
-                <img src="../img/github-logo.png" className="max-w-[5vw]" alt="Github logo"/>
+                <img
+                  src="../img/github-logo.png"
+                  className="max-w-[5vw]"
+                  alt="Github logo"
+                />
 
                 <h1 className="text-2xl">{fakeRepo.title}</h1>
               </div>
@@ -367,7 +431,7 @@ const AccordionTop = () => {
                     .reduce((prev, curr) => [prev, ", ", curr])}
                 </p>
                 <div className="flex justify-between items-center">
-                  <button className="flex gap-2" title="Copy Link">
+                  <button className="flex gap-2" title="Copy Link" onClick={()=>copy(fakeRepo.url)}>
                     Copy Link
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -415,19 +479,17 @@ const AccordionTop = () => {
                   />
                 </svg>
 
-                <h1 className="text-2xl">{fakeRepo.title}</h1>
+                <h1 className="text-2xl">{fakeContainer.title}</h1>
               </div>
               <div className="px-2 py-2">
                 <div className="grid grid-cols-2">
-                <p className="pb-4">
-                  ID: {fakeContainer.id}
-                </p>
-                <p>Filesize: {fakeContainer.fileSize}</p>
-                <p className="pb-4">Status: {fakeContainer.status}</p>
-                <p>Created: {fakeContainer.created}</p>
+                  <p className="pb-4">ID: {fakeContainer.id}</p>
+                  <p>Filesize: {fakeContainer.fileSize}</p>
+                  <p className="pb-4">Status: {fakeContainer.status}</p>
+                  <p>Created: {fakeContainer.created}</p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <button className="flex gap-2" title="Copy Link">
+                  <button className="flex gap-2" title="Copy Link" onClick={() => copy(fakeContainer.url)}>
                     Copy Link
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -548,7 +610,45 @@ const AccordionTop = () => {
               `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
           }}
         >
-          <p className="p-4">Testing</p>
+          {/* <p className="p-4">Testing</p> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-x-12 lg:gap-x-32 gap-y-12 px-8 lg:px-16">
+            <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
+              <h1 className="text-2xl p-4 underline">Software Testing</h1>
+              {fakeSoftwareTesting.map((test) => {
+                return <div className="flex items-center gap-4 px-4 py-1">
+                  {test.status === "p" ? <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span> : <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>}
+                  <p>{test.test}</p>
+                  <span className="text-gray-500">{test.date}</span>
+                </div>
+              })}
+            </div>
+            <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
+              <h1 className="text-2xl p-4 underline">Reliability Testing</h1>
+              {fakeReliabilityTesting.map((test) => {
+                return <div className="flex gap-4 px-4 py-1">
+                  {test.status === "p" ? <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span> : <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>}
+                  <div className="flex flex-col gap-0">
+                  <p>{test.test}</p>
+                  <p className="text-sm text-gray-500">Accuracy: {test.accuracy}</p>
+                  </div>
+                  <span className="text-gray-500">{test.date}</span>
+                </div>
+              })}
+            </div>
+            <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
+              <h1 className="text-2xl p-4 underline">Performance Testing</h1>
+              <div className="grid grid-cols-2 gap-y-4">
+              {fakePerformanceTesting.map((test) => {
+                return <div className="px-4 py-1">
+                  <div className="flex flex-col gap-0">
+                  <p className="font-semibold">{test.title}</p>
+                  <p className="text-sm">{test.iterations} iteration/s</p>
+                  </div>
+                </div>
+              })}
+              </div>
+            </div>
+          </div>
         </AccordionItem>
       </ControlledAccordion>
     </div>

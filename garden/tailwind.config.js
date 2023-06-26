@@ -26,6 +26,7 @@ module.exports = {
         800: '#1f2937',
         gray: 'gray'
       },
+      'fail': '#D86F55',
     },
   },
   plugins: [],
