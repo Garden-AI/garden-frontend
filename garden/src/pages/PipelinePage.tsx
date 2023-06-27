@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
@@ -9,12 +9,24 @@ import {
 } from "@szhsin/react-accordion";
 import CommentBox from "../components/CommentBox";
 import RelatedGardenBox from "../components/RelatedGardenBox";
+import Navbar from "../components/Navbar";
 
 const PipelinePage = () => {
   const { uuid } = useParams();
   const [show, setShow] = useState(false);
   const [active, setActive] = useState("");
   const [showComment, setShowComment] = useState(true);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
+  const widthRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const container = widthRef.current;
+    if (container!.offsetWidth < container!.scrollWidth) {
+      setIsOverflowing(true);
+    }
+  }, []);
   const providerValue = useAccordionProvider({
     allowMultiple: true,
   });
@@ -166,8 +178,21 @@ const PipelinePage = () => {
       .map((comment) => <CommentBox key={comment.body} comment={comment} />);
   };
 
+  const contributorMore = () => {
+    setPClass("");
+    setIsOverflowing(false);
+    setHasOverflow(true);
+  };
+
+  const conributorLess = () => {
+    setPClass("overflow-x-hidden whitespace-nowrap");
+    setIsOverflowing(true);
+    setHasOverflow(false);
+  };
+
   return (
     <>
+      <Navbar />
       <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 py-24 font-display">
         {/* Place breadcrumbs here */}
 
@@ -327,13 +352,36 @@ const PipelinePage = () => {
               </svg>
             </div>
           </div>
-          <div className="flex gap-2 pt-4 text-lg">
+          <div className="sm:flex gap-2 pt-4 mr-8 text-lg">
             <p className="font-semibold">Contributors:</p>
-            {fakeData.authors.map((author) => {
-              return(
-                <p>{author}</p>
-              )
-            })}
+            <p className={pClass} ref={widthRef}>
+              {fakeData.authors.map((author) => {
+                return <p>{author}</p>;
+              })}
+              {hasOverflow ? (
+                <button
+                  className="whitespace-nowrap text-blue hover:underline"
+                  onClick={conributorLess}
+                >
+                  {" "}
+                  ...see less
+                </button>
+              ) : (
+                <></>
+              )}
+            </p>
+            <div>
+              {isOverflowing ? (
+                <button
+                  className="whitespace-nowrap text-blue hover:underline"
+                  onClick={contributorMore}
+                >
+                  ...see more
+                </button>
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
         </div>
 
@@ -367,9 +415,7 @@ const PipelinePage = () => {
           <p className=" border-b border-gray-300 text-2xl">
             &#128064; At a glance
           </p>
-          <p className="p-4">
-            {fakeData.description}
-          </p>
+          <p className="p-4">{fakeData.description}</p>
         </div>
 
         <div className="flex flex-col gap-8">
