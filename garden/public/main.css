@@ -636,10 +636,6 @@ video {
   margin: 0px;
 }
 
-.m-1 {
-  margin: 0.25rem;
-}
-
 .mx-1 {
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -834,14 +830,6 @@ video {
   min-width: 275px;
 }
 
-.min-w-\[\] {
-  min-width: ;
-}
-
-.min-w-\[60vw\] {
-  min-width: 60vw;
-}
-
 .max-w-3xl {
   max-width: 48rem;
 }
@@ -979,10 +967,6 @@ video {
 
 .overflow-auto {
   overflow: auto;
-}
-
-.overflow-hidden {
-  overflow: hidden;
 }
 
 .overflow-x-hidden {
@@ -1163,10 +1147,6 @@ video {
 
 .p-8 {
   padding: 2rem;
-}
-
-.p-1 {
-  padding: 0.25rem;
 }
 
 .px-12 {

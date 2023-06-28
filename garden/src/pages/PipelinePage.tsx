@@ -559,7 +559,7 @@ const PipelinePage = () => {
             </button>
           </div>
           <div className="pt-8">
-            {active === "" && (
+            {/* {active === "" && (
               <div>
                 <div className="flex justify-end pb-2 gap-4">
                   <button
@@ -732,6 +732,12 @@ const PipelinePage = () => {
                   ))}
                 </ControlledAccordion>
               </div>
+            )} */}
+            {active === "" && (
+              <div>What</div>
+            )}
+            {active === "Steps" && (
+              <div>Who</div>
             )}
 
             {active === "Discussion" && (
