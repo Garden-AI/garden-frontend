@@ -9,7 +9,7 @@ import {
 } from "@szhsin/react-accordion";
 import CommentBox from "../components/CommentBox";
 import RelatedGardenBox from "../components/RelatedGardenBox";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar"
 
 const PipelinePage = () => {
   const { uuid } = useParams();
@@ -18,8 +18,14 @@ const PipelinePage = () => {
   const [showComment, setShowComment] = useState(true);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
+  const [stepsOverflow, setStepsOverflow] = useState(false)
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
+  const [buttonIndex, setButtonIndex] = useState(0)
   const widthRef = useRef<HTMLParagraphElement>(null);
+  const bottom = useRef<HTMLDivElement>(null)
+  const top = useRef<HTMLButtonElement>(null)
+  const div = useRef<HTMLDivElement>(null)
+
 
   useEffect(() => {
     const container = widthRef.current;
@@ -27,10 +33,19 @@ const PipelinePage = () => {
       setIsOverflowing(true);
     }
   }, []);
+
+  useEffect(() => {
+    const contain = div.current
+    if(contain!.offsetHeight < contain!.scrollHeight){
+      setStepsOverflow(true)
+    }
+  }, [])
+
+
   const providerValue = useAccordionProvider({
     allowMultiple: true,
   });
-  const { toggleAll } = providerValue;
+  // const { toggleAll } = providerValue;
   console.log(uuid);
   const fakeData = {
     uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
@@ -38,14 +53,28 @@ const PipelinePage = () => {
     doi: "10.3792.1234",
     funcxID: "abcdefg",
     description: "This is a pipeline for predicting crystal structure!",
-    authors: ["KJ Schmidt, Ben B"],
+    authors: [
+      "KJ Schmidt",
+      "Ben B",
+      "KJ Schmidt",
+      "Ben B",
+      "KJ Schmidt",
+      "Ben B",
+      "KJ Schmidt",
+      "Ben B",
+      "KJ Schmidt",
+      "Ben B",
+      "KJ Schmidt",
+      "Ben B",
+      "KJ Schmidt",
+    ],
     repository: "https://github.com/",
     steps: [
       {
         input_info: "{'input_data': <class 'object'>}",
         func: "preprocessing_step: (input_data: object) -> object",
         python_version: null,
-        description: " ",
+        description: "Step one example",
         contributors: [],
         output_info: "return: <class 'object'>",
         title: "preprocessing_step",
@@ -58,7 +87,7 @@ const PipelinePage = () => {
         input_info: "{'data': <class 'object'>}",
         func: "another_step: (data: object) -> object",
         python_version: null,
-        description: null,
+        description: "Step two example",
         contributors: [],
         output_info: "return: <class 'object'>",
         title: "another_step",
@@ -71,7 +100,85 @@ const PipelinePage = () => {
         input_info: "{'input_arg': <class 'object'>}",
         func: "run_inference: (input_arg: object) -> object",
         python_version: null,
-        description: null,
+        description: "Step three example",
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "run_inference",
+        uuid: "bb71b032-c9dd-4dd0-9667-b0e9302f8218",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'input_data': <class 'object'>}",
+        func: "preprocessing_step: (input_data: object) -> object",
+        python_version: null,
+        description: "Step four example",
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "preprocessing_step",
+        uuid: "abc4356e-b845-42f8-8276-fa2e6de7b3e5",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'data': <class 'object'>}",
+        func: "another_step: (data: object) -> object",
+        python_version: null,
+        description: "Step five example",
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "another_step",
+        uuid: "9015f3b0-fa71-4673-b3e4-fd80977a5a78",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'input_arg': <class 'object'>}",
+        func: "run_inference: (input_arg: object) -> object",
+        python_version: null,
+        description: "Step six example",
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "run_inference",
+        uuid: "bb71b032-c9dd-4dd0-9667-b0e9302f8218",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'input_data': <class 'object'>}",
+        func: "preprocessing_step: (input_data: object) -> object",
+        python_version: null,
+        description: "Step seven example",
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "preprocessing_step",
+        uuid: "abc4356e-b845-42f8-8276-fa2e6de7b3e5",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'data': <class 'object'>}",
+        func: "another_step: (data: object) -> object",
+        python_version: null,
+        description: "Step eight example",
+        contributors: [],
+        output_info: "return: <class 'object'>",
+        title: "another_step",
+        uuid: "9015f3b0-fa71-4673-b3e4-fd80977a5a78",
+        conda_dependencies: [],
+        authors: [],
+        pip_dependencies: [],
+      },
+      {
+        input_info: "{'input_arg': <class 'object'>}",
+        func: "run_inference: (input_arg: object) -> object",
+        python_version: null,
+        description: "Step nine example",
         contributors: [],
         output_info: "return: <class 'object'>",
         title: "run_inference",
@@ -184,16 +291,25 @@ const PipelinePage = () => {
     setHasOverflow(true);
   };
 
-  const conributorLess = () => {
+  const contributorLess = () => {
     setPClass("overflow-x-hidden whitespace-nowrap");
     setIsOverflowing(true);
     setHasOverflow(false);
   };
 
+  const scrollToBottom = () => {
+    bottom?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToTop = () => {
+    top?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
+
   return (
     <>
       <Navbar />
-      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 py-24 font-display">
+      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-24 pb-2 font-display">
         {/* Place breadcrumbs here */}
 
         {/* Pipeline Header */}
@@ -352,16 +468,18 @@ const PipelinePage = () => {
               </svg>
             </div>
           </div>
-          <div className="sm:flex gap-2 pt-4 mr-8 text-lg">
-            <p className="font-semibold">Contributors:</p>
+          <div className="sm:flex pt-4 mr-8 text-lg">
+            <p className="font-semibold pr-2">Contributors:</p>
             <p className={pClass} ref={widthRef}>
-              {fakeData.authors.map((author) => {
-                return <p>{author}</p>;
-              })}
+              {fakeData.authors
+                .map<React.ReactNode>((author) => {
+                  return <span>{author}</span>;
+                })
+                .reduce((prev, curr) => [prev, ", ", curr])}
               {hasOverflow ? (
                 <button
-                  className="whitespace-nowrap text-blue hover:underline"
-                  onClick={conributorLess}
+                  className="whitespace-nowrap text-blue hover:underline pl-2"
+                  onClick={contributorLess}
                 >
                   {" "}
                   ...see less
@@ -559,6 +677,7 @@ const PipelinePage = () => {
             </button>
           </div>
           <div className="pt-8">
+            {/* Accordion steps tab */}
             {/* {active === "" && (
               <div>
                 <div className="flex justify-end pb-2 gap-4">
@@ -733,12 +852,72 @@ const PipelinePage = () => {
                 </ControlledAccordion>
               </div>
             )} */}
+
+            {/* Side panel steps tab */}
             {active === "" && (
-              <div>What</div>
+              <div className="grid grid-cols-5 h-[650px]">
+                <div className=" col-span-2 lg:col-span-1 bg-gray overflow-y-scroll" ref={div}>
+                  {/* <button className="absolute rounded-2xl bg-green bg-opacity-50 p-1 hover:bg-opacity-100">
+                  <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+                              />
+                            </svg>
+                  </button> */}
+                  {stepsOverflow? <button className="rounded-xl bg-green p-1 px-2 mb-2 hover:border hover:border-black hover:border-2 text-white " ref={top} onClick={() => scrollToBottom()}>
+                    Scroll to bottom
+                  </button> : <></>}
+                  {fakeData.steps.map((step, index) => {
+                    return (
+                      <div className="px-4">
+                        {index > 0 ? (
+                          <div className="flex justify-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+                              />
+                            </svg>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                        <div className={buttonIndex === index ? "border border-4 border-gray-400 flex justify-center my-4 text-center w-full bg-gray-100" : "border border-gray-400 border-1 flex justify-center my-4 text-center w-full"}>
+                        <button onClick={() => setButtonIndex(index)}>
+                          <p className="p-4 break-all">{step.title}</p>
+                        </button>
+                        </div>
+                        
+                      </div>
+                    );
+                  })}
+                  {stepsOverflow? <button className="rounded-xl bg-green p-1 px-2 my-2 hover:border hover:border-black hover:border-2 text-white" onClick={() => scrollToTop()}>Scroll to top</button> : <></>}
+                  <div ref={bottom}></div>
+                </div>
+                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8">
+                  <h1 className="text-xl lg:text-3xl">{fakeData.steps[buttonIndex].title}</h1>
+                  <p className="pt-8 text-md lg:text-xl">{fakeData.steps[buttonIndex].description}</p>
+                </div>
+              </div>
             )}
-            {active === "Steps" && (
-              <div>Who</div>
-            )}
+            {active === "Steps" && <div>Who</div>}
 
             {active === "Discussion" && (
               <div className="mx-16">
