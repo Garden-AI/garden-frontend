@@ -4,6 +4,7 @@ Web UI for thegardens.ai
 # Branches and deployment
 
 - `staging` is the main branch in this repo. It is the one that you should make PRs against. Merges to `staging` trigger a deployment to our staging site, https://garden-ai.github.io/garden-frontend-staging/
+    - To get to the home page, include /#/home at the end of the url
 - `prod` is a branch used to deploy vetted code from the `staging` branch to production, https://thegardens.ai/. 
 
 The `staging` branch is the source of truth for development in this repo. `prod` only exists for deployment purposes. If you make a change to `prod` that isn't on `staging`, it will soon get blown away. If there are merge conflicts between `prod` and `staging`, we will force push the contents of `staging` to `prod` with `git push origin --force staging:prod`.
