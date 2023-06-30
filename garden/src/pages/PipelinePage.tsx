@@ -2,11 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
-// import AccordionSteps from "../components/AccordionSteps";
-// import {
-//   ControlledAccordion,
-//   useAccordionProvider,
-// } from "@szhsin/react-accordion";
 import CommentBox from "../components/CommentBox";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Navbar from "../components/Navbar";
@@ -45,10 +40,6 @@ const PipelinePage = () => {
     }
   }, []);
 
-  // const providerValue = useAccordionProvider({
-  //   allowMultiple: true,
-  // });
-  // const { toggleAll } = providerValue;
   console.log(uuid);
   const fakeData = {
     uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
@@ -56,21 +47,7 @@ const PipelinePage = () => {
     doi: "10.3792.1234",
     funcxID: "abcdefg",
     description: "This is a pipeline for predicting crystal structure!",
-    authors: [
-      "KJ Schmidt",
-      "Ben B",
-      // "KJ Schmidt",
-      // "Ben B",
-      // "KJ Schmidt",
-      // "Ben B",
-      // "KJ Schmidt",
-      // // "Ben B",
-      // // "KJ Schmidt",
-      // // "Ben B",
-      // // "KJ Schmidt",
-      // // "Ben B",
-      // // "KJ Schmidt",
-    ],
+    authors: ["KJ Schmidt", "Ben B"],
     repository: "https://github.com/",
     steps: [
       {
@@ -119,84 +96,6 @@ const PipelinePage = () => {
         authors: [],
         pip_dependencies: [],
       },
-      // {
-      //   input_info: "{'input_data': <class 'object'>}",
-      //   func: "preprocessing_step: (input_data: object) -> object",
-      //   python_version: null,
-      //   description: "Step four example",
-      //   contributors: [],
-      //   output_info: "return: <class 'object'>",
-      //   title: "preprocessing_step",
-      //   uuid: "abc4356e-b845-42f8-8276-fa2e6de7b3e5",
-      //   conda_dependencies: [],
-      //   authors: [],
-      //   pip_dependencies: [],
-      // },
-      // {
-      //   input_info: "{'data': <class 'object'>}",
-      //   func: "another_step: (data: object) -> object",
-      //   python_version: null,
-      //   description: "Step five example",
-      //   contributors: [],
-      //   output_info: "return: <class 'object'>",
-      //   title: "another_step",
-      //   uuid: "9015f3b0-fa71-4673-b3e4-fd80977a5a78",
-      //   conda_dependencies: [],
-      //   authors: [],
-      //   pip_dependencies: [],
-      // },
-      // {
-      //   input_info: "{'input_arg': <class 'object'>}",
-      //   func: "run_inference: (input_arg: object) -> object",
-      //   python_version: null,
-      //   description: "Step six example",
-      //   contributors: [],
-      //   output_info: "return: <class 'object'>",
-      //   title: "run_inference",
-      //   uuid: "bb71b032-c9dd-4dd0-9667-b0e9302f8218",
-      //   conda_dependencies: [],
-      //   authors: [],
-      //   pip_dependencies: [],
-      // },
-      // {
-      //   input_info: "{'input_data': <class 'object'>}",
-      //   func: "preprocessing_step: (input_data: object) -> object",
-      //   python_version: null,
-      //   description: "Step seven example",
-      //   contributors: [],
-      //   output_info: "return: <class 'object'>",
-      //   title: "preprocessing_step",
-      //   uuid: "abc4356e-b845-42f8-8276-fa2e6de7b3e5",
-      //   conda_dependencies: [],
-      //   authors: [],
-      //   pip_dependencies: [],
-      // },
-      // {
-      //   input_info: "{'data': <class 'object'>}",
-      //   func: "another_step: (data: object) -> object",
-      //   python_version: null,
-      //   description: "Step eight example",
-      //   contributors: [],
-      //   output_info: "return: <class 'object'>",
-      //   title: "another_step",
-      //   uuid: "9015f3b0-fa71-4673-b3e4-fd80977a5a78",
-      //   conda_dependencies: [],
-      //   authors: [],
-      //   pip_dependencies: [],
-      // },
-      // {
-      //   input_info: "{'input_arg': <class 'object'>}",
-      //   func: "run_inference: (input_arg: object) -> object",
-      //   python_version: null,
-      //   description: "Step nine example",
-      //   contributors: [],
-      //   output_info: "return: <class 'object'>",
-      //   title: "run_inference",
-      //   uuid: "bb71b032-c9dd-4dd0-9667-b0e9302f8218",
-      //   conda_dependencies: [],
-      //   authors: [],
-      //   pip_dependencies: [],
-      // },
     ],
     version: "0.0.1",
     year: 2023,
@@ -353,20 +252,6 @@ const PipelinePage = () => {
   const scrollToTop = () => {
     top?.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  // const stepBody = (body: any) => {
-  //   let chunk = ``
-  //   for (const key in body) {
-
-  //     if (body.hasOwnProperty(key)) {
-  //       if(Array.isArray(body[key])){
-  //         body[key].map((item: any) => chunk += `<span>{key}: {body[key]}</span>`)
-  //       }else{
-  //        chunk +=`<p>{key}: {body[key]}</p>`;
-  //       }
-  //     }
-  // }
-  // }
 
   return (
     <>
@@ -565,32 +450,6 @@ const PipelinePage = () => {
           </div>
         </div>
 
-        {/* Pipeline Overview */}
-        {/* <div className="border-0 rounded-lg bg-gray-100 flex flex-col gap-5 p-4 text-sm text-gray-700">
-          <div>
-            <h2 className="font-semibold">Contributors</h2>
-            <p>{fakeData.authors}</p>
-          </div>
-          <div>
-            <h2 className="font-semibold">DOI</h2>
-            <p>{fakeData.doi}</p>
-          </div>
-          <div>
-            <h2 className="font-semibold">Description</h2>
-            <p>{fakeData.description}</p>
-          </div>
-          <div>
-            <h2 className="font-semibold">GitHub Repository</h2>
-            <a
-              href={fakeData.repository}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {fakeData.repository}
-            </a>
-          </div>
-        </div> */}
-
         <div className="pl-4">
           <p className=" border-b border-gray-300 text-2xl">
             &#128064; At a glance
@@ -651,57 +510,6 @@ const PipelinePage = () => {
         </div>
 
         <AccordionTop />
-        {/* Run Pipeline */}
-        {/* <div className="flex flex-col gap-8">
-          <h2 className="text-3xl text-center">Run this pipeline</h2>
-          <div className="sm:flex justify-center py-2 lg:pr-24 gap-20">
-            <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
-              <code className="leading-loose">
-                <span className="text-purple">from</span> garden_sdk{" "}
-                <span className="text-purple">import</span> GardenClient <br />
-                gc = GardenClient()
-                <br />
-                <br />
-                id = <span className="text-green">"{fakeData.doi}"</span>
-                <br />
-                gc.<span className="text-orange">run</span>(id, my_data)
-              </code>
-            </div>
-
-            <div className="flex flex-col">
-              <a
-                href="https://wholetale.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-              >
-                <span className="text-center text-xl text-green">
-                  Open in Whole Tale
-                </span>
-              </a>
-              <a
-                href="https://huggingface.co/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-              >
-                <span className="text-center text-xl text-green">
-                  Open in HuggingFace
-                </span>
-              </a>
-              <a
-                href="https://colab.research.google.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-              >
-                <span className="text-center text-xl text-green">
-                  Open in Google Colab
-                </span>
-              </a>
-            </div>
-          </div>
-        </div> */}
 
         <div>
           <div className="flex justify-evenly h-12 ">
@@ -739,182 +547,6 @@ const PipelinePage = () => {
             </button>
           </div>
           <div className="pt-8">
-            {/* Accordion steps tab */}
-            {/* {active === "" && (
-              <div>
-                <div className="flex justify-end pb-2 gap-4">
-                  <button
-                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
-                    onClick={() => toggleAll(true)}
-                  >
-                    <div className="flex flex-col gap-0 h-6">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                        />
-                      </svg>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                        />
-                      </svg>
-                    </div>
-
-                    <p>Expand All</p>
-                  </button>
-                  <button
-                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
-                    onClick={() => toggleAll(false)}
-                  >
-                    <div className="flex flex-col gap-0 h-6">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                        />
-                      </svg>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                        />
-                      </svg>
-                    </div>
-                    <p>Collapse All</p>
-                  </button>
-                </div>
-                <ControlledAccordion
-                  providerValue={providerValue}
-                  className="px-12"
-                >
-                  {fakeData.steps.map((step, index) => (
-                    <AccordionSteps step={step} index={index} />
-                  ))}
-                </ControlledAccordion>
-              </div>
-            )}
-            {active === "Steps" && (
-              <div>
-                <div className="flex justify-end pb-2 gap-4">
-                  <button
-                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
-                    onClick={() => toggleAll(true)}
-                  >
-                    <div className="flex flex-col gap-0 h-6">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                        />
-                      </svg>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                        />
-                      </svg>
-                    </div>
-
-                    <p>Expand All</p>
-                  </button>
-                  <button
-                    className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
-                    onClick={() => toggleAll(false)}
-                  >
-                    <div className="flex flex-col gap-0 h-6">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                        />
-                      </svg>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                        />
-                      </svg>
-                    </div>
-                    <p>Collapse All</p>
-                  </button>
-                </div>
-                <ControlledAccordion
-                  providerValue={providerValue}
-                  className="px-12"
-                >
-                  {fakeData.steps.map((step, index) => (
-                    <AccordionSteps step={step} index={index} />
-                  ))}
-                </ControlledAccordion>
-              </div>
-            )} */}
-
             {/* Side panel steps tab */}
             {active === "" && (
               <div className="grid grid-cols-5 h-[650px]">
@@ -922,22 +554,6 @@ const PipelinePage = () => {
                   className=" col-span-2 lg:col-span-1 bg-gray overflow-y-scroll"
                   ref={div}
                 >
-                  {/* <button className="absolute rounded-2xl bg-green bg-opacity-50 p-1 hover:bg-opacity-100">
-                  <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-                              />
-                            </svg>
-                  </button> */}
                   {stepsOverflow ? (
                     <button
                       className="rounded-xl bg-green p-1 px-2 mb-2 hover:border hover:border-black hover:border-2 text-white "
@@ -1097,22 +713,6 @@ const PipelinePage = () => {
                   className=" col-span-2 lg:col-span-1 bg-gray overflow-y-scroll"
                   ref={div}
                 >
-                  {/* <button className="absolute rounded-2xl bg-green bg-opacity-50 p-1 hover:bg-opacity-100">
-                  <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-                              />
-                            </svg>
-                  </button> */}
                   {stepsOverflow ? (
                     <button
                       className="rounded-xl bg-green p-1 px-2 mb-2 hover:border hover:border-black hover:border-2 text-white "

@@ -24,7 +24,8 @@ const AccordionTop = () => {
         "First Last",
       ],
       doi: "10.3792.1237",
-      citation: "Fang Ren et al. ,Accelerated discovery of metallic glasses through iteration of machine learning and high-throughput experiments.Sci. Adv.4,eaaq1566(2018).DOI:10.1126/sciadv.aaq1566"
+      citation:
+        "Fang Ren et al. ,Accelerated discovery of metallic glasses through iteration of machine learning and high-throughput experiments.Sci. Adv.4,eaaq1566(2018).DOI:10.1126/sciadv.aaq1566",
     },
     {
       title: "Paper Title 2",
@@ -37,7 +38,8 @@ const AccordionTop = () => {
         "First Last",
       ],
       doi: "10.3792.1238",
-      citation: "Fang Ren et al. ,Accelerated discovery of metallic glasses through iteration of machine learning and high-throughput experiments.Sci. Adv.4,eaaq1566(2018).DOI:10.1126/sciadv.aaq1566"
+      citation:
+        "Fang Ren et al. ,Accelerated discovery of metallic glasses through iteration of machine learning and high-throughput experiments.Sci. Adv.4,eaaq1566(2018).DOI:10.1126/sciadv.aaq1566",
     },
   ];
   const fakeRepo = {
@@ -58,7 +60,7 @@ const AccordionTop = () => {
     fileSize: "3.12 GB",
     status: "Running",
     created: "3 Days ago",
-    url: "https://google.com"
+    url: "https://google.com",
   };
   const fakeSoftwareTesting = [
     {
@@ -82,36 +84,35 @@ const AccordionTop = () => {
       test: "LIGO Validation Set 1",
       status: "p",
       date: "5 minutes ago",
-      accuracy: "0.95"
+      accuracy: "0.95",
     },
     {
       test: "LIGO Training Set",
       status: "p",
       date: "1 day ago",
-      accuracy: "1.0"
+      accuracy: "1.0",
     },
     {
       test: "LIGO Validation Set 2",
       status: "f",
       date: "2 days ago",
-      accuracy: "0.85"
+      accuracy: "0.85",
     },
-  ]
+  ];
   const fakePerformanceTesting = [
     {
       title: "CPU",
-      iterations: 20
+      iterations: 20,
     },
     {
       title: "GPU",
-      iterations: 100
+      iterations: 100,
     },
     {
       title: "Hardware Accelerator",
-      iterations: 500
-    }
-
-  ]
+      iterations: 500,
+    },
+  ];
 
   const copy = async (text: any) => {
     await navigator.clipboard.writeText(text);
@@ -198,10 +199,9 @@ const AccordionTop = () => {
         providerValue={providerValue}
         className=" font-display flex flex-col w-full mr-32"
       >
+        {/* To do: Machine Requirements and what that entails */}
 
-{/* To do: Machine Requirements and what that entails */}
-
-        {/* <AccordionItem
+        <AccordionItem
           className="border-y border-gray-300"
           header={({ state: { isEnter } }) => (
             <div className="inline-flex w-full justify-between p-4">
@@ -245,7 +245,7 @@ const AccordionTop = () => {
           }}
         >
           <p className="p-4">Machine</p>
-        </AccordionItem> */}
+        </AccordionItem>
 
         <AccordionItem
           className="border-y border-gray-300"
@@ -340,7 +340,11 @@ const AccordionTop = () => {
                         </svg>
                       </button>
                     </p>
-                    <button className="flex gap-2" title="Copy Citation" onClick={() => copy(paper.citation)}>
+                    <button
+                      className="flex gap-2"
+                      title="Copy Citation"
+                      onClick={() => copy(paper.citation)}
+                    >
                       Copy Citation
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -380,7 +384,11 @@ const AccordionTop = () => {
                     .reduce((prev, curr) => [prev, ", ", curr])}
                 </p>
                 <div className="flex justify-between items-center">
-                  <button className="flex gap-2" title="Copy Link" onClick={()=>copy(fakeRepo.url)}>
+                  <button
+                    className="flex gap-2"
+                    title="Copy Link"
+                    onClick={() => copy(fakeRepo.url)}
+                  >
                     Copy Link
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -438,7 +446,11 @@ const AccordionTop = () => {
                   <p>Created: {fakeContainer.created}</p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <button className="flex gap-2" title="Copy Link" onClick={() => copy(fakeContainer.url)}>
+                  <button
+                    className="flex gap-2"
+                    title="Copy Link"
+                    onClick={() => copy(fakeContainer.url)}
+                  >
                     Copy Link
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -564,37 +576,53 @@ const AccordionTop = () => {
             <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
               <h1 className="text-2xl p-4 underline">Software Testing</h1>
               {fakeSoftwareTesting.map((test) => {
-                return <div className="flex items-center gap-4 px-4 py-1">
-                  {test.status === "p" ? <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span> : <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>}
-                  <p>{test.test}</p>
-                  <span className="text-gray-500">{test.date}</span>
-                </div>
+                return (
+                  <div className="flex items-center gap-4 px-4 py-1">
+                    {test.status === "p" ? (
+                      <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span>
+                    ) : (
+                      <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>
+                    )}
+                    <p>{test.test}</p>
+                    <span className="text-gray-500">{test.date}</span>
+                  </div>
+                );
               })}
             </div>
             <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
               <h1 className="text-2xl p-4 underline">Reliability Testing</h1>
               {fakeReliabilityTesting.map((test) => {
-                return <div className="flex gap-4 px-4 py-1">
-                  {test.status === "p" ? <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span> : <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>}
-                  <div className="flex flex-col gap-0">
-                  <p>{test.test}</p>
-                  <p className="text-sm text-gray-500">Accuracy: {test.accuracy}</p>
+                return (
+                  <div className="flex gap-4 px-4 py-1">
+                    {test.status === "p" ? (
+                      <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span>
+                    ) : (
+                      <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>
+                    )}
+                    <div className="flex flex-col gap-0">
+                      <p>{test.test}</p>
+                      <p className="text-sm text-gray-500">
+                        Accuracy: {test.accuracy}
+                      </p>
+                    </div>
+                    <span className="text-gray-500">{test.date}</span>
                   </div>
-                  <span className="text-gray-500">{test.date}</span>
-                </div>
+                );
               })}
             </div>
             <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
               <h1 className="text-2xl p-4 underline">Performance Testing</h1>
               <div className="grid grid-cols-2 gap-y-4">
-              {fakePerformanceTesting.map((test) => {
-                return <div className="px-4 py-1">
-                  <div className="flex flex-col gap-0">
-                  <p className="font-semibold">{test.title}</p>
-                  <p className="text-sm">{test.iterations} iteration/s</p>
-                  </div>
-                </div>
-              })}
+                {fakePerformanceTesting.map((test) => {
+                  return (
+                    <div className="px-4 py-1">
+                      <div className="flex flex-col gap-0">
+                        <p className="font-semibold">{test.title}</p>
+                        <p className="text-sm">{test.iterations} iteration/s</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
