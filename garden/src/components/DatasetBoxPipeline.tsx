@@ -6,8 +6,10 @@ const DatasetBoxPipeline = ({dataset}: {dataset: any}) => {
     const likeUnlike = () =>{
         if(like === false){
             setLike(true)
+            dataset.pluses =dataset.pluses +1
         }else{
             setLike(false)
+            dataset.pluses = dataset.pluses-1
         }
     }
 

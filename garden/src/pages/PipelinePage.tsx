@@ -84,8 +84,7 @@ const PipelinePage = () => {
         uuid: "abc4356e-b845-42f8-8276-fa2e6de7b3e5",
         conda_dependencies: [],
         authors: ["KJ Schmidt", "Ben B"],
-        pip_dependencies: ["garden-ai==0.4.2",
-        "scikit-learn==1.2.2"],
+        pip_dependencies: ["garden-ai==0.4.2", "scikit-learn==1.2.2"],
       },
       {
         input_info: "{'data': <class 'object'>}",
@@ -98,12 +97,14 @@ const PipelinePage = () => {
         uuid: "9015f3b0-fa71-4673-b3e4-fd80977a5a78",
         conda_dependencies: [],
         authors: [],
-        pip_dependencies: ["mlflow==2.4",
-        "cloudpickle==2.2.1",
-        "importlib-metadata==6.6.0",
-        "numpy==1.23.5",
-        "scikit-learn==1.2.2",
-        "scipy==1.10.1"],
+        pip_dependencies: [
+          "mlflow==2.4",
+          "cloudpickle==2.2.1",
+          "importlib-metadata==6.6.0",
+          "numpy==1.23.5",
+          "scikit-learn==1.2.2",
+          "scipy==1.10.1",
+        ],
       },
       {
         input_info: "{'input_arg': <class 'object'>}",
@@ -1001,21 +1002,92 @@ const PipelinePage = () => {
                   <h1 className="text-xl lg:text-3xl font-bold">
                     {fakeData.steps[buttonIndex].title}
                   </h1>
-                  <div>
-
-                  </div>
+                  <div></div>
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
                     {fakeData.steps[buttonIndex].description}
                   </p>
-                  {fakeData.steps[buttonIndex].authors.length>0 ? <p className="pb-2"><span className="font-semibold">Authors: </span>{fakeData.steps[buttonIndex].authors.map<React.ReactNode>((cont) => <span>{cont}</span>).reduce((prev, curr) => [prev, ", ", curr])}</p>: <></>}
-                  {fakeData.steps[buttonIndex].contributors.length>0 ? <p className="pb-2"><span className="font-semibold">Contributors: </span>{fakeData.steps[buttonIndex].contributors.map<React.ReactNode>((cont) => <span>{cont}</span>).reduce((prev, curr) => [prev, ", ", curr])}</p>: <></>}
-                  {fakeData.steps[buttonIndex].input_info ? <p className="pb-2"><span className="font-semibold">Input info:</span> {fakeData.steps[buttonIndex].input_info}</p>: <></>}
-                  {fakeData.steps[buttonIndex].func ? <p className="pb-2"><span className="font-semibold">Function:</span> {fakeData.steps[buttonIndex].func}</p>: <></>}
-                  {fakeData.steps[buttonIndex].python_version ? <p className="pb-2"><span className="font-semibold">Python version: </span>{fakeData.steps[buttonIndex].python_version}</p>: <></>}
-                  {fakeData.steps[buttonIndex].output_info ? <p className="pb-2"><span className="font-semibold">Output info: </span>{fakeData.steps[buttonIndex].output_info}</p>: <></>}
-                  {fakeData.steps[buttonIndex].conda_dependencies.length>0 ? <p className="pb-2"><span className="font-semibold">Conda dependencies: </span><ul className="px-8">{fakeData.steps[buttonIndex].conda_dependencies.map<React.ReactNode>((cont) => <li>- {cont}</li>)}</ul></p>: <></>}
-                  {fakeData.steps[buttonIndex].pip_dependencies.length>0 ? <p className="pb-2"><span className="font-semibold">Pip dependencies: </span><ul className="px-8">{fakeData.steps[buttonIndex].pip_dependencies.map<React.ReactNode>((cont) => <li>- {cont}</li>)}</ul></p>: <></>}
-
+                  {fakeData.steps[buttonIndex].authors.length > 0 ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">Authors: </span>
+                      {fakeData.steps[buttonIndex].authors
+                        .map<React.ReactNode>((cont) => <span>{cont}</span>)
+                        .reduce((prev, curr) => [prev, ", ", curr])}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {fakeData.steps[buttonIndex].contributors.length > 0 ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">Contributors: </span>
+                      {fakeData.steps[buttonIndex].contributors
+                        .map<React.ReactNode>((cont) => <span>{cont}</span>)
+                        .reduce((prev, curr) => [prev, ", ", curr])}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {fakeData.steps[buttonIndex].input_info ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">Input info:</span>{" "}
+                      {fakeData.steps[buttonIndex].input_info}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {fakeData.steps[buttonIndex].func ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">Function:</span>{" "}
+                      {fakeData.steps[buttonIndex].func}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {fakeData.steps[buttonIndex].python_version ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">Python version: </span>
+                      {fakeData.steps[buttonIndex].python_version}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {fakeData.steps[buttonIndex].output_info ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">Output info: </span>
+                      {fakeData.steps[buttonIndex].output_info}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {fakeData.steps[buttonIndex].conda_dependencies.length > 0 ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">
+                        Conda dependencies:{" "}
+                      </span>
+                      <ul className="px-8">
+                        {fakeData.steps[
+                          buttonIndex
+                        ].conda_dependencies.map<React.ReactNode>((cont) => (
+                          <li>- {cont}</li>
+                        ))}
+                      </ul>
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {fakeData.steps[buttonIndex].pip_dependencies.length > 0 ? (
+                    <p className="pb-2">
+                      <span className="font-semibold">Pip dependencies: </span>
+                      <ul className="px-8">
+                        {fakeData.steps[
+                          buttonIndex
+                        ].pip_dependencies.map<React.ReactNode>((cont) => (
+                          <li>- {cont}</li>
+                        ))}
+                      </ul>
+                    </p>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
             )}
@@ -1161,7 +1233,6 @@ const PipelinePage = () => {
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
                     {fakeDatasets.map((dataset) => {
                       return <DatasetBoxPipeline dataset={dataset} />;
-                      
                     })}
                   </div>
                 </div>
