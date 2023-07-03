@@ -4,7 +4,6 @@ import PipelineBox from "../components/PipelineBox";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
-// import Breadcrumbs from "../components/Breadcrumbs";
 import CommentBox from "../components/CommentBox";
 import DatasetBox from "../components/DatasetBox";
 
@@ -42,12 +41,6 @@ const GardenPage = () => {
       url: "https://zenodo.org/",
     },
   ];
-  // const fakeDatasetTwo = {
-  //   type: "dataset",
-  //   doi: "10.3792.1234",
-  //   repository: "Zenodo",
-  //   url: "https://zenodo.org/",
-  // };
   const fakeComments = [
     {
       user: "Chase Jenkins",
@@ -308,9 +301,6 @@ const GardenPage = () => {
                     <p>Questions</p>
                   </button>
                 </div>
-                {/* {fakeComments.map((comment) => (
-                  <CommentBox key={comment.body} comment={comment} />
-                ))} */}
                 {showComment === true ? commentFilter() : questionFilter()}
               </div>
             )}
@@ -326,17 +316,6 @@ const GardenPage = () => {
                     <DatasetBox key={dataset.doi} dataset={dataset} showFoundry={foundry} />
                   ))}
                 </div>
-                {/* <div className="pb-8">
-                  <p className="mx-16 pt-8 pb-2 text-xl">
-                    Find the dataset here:{" "}
-                    <a target="blank" href={fakeDatasetOne.url}>
-                      {fakeDatasetOne.url}
-                    </a>
-                  </p>
-                  <p className="mx-16 px-4 text-lg">
-                    -DOI: {fakeDatasetOne.doi}
-                  </p>
-                </div> */}
                 {showFoundry === true ? (
                   <div>
                     <p className="mx-16 text-xl pb-4">
@@ -383,13 +362,6 @@ const GardenPage = () => {
             )}
           </div>
         </div>
-
-        {/* Pipelines Gallery */}
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {fakeData.pipelines.map((pipeline) => (
-            <PipelineBox key={pipeline} doi={pipeline} />
-          ))}
-        </div> */}
       </div>
 
       <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">Related Gardens</h1>

@@ -18,8 +18,8 @@ const DatasetBoxPipeline = ({dataset}: {dataset: any}) => {
               <h1 className="font-semibold text-2xl pt-4">
                 {dataset.title}
               </h1>
-              <a target="blank" href={dataset.url}>
-                {dataset.url}
+              <a target="blank" href={`https://doi.org/${dataset.doi}`}>
+                {`https://doi.org/${dataset.doi}`}
               </a>
               <div>
                 <p className="p-1">{dataset.size}</p>

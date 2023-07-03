@@ -459,17 +459,18 @@ const PipelinePage = () => {
 
         <div className="flex flex-col gap-8">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
-          <div className="sm:flex justify-center py-2 lg:pr-24 gap-20">
+          <div className="sm:flex justify-center py-2 lg:pr-24 gap-4 md:gap-20">
             <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
               <code className="leading-loose">
-                <span className="text-purple">from</span> garden_sdk{" "}
+                {/* <span className="text-purple">from</span> garden_sdk{" "} */}
                 <span className="text-purple">import</span> GardenClient <br />
-                gc = GardenClient()
+                client = garden_ai.GardenClient()
                 <br />
                 <br />
-                id = <span className="text-green">"{fakeData.doi}"</span>
+                <span className="text-orange">pipeline</span> = client.get_registered_pipeline(<span className="text-green">"{fakeData.doi}"</span>)<br/>
                 <br />
-                gc.<span className="text-orange">run</span>(id, my_data)
+                <span className="text-gray-400">#If you have your own globus compute endpoint, use it here</span><br/>
+                <span className="text-orange">pipeline</span>(test_df, endpoint=<span className="text-green">'86a47061-f3d9-44f0-90dc-56ddc642c000'</span>)
               </code>
             </div>
 
