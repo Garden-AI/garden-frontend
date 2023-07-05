@@ -9,12 +9,12 @@ import CommentBox from "../components/CommentBox";
 import DatasetBox from "../components/DatasetBox";
 
 const GardenPage = () => {
-  const { uuid } = useParams();
+  const { doi } = useParams();
   const [active, setActive] = useState("");
   const [show, setShow] = useState(false);
   const [showComment, setShowComment] = useState(true);
   const [showFoundry, setShowFoundry] = useState(false);
-  console.log(uuid);
+  console.log(doi);
   const fakeData = {
     uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
     name: "Crystal Garden",

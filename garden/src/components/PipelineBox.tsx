@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const PipelineBox = ({ doi }: { doi: string }) => {
   const navigate = useNavigate();
+  console.log(doi, "DOI for pipeline")
   const fakeData = {
     uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
     name: "Crystal Structure Predictor",
@@ -20,7 +21,7 @@ const PipelineBox = ({ doi }: { doi: string }) => {
   return (
     <div
       className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer"
-      onClick={() => navigate(`/pipeline/${fakeData.uuid}`)}
+      onClick={() => navigate(`/pipeline/${doi}`)}
     >
       <div className="flex flex-col gap-2">
         <h2 className="text-xl">{fakeData.name}</h2>

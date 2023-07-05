@@ -63,8 +63,8 @@ function App() {
           <Route path="/home" element={<HomePage />}/>
           <Route path="/about" element={<AboutPage />}/>
           {/* <Route path="/search" element={<SearchPage />}/> */}
-          <Route path="/garden/:uuid" element={<GardenPage />}/>
-          <Route path="/pipeline/:uuid" element={<PipelinePage />}/>
+          <Route path="/garden/:doi" element={<GardenPage />}/>
+          <Route path="/pipeline/:doi" element={<PipelinePage />}/>
         </Routes>
       </HashRouter>
     </div>

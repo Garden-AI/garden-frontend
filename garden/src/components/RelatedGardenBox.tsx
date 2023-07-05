@@ -21,7 +21,7 @@ const RelatedGardenBox = () => {
   return (
     <div
       className="bg-gray-100 border border-gray-200 shadow-sm rounded-lg flex flex-col justify-center items-center px-5 h-56 min-w-[275px] hover:shadow-md hover:cursor-pointer text-display"
-      onClick={() => navigate(`/garden/${fakeData.uuid}`)}
+      onClick={() => navigate(`/garden/${fakeData.doi}`)}
     >
       <div className="my-10 whitespace-normal overflow-y-hidden">
         <p className="text-3xl">{fakeData.name}</p>

@@ -1,38 +1,38 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const GardenBox = () => {
-  //({ doi }: { doi: string }) => {
+const GardenBox = ({ garden }: { garden: any }) => {
   const navigate = useNavigate();
-  const fakeData = {
-    uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
-    name: "Crystal Garden",
-    doi: "10.3792.1234",
-    pipelines: [
-      "10.2345.55555",
-      "10.2345.55556",
-      "10.2345.55557",
-      "10.2345.55558",
-    ],
-    description: "Models for predicting crystal structure.",
-    authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
-    tags: ["fun, crystals, garden"],
-  };
+  // const fakeData = {
+  //   uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
+  //   name: "Crystal Garden",
+  //   doi: "10.3792.1234",
+  //   pipelines: [
+  //     "10.2345.55555",
+  //     "10.2345.55556",
+  //     "10.2345.55557",
+  //     "10.2345.55558",
+  //   ],
+  //   description: "Models for predicting crystal structure.",
+  //   authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
+  //   tags: ["fun, crystals, garden"],
+  // };
+  const text = garden.entries[0].content.doi.replace("/", "%2f")
 
   return (
     <div
-      className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col h-56 justify-between hover:shadow-md hover:cursor-pointer text-display"
-      onClick={() => navigate(`/garden/${fakeData.uuid}`)}
+      className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer text-display"
+      onClick={() => navigate(`/garden/${text}`)}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl">{fakeData.name}</h2>
+        <h2 className="text-xl font-semibold">{garden.entries[0].content.title}</h2>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent h-[160px] overflow-y-hidden">
-            {fakeData.description}
+            {garden.entries[0].content.description}
           </p>
         </div>
       </div>
-      <div className="text-gray-500 flex gap-2">
+      {garden.entries[0].content.tags.length>0 ? <div className="text-gray-500 flex gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -53,11 +53,11 @@ const GardenBox = () => {
           />
         </svg>
         <div>
-          {fakeData.tags
-            .map<React.ReactNode>((t) => <span>{t}</span>)
-            .reduce((prev, curr) => [prev, ", ", curr])}
+          {garden.entries[0].content.tags
+            .map((t: any) => <span>{t}</span>)
+            .reduce((prev: any, curr: any) => [prev, ", ", curr])}
         </div>
-      </div>
+      </div> : <></>}
     </div>
   );
 };

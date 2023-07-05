@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 import GardenBox from "../components/GardenBox";
+import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants";
+import { fetchWithScope } from "../globusHelpers";
 
 const HomePage = () => {
+  const [result, setResult] = useState<Array<any>>([])
+
+  useEffect(() => {
+    async function Search() {
+      try {
+        const response = await fetchWithScope(
+          SEARCH_SCOPE,
+          GARDEN_INDEX_URL + '/search?q=garden&limit=6'
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const content = await response.json();
+        console.log('content', content)
+        setResult(content.gmeta);
+      } catch (error) {
+        setResult([]);
+      }
+    }
+    Search()
+    
+  }, []);
+  console.log('result', result)
+
   return (
     <>
       {/* <div className="container-max-w-full bg-gray-200 shadow border p-6">
@@ -157,12 +184,15 @@ const HomePage = () => {
           id="Garden-Squares"
           className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-8"
         >
+          {result.map((res) => 
+            <GardenBox garden={res}/>
+          )}
+          {/* <GardenBox garden={}/>
           <GardenBox />
           <GardenBox />
           <GardenBox />
           <GardenBox />
-          <GardenBox />
-          <GardenBox />
+          <GardenBox /> */}
         </div>
       </div>
 
