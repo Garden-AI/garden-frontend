@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
+
 module.exports = {
   content: ["./src/**/*.{html,js,ts,tsx}"],
   theme: {
@@ -26,6 +27,7 @@ module.exports = {
         800: '#1f2937',
         gray: 'gray'
       },
+      'fail': '#D86F55',
     },
   },
   plugins: [],

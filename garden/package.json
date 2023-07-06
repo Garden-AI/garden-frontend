@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "@globus/sdk": "^0.0.4-alpha.0",
+    "@szhsin/react-accordion": "^1.2.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
