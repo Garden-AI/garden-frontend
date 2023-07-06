@@ -20,7 +20,6 @@ const HomePage = () => {
           throw new Error("Network response was not ok");
         }
         const content = await response.json();
-        console.log('content', content)
         setResult(content.gmeta);
       } catch (error) {
         setResult([]);
@@ -29,7 +28,6 @@ const HomePage = () => {
     Search()
     
   }, []);
-  console.log('result', result)
 
   return (
     <>

@@ -1,37 +1,37 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const PipelineBox = ({ doi }: { doi: string }) => {
+const PipelineBox = ({ pipeline }: { pipeline: any }) => {
   const navigate = useNavigate();
-  console.log(doi, "DOI for pipeline")
-  const fakeData = {
-    uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
-    name: "Crystal Structure Predictor",
-    doi: { doi },
-    funcxID: "abcdefg",
-    description: "This is a pipeline for predicting crystal structure!",
-    authors: ["KJ Schmidt, Ben B"],
-    repository: "https://github.com/",
-    steps: ["pre-process", "predict"],
-    version: "0.0.1",
-    year: 2023,
-    tags: ["fun", "cool", "pipeline"],
-  };
+  // const fakeData = {
+  //   uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
+  //   name: "Crystal Structure Predictor",
+  //   // doi: { doi },
+  //   funcxID: "abcdefg",
+  //   description: "This is a pipeline for predicting crystal structure!",
+  //   authors: ["KJ Schmidt, Ben B"],
+  //   repository: "https://github.com/",
+  //   steps: ["pre-process", "predict"],
+  //   version: "0.0.1",
+  //   year: 2023,
+  //   tags: ["fun", "cool", "pipeline"],
+  // };
 
   return (
     <div
       className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer"
-      onClick={() => navigate(`/pipeline/${doi}`)}
+      onClick={() => navigate(`/pipeline/${pipeline.doi}`)}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl">{fakeData.name}</h2>
-        <p className="text-gray-500">{fakeData.steps.length} steps</p>
+        <h2 className="text-xl">{pipeline.title}</h2>
+        <p className="text-gray-500">{pipeline.steps.length} {pipeline.steps.length<2 ?<span>step</span>:<span>steps</span>}</p>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent h-[160px] overflow-y-hidden">
-            {fakeData.description}
+            {pipeline.description}
           </p>
         </div>
       </div>
+      {pipeline.tags.length>0 ?
       <div className="text-black flex gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -53,11 +53,11 @@ const PipelineBox = ({ doi }: { doi: string }) => {
           />
         </svg>
         <div>
-          {fakeData.tags
-            .map<React.ReactNode>((t) => <span key={t}>{t}</span>)
-            .reduce((prev, curr) => [prev, ", ", curr])}
+          {pipeline.tags
+            .map((t: any) => <span key={t}>{t}</span>)
+            .reduce((prev: any, curr: any) => [prev, ", ", curr])}
         </div>
-      </div>
+      </div> :<></>}
     </div>
   );
 };

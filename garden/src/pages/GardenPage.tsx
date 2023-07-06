@@ -1,33 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import PipelineBox from "../components/PipelineBox";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 // import Breadcrumbs from "../components/Breadcrumbs";
-import CommentBox from "../components/CommentBox";
+// import CommentBox from "../components/CommentBox";
 import DatasetBox from "../components/DatasetBox";
+import { fetchWithScope } from "../globusHelpers";
+import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 
 const GardenPage = () => {
   const { doi } = useParams();
   const [active, setActive] = useState("");
   const [show, setShow] = useState(false);
-  const [showComment, setShowComment] = useState(true);
+  // const [showComment, setShowComment] = useState(true);
   const [showFoundry, setShowFoundry] = useState(false);
+  const [result, setResult] = useState<Array<any>>([])
   console.log(doi);
-  const fakeData = {
-    uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
-    name: "Crystal Garden",
-    doi: "10.3792.1234",
-    pipelines: [
-      "10.2345.55555",
-      "10.2345.55556",
-      "10.2345.55557",
-      "10.2345.55558",
-    ],
-    description: "Models for predicting crystal structure",
-    authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
-  };
+  useEffect(() => {
+    async function Search() {
+      try {
+        const response = await fetchWithScope(
+          SEARCH_SCOPE,
+          GARDEN_INDEX_URL + `/search?q="${doi}"`
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const content = await response.json();
+        setResult(content.gmeta);
+      } catch (error) {
+        setResult([]);
+      }
+    }
+    Search()
+    
+  }, [doi]);
+  console.log(result)
+  // const fakeData = {
+  //   uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
+  //   name: "Crystal Garden",
+  //   doi: "10.3792.1234",
+  //   pipelines: [
+  //     "10.2345.55555",
+  //     "10.2345.55556",
+  //     "10.2345.55557",
+  //     "10.2345.55558",
+  //   ],
+  //   description: "Models for predicting crystal structure",
+  //   authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
+  // };
+  if(result.length===0){
+    return <div>No garden found</div>
+  }
   const fakeDatasets = [
     {
       type: "dataset",
@@ -48,74 +75,74 @@ const GardenPage = () => {
   //   repository: "Zenodo",
   //   url: "https://zenodo.org/",
   // };
-  const fakeComments = [
-    {
-      user: "Chase Jenkins",
-      type: "Comment",
-      title: "This is a great garden",
-      body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "I agree",
-        },
-        {
-          user: "Chase Three",
-          body: "It is a great garden",
-        },
-        {
-          user: "Chase Four",
-          body: "Well said",
-        },
-        {
-          user: "Chase Five",
-          body: "Just came from the link you sent me! Thanks for sharing",
-        },
-        {
-          user: "Chase Six",
-          body: "You are so right",
-        },
-      ],
-    },
-    {
-      user: "Jenkins Chase",
-      type: "Comment",
-      title: "This garden is very relevant to my work!",
-      body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "Me too",
-        },
-        {
-          user: "Chase Three",
-          body: "This also relates to my work",
-        },
-      ],
-    },
-    {
-      user: "Jenkins Chase",
-      type: "Question",
-      title: "What are crystals?",
-      body: "I was just exploring this site, and came across this garden. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
-        },
-        {
-          user: "Chase Three",
-          body: "I had the same question",
-        },
-      ],
-    },
-  ];
+  // const fakeComments = [
+  //   {
+  //     user: "Chase Jenkins",
+  //     type: "Comment",
+  //     title: "This is a great garden",
+  //     body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
+  //     upvotes: 150,
+  //     downvotes: 50,
+  //     replies: [
+  //       {
+  //         user: "Chase Two",
+  //         body: "I agree",
+  //       },
+  //       {
+  //         user: "Chase Three",
+  //         body: "It is a great garden",
+  //       },
+  //       {
+  //         user: "Chase Four",
+  //         body: "Well said",
+  //       },
+  //       {
+  //         user: "Chase Five",
+  //         body: "Just came from the link you sent me! Thanks for sharing",
+  //       },
+  //       {
+  //         user: "Chase Six",
+  //         body: "You are so right",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     user: "Jenkins Chase",
+  //     type: "Comment",
+  //     title: "This garden is very relevant to my work!",
+  //     body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
+  //     upvotes: 150,
+  //     downvotes: 50,
+  //     replies: [
+  //       {
+  //         user: "Chase Two",
+  //         body: "Me too",
+  //       },
+  //       {
+  //         user: "Chase Three",
+  //         body: "This also relates to my work",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     user: "Jenkins Chase",
+  //     type: "Question",
+  //     title: "What are crystals?",
+  //     body: "I was just exploring this site, and came across this garden. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
+  //     upvotes: 150,
+  //     downvotes: 50,
+  //     replies: [
+  //       {
+  //         user: "Chase Two",
+  //         body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
+  //       },
+  //       {
+  //         user: "Chase Three",
+  //         body: "I had the same question",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -139,17 +166,17 @@ const GardenPage = () => {
     sc!.scrollLeft = sc!.scrollLeft + 283;
   };
 
-  const commentFilter = () => {
-    return fakeComments
-      .filter((comment) => comment.type === "Comment")
-      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
-  };
+  // const commentFilter = () => {
+  //   return fakeComments
+  //     .filter((comment) => comment.type === "Comment")
+  //     .map((comment) => <CommentBox key={comment.body} comment={comment} />);
+  // };
 
-  const questionFilter = () => {
-    return fakeComments
-      .filter((comment) => comment.type === "Question")
-      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
-  };
+  // const questionFilter = () => {
+  //   return fakeComments
+  //     .filter((comment) => comment.type === "Question")
+  //     .map((comment) => <CommentBox key={comment.body} comment={comment} />);
+  // };
 
   const foundry = () => {
     setShowFoundry(true);
@@ -166,7 +193,7 @@ const GardenPage = () => {
         {/* <Breadcrumbs /> */}
         {/* Garden Header */}
         <div className="flex gap-8">
-          <h1 className="text-3xl">{fakeData.name}</h1>
+          <h1 className="text-3xl">{result[0]?.entries[0].content.title}</h1>
           <div className="flex gap-3 items-center">
             <button title="Copy link" onClick={copy}>
               <svg
@@ -204,7 +231,7 @@ const GardenPage = () => {
               show={show}
               close={closeModal}
               copy={copy}
-              doi={fakeData.doi}
+              doi={result[0]?.entries[0].content.doi}
             />
           </div>
         </div>
@@ -213,21 +240,21 @@ const GardenPage = () => {
         <div className="border-0 rounded-lg bg-gray-100 flex flex-col gap-5 p-4 text-sm text-gray-700">
           <div>
             <h2 className="font-semibold">Contributors</h2>
-            <p>{fakeData.authors}</p>
+            <p>{result[0]?.entries[0].content.authors.map((author: any, index: number) => <span>{author}</span>)}</p>
           </div>
           <div>
             <h2 className="font-semibold">DOI</h2>
             <a
-              href={`https://doi.org/${fakeData.doi}`}
+              href={`https://doi.org/${result[0]?.entries[0].content.doi}`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {fakeData.doi}
+              {result[0]?.entries[0].content.doi}
             </a>
           </div>
           <div>
             <h2 className="font-semibold">Description</h2>
-            <p>{fakeData.description}</p>
+            <p>{result[0]?.entries[0].content.description}</p>
           </div>
         </div>
 
@@ -248,7 +275,7 @@ const GardenPage = () => {
             >
               Pipelines
             </button>
-            <button
+            {/* <button
               className={
                 active === "Discussion"
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
@@ -257,7 +284,7 @@ const GardenPage = () => {
               onClick={() => setActive("Discussion")}
             >
               Discussion
-            </button>
+            </button> */}
             <button
               className={
                 active === "Datasets"
@@ -272,19 +299,19 @@ const GardenPage = () => {
           <div className="pt-8">
             {active === "" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fakeData.pipelines.map((pipeline) => (
-                  <PipelineBox key={pipeline} doi={pipeline} />
+                {result[0]?.entries[0].content.pipelines.map((pipeline: any) => (
+                  <PipelineBox key={pipeline} pipeline={pipeline} />
                 ))}
               </div>
             )}
             {active === "Pipelines" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fakeData.pipelines.map((pipeline) => (
-                  <PipelineBox key={pipeline} doi={pipeline} />
+                {result[0]?.entries[0].content.pipelines.map((pipeline: any) => (
+                  <PipelineBox key={pipeline} pipeline={pipeline} />
                 ))}
               </div>
             )}
-            {active === "Discussion" && (
+            {/* {active === "Discussion" && (
               <div className="mx-16">
                 <div className="flex pb-6 gap-6">
                   <button
@@ -308,12 +335,9 @@ const GardenPage = () => {
                     <p>Questions</p>
                   </button>
                 </div>
-                {/* {fakeComments.map((comment) => (
-                  <CommentBox key={comment.body} comment={comment} />
-                ))} */}
                 {showComment === true ? commentFilter() : questionFilter()}
               </div>
-            )}
+            )} */}
             {active === "Datasets" && (
               <div>
                 <div className="mx-16 text-xl pb-4">
