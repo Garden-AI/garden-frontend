@@ -42,9 +42,6 @@ const HomePage = () => {
         <p className="pt-8 sm:pt-16 text-lg sm:text-3xl text-center max-w-lg">
           An ecosystem of ML models and datasets ready to be explored
         </p>
-        {/* <button className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white">
-          Search
-        </button> */}
         <Link
           to="/search"
           className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
@@ -199,7 +196,7 @@ const HomePage = () => {
         <p className="text-white text-lg sm:text-xl pt-8 text-center">
           This project was made possible by:
         </p>
-        <div className="bg-white my-8 mx-6 sm:mx-16 md:mx-16 rounded-xl md:flex items-center justify-evenly py-10">
+        <div className="bg-white my-8 mx-6 sm:mx-16 md:mx-16 rounded-xl flex flex-wrap items-center justify-evenly py-10">
           <section className="flex flex-col items-center">
             <a target="blank" href="https://materialsdatafacility.org/">
               <img
@@ -248,6 +245,22 @@ const HomePage = () => {
             </h1>
             <p className="text-center text-sm md:text-lg mx-5 pt-4 max-w-xs">
               An open source machine learning platform for scientists
+            </p>
+          </section>
+
+          <section className="flex flex-col items-center">
+            <a target="blank" href="https://www.globus.org/">
+              <img
+                src="img/globus-logo.png"
+                alt="Gloubs logo"
+                className="max-w-[200px] hover:opacity-75"
+              />
+            </a>
+            <h1 className="font-bold text-md md:text-xl pt-6 text-center">
+              Globus
+            </h1>
+            <p className="text-center text-sm md:text-lg mx-5 pt-4 max-w-xs">
+            Research cyberinfrastructure, developed and operated as a not-for-profit service by the University of Chicago
             </p>
           </section>
         </div>
