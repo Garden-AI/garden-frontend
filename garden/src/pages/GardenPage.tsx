@@ -5,11 +5,11 @@ import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 // import Breadcrumbs from "../components/Breadcrumbs";
-// import CommentBox from "../components/CommentBox";
 import DatasetBox from "../components/DatasetBox";
 import { fetchWithScope } from "../globusHelpers";
 import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
-import DiscussionTab from "../components/DiscussionTab";
+// import DiscussionTab from "../components/DiscussionTab";
+// import DiscussionTabContent from "../components/DiscussionTabContent";
 
 const GardenPage = () => {
   const { doi } = useParams();
@@ -17,7 +17,7 @@ const GardenPage = () => {
   const [show, setShow] = useState(false);
   // const [showComment, setShowComment] = useState(true);
   const [showFoundry, setShowFoundry] = useState(false);
-  const [result, setResult] = useState<any>(undefined);
+  const [result, setResult] = useState<Array<any>>([]);
   console.log(doi);
   useEffect(() => {
     async function Search() {
@@ -39,20 +39,7 @@ const GardenPage = () => {
     Search();
   }, [doi]);
   console.log(result, "result");
-  // const fakeData = {
-  //   uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
-  //   name: "Crystal Garden",
-  //   doi: "10.3792.1234",
-  //   pipelines: [
-  //     "10.2345.55555",
-  //     "10.2345.55556",
-  //     "10.2345.55557",
-  //     "10.2345.55558",
-  //   ],
-  //   description: "Models for predicting crystal structure",
-  //   authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
-  // };
-  if (result === undefined || result.length === 0) {
+  if (result.length === 0) {
     return <div>No garden found</div>;
   }
   const fakeDatasets = [
@@ -69,12 +56,6 @@ const GardenPage = () => {
       url: "https://zenodo.org/",
     },
   ];
-  // const fakeDatasetTwo = {
-  //   type: "dataset",
-  //   doi: "10.3792.1234",
-  //   repository: "Zenodo",
-  //   url: "https://zenodo.org/",
-  // };
   // const fakeComments = [
   //   {
   //     user: "Chase Jenkins",
@@ -166,25 +147,13 @@ const GardenPage = () => {
     sc!.scrollLeft = sc!.scrollLeft + 283;
   };
 
-  // const commentFilter = () => {
-  //   return fakeComments
-  //     .filter((comment) => comment.type === "Comment")
-  //     .map((comment) => <CommentBox key={comment.body} comment={comment} />);
-  // };
-
-  // const questionFilter = () => {
-  //   return fakeComments
-  //     .filter((comment) => comment.type === "Question")
-  //     .map((comment) => <CommentBox key={comment.body} comment={comment} />);
-  // };
-
   const foundry = () => {
     setShowFoundry(true);
   };
 
-  const setDiscussionTab = () => {
-    setActive("Discussion");
-  };
+  // const setDiscussionTab = () => {
+  //   setActive("Discussion");
+  // };
 
   return (
     <div className="font-display">
@@ -317,33 +286,8 @@ const GardenPage = () => {
                 )}
               </div>
             )}
-            {/* {active === "Discussion" && (
-              <div className="mx-16">
-                <div className="flex pb-6 gap-6">
-                  <button
-                    className={
-                      showComment === true
-                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
-                        : "border border-1 border-black w-max px-3 rounded-2xl"
-                    }
-                    onClick={() => setShowComment(true)}
-                  >
-                    <p>Comments</p>
-                  </button>
-                  <button
-                    className={
-                      showComment === false
-                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
-                        : "border border-1 border-black w-max px-3 rounded-2xl"
-                    }
-                    onClick={() => setShowComment(false)}
-                  >
-                    <p>Questions</p>
-                  </button>
-                </div>
-                {showComment === true ? commentFilter() : questionFilter()}
-              </div>
-            )} */}
+            {/* Discussion Tab Content Here */}
+            {/* <DiscussionTabContent comments={fakeComments} active={active}/> */}
             {active === "Datasets" && (
               <div>
                 <div className="mx-16 text-xl pb-4">
