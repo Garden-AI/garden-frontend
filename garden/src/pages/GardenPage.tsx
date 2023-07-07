@@ -17,7 +17,7 @@ const GardenPage = () => {
   const [show, setShow] = useState(false);
   // const [showComment, setShowComment] = useState(true);
   const [showFoundry, setShowFoundry] = useState(false);
-  const [result, setResult] = useState<Array<any>>([]);
+  const [result, setResult] = useState<any>(undefined);
   console.log(doi);
   useEffect(() => {
     async function Search() {
@@ -39,8 +39,11 @@ const GardenPage = () => {
     Search();
   }, [doi]);
   console.log(result, "result");
-  if (result.length === 0) {
-    return <div>No garden found</div>;
+  if (result === undefined) {
+    return <div>Loading</div>;
+  }
+  if(result.length === 0){
+    return <div>No garden found</div>
   }
   const fakeDatasets = [
     {
