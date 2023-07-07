@@ -9,6 +9,7 @@ import RelatedGardenBox from "../components/RelatedGardenBox";
 import DatasetBox from "../components/DatasetBox";
 import { fetchWithScope } from "../globusHelpers";
 import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
+import DiscussionTab from "../components/DiscussionTab";
 
 const GardenPage = () => {
   const { doi } = useParams();
@@ -16,7 +17,7 @@ const GardenPage = () => {
   const [show, setShow] = useState(false);
   // const [showComment, setShowComment] = useState(true);
   const [showFoundry, setShowFoundry] = useState(false);
-  const [result, setResult] = useState<Array<any>>([])
+  const [result, setResult] = useState<any>(undefined);
   console.log(doi);
   useEffect(() => {
     async function Search() {
@@ -35,10 +36,9 @@ const GardenPage = () => {
         setResult([]);
       }
     }
-    Search()
-    
+    Search();
   }, [doi]);
-  console.log(result)
+  console.log(result, "result");
   // const fakeData = {
   //   uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
   //   name: "Crystal Garden",
@@ -52,8 +52,8 @@ const GardenPage = () => {
   //   description: "Models for predicting crystal structure",
   //   authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
   // };
-  if(result.length===0){
-    return <div>No garden found</div>
+  if (result === undefined || result.length === 0) {
+    return <div>No garden found</div>;
   }
   const fakeDatasets = [
     {
@@ -182,6 +182,10 @@ const GardenPage = () => {
     setShowFoundry(true);
   };
 
+  const setDiscussionTab = () => {
+    setActive("Discussion");
+  };
+
   return (
     <div className="font-display">
       <Navbar />
@@ -240,7 +244,13 @@ const GardenPage = () => {
         <div className="border-0 rounded-lg bg-gray-100 flex flex-col gap-5 p-4 text-sm text-gray-700">
           <div>
             <h2 className="font-semibold">Contributors</h2>
-            <p>{result[0]?.entries[0].content.authors.map((author: any, index: number) => <span>{author}</span>)}</p>
+            <p>
+              {result[0]?.entries[0].content.authors.map(
+                (author: any, index: number) => (
+                  <span>{author}</span>
+                )
+              )}
+            </p>
           </div>
           <div>
             <h2 className="font-semibold">DOI</h2>
@@ -275,16 +285,8 @@ const GardenPage = () => {
             >
               Pipelines
             </button>
-            {/* <button
-              className={
-                active === "Discussion"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
-              }
-              onClick={() => setActive("Discussion")}
-            >
-              Discussion
-            </button> */}
+            {/* Discussion Tab Here */}
+            {/* <DiscussionTab active={active} setActive={setDiscussionTab}/> */}
             <button
               className={
                 active === "Datasets"
@@ -299,16 +301,20 @@ const GardenPage = () => {
           <div className="pt-8">
             {active === "" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {result[0]?.entries[0].content.pipelines.map((pipeline: any) => (
-                  <PipelineBox key={pipeline} pipeline={pipeline} />
-                ))}
+                {result[0]?.entries[0].content.pipelines.map(
+                  (pipeline: any) => (
+                    <PipelineBox key={pipeline} pipeline={pipeline} />
+                  )
+                )}
               </div>
             )}
             {active === "Pipelines" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {result[0]?.entries[0].content.pipelines.map((pipeline: any) => (
-                  <PipelineBox key={pipeline} pipeline={pipeline} />
-                ))}
+                {result[0]?.entries[0].content.pipelines.map(
+                  (pipeline: any) => (
+                    <PipelineBox key={pipeline} pipeline={pipeline} />
+                  )
+                )}
               </div>
             )}
             {/* {active === "Discussion" && (
@@ -347,7 +353,11 @@ const GardenPage = () => {
                 </div>
                 <div>
                   {fakeDatasets.map((dataset) => (
-                    <DatasetBox key={dataset.doi} dataset={dataset} showFoundry={foundry} />
+                    <DatasetBox
+                      key={dataset.doi}
+                      dataset={dataset}
+                      showFoundry={foundry}
+                    />
                   ))}
                 </div>
                 {/* <div className="pb-8">
