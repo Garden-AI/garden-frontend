@@ -16,11 +16,12 @@ const PipelineBox = ({ pipeline }: { pipeline: any }) => {
   //   year: 2023,
   //   tags: ["fun", "cool", "pipeline"],
   // };
+  const text = pipeline.doi.replace("/", "%2f")
 
   return (
     <div
       className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer"
-      onClick={() => navigate(`/pipeline/${pipeline.doi}`)}
+      onClick={() => navigate(`/pipeline/${text}`)}
     >
       <div className="flex flex-col gap-2">
         <h2 className="text-xl">{pipeline.title}</h2>

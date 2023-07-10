@@ -201,7 +201,7 @@ const AccordionTop = () => {
       >
         {/* To do: Machine Requirements and what that entails */}
 
-        <AccordionItem
+        {/* <AccordionItem
           className="border-y border-gray-300"
           header={({ state: { isEnter } }) => (
             <div className="inline-flex w-full justify-between p-4">
@@ -245,7 +245,7 @@ const AccordionTop = () => {
           }}
         >
           <p className="p-4">Machine</p>
-        </AccordionItem>
+        </AccordionItem> */}
 
         <AccordionItem
           className="border-y border-gray-300"
@@ -482,7 +482,7 @@ const AccordionTop = () => {
           </div>
         </AccordionItem>
 
-        <AccordionItem
+        {/* <AccordionItem
           className="border-y border-gray-300"
           header={({ state: { isEnter } }) => (
             <div className="inline-flex w-full justify-between p-4">
@@ -526,9 +526,9 @@ const AccordionTop = () => {
           }}
         >
           <p className="p-4">FAIR</p>
-        </AccordionItem>
+        </AccordionItem> */}
 
-        <AccordionItem
+        {/* <AccordionItem
           className="border-y border-gray-300"
           header={({ state: { isEnter } }) => (
             <div className="inline-flex w-full justify-between p-4">
@@ -571,7 +571,6 @@ const AccordionTop = () => {
               `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
           }}
         >
-          {/* <p className="p-4">Testing</p> */}
           <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-x-12 lg:gap-x-32 gap-y-12 px-8 lg:px-16">
             <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
               <h1 className="text-2xl p-4 underline">Software Testing</h1>
@@ -626,7 +625,7 @@ const AccordionTop = () => {
               </div>
             </div>
           </div>
-        </AccordionItem>
+        </AccordionItem> */}
       </ControlledAccordion>
     </div>
   );

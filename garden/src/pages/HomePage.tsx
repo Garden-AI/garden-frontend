@@ -13,7 +13,7 @@ const HomePage = () => {
       try {
         const response = await fetchWithScope(
           SEARCH_SCOPE,
-          GARDEN_INDEX_URL + '/search?q=garden&limit=6'
+          GARDEN_INDEX_URL + '/search?q=2023&limit=6'
         );
 
         if (!response.ok) {
@@ -28,6 +28,7 @@ const HomePage = () => {
     Search()
     
   }, []);
+  console.log('result', result)
 
   return (
     <>

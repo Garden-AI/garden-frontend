@@ -2,21 +2,25 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
-import CommentBox from "../components/CommentBox";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Navbar from "../components/Navbar";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
+import { fetchWithScope } from "../globusHelpers";
+import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
+// import PipelineMetrics from "../components/PipelineMetrics";
+// import DiscussionTabContent from "../components/DiscussionTabContent";
+// import DiscussionTab from "../components/DiscussionTab";
 
 const PipelinePage = () => {
-  const { uuid } = useParams();
+  const { doi } = useParams();
   const [show, setShow] = useState(false);
   const [active, setActive] = useState("");
-  const [showComment, setShowComment] = useState(true);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [stepsOverflow, setStepsOverflow] = useState(false);
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
   const [buttonIndex, setButtonIndex] = useState(0);
+  const [result, setResult] = useState<any>(undefined)
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLButtonElement>(null);
@@ -40,7 +44,36 @@ const PipelinePage = () => {
     }
   }, []);
 
-  console.log(uuid);
+  useEffect(() => {
+    async function Search() {
+      try {
+        const response = await fetchWithScope(
+          SEARCH_SCOPE,
+          GARDEN_INDEX_URL + `/search?q="${doi}"`
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const content = await response.json();
+        setResult(content.gmeta[0].entries[0].content.pipelines.filter((pipe: any) => pipe.doi === doi));
+      } catch (error) {
+        setResult([]);
+      }
+    }
+    Search();
+  }, [doi]);
+  console.log('result', result)
+
+  if (result === undefined) {
+    return <div>Loading</div>;
+  }
+  if(result.length === 0){
+    return <div>No Pipeline found</div>
+  }
+  
+
+  console.log(doi);
   const fakeData = {
     uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
     name: "Crystal Structure Predictor",
@@ -101,74 +134,74 @@ const PipelinePage = () => {
     year: 2023,
     tags: ["fun", "cool", "pipeline"],
   };
-  const fakeComments = [
-    {
-      user: "Chase Jenkins",
-      type: "Comment",
-      title: "This is a great pipeline",
-      body: "I love this pipeline! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "I agree",
-        },
-        {
-          user: "Chase Three",
-          body: "It is a great pipeline",
-        },
-        {
-          user: "Chase Four",
-          body: "Well said",
-        },
-        {
-          user: "Chase Five",
-          body: "Just came from the link you sent me! Thanks for sharing",
-        },
-        {
-          user: "Chase Six",
-          body: "You are so right",
-        },
-      ],
-    },
-    {
-      user: "Jenkins Chase",
-      type: "Comment",
-      title: "This pipeline is very relevant to my work!",
-      body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "Me too",
-        },
-        {
-          user: "Chase Three",
-          body: "This also relates to my work",
-        },
-      ],
-    },
-    {
-      user: "Jenkins Chase",
-      type: "Question",
-      title: "What are crystals?",
-      body: "I was just exploring this site, and came across this pipeline. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
-        },
-        {
-          user: "Chase Three",
-          body: "I had the same question",
-        },
-      ],
-    },
-  ];
+  // const fakeComments = [
+  //   {
+  //     user: "Chase Jenkins",
+  //     type: "Comment",
+  //     title: "This is a great pipeline",
+  //     body: "I love this pipeline! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
+  //     upvotes: 150,
+  //     downvotes: 50,
+  //     replies: [
+  //       {
+  //         user: "Chase Two",
+  //         body: "I agree",
+  //       },
+  //       {
+  //         user: "Chase Three",
+  //         body: "It is a great pipeline",
+  //       },
+  //       {
+  //         user: "Chase Four",
+  //         body: "Well said",
+  //       },
+  //       {
+  //         user: "Chase Five",
+  //         body: "Just came from the link you sent me! Thanks for sharing",
+  //       },
+  //       {
+  //         user: "Chase Six",
+  //         body: "You are so right",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     user: "Jenkins Chase",
+  //     type: "Comment",
+  //     title: "This pipeline is very relevant to my work!",
+  //     body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
+  //     upvotes: 150,
+  //     downvotes: 50,
+  //     replies: [
+  //       {
+  //         user: "Chase Two",
+  //         body: "Me too",
+  //       },
+  //       {
+  //         user: "Chase Three",
+  //         body: "This also relates to my work",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     user: "Jenkins Chase",
+  //     type: "Question",
+  //     title: "What are crystals?",
+  //     body: "I was just exploring this site, and came across this pipeline. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
+  //     upvotes: 150,
+  //     downvotes: 50,
+  //     replies: [
+  //       {
+  //         user: "Chase Two",
+  //         body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
+  //       },
+  //       {
+  //         user: "Chase Three",
+  //         body: "I had the same question",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const fakeDatasets = [
     {
@@ -221,18 +254,6 @@ const PipelinePage = () => {
     setShow(false);
   };
 
-  const commentFilter = () => {
-    return fakeComments
-      .filter((comment) => comment.type === "Comment")
-      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
-  };
-
-  const questionFilter = () => {
-    return fakeComments
-      .filter((comment) => comment.type === "Question")
-      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
-  };
-
   const contributorMore = () => {
     setPClass("");
     setIsOverflowing(false);
@@ -262,7 +283,7 @@ const PipelinePage = () => {
         {/* Pipeline Header */}
         <div className="flex flex-col gap-1">
           <div className="flex gap-8">
-            <h1 className="text-3xl font-display">{fakeData.name}</h1>
+            <h1 className="text-3xl font-display">{result[0].title}</h1>
             <div className="flex gap-4 items-center">
               <button title="Copy link" onClick={copy}>
                 <svg
@@ -318,14 +339,15 @@ const PipelinePage = () => {
                 show={show}
                 close={closeModal}
                 copy={copy}
-                doi={fakeData.doi}
+                doi={result[0].doi}
               />
             </div>
           </div>
           <div className="text-gray-500 text-sm flex gap-1">
-            <span>Version {fakeData.version}</span>
+            <span>Version {result[0].version}</span>
             <span>|</span>
-            <span>{fakeData.year}</span>
+            <span>{result[0].year}</span>
+            {result[0].tags.length>0?<>
             <span>|</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -347,82 +369,22 @@ const PipelinePage = () => {
               />
             </svg>
             <div>
-              {fakeData.tags
-                .map<React.ReactNode>((t) => <span>{t}</span>)
-                .reduce((prev, curr) => [prev, ", ", curr])}
+              {result[0].tags
+                .map((t: any) => <span>{t}</span>)
+                .reduce((prev: any, curr: any) => [prev, ", ", curr])}
             </div>
+            </>:<></>}
           </div>
-          <div className="flex gap-4">
-            <div className="flex gap-2 items-center" title="Total Citations">
-              <p className="text-lg">150 </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="green"
-                viewBox="0 0 448 512"
-                className="w-6 h-6 text-gray-700"
-              >
-                <path d="M0 216C0 149.7 53.7 96 120 96h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V320 288 216zm256 0c0-66.3 53.7-120 120-120h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H320c-35.3 0-64-28.7-64-64V320 288 216z" />
-              </svg>
-              <span>|</span>
-            </div>
-
-            <div className="flex gap-2 items-center" title="Total Pins">
-              <p className="text-lg">150 </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="green"
-                strokeWidth={1.5}
-                className="w-6 h-6"
-              >
-                <path d="m16.114 1.553 6.333 6.333a1.75 1.75 0 0 1-.603 2.869l-1.63.633a5.67 5.67 0 0 0-3.395 3.725l-1.131 3.959a1.75 1.75 0 0 1-2.92.757L9 16.061l-5.595 5.594a.749.749 0 1 1-1.06-1.06L7.939 15l-3.768-3.768a1.75 1.75 0 0 1 .757-2.92l3.959-1.131a5.666 5.666 0 0 0 3.725-3.395l.633-1.63a1.75 1.75 0 0 1 2.869-.603ZM5.232 10.171l8.597 8.597a.25.25 0 0 0 .417-.108l1.131-3.959A7.17 7.17 0 0 1 19.67 9.99l1.63-.634a.25.25 0 0 0 .086-.409l-6.333-6.333a.25.25 0 0 0-.409.086l-.634 1.63a7.17 7.17 0 0 1-4.711 4.293L5.34 9.754a.25.25 0 0 0-.108.417Z"></path>
-              </svg>
-              <span>|</span>
-            </div>
-            <div className="flex gap-2 items-center" title="Total Shares">
-              <p>175</p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="green"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-                />
-              </svg>
-              <span>|</span>
-            </div>
-            <div className="flex gap-2 items-center" title="Total Runs">
-              <p>400</p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="green"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"
-                />
-              </svg>
-            </div>
-          </div>
+          {/* Total Runs/Pins/Shares/Citations goes here */}
+          {/* <PipelineMetrics/> */}
           <div className="sm:flex pt-4 mr-8 text-lg">
             <p className="font-semibold pr-2">Contributors:</p>
             <p className={pClass} ref={widthRef}>
-              {fakeData.authors
-                .map<React.ReactNode>((author) => {
+              {result[0].authors
+                .map((author: any) => {
                   return <span>{author}</span>;
                 })
-                .reduce((prev, curr) => [prev, ", ", curr])}
+                .reduce((prev: any, curr: any) => [prev, ", ", curr])}
               {hasOverflow ? (
                 <button
                   className="whitespace-nowrap text-blue hover:underline pl-2"
@@ -454,7 +416,7 @@ const PipelinePage = () => {
           <p className=" border-b border-gray-300 text-2xl">
             &#128064; At a glance
           </p>
-          <p className="p-4">{fakeData.description}</p>
+          <p className="p-4">{result[0].description}</p>
         </div>
 
         <div className="flex flex-col gap-8">
@@ -467,7 +429,7 @@ const PipelinePage = () => {
                 client = garden_ai.GardenClient()
                 <br />
                 <br />
-                <span className="text-orange">pipeline</span> = client.get_registered_pipeline(<span className="text-green">"{fakeData.doi}"</span>)<br/>
+                <span className="text-orange">pipeline</span> = client.get_registered_pipeline(<span className="text-green">"{doi}"</span>)<br/>
                 <br />
                 <span className="text-gray-400">#If you have your own globus compute endpoint, use it here</span><br/>
                 <span className="text-orange">pipeline</span>(test_df, endpoint=<span className="text-green">'86a47061-f3d9-44f0-90dc-56ddc642c000'</span>)
@@ -522,20 +484,12 @@ const PipelinePage = () => {
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
               }
-              onClick={() => setActive("Steps")}
+              onClick={() => setActive("")}
             >
               Steps
             </button>
-            <button
-              className={
-                active === "Discussion"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
-              }
-              onClick={() => setActive("Discussion")}
-            >
-              Discussion
-            </button>
+            {/* Discussion Tab here */}
+            {/* <DiscussionTab active={active} setActive={setActive}/> */}
             <button
               className={
                 active === "Related"
@@ -566,7 +520,7 @@ const PipelinePage = () => {
                   ) : (
                     <></>
                   )}
-                  {fakeData.steps.map((step, index) => {
+                  {result[0].steps.map((step: any, index: number) => {
                     return (
                       <div className="px-4">
                         {index > 0 ? (
@@ -615,203 +569,104 @@ const PipelinePage = () => {
                   )}
                   <div ref={bottom}></div>
                 </div>
-                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8">
+                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8 break-words">
                   <h1 className="text-xl lg:text-3xl font-bold">
-                    {fakeData.steps[buttonIndex].title}
+                    {result[0].steps[buttonIndex].title}
                   </h1>
                   <div></div>
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
-                    {fakeData.steps[buttonIndex].description}
+                    {result[0].steps[buttonIndex].description}
                   </p>
-                  {fakeData.steps[buttonIndex].authors.length > 0 ? (
+                  {result[0].steps[buttonIndex].authors.length > 0 ? (
                     <p className="pb-2">
                       <span className="font-semibold">Authors: </span>
-                      {fakeData.steps[buttonIndex].authors
-                        .map<React.ReactNode>((cont) => <span>{cont}</span>)
-                        .reduce((prev, curr) => [prev, ", ", curr])}
+                      {result[0].steps[buttonIndex].authors
+                        .map((cont: any) => <span>{cont}</span>)
+                        .reduce((prev: any, curr: any) => [prev, ", ", curr])}
                     </p>
                   ) : (
                     <></>
                   )}
-                  {fakeData.steps[buttonIndex].contributors.length > 0 ? (
+                  {result[0].steps[buttonIndex].contributors.length > 0 ? (
                     <p className="pb-2">
                       <span className="font-semibold">Contributors: </span>
-                      {fakeData.steps[buttonIndex].contributors
-                        .map<React.ReactNode>((cont) => <span>{cont}</span>)
-                        .reduce((prev, curr) => [prev, ", ", curr])}
+                      {result[0].steps[buttonIndex].contributors
+                        .map((cont: any) => <span>{cont}</span>)
+                        .reduce((prev: any, curr: any) => [prev, ", ", curr])}
                     </p>
                   ) : (
                     <></>
                   )}
-                  {fakeData.steps[buttonIndex].input_info ? (
+                  {result[0].steps[buttonIndex].input_info ? (
                     <p className="pb-2">
                       <span className="font-semibold">Input info:</span>{" "}
-                      {fakeData.steps[buttonIndex].input_info}
+                      {result[0].steps[buttonIndex].input_info}
                     </p>
                   ) : (
                     <></>
                   )}
-                  {fakeData.steps[buttonIndex].func ? (
+                  {result[0].steps[buttonIndex].func ? (
                     <p className="pb-2">
                       <span className="font-semibold">Function:</span>{" "}
-                      {fakeData.steps[buttonIndex].func}
+                      {result[0].steps[buttonIndex].func}
                     </p>
                   ) : (
                     <></>
                   )}
-                  {fakeData.steps[buttonIndex].python_version ? (
+                  {result[0].steps[buttonIndex].python_version ? (
                     <p className="pb-2">
                       <span className="font-semibold">Python version: </span>
-                      {fakeData.steps[buttonIndex].python_version}
+                      {result[0].steps[buttonIndex].python_version}
                     </p>
                   ) : (
                     <></>
                   )}
-                  {fakeData.steps[buttonIndex].output_info ? (
+                  {result[0].steps[buttonIndex].output_info ? (
                     <p className="pb-2">
                       <span className="font-semibold">Output info: </span>
-                      {fakeData.steps[buttonIndex].output_info}
+                      {result[0].steps[buttonIndex].output_info}
                     </p>
                   ) : (
                     <></>
                   )}
-                  {fakeData.steps[buttonIndex].conda_dependencies.length > 0 ? (
-                    <p className="pb-2">
+                  {/* {result[0].steps[buttonIndex].conda_dependencies.length > 0 ? (
+                    <div className="pb-2">
                       <span className="font-semibold">
                         Conda dependencies:{" "}
                       </span>
                       <ul className="px-8">
-                        {fakeData.steps[
+                        {result[0].steps[
                           buttonIndex
-                        ].conda_dependencies.map<React.ReactNode>((cont) => (
+                        ].conda_dependencies.map((cont:any) => (
                           <li>- {cont}</li>
                         ))}
                       </ul>
-                    </p>
+                    </div>
                   ) : (
                     <></>
-                  )}
-                  {fakeData.steps[buttonIndex].pip_dependencies.length > 0 ? (
-                    <p className="pb-2">
+                  )} */}
+                  {/* {result[0].steps[buttonIndex].pip_dependencies.length > 0 ? (
+                    <div className="pb-2">
                       <span className="font-semibold">Pip dependencies: </span>
                       <ul className="px-8">
-                        {fakeData.steps[
+                        {result[0].steps[
                           buttonIndex
                         ].pip_dependencies.map<React.ReactNode>((cont) => (
                           <li>- {cont}</li>
                         ))}
                       </ul>
-                    </p>
+                    </div>
                   ) : (
                     <></>
-                  )}
-                </div>
-              </div>
-            )}
-            {active === "Steps" && (
-              <div className="grid grid-cols-5 h-[650px]">
-                <div
-                  className=" col-span-2 lg:col-span-1 bg-gray overflow-y-scroll"
-                  ref={div}
-                >
-                  {stepsOverflow ? (
-                    <button
-                      className="rounded-xl bg-green p-1 px-2 mb-2 hover:border hover:border-black hover:border-2 text-white "
-                      ref={top}
-                      onClick={() => scrollToBottom()}
-                    >
-                      Scroll to bottom
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                  {fakeData.steps.map((step, index) => {
-                    return (
-                      <div className="px-4">
-                        {index > 0 ? (
-                          <div className="flex justify-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-                              />
-                            </svg>
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                        <div
-                          className={
-                            buttonIndex === index
-                              ? "border border-4 border-gray-400 flex justify-center my-4 text-center w-full bg-gray-100"
-                              : "border border-gray-400 border-1 flex justify-center my-4 text-center w-full"
-                          }
-                        >
-                          <button onClick={() => setButtonIndex(index)}>
-                            <p className="p-4 break-all">{step.title}</p>
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {stepsOverflow ? (
-                    <button
-                      className="rounded-xl bg-green p-1 px-2 my-2 hover:border hover:border-black hover:border-2 text-white"
-                      onClick={() => scrollToTop()}
-                    >
-                      Scroll to top
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                  <div ref={bottom}></div>
-                </div>
-                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8">
-                  <h1 className="text-xl lg:text-3xl">
-                    {fakeData.steps[buttonIndex].title}
-                  </h1>
-                  <p className="pt-8 text-md lg:text-xl">
-                    {fakeData.steps[buttonIndex].description}
-                  </p>
+                  )} */}
                 </div>
               </div>
             )}
 
-            {active === "Discussion" && (
-              <div className="mx-16">
-                <div className="flex pb-6 gap-6">
-                  <button
-                    className={
-                      showComment === true
-                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
-                        : "border border-1 border-black w-max px-3 rounded-2xl"
-                    }
-                    onClick={() => setShowComment(true)}
-                  >
-                    <p>Comments</p>
-                  </button>
-                  <button
-                    className={
-                      showComment === false
-                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
-                        : "border border-1 border-black w-max px-3 rounded-2xl"
-                    }
-                    onClick={() => setShowComment(false)}
-                  >
-                    <p>Questions</p>
-                  </button>
-                </div>
-                {showComment === true ? commentFilter() : questionFilter()}
-              </div>
-            )}
+            {/* Discussion Tab Content here */}
+            {/* {active === "Discussion" && (
+              <DiscussionTabContent active={active} comments={fakeComments}/>
+            )} */}
 
             {active === "Related" && (
               <div className="px-6">
