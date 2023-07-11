@@ -20,7 +20,7 @@ const PipelinePage = () => {
   const [stepsOverflow, setStepsOverflow] = useState(false);
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
   const [buttonIndex, setButtonIndex] = useState(0);
-  const [result, setResult] = useState<any>(undefined)
+  const [result, setResult] = useState<any>(undefined);
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLButtonElement>(null);
@@ -56,152 +56,26 @@ const PipelinePage = () => {
           throw new Error("Network response was not ok");
         }
         const content = await response.json();
-        setResult(content.gmeta[0].entries[0].content.pipelines.filter((pipe: any) => pipe.doi === doi));
+        setResult(
+          content.gmeta[0].entries[0].content.pipelines.filter(
+            (pipe: any) => pipe.doi === doi
+          )
+        );
       } catch (error) {
         setResult([]);
       }
     }
     Search();
   }, [doi]);
-  console.log('result', result)
+  console.log("result", result);
 
   if (result === undefined) {
     return <div>Loading</div>;
   }
-  if(result.length === 0){
-    return <div>No Pipeline found</div>
+  if (result.length === 0) {
+    return <div>No Pipeline found</div>;
   }
-  
 
-  console.log(doi);
-  const fakeData = {
-    uuid: "a5f9f612-28ee-4ba7-a104-dc8a70613ea2",
-    name: "Crystal Structure Predictor",
-    doi: "10.3792.1234",
-    funcxID: "abcdefg",
-    description: "This is a pipeline for predicting crystal structure!",
-    authors: ["KJ Schmidt", "Ben B"],
-    repository: "https://github.com/",
-    steps: [
-      {
-        input_info: "{'input_data': <class 'object'>}",
-        func: "preprocessing_step: (input_data: object) -> object",
-        python_version: "3.10.9",
-        description: "Step one description",
-        contributors: ["KJ Schmidt", "Ben B"],
-        output_info: "return: <class 'object'>",
-        title: "preprocessing_step",
-        uuid: "abc4356e-b845-42f8-8276-fa2e6de7b3e5",
-        conda_dependencies: [],
-        authors: ["KJ Schmidt", "Ben B"],
-        pip_dependencies: ["garden-ai==0.4.2", "scikit-learn==1.2.2"],
-      },
-      {
-        input_info: "{'data': <class 'object'>}",
-        func: "another_step: (data: object) -> object",
-        python_version: null,
-        description: "Step two description",
-        contributors: [],
-        output_info: "return: <class 'object'>",
-        title: "another_step",
-        uuid: "9015f3b0-fa71-4673-b3e4-fd80977a5a78",
-        conda_dependencies: [],
-        authors: [],
-        pip_dependencies: [
-          "mlflow==2.4",
-          "cloudpickle==2.2.1",
-          "importlib-metadata==6.6.0",
-          "numpy==1.23.5",
-          "scikit-learn==1.2.2",
-          "scipy==1.10.1",
-        ],
-      },
-      {
-        input_info: "{'input_arg': <class 'object'>}",
-        func: "run_inference: (input_arg: object) -> object",
-        python_version: null,
-        description: "Step three description",
-        contributors: [],
-        output_info: "return: <class 'object'>",
-        title: "run_inference",
-        uuid: "bb71b032-c9dd-4dd0-9667-b0e9302f8218",
-        conda_dependencies: [],
-        authors: [],
-        pip_dependencies: [],
-      },
-    ],
-    version: "0.0.1",
-    year: 2023,
-    tags: ["fun", "cool", "pipeline"],
-  };
-  // const fakeComments = [
-  //   {
-  //     user: "Chase Jenkins",
-  //     type: "Comment",
-  //     title: "This is a great pipeline",
-  //     body: "I love this pipeline! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
-  //     upvotes: 150,
-  //     downvotes: 50,
-  //     replies: [
-  //       {
-  //         user: "Chase Two",
-  //         body: "I agree",
-  //       },
-  //       {
-  //         user: "Chase Three",
-  //         body: "It is a great pipeline",
-  //       },
-  //       {
-  //         user: "Chase Four",
-  //         body: "Well said",
-  //       },
-  //       {
-  //         user: "Chase Five",
-  //         body: "Just came from the link you sent me! Thanks for sharing",
-  //       },
-  //       {
-  //         user: "Chase Six",
-  //         body: "You are so right",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     user: "Jenkins Chase",
-  //     type: "Comment",
-  //     title: "This pipeline is very relevant to my work!",
-  //     body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
-  //     upvotes: 150,
-  //     downvotes: 50,
-  //     replies: [
-  //       {
-  //         user: "Chase Two",
-  //         body: "Me too",
-  //       },
-  //       {
-  //         user: "Chase Three",
-  //         body: "This also relates to my work",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     user: "Jenkins Chase",
-  //     type: "Question",
-  //     title: "What are crystals?",
-  //     body: "I was just exploring this site, and came across this pipeline. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
-  //     upvotes: 150,
-  //     downvotes: 50,
-  //     replies: [
-  //       {
-  //         user: "Chase Two",
-  //         body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
-  //       },
-  //       {
-  //         user: "Chase Three",
-  //         body: "I had the same question",
-  //       },
-  //     ],
-  //   },
-  // ];
 
   const fakeDatasets = [
     {
@@ -347,33 +221,37 @@ const PipelinePage = () => {
             <span>Version {result[0].version}</span>
             <span>|</span>
             <span>{result[0].year}</span>
-            {result[0].tags.length>0?<>
-            <span>|</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 28 28"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 6h.008v.008H6V6z"
-              />
-            </svg>
-            <div>
-              {result[0].tags
-                .map((t: any) => <span>{t}</span>)
-                .reduce((prev: any, curr: any) => [prev, ", ", curr])}
-            </div>
-            </>:<></>}
+            {result[0].tags.length > 0 ? (
+              <>
+                <span>|</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 28 28"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 6h.008v.008H6V6z"
+                  />
+                </svg>
+                <div>
+                  {result[0].tags
+                    .map((t: any) => <span>{t}</span>)
+                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
           {/* Total Runs/Pins/Shares/Citations goes here */}
           {/* <PipelineMetrics/> */}
@@ -429,10 +307,19 @@ const PipelinePage = () => {
                 client = garden_ai.GardenClient()
                 <br />
                 <br />
-                <span className="text-orange">pipeline</span> = client.get_registered_pipeline(<span className="text-green">"{doi}"</span>)<br/>
+                <span className="text-orange">pipeline</span> =
+                client.get_registered_pipeline(
+                <span className="text-green">"{doi}"</span>)<br />
                 <br />
-                <span className="text-gray-400">#If you have your own globus compute endpoint, use it here</span><br/>
-                <span className="text-orange">pipeline</span>(test_df, endpoint=<span className="text-green">'86a47061-f3d9-44f0-90dc-56ddc642c000'</span>)
+                <span className="text-gray-400">
+                  #If you have your own globus compute endpoint, use it here
+                </span>
+                <br />
+                <span className="text-orange">pipeline</span>(test_df, endpoint=
+                <span className="text-green">
+                  '86a47061-f3d9-44f0-90dc-56ddc642c000'
+                </span>
+                )
               </code>
             </div>
 
@@ -469,7 +356,6 @@ const PipelinePage = () => {
               </a>
             </div>
           </div>
-          {/* For inserting code blocks, consider: https://github.com/rajinwonderland/react-code-blocks#-demo */}
         </div>
 
         <AccordionTop />
@@ -569,7 +455,7 @@ const PipelinePage = () => {
                   )}
                   <div ref={bottom}></div>
                 </div>
-                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8 break-words">
+                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8 break-words whitespace-pre-line">
                   <h1 className="text-xl lg:text-3xl font-bold">
                     {result[0].steps[buttonIndex].title}
                   </h1>
@@ -577,88 +463,46 @@ const PipelinePage = () => {
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
                     {result[0].steps[buttonIndex].description}
                   </p>
-                  {result[0].steps[buttonIndex].authors.length > 0 ? (
-                    <p className="pb-2">
-                      <span className="font-semibold">Authors: </span>
-                      {result[0].steps[buttonIndex].authors
-                        .map((cont: any) => <span>{cont}</span>)
-                        .reduce((prev: any, curr: any) => [prev, ", ", curr])}
-                    </p>
-                  ) : (
-                    <></>
+                  {/* {displayStepContent(result[0].steps[buttonIndex])} */}
+                  {Object.keys(result[0].steps[buttonIndex]).map(
+                    (key, index) => {
+                      if (result[0].steps[buttonIndex][key]) {
+                        if(key === "title" || key === "description"){
+                          return <></>
+                        }
+                        if (Array.isArray(result[0].steps[buttonIndex][key])) {
+                          if (result[0].steps[buttonIndex][key].length === 0) {
+                            return <></>;
+                          } else {
+                            return (
+                              <div key={index}>
+                                <p className="pb-2 whitspace-normal">
+                                  <span className="font-semibold">{key}: </span>
+                                  {result[0].steps[buttonIndex][key]
+                                    .map((author: any) => <span>{author}</span>)
+                                    .reduce((prev: any, curr: any) => [
+                                      prev,
+                                      ", ",
+                                      curr,
+                                    ])}
+                                </p>
+                              </div>
+                            );
+                          }
+                        }
+                        return (
+                          <div key={index}>
+                            <p className="pb-2">
+                              <span className="font-semibold">{key}:</span>{" "}
+                              {result[0].steps[buttonIndex][key]}
+                            </p>
+                          </div>
+                        );
+                      } else {
+                        return <></>;
+                      }
+                    }
                   )}
-                  {result[0].steps[buttonIndex].contributors.length > 0 ? (
-                    <p className="pb-2">
-                      <span className="font-semibold">Contributors: </span>
-                      {result[0].steps[buttonIndex].contributors
-                        .map((cont: any) => <span>{cont}</span>)
-                        .reduce((prev: any, curr: any) => [prev, ", ", curr])}
-                    </p>
-                  ) : (
-                    <></>
-                  )}
-                  {result[0].steps[buttonIndex].input_info ? (
-                    <p className="pb-2">
-                      <span className="font-semibold">Input info:</span>{" "}
-                      {result[0].steps[buttonIndex].input_info}
-                    </p>
-                  ) : (
-                    <></>
-                  )}
-                  {result[0].steps[buttonIndex].func ? (
-                    <p className="pb-2">
-                      <span className="font-semibold">Function:</span>{" "}
-                      {result[0].steps[buttonIndex].func}
-                    </p>
-                  ) : (
-                    <></>
-                  )}
-                  {result[0].steps[buttonIndex].python_version ? (
-                    <p className="pb-2">
-                      <span className="font-semibold">Python version: </span>
-                      {result[0].steps[buttonIndex].python_version}
-                    </p>
-                  ) : (
-                    <></>
-                  )}
-                  {result[0].steps[buttonIndex].output_info ? (
-                    <p className="pb-2">
-                      <span className="font-semibold">Output info: </span>
-                      {result[0].steps[buttonIndex].output_info}
-                    </p>
-                  ) : (
-                    <></>
-                  )}
-                  {/* {result[0].steps[buttonIndex].conda_dependencies.length > 0 ? (
-                    <div className="pb-2">
-                      <span className="font-semibold">
-                        Conda dependencies:{" "}
-                      </span>
-                      <ul className="px-8">
-                        {result[0].steps[
-                          buttonIndex
-                        ].conda_dependencies.map((cont:any) => (
-                          <li>- {cont}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <></>
-                  )} */}
-                  {/* {result[0].steps[buttonIndex].pip_dependencies.length > 0 ? (
-                    <div className="pb-2">
-                      <span className="font-semibold">Pip dependencies: </span>
-                      <ul className="px-8">
-                        {result[0].steps[
-                          buttonIndex
-                        ].pip_dependencies.map<React.ReactNode>((cont) => (
-                          <li>- {cont}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <></>
-                  )} */}
                 </div>
               </div>
             )}

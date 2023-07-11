@@ -43,7 +43,14 @@ const GardenPage = () => {
     return <div>Loading</div>;
   }
   if(result.length === 0){
-    return <div>No garden found</div>
+    return( 
+    <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
+      <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] border border-black rounded-xl bg-white flex flex-col items-center">
+        <h1 className=" py-8 text-2xl font-semibold">No Garden Found</h1>
+        <p>The page you were looking for does not exist</p>
+      </div>
+    </div>
+      )
   }
   const fakeDatasets = [
     {

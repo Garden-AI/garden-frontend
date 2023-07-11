@@ -640,6 +640,10 @@ video {
   margin: 0px;
 }
 
+.m-32 {
+  margin: 8rem;
+}
+
 .mx-1 {
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -678,6 +682,11 @@ video {
 .my-8 {
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+
+.my-32 {
+  margin-top: 8rem;
+  margin-bottom: 8rem;
 }
 
 .mb-2 {
@@ -807,6 +816,14 @@ video {
 }
 
 .h-screen {
+  height: 100vh;
+}
+
+.h-\[\] {
+  height: ;
+}
+
+.h-\[100vh\] {
   height: 100vh;
 }
 
@@ -1036,6 +1053,10 @@ video {
   white-space: nowrap;
 }
 
+.whitespace-pre-line {
+  white-space: pre-line;
+}
+
 .break-words {
   overflow-wrap: break-word;
 }
@@ -1223,6 +1244,10 @@ video {
 
 .p-8 {
   padding: 2rem;
+}
+
+.p-32 {
+  padding: 8rem;
 }
 
 .px-2 {
