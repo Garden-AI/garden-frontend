@@ -26,7 +26,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             rel="noopener noreferrer"
           >
             <img
-              src="/img/facebook-logo.png"
+              src="img/facebook-logo.png"
               alt="Facebook logo"
               className="max-w-[5vw] sm:max-w-[3vw]"
             />
@@ -37,7 +37,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             rel="noopener noreferrer"
           >
             <img
-              src="/img/twitter-logo.png"
+              src="img/twitter-logo.png"
               alt="Twitter logo"
               className="max-w-[5vw] sm:max-w-[3vw]"
             />
@@ -48,7 +48,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             rel="noopener noreferrer"
           >
             <img
-              src="/img/LinkedIn-logo.png"
+              src="img/LinkedIn-logo.png"
               alt="LinkedIn logo"
               className="max-w-[5vw] sm:max-w-[3vw]"
             />
@@ -59,7 +59,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             rel="noopener noreferrer"
           >
             <img
-              src="/img/reddit-logo.png"
+              src="img/reddit-logo.png"
               alt="Reddit logo"
               className="max-w-[5vw] sm:max-w-[3vw]"
             />
@@ -70,7 +70,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             rel="noopener noreferrer"
           >
             <img
-              src="/img/github-logo.png"
+              src="img/github-logo.png"
               alt="Github logo"
               className="max-w-[5vw] sm:max-w-[3vw]"
             />
@@ -81,7 +81,7 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
             rel="noopener noreferrer"
           >
             <img
-              src="/img/discord-logo.png"
+              src="img/discord-logo.png"
               alt="Discord logo"
               className="max-w-[5vw] sm:max-w-[3vw]"
             />

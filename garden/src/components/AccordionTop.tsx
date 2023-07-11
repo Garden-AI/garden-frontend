@@ -369,7 +369,7 @@ const AccordionTop = () => {
             <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
               <div className="flex items-center px-2 pt-2 pb-6 gap-4">
                 <img
-                  src="../img/github-logo.png"
+                  src="img/github-logo.png"
                   className="max-w-[5vw]"
                   alt="Github logo"
                 />
