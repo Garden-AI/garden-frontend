@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import PipelineBox from "../components/PipelineBox";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
@@ -13,8 +13,10 @@ import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 
 const GardenPage = () => {
   const { doi } = useParams();
+  const navigate = useNavigate();
   const [active, setActive] = useState("");
   const [show, setShow] = useState(false);
+  const [relatedResults, setRelatedResults] = useState<Array<any>>([])
   // const [showComment, setShowComment] = useState(true);
   const [showFoundry, setShowFoundry] = useState(false);
   const [result, setResult] = useState<any>(undefined);
@@ -38,6 +40,28 @@ const GardenPage = () => {
     }
     Search();
   }, [doi]);
+
+  useEffect(() => {
+    async function Search() {
+      try {
+        const response = await fetchWithScope(
+          SEARCH_SCOPE,
+          GARDEN_INDEX_URL + '/search?q=2023&limit=6'
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const content = await response.json();
+        setRelatedResults(content.gmeta);
+      } catch (error) {
+        setRelatedResults([]);
+      }
+    }
+    Search()
+    
+  }, []);
+  console.log('related result', relatedResults)
   console.log(result, "result");
   if (result === undefined) {
     return <div>Loading</div>;
@@ -46,8 +70,11 @@ const GardenPage = () => {
     return( 
     <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
       <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] border border-black rounded-xl bg-white flex flex-col items-center">
-        <h1 className=" py-8 text-2xl font-semibold">No Garden Found</h1>
-        <p>The page you were looking for does not exist</p>
+        <h1 className=" py-12 px-4 text-4xl font-semibold text-center">No Garden Found</h1>
+        <p className="text-center px-4">The page you were looking for does not exist</p>
+        <button className="bg-green text-white mt-16 border border-green rounded-lg py-3 px-4 shadow-lg hover:shadow-xl hover:border-black" onClick={() => navigate('/home')}>
+          Back to Home
+        </button>
       </div>
     </div>
       )
@@ -66,74 +93,8 @@ const GardenPage = () => {
       url: "https://zenodo.org/",
     },
   ];
-  // const fakeComments = [
-  //   {
-  //     user: "Chase Jenkins",
-  //     type: "Comment",
-  //     title: "This is a great garden",
-  //     body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
-  //     upvotes: 150,
-  //     downvotes: 50,
-  //     replies: [
-  //       {
-  //         user: "Chase Two",
-  //         body: "I agree",
-  //       },
-  //       {
-  //         user: "Chase Three",
-  //         body: "It is a great garden",
-  //       },
-  //       {
-  //         user: "Chase Four",
-  //         body: "Well said",
-  //       },
-  //       {
-  //         user: "Chase Five",
-  //         body: "Just came from the link you sent me! Thanks for sharing",
-  //       },
-  //       {
-  //         user: "Chase Six",
-  //         body: "You are so right",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     user: "Jenkins Chase",
-  //     type: "Comment",
-  //     title: "This garden is very relevant to my work!",
-  //     body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
-  //     upvotes: 150,
-  //     downvotes: 50,
-  //     replies: [
-  //       {
-  //         user: "Chase Two",
-  //         body: "Me too",
-  //       },
-  //       {
-  //         user: "Chase Three",
-  //         body: "This also relates to my work",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     user: "Jenkins Chase",
-  //     type: "Question",
-  //     title: "What are crystals?",
-  //     body: "I was just exploring this site, and came across this garden. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
-  //     upvotes: 150,
-  //     downvotes: 50,
-  //     replies: [
-  //       {
-  //         user: "Chase Two",
-  //         body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
-  //       },
-  //       {
-  //         user: "Chase Three",
-  //         body: "I had the same question",
-  //       },
-  //     ],
-  //   },
-  // ];
+
+  
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -282,7 +243,7 @@ const GardenPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {result[0]?.entries[0].content.pipelines.map(
                   (pipeline: any) => (
-                    <PipelineBox key={pipeline} pipeline={pipeline} />
+                    <PipelineBox key={pipeline.doi} pipeline={pipeline} />
                   )
                 )}
               </div>
@@ -291,7 +252,7 @@ const GardenPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {result[0]?.entries[0].content.pipelines.map(
                   (pipeline: any) => (
-                    <PipelineBox key={pipeline} pipeline={pipeline} />
+                    <PipelineBox key={pipeline.doi} pipeline={pipeline} />
                   )
                 )}
               </div>
@@ -387,12 +348,13 @@ const GardenPage = () => {
           id="related"
           className="w-full h-full overflow-x-scroll scroll-smooth whitespace-nowrap inline-flex gap-4"
         >
+          {relatedResults.map((related) => <RelatedGardenBox related={related}/>)}
+          {/* <RelatedGardenBox />
           <RelatedGardenBox />
           <RelatedGardenBox />
           <RelatedGardenBox />
           <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
+          <RelatedGardenBox /> */}
         </div>
 
         <button

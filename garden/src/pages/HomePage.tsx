@@ -28,7 +28,6 @@ const HomePage = () => {
     Search()
     
   }, []);
-  console.log('result', result)
 
   return (
     <>

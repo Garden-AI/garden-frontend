@@ -1,33 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const RelatedGardenBox = () => {
+const RelatedGardenBox = ({ related }: { related: any }) => {
   const navigate = useNavigate();
-  const fakeData = {
-    uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
-    name: "Crystal Garden",
-    doi: "10.3792.1234",
-    pipelines: [
-      "10.2345.55555",
-      "10.2345.55556",
-      "10.2345.55557",
-      "10.2345.55558",
-    ],
-    description: "Models for predicting crystal structure.",
-    authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
-    tags: ["fun, crystals, garden"],
-  };
+  const text = related.entries[0].content.doi.replace("/", "%2f")
 
   return (
     <div
       className="bg-gray-100 border border-gray-200 shadow-sm rounded-lg flex flex-col justify-center items-center px-5 h-56 min-w-[275px] hover:shadow-md hover:cursor-pointer text-display"
-      onClick={() => navigate(`/garden/${fakeData.doi}`)}
+      onClick={() => navigate(`/garden/${text}`)}
     >
       <div className="my-10 whitespace-normal overflow-y-hidden">
-        <p className="text-3xl">{fakeData.name}</p>
+        <p className="text-3xl text-center">{related.entries[0].content.title}</p>
       </div>
 
-      <div className="w-[250px] flex justify-between px-2">
+      {/* <div className="w-[250px] flex justify-between px-2">
         <div title="total pins" className="flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +63,7 @@ const RelatedGardenBox = () => {
           </svg>
           <p className="pl-2 text-gray-gray">123</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

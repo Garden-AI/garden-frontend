@@ -519,10 +519,10 @@ const PipelinePage = () => {
                     Appears in these other Gardens
                   </h1>
                   <div className=" grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
+                    {/* <RelatedGardenBox />
                     <RelatedGardenBox />
                     <RelatedGardenBox />
-                    <RelatedGardenBox />
-                    <RelatedGardenBox />
+                    <RelatedGardenBox /> */}
                   </div>
                 </div>
 
