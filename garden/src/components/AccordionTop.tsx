@@ -62,57 +62,57 @@ const AccordionTop = () => {
     created: "3 Days ago",
     url: "https://google.com",
   };
-  const fakeSoftwareTesting = [
-    {
-      test: "Python 3.9 - GPU",
-      status: "p",
-      date: "3 days ago",
-    },
-    {
-      test: "Python 3.9 - CPU",
-      status: "p",
-      date: "3 days ago",
-    },
-    {
-      test: "Python 3.8 - GPU",
-      status: "f",
-      date: "3 days ago",
-    },
-  ];
-  const fakeReliabilityTesting = [
-    {
-      test: "LIGO Validation Set 1",
-      status: "p",
-      date: "5 minutes ago",
-      accuracy: "0.95",
-    },
-    {
-      test: "LIGO Training Set",
-      status: "p",
-      date: "1 day ago",
-      accuracy: "1.0",
-    },
-    {
-      test: "LIGO Validation Set 2",
-      status: "f",
-      date: "2 days ago",
-      accuracy: "0.85",
-    },
-  ];
-  const fakePerformanceTesting = [
-    {
-      title: "CPU",
-      iterations: 20,
-    },
-    {
-      title: "GPU",
-      iterations: 100,
-    },
-    {
-      title: "Hardware Accelerator",
-      iterations: 500,
-    },
-  ];
+  // const fakeSoftwareTesting = [
+  //   {
+  //     test: "Python 3.9 - GPU",
+  //     status: "p",
+  //     date: "3 days ago",
+  //   },
+  //   {
+  //     test: "Python 3.9 - CPU",
+  //     status: "p",
+  //     date: "3 days ago",
+  //   },
+  //   {
+  //     test: "Python 3.8 - GPU",
+  //     status: "f",
+  //     date: "3 days ago",
+  //   },
+  // ];
+  // const fakeReliabilityTesting = [
+  //   {
+  //     test: "LIGO Validation Set 1",
+  //     status: "p",
+  //     date: "5 minutes ago",
+  //     accuracy: "0.95",
+  //   },
+  //   {
+  //     test: "LIGO Training Set",
+  //     status: "p",
+  //     date: "1 day ago",
+  //     accuracy: "1.0",
+  //   },
+  //   {
+  //     test: "LIGO Validation Set 2",
+  //     status: "f",
+  //     date: "2 days ago",
+  //     accuracy: "0.85",
+  //   },
+  // ];
+  // const fakePerformanceTesting = [
+  //   {
+  //     title: "CPU",
+  //     iterations: 20,
+  //   },
+  //   {
+  //     title: "GPU",
+  //     iterations: 100,
+  //   },
+  //   {
+  //     title: "Hardware Accelerator",
+  //     iterations: 500,
+  //   },
+  // ];
 
   const copy = async (text: any) => {
     await navigator.clipboard.writeText(text);
