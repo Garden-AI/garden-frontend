@@ -13,7 +13,7 @@ import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 
 const PipelinePage = () => {
   const { doi } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [active, setActive] = useState("");
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -63,10 +63,10 @@ const PipelinePage = () => {
             (pipe: any) => pipe.doi === doi
           )
         );
-        setAppears(content.gmeta)
+        setAppears(content.gmeta);
       } catch (error) {
         setResult([]);
-        setAppears([])
+        setAppears([]);
       }
     }
     Search();
@@ -114,7 +114,6 @@ const PipelinePage = () => {
       </div>
     );
   }
-
 
   const fakeDatasets = [
     {
@@ -225,6 +224,7 @@ const PipelinePage = () => {
                   <path d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
                 </svg>
               </button>
+              {/* Pin and Cite buttons to be added later */}
               {/* <button title="Pin">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -340,7 +340,6 @@ const PipelinePage = () => {
           <div className="sm:flex justify-center py-2 lg:pr-24 gap-4 md:gap-20">
             <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
               <code className="leading-loose">
-                {/* <span className="text-purple">from</span> garden_sdk{" "} */}
                 <span className="text-purple">import</span> GardenClient <br />
                 client = garden_ai.GardenClient()
                 <br />
@@ -505,8 +504,8 @@ const PipelinePage = () => {
                   {Object.keys(result[0].steps[buttonIndex]).map(
                     (key, index) => {
                       if (result[0].steps[buttonIndex][key]) {
-                        if(key === "title" || key === "description"){
-                          return <></>
+                        if (key === "title" || key === "description") {
+                          return <></>;
                         }
                         if (Array.isArray(result[0].steps[buttonIndex][key])) {
                           if (result[0].steps[buttonIndex][key].length === 0) {
@@ -515,7 +514,9 @@ const PipelinePage = () => {
                             return (
                               <div key={index}>
                                 <p className="pb-2 whitspace-normal">
-                                  <span className="font-semibold">{key}: </span>
+                                  <span className="font-semibold text-green">
+                                    {key}:{" "}
+                                  </span>
                                   {result[0].steps[buttonIndex][key]
                                     .map((author: any) => <span>{author}</span>)
                                     .reduce((prev: any, curr: any) => [
@@ -531,7 +532,9 @@ const PipelinePage = () => {
                         return (
                           <div key={index}>
                             <p className="pb-2">
-                              <span className="font-semibold">{key}:</span>{" "}
+                              <span className="font-semibold text-green">
+                                {key}:
+                              </span>{" "}
                               {result[0].steps[buttonIndex][key]}
                             </p>
                           </div>
@@ -552,14 +555,20 @@ const PipelinePage = () => {
 
             {active === "Related" && (
               <div className="px-6">
-                {appears.length>0 ? <div>
-                  <h1 className="underline text-2xl pb-8">
-                    Appears in these Gardens
-                  </h1>
-                  <div className=" grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
-                    {appears.map((related: any) => <RelatedGardenBox related={related}/>)}
+                {appears.length > 0 ? (
+                  <div>
+                    <h1 className="underline text-2xl pb-8">
+                      Appears in these Gardens
+                    </h1>
+                    <div className=" grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
+                      {appears.map((related: any) => (
+                        <RelatedGardenBox related={related} />
+                      ))}
+                    </div>
                   </div>
-                </div>: <></>}
+                ) : (
+                  <></>
+                )}
 
                 <div>
                   <h1 className="underline text-2xl py-8">

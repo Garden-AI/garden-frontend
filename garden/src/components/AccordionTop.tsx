@@ -10,7 +10,7 @@ const AccordionTop = () => {
   const providerValue = useAccordionProvider({
     allowMultiple: true,
   });
-  const { toggleAll } = providerValue;
+  // const { toggleAll } = providerValue;
 
   const fakePapers = [
     {
@@ -120,7 +120,7 @@ const AccordionTop = () => {
 
   return (
     <div>
-      <div className="flex justify-end pb-2 gap-4">
+      {/* <div className="flex justify-end pb-2 gap-4">
         <button
           className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
           onClick={() => toggleAll(true)}
@@ -194,7 +194,7 @@ const AccordionTop = () => {
           </div>
           <p>Collapse All</p>
         </button>
-      </div>
+      </div> */}
       <ControlledAccordion
         providerValue={providerValue}
         className=" font-display flex flex-col w-full mr-32"
@@ -249,6 +249,7 @@ const AccordionTop = () => {
 
         <AccordionItem
           className="border-y border-gray-300"
+          initialEntered
           header={({ state: { isEnter } }) => (
             <div className="inline-flex w-full justify-between p-4">
               <span className="">&#128206; Associated Materials</span>

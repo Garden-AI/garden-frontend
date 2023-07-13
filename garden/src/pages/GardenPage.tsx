@@ -52,13 +52,17 @@ const GardenPage = () => {
           throw new Error("Network response was not ok");
         }
         const content = await response.json();
-        setRelatedResults(content.gmeta);
+        setRelatedResults(
+          content.gmeta.filter(
+            (gard: any) => gard.entries[0].content.doi !== doi
+          )
+        );
       } catch (error) {
         setRelatedResults([]);
       }
     }
     Search();
-  }, []);
+  }, [doi]);
   console.log("related result", relatedResults);
   console.log(result, "result");
   if (result === undefined) {
@@ -343,7 +347,7 @@ const GardenPage = () => {
         </div>
       </div>
 
-      <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">Related Gardens</h1>
+      <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">Explore Other Gardens</h1>
       <div className="relative flex items-center pb-12">
         <button
           className="w-16 h-16 ml-12 mr-6 bg-gray-100"
@@ -371,12 +375,6 @@ const GardenPage = () => {
           {relatedResults.map((related) => (
             <RelatedGardenBox related={related} />
           ))}
-          {/* <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox /> */}
         </div>
 
         <button
