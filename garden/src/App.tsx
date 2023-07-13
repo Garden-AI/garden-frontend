@@ -1,5 +1,4 @@
 import React from 'react';
-import PlaceholderPage from './pages/PlaceholderPage'
 import RealStuff from './RealStuff'
 import { HashRouter, Routes, Route } from "react-router-dom";
 import GardenPage from './pages/GardenPage';
@@ -56,9 +55,9 @@ function App() {
     <div>
       <HashRouter>
       <ScrollToTop/>
-        {isAuthenticated ? <Navbar /> : null}
+        <Navbar />
         <Routes>
-          <Route path="/" element={isAuthenticated ? MainApp() : <PlaceholderPage />}/>
+          <Route path="/" element={<HomePage />}/>
           <Route path="secret" element={MainApp()}/>
           <Route path="/home" element={<HomePage />}/>
           <Route path="/about" element={<AboutPage />}/>

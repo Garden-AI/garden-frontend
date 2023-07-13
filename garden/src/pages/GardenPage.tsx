@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PipelineBox from "../components/PipelineBox";
-import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 // import Breadcrumbs from "../components/Breadcrumbs";
@@ -150,7 +149,6 @@ const GardenPage = () => {
 
   return (
     <div className="font-display">
-      <Navbar />
       <div
         autoFocus
         className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display"

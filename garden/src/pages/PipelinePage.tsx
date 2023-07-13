@@ -3,10 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
 import RelatedGardenBox from "../components/RelatedGardenBox";
-import Navbar from "../components/Navbar";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
 import { fetchWithScope } from "../globusHelpers";
 import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
+// import Breadcrumbs from "../components/Breadcrumbs";
 // import PipelineMetrics from "../components/PipelineMetrics";
 // import DiscussionTabContent from "../components/DiscussionTabContent";
 // import DiscussionTab from "../components/DiscussionTab";
@@ -189,10 +189,9 @@ const PipelinePage = () => {
 
   return (
     <>
-      <Navbar />
       <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-24 pb-2 font-display">
         {/* Place breadcrumbs here */}
-
+        {/* <Breadcrumbs/> */}
         {/* Pipeline Header */}
         <div className="flex flex-col gap-1">
           <div className="flex gap-8">
@@ -226,7 +225,7 @@ const PipelinePage = () => {
                   <path d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
                 </svg>
               </button>
-              <button title="Pin">
+              {/* <button title="Pin">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -247,7 +246,7 @@ const PipelinePage = () => {
                 >
                   <path d="M0 216C0 149.7 53.7 96 120 96h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V320 288 216zm256 0c0-66.3 53.7-120 120-120h8c17.7 0 32 14.3 32 32s-14.3 32-32 32h-8c-30.9 0-56 25.1-56 56v8h64c35.3 0 64 28.7 64 64v64c0 35.3-28.7 64-64 64H320c-35.3 0-64-28.7-64-64V320 288 216z" />
                 </svg>
-              </button>
+              </button> */}
               <Modal
                 show={show}
                 close={closeModal}

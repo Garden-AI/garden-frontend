@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 import GardenBox from "../components/GardenBox";
 import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants";
@@ -31,10 +30,6 @@ const HomePage = () => {
 
   return (
     <>
-      {/* <div className="container-max-w-full bg-gray-200 shadow border p-6">
-        HomePage
-      </div> */}
-      <Navbar />
       <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
         <p className="font-semibold text-3xl sm:text-6xl text-center max-w-3xl">
           Build a garden where your model can thrive
