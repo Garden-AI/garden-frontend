@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Breadcrumbs = () => {
   // let matches = useMatches();
@@ -33,7 +33,7 @@ const Breadcrumbs = () => {
   const [visitedPages, setVisitedPages] = useState<string[]>([]);
 
   useEffect(() => {
-    setVisitedPages((prevVisitedPages) => [...prevVisitedPages, location.pathname]);
+    setVisitedPages((visitedPages) => [...visitedPages, window.location.href]);
   }, [location.pathname]);
 
   return (

@@ -10,7 +10,7 @@ import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 // import DiscussionTab from "../components/DiscussionTab";
 // import DiscussionTabContent from "../components/DiscussionTabContent";
 
-const GardenPage = () => {
+const GardenPage = ({bread}: {bread:any}) => {
   const { doi } = useParams();
   const navigate = useNavigate();
   const [active, setActive] = useState("");
@@ -106,6 +106,7 @@ const GardenPage = () => {
       </div>
     );
   }
+  bread.garden = [result[0]?.entries[0].content.title, window.location.href]
   const fakeDatasets = [
     {
       type: "dataset",

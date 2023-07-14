@@ -11,7 +11,7 @@ import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 // import DiscussionTabContent from "../components/DiscussionTabContent";
 // import DiscussionTab from "../components/DiscussionTab";
 
-const PipelinePage = () => {
+const PipelinePage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -114,6 +114,8 @@ const PipelinePage = () => {
       </div>
     );
   }
+  bread.pipeline = [result[0].title, window.location.href];
+  console.log(bread.pipeline[0])
 
   const fakeDatasets = [
     {
@@ -191,6 +193,12 @@ const PipelinePage = () => {
       <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-24 pb-2 font-display">
         {/* Place breadcrumbs here */}
         {/* <Breadcrumbs/> */}
+        <div>
+          <p>Visited Pages:</p>
+          <p>{bread.home}</p>
+          <p>{bread.garden}</p>
+          <p>{bread.pipeline}</p>
+        </div>
         {/* Pipeline Header */}
         <div className="flex flex-col gap-1">
           <div className="flex gap-8">

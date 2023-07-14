@@ -51,19 +51,26 @@ function App() {
     }
 
     const MainApp = () => <RealStuff isAuthenticated={isAuthenticated} handleLogOut={handleLogOut} handleLogin={handleLogin} />
+
+  const breadcrumbs: {home: string; garden: Array<string>; pipeline: Array<string>;} = {
+    home: '',
+    garden: [],
+    pipeline: []
+
+  }
   return (
     <div>
       <HashRouter>
       <ScrollToTop/>
         <Navbar />
         <Routes>
-          <Route path="/" element={<HomePage />}/>
+          <Route path="/" element={<HomePage bread={breadcrumbs}/>}/>
           <Route path="secret" element={MainApp()}/>
-          <Route path="/home" element={<HomePage />}/>
+          <Route path="/home" element={<HomePage bread={breadcrumbs}/>}/>
           <Route path="/about" element={<AboutPage />}/>
           {/* <Route path="/search" element={<SearchPage />}/> */}
-          <Route path="/garden/:doi" element={<GardenPage />}/>
-          <Route path="/pipeline/:doi" element={<PipelinePage />}/>
+          <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs}/>}/>
+          <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs}/>}/>
         </Routes>
       </HashRouter>
     </div>
