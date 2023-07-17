@@ -10,13 +10,12 @@ import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 // import DiscussionTab from "../components/DiscussionTab";
 // import DiscussionTabContent from "../components/DiscussionTabContent";
 
-const GardenPage = ({bread}: {bread:any}) => {
+const GardenPage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
   const navigate = useNavigate();
   const [active, setActive] = useState("");
   const [show, setShow] = useState(false);
   const [relatedResults, setRelatedResults] = useState<Array<any>>([]);
-  // const [showComment, setShowComment] = useState(true);
   const [showFoundry, setShowFoundry] = useState(false);
   const [result, setResult] = useState<any>(undefined);
   console.log(doi);
@@ -106,7 +105,8 @@ const GardenPage = ({bread}: {bread:any}) => {
       </div>
     );
   }
-  bread.garden = [result[0]?.entries[0].content.title, window.location.href]
+  const text = doi?.replace("/", "%2f");
+  bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
   const fakeDatasets = [
     {
       type: "dataset",
@@ -147,10 +147,6 @@ const GardenPage = ({bread}: {bread:any}) => {
   const foundry = () => {
     setShowFoundry(true);
   };
-
-  // const setDiscussionTab = () => {
-  //   setActive("Discussion");
-  // };
 
   return (
     <div className="font-display">

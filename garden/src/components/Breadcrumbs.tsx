@@ -1,55 +1,40 @@
-import { useState, useEffect } from "react";
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const Breadcrumbs = () => {
-  // let matches = useMatches();
-  // let crumbs = matches
-  // .filter((match) => Boolean(match.handle?.crumb))
-  // .map((match) => match.handle?.crumb(match.data));
-
-  //   return (
-  //     <ol>
-  //       {crumbs.map((crumb, index) => (
-  //         <li key={index}>{crumb}</li>
-  //       ))}
-  //     </ol>
-  //   );
-
-  //   let matches = useMatches();
-  // let crumbs = matches.filter((match) => Boolean(match.handle?.crumb))
-  // .map((match) => match.handle?.crumb(match.data));
-
-
-
-  // const location = useLocation();
-  // const links: String[] = [];
-  // links.push(location.pathname);
-  // const here = links.map((link) => {
-  //   return <Link to={`http://localhost:3000${link}`}>Link1</Link>;
-  // });
-
-  const location = useLocation();
-  const [visitedPages, setVisitedPages] = useState<string[]>([]);
-
-  useEffect(() => {
-    setVisitedPages((visitedPages) => [...visitedPages, window.location.href]);
-  }, [location.pathname]);
+const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
+  const navigate = useNavigate();
+  if (crumbs.garden.length === 0) {
+    return <></>;
+  }
 
   return (
     <div>
-    <div>
-      Visited Pages:
-      <ul>
-        {visitedPages.map((page, index) => (
-          <li key={index}>{page}</li>
-        ))}
-      </ul>
+      <div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate(`/home`)}
+            className="text-gray-500 hover:text-black hover:underline"
+          >
+            {crumbs.home}
+          </button>
+          <span className="text-black">/</span>
+          <button
+            onClick={() => navigate(crumbs.garden[1])}
+            className="text-gray-500 hover:text-black hover:underline"
+          >
+            {crumbs.garden[0]}{" "}
+          </button>
+          <span className="text-black">/</span>
+          <button
+            onClick={() => navigate(crumbs.pipeline[1])}
+            className="underline"
+          >
+            {crumbs.pipeline[0]}
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
   );
 };
 
 export default Breadcrumbs;
-
-// https://reactrouter.com/en/main/hooks/use-matches#breadcrumbs

@@ -4,9 +4,8 @@ import GardenBox from "../components/GardenBox";
 import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants";
 import { fetchWithScope } from "../globusHelpers";
 
-const HomePage = ({bread}: {bread:any}) => {
+const HomePage = () => {
   const [result, setResult] = useState<Array<any>>([]);
-  bread.home = window.location.href
 
   useEffect(() => {
     async function Search() {

@@ -3,6 +3,10 @@ import {
   AccordionItem,
   useAccordionProvider,
 } from "@szhsin/react-accordion";
+// import MachineRequirements from "./MachineRequirements";
+// import FairScore from "./FairScore";
+// import TestingTab from "./TestingTab";
+// import ToggleButtonsAccordion from "./ToggleButtonsAccordion";
 
 // https://szhsin.github.io/react-accordion/ for the accordion tabs
 
@@ -10,6 +14,7 @@ const AccordionTop = () => {
   const providerValue = useAccordionProvider({
     allowMultiple: true,
   });
+  // toggleAll is passed into ToggleButtonsAccordion component, uncomment when more accordion tabs are added
   // const { toggleAll } = providerValue;
 
   const fakePapers = [
@@ -62,57 +67,6 @@ const AccordionTop = () => {
     created: "3 Days ago",
     url: "https://google.com",
   };
-  // const fakeSoftwareTesting = [
-  //   {
-  //     test: "Python 3.9 - GPU",
-  //     status: "p",
-  //     date: "3 days ago",
-  //   },
-  //   {
-  //     test: "Python 3.9 - CPU",
-  //     status: "p",
-  //     date: "3 days ago",
-  //   },
-  //   {
-  //     test: "Python 3.8 - GPU",
-  //     status: "f",
-  //     date: "3 days ago",
-  //   },
-  // ];
-  // const fakeReliabilityTesting = [
-  //   {
-  //     test: "LIGO Validation Set 1",
-  //     status: "p",
-  //     date: "5 minutes ago",
-  //     accuracy: "0.95",
-  //   },
-  //   {
-  //     test: "LIGO Training Set",
-  //     status: "p",
-  //     date: "1 day ago",
-  //     accuracy: "1.0",
-  //   },
-  //   {
-  //     test: "LIGO Validation Set 2",
-  //     status: "f",
-  //     date: "2 days ago",
-  //     accuracy: "0.85",
-  //   },
-  // ];
-  // const fakePerformanceTesting = [
-  //   {
-  //     title: "CPU",
-  //     iterations: 20,
-  //   },
-  //   {
-  //     title: "GPU",
-  //     iterations: 100,
-  //   },
-  //   {
-  //     title: "Hardware Accelerator",
-  //     iterations: 500,
-  //   },
-  // ];
 
   const copy = async (text: any) => {
     await navigator.clipboard.writeText(text);
@@ -120,132 +74,12 @@ const AccordionTop = () => {
 
   return (
     <div>
-      {/* <div className="flex justify-end pb-2 gap-4">
-        <button
-          className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
-          onClick={() => toggleAll(true)}
-        >
-          <div className="flex flex-col gap-0 h-6">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.5 15.75l7.5-7.5 7.5 7.5"
-              />
-            </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
-            </svg>
-          </div>
-
-          <p>Expand All</p>
-        </button>
-        <button
-          className="px-3 flex items-center border border-gray-300 rounded py-2 gap-2 hover:shadow-md"
-          onClick={() => toggleAll(false)}
-        >
-          <div className="flex flex-col gap-0 h-6">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
-            </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.5 15.75l7.5-7.5 7.5 7.5"
-              />
-            </svg>
-          </div>
-          <p>Collapse All</p>
-        </button>
-      </div> */}
+      {/* <ToggleButtonsAccordion toggleAll={toggleAll}/> */}
       <ControlledAccordion
         providerValue={providerValue}
         className=" font-display flex flex-col w-full mr-32"
       >
-        {/* To do: Machine Requirements and what that entails */}
-
-        {/* <AccordionItem
-          className="border-y border-gray-300"
-          header={({ state: { isEnter } }) => (
-            <div className="inline-flex w-full justify-between p-4">
-              <span className="">&#128187; Machine Requirements</span>
-              {isEnter ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 12h-15"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              )}
-            </div>
-          )}
-          buttonProps={{
-            className: ({ isEnter }) =>
-              `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
-          }}
-        >
-          <p className="p-4">Machine</p>
-        </AccordionItem> */}
+        {/* <MachineRequirements/> */}
 
         <AccordionItem
           className="border-y border-gray-300"
@@ -483,150 +317,9 @@ const AccordionTop = () => {
           </div>
         </AccordionItem>
 
-        {/* <AccordionItem
-          className="border-y border-gray-300"
-          header={({ state: { isEnter } }) => (
-            <div className="inline-flex w-full justify-between p-4">
-              <span className="">&#128167; Pipeline FAIR-ness</span>
-              {isEnter ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 12h-15"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              )}
-            </div>
-          )}
-          buttonProps={{
-            className: ({ isEnter }) =>
-              `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
-          }}
-        >
-          <p className="p-4">FAIR</p>
-        </AccordionItem> */}
+        {/* <FairScore/> */}
 
-        {/* <AccordionItem
-          className="border-y border-gray-300"
-          header={({ state: { isEnter } }) => (
-            <div className="inline-flex w-full justify-between p-4">
-              <span className="">&#128678; Testing</span>
-              {isEnter ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 12h-15"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              )}
-            </div>
-          )}
-          buttonProps={{
-            className: ({ isEnter }) =>
-              `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
-          }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-x-12 lg:gap-x-32 gap-y-12 px-8 lg:px-16">
-            <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
-              <h1 className="text-2xl p-4 underline">Software Testing</h1>
-              {fakeSoftwareTesting.map((test) => {
-                return (
-                  <div className="flex items-center gap-4 px-4 py-1">
-                    {test.status === "p" ? (
-                      <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span>
-                    ) : (
-                      <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>
-                    )}
-                    <p>{test.test}</p>
-                    <span className="text-gray-500">{test.date}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
-              <h1 className="text-2xl p-4 underline">Reliability Testing</h1>
-              {fakeReliabilityTesting.map((test) => {
-                return (
-                  <div className="flex gap-4 px-4 py-1">
-                    {test.status === "p" ? (
-                      <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span>
-                    ) : (
-                      <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>
-                    )}
-                    <div className="flex flex-col gap-0">
-                      <p>{test.test}</p>
-                      <p className="text-sm text-gray-500">
-                        Accuracy: {test.accuracy}
-                      </p>
-                    </div>
-                    <span className="text-gray-500">{test.date}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
-              <h1 className="text-2xl p-4 underline">Performance Testing</h1>
-              <div className="grid grid-cols-2 gap-y-4">
-                {fakePerformanceTesting.map((test) => {
-                  return (
-                    <div className="px-4 py-1">
-                      <div className="flex flex-col gap-0">
-                        <p className="font-semibold">{test.title}</p>
-                        <p className="text-sm">{test.iterations} iteration/s</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </AccordionItem> */}
+        {/* <TestingTab/> */}
       </ControlledAccordion>
     </div>
   );
