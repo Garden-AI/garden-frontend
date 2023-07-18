@@ -72,7 +72,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     }
     Search();
   }, [doi]);
-  console.log("result", result);
 
   if (result === undefined) {
     return (
@@ -117,7 +116,13 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   }
   const text = doi?.replace("/", "%2f");
   bread.pipeline = [result[0].title, `/pipeline/${text}`];
-  console.log(bread.pipeline[0]);
+  let gardenDOI = ""
+  if(bread.garden.length!==0){
+    gardenDOI = bread.garden[1].replace("/garden/", "")
+    gardenDOI = gardenDOI.replace('%2f', '/')
+  }else{
+    gardenDOI = appears[0].entries[0].content.doi
+  }
 
   const fakeDatasets = [
     {
@@ -318,7 +323,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
           <p className="p-4">{result[0].description}</p>
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 w-full">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
           <div className="sm:flex justify-center py-2 lg:pr-24 gap-4 md:gap-20">
             <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
@@ -327,24 +332,24 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                 client = garden_ai.GardenClient()
                 <br />
                 <br />
-                <span className="text-orange">pipeline</span> =
-                client.get_registered_pipeline(
-                <span className="text-green">"{doi}"</span>)<br />
+                <span className="text-orange">garden</span> =
+                client.get_published_garden(
+                <span className="text-green">"{gardenDOI}"</span>)<br />
                 <br />
                 <span className="text-gray-400">
-                  #If you have your own globus compute endpoint, use it here
+                  #The input type is {result[0].steps[0].input_info}
                 </span>
                 <br />
-                <span className="text-orange">pipeline</span>(test_df, endpoint=
+                <span className="text-orange">garden.<span className="text-white">{result[0].short_name}</span></span>(
                 <span className="text-green">
-                  '86a47061-f3d9-44f0-90dc-56ddc642c000'
+                  'Data Here'
                 </span>
                 )
               </code>
             </div>
 
-            <div className="flex flex-col">
-              <a
+            <div className="flex flex-col items-center justify-center">
+              {/* <a
                 href="https://wholetale.org/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -363,7 +368,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                 <span className="text-center text-xl text-green">
                   Open in HuggingFace
                 </span>
-              </a>
+              </a> */}
               <a
                 href="https://colab.research.google.com/"
                 target="_blank"
@@ -374,6 +379,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   Open in Google Colab
                 </span>
               </a>
+              <p className="max-w-[18vw] pl-1 text-center">Open our notebook template and put the pipeline DOI in the appropiately labeled field to load and run it.</p>
             </div>
           </div>
         </div>

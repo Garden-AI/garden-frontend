@@ -18,7 +18,6 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [relatedResults, setRelatedResults] = useState<Array<any>>([]);
   const [showFoundry, setShowFoundry] = useState(false);
   const [result, setResult] = useState<any>(undefined);
-  console.log(doi);
   useEffect(() => {
     async function Search() {
       try {
@@ -62,8 +61,6 @@ const GardenPage = ({ bread }: { bread: any }) => {
     }
     Search();
   }, [doi]);
-  console.log("related result", relatedResults);
-  console.log(result, "result");
   if (result === undefined) {
     return (
       <div className="flex items-center justify-center h-[100vh]">
