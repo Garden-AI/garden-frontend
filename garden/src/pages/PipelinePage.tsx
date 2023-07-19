@@ -379,7 +379,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   Open in Google Colab
                 </span>
               </a>
-              <p className="max-w-[18vw] pl-1 text-center">Open our notebook template and put the pipeline DOI in the appropiately labeled field to load and run it.</p>
+              {/* <p className="max-w-[18vw] pl-1 text-center">Open our notebook template and put the pipeline DOI in the appropiately labeled field to load and run it.</p> */}
             </div>
           </div>
         </div>
