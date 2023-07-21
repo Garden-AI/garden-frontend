@@ -52,8 +52,9 @@ function App() {
 
     const MainApp = () => <RealStuff isAuthenticated={isAuthenticated} handleLogOut={handleLogOut} handleLogin={handleLogin} />
 
-  const breadcrumbs: {home: string; garden: Array<string>; pipeline: Array<string>;} = {
+  const breadcrumbs: {home: string; search: string; garden: Array<string>; pipeline: Array<string>;} = {
     home: 'Home',
+    search: '',
     garden: [],
     pipeline: []
 
@@ -68,7 +69,7 @@ function App() {
           <Route path="secret" element={MainApp()}/>
           <Route path="/home" element={<HomePage/>}/>
           <Route path="/about" element={<AboutPage />}/>
-          <Route path="/search" element={<SearchPage />}/>
+          <Route path="/search" element={<SearchPage bread={breadcrumbs}/>}/>
           <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs}/>}/>
           <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs}/>}/>
         </Routes>

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PipelineBox from "../components/PipelineBox";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
-// import Breadcrumbs from "../components/Breadcrumbs";
+import Breadcrumbs from "../components/Breadcrumbs";
 import DatasetBox from "../components/DatasetBox";
 import { fetchWithScope } from "../globusHelpers";
 import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
@@ -104,6 +104,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   }
   const text = doi?.replace("/", "%2f");
   bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
+  bread.pipeline= []
   const fakeDatasets = [
     {
       type: "dataset",
@@ -152,7 +153,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
         className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display"
       >
         {/* Place breadcrumbs here */}
-        {/* <Breadcrumbs /> */}
+        <Breadcrumbs crumbs={bread}/>
         {/* Garden Header */}
         <div className="flex gap-8">
           <h1 className="text-3xl">{result[0]?.entries[0].content.title}</h1>

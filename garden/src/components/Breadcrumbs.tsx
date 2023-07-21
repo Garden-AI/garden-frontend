@@ -17,14 +17,40 @@ const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
           >
             {crumbs.home}
           </button>
+          {crumbs.search === "" ? (
+            <></>
+          ) : (
+            <>
+              <span className="text-black">/</span>
+              <button
+                onClick={() => navigate(`/search`)}
+                className="text-gray-500 hover:text-black hover:underline"
+              >
+                {crumbs.search}
+              </button>
+            </>
+          )}
           <span className="text-black">/</span>
-          <button
-            onClick={() => navigate(crumbs.garden[1])}
-            className="text-gray-500 hover:text-black hover:underline"
-          >
-            {crumbs.garden[0]}{" "}
-          </button>
-          <span className="text-black">/</span>
+          {crumbs.pipeline.length === 0 ? (
+            <button
+              onClick={() => navigate(crumbs.garden[1])}
+              className="text-black underline"
+            >
+              {crumbs.garden[0]}
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate(crumbs.garden[1])}
+              className="text-gray-500 hover:text-black hover:underline"
+            >
+              {crumbs.garden[0]}
+            </button>
+          )}
+          {crumbs.pipeline.length === 0 ? (
+            <></>
+          ) : (
+            <span className="text-black">/</span>
+          )}
           <button
             onClick={() => navigate(crumbs.pipeline[1])}
             className="underline"
