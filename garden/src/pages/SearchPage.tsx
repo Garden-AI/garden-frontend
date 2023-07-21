@@ -7,6 +7,7 @@ import { fetchWithScope } from "../globusHelpers";
 const SearchPage = ({ bread }: { bread: any }) => {
   const [result, setResult] = useState<any>(undefined);
   const [filteredResult, setFilteredResult] = useState<any>(undefined)
+  const [query, setQuery] = useState('')
 
   bread.search = 'Search'
 
@@ -51,20 +52,22 @@ const SearchPage = ({ bread }: { bread: any }) => {
     );
   }
 
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value)
     const updatedResults = result.filter((res: any) => {
       return res.entries[0].content.title.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setFilteredResult(updatedResults)
   }
-
+  console.log(query, 'query')
 
 
   return (
     <>
       <div className="pt-24 px-16 font-display">
         <p className="text-3xl">Gardens</p>
-        <div className="border border-gray rounded-3xl px-4 mt-12 mx-36 flex justify-between items-center">
+        <div className="border border-gray rounded-3xl px-4 mt-12 md:mx-12 md:mx-36 flex justify-between items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -83,10 +86,10 @@ const SearchPage = ({ bread }: { bread: any }) => {
           <input
             type="text"
             placeholder="Search for a Garden..."
-            className=" w-full mx-2 px-2 outline-none"
+            className=" w-full mx-2 px-2 outline-none py-2"
             onInput={handleInputChange}
           />
-          <button className="py-2 my-1 bg-green rounded-3xl text-white px-6">Search</button>
+          {/* <button className="py-2 my-1 bg-green rounded-3xl text-white px-6">Search</button> */}
         </div>
         <div
           className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-16"
@@ -96,6 +99,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
           )): filteredResult.map((res: any) => (
             <GardenBox garden={res} />
           ))}
+          {filteredResult && filteredResult.length === 0?<p className="text-2xl text-gray-500 text-center sm:col-start-1 sm:col-end-3 md:col-start-2 md:col-end-3">No results found for "{query}"</p>: <></>}
         </div>
       </div>
     </>
