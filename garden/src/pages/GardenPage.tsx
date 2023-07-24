@@ -5,6 +5,7 @@ import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Breadcrumbs from "../components/Breadcrumbs";
 import DatasetBox from "../components/DatasetBox";
+import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
 import { fetchWithScope } from "../globusHelpers";
 import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 // import DiscussionTab from "../components/DiscussionTab";
@@ -102,21 +103,38 @@ const GardenPage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
+  console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
-  bread.pipeline= []
+  bread.pipeline = [];
   const fakeDatasets = [
     {
-      type: "dataset",
-      doi: "10.3792.1234",
-      repository: "Foundry",
-      url: "https://foundry-ml.org/#/datasets",
+      models: [
+        {
+          datasets: [
+            {
+              title: "dataset",
+              doi: "10.1234",
+              url: "https://www.google.com/",
+              type: ["csv", "jpeg"],
+            },
+          ],
+        },
+      ],
     },
     {
-      type: "dataset",
-      doi: "10.3792.1235",
-      repository: "Zenodo",
-      url: "https://zenodo.org/",
+      models: [
+        {
+          datasets: [
+            {
+              title: "dataset",
+              doi: "10.1234",
+              url: "dataset.com",
+              type: ["csv", "jpeg"],
+            },
+          ],
+        },
+      ],
     },
   ];
 
@@ -153,7 +171,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
         className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display"
       >
         {/* Place breadcrumbs here */}
-        <Breadcrumbs crumbs={bread}/>
+        <Breadcrumbs crumbs={bread} />
         {/* Garden Header */}
         <div className="flex gap-8">
           <h1 className="text-3xl">{result[0]?.entries[0].content.title}</h1>
@@ -286,13 +304,22 @@ const GardenPage = ({ bread }: { bread: any }) => {
                   you to learn more about them and how to view them.
                 </div>
                 <div>
-                  {fakeDatasets.map((dataset) => (
-                    <DatasetBox
-                      key={dataset.doi}
-                      dataset={dataset}
-                      showFoundry={foundry}
-                    />
-                  ))}
+                  {/* result[0]?.entries[0].content.pipelines */}
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
+                    {result[0]?.entries[0].content.pipelines.map((pipe: any) => {
+                      return pipe.models[0].datasets ? (
+                        <>
+                          {pipe.models[0].datasets.map((dataset: any) => {
+                            return <DatasetBoxPipeline dataset={dataset} />;
+                          })}
+                        </>
+                      ) : (
+                        <p className="text-center pt-8 pb-16 text-xl">
+                          No datasets available for this pipeline
+                        </p>
+                      );
+                    })}
+                  </div>
                 </div>
                 {showFoundry === true ? (
                   <div>

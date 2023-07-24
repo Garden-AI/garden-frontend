@@ -114,24 +114,25 @@ const PipelinePage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
+  console.log(result[0].models);
   const text = doi?.replace("/", "%2f");
   bread.pipeline = [result[0].title, `/pipeline/${text}`];
-  let gardenDOI = ""
-  if(bread.garden.length!==0){
-    gardenDOI = bread.garden[1].replace("/garden/", "")
-    gardenDOI = gardenDOI.replace('%2f', '/')
-  }else{
-    gardenDOI = appears[0].entries[0].content.doi
+  let gardenDOI = "";
+  if (bread.garden.length !== 0) {
+    gardenDOI = bread.garden[1].replace("/garden/", "");
+    gardenDOI = gardenDOI.replace("%2f", "/");
+  } else {
+    gardenDOI = appears[0].entries[0].content.doi;
   }
 
   const fakeDatasets = [
     {
-      title: "Crystal Dataset One",
+      title: "Crystal Dataset One Crystal Dataset One",
       size: "5 GB",
       number: "48",
-      type: ["CSV", "JPEG", "Other"],
+      type: ["CSV", "JPEG", "Other", "JPEG", "Other", "JPEG", "Other"],
       pluses: 75,
-      doi: "10.3792.1234",
+      doi: "10.3792.12344321",
       url: "https://foundry-ml.org/#/datasets",
     },
     {
@@ -340,11 +341,11 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   #The input type is {result[0].steps[0].input_info}
                 </span>
                 <br />
-                <span className="text-orange">garden.<span className="text-white">{result[0].short_name}</span></span>(
-                <span className="text-green">
-                  'Data Here'
+                <span className="text-orange">
+                  garden.
+                  <span className="text-white">{result[0].short_name}</span>
                 </span>
-                )
+                (<span className="text-green">'Data Here'</span>)
               </code>
             </div>
 
@@ -562,11 +563,17 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   <h1 className="underline text-2xl py-8">
                     Datasets used in this pipeline
                   </h1>
-                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
-                    {fakeDatasets.map((dataset) => {
-                      return <DatasetBoxPipeline dataset={dataset} />;
-                    })}
-                  </div>
+                  {result[0].models.datasets ? (
+                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
+                      {result[0].models.datasets.map((dataset: any) => {
+                        return <DatasetBoxPipeline dataset={dataset} />;
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-center pt-8 pb-16 text-xl">
+                      No datasets available for this pipeline
+                    </p>
+                  )}
                 </div>
               </div>
             )}

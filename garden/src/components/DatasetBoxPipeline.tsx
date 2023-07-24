@@ -1,39 +1,31 @@
-import { useState } from "react";
+const DatasetBoxPipeline = ({ dataset }: { dataset: any }) => {
+  // const [like, setLike] = useState(false)
+  // const likeUnlike = () =>{
+  //     if(like === false){
+  //         setLike(true)
+  //         dataset.pluses =dataset.pluses +1
+  //     }else{
+  //         setLike(false)
+  //         dataset.pluses = dataset.pluses-1
+  //     }
+  // }
 
-const DatasetBoxPipeline = ({dataset}: {dataset: any}) => {
-
-    const [like, setLike] = useState(false)
-    const likeUnlike = () =>{
-        if(like === false){
-            setLike(true)
-            dataset.pluses =dataset.pluses +1
-        }else{
-            setLike(false)
-            dataset.pluses = dataset.pluses-1
-        }
-    }
-
-        return (
-            <div className="flex flex-col gap-2 border border-gray rounded-lg px-4">
-              <h1 className="font-semibold text-2xl pt-4">
-                {dataset.title}
-              </h1>
-              <a target="blank" href={`https://doi.org/${dataset.doi}`}>
-                {`https://doi.org/${dataset.doi}`}
-              </a>
-              <div>
-                <p className="p-1">{dataset.size}</p>
-                <p className="p-1">
-                  {dataset.number} Files (
-                  {dataset.type
-                    .map((type: any) => (
-                      <span>{type}</span>
-                    ))
-                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
-                  )
-                </p>
-              </div>
-              <div className="flex pb-4">
+  return (
+    <div className="flex flex-col gap-2 border border-gray rounded-lg px-4">
+      <h1 className="font-semibold text-2xl pt-4">{dataset.title}</h1>
+      <a target="blank" className="break-words" href={dataset.url}>
+        {dataset.url}
+      </a>
+      <div className="pb-4">
+        <p className="p-1">DOI: {dataset.doi}</p>
+        <p className="p-1">
+          File Types:{" "}
+          {dataset.type
+            .map((type: any) => <span>{type}</span>)
+            .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+        </p>
+      </div>
+      {/* <div className="flex pb-4">
                 <div className="flex items-center gap-3 border border-gray">
                 <button onClick={() => likeUnlike()}>
                 <svg
@@ -53,9 +45,9 @@ const DatasetBoxPipeline = ({dataset}: {dataset: any}) => {
                 </button>
                 <p className="px-4 border-l border-gray text-lg">{dataset.pluses}</p>
                 </div>
-              </div>
-            </div>
-          );
-}
+              </div> */}
+    </div>
+  );
+};
 
-export default DatasetBoxPipeline
+export default DatasetBoxPipeline;
