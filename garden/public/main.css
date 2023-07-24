@@ -628,10 +628,6 @@ video {
   grid-column-start: 2;
 }
 
-.col-end-3 {
-  grid-column-end: 3;
-}
-
 .float-right {
   float: right;
 }
@@ -657,11 +653,6 @@ video {
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
-}
-
-.mx-36 {
-  margin-left: 9rem;
-  margin-right: 9rem;
 }
 
 .mx-5 {
@@ -1380,6 +1371,11 @@ video {
   padding-bottom: 2rem;
 }
 
+.py-16 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
 .pb-0 {
   padding-bottom: 0px;
 }
@@ -1797,14 +1793,6 @@ video {
     grid-column-start: 1;
   }
 
-  .sm\:col-start-2 {
-    grid-column-start: 2;
-  }
-
-  .sm\:col-end-2 {
-    grid-column-end: 2;
-  }
-
   .sm\:col-end-3 {
     grid-column-end: 3;
   }
@@ -1904,14 +1892,14 @@ video {
     grid-column-end: 3;
   }
 
+  .md\:mx-12 {
+    margin-left: 3rem;
+    margin-right: 3rem;
+  }
+
   .md\:mx-16 {
     margin-left: 4rem;
     margin-right: 4rem;
-  }
-
-  .md\:mx-5 {
-    margin-left: 1.25rem;
-    margin-right: 1.25rem;
   }
 
   .md\:mx-36 {
@@ -1919,9 +1907,9 @@ video {
     margin-right: 9rem;
   }
 
-  .md\:mx-12 {
-    margin-left: 3rem;
-    margin-right: 3rem;
+  .md\:mx-5 {
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
   }
 
   .md\:grid-cols-2 {
