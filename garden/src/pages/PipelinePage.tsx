@@ -114,7 +114,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
-  console.log(result[0].models);
+  console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.pipeline = [result[0].title, `/pipeline/${text}`];
   let gardenDOI = "";
@@ -124,45 +124,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   } else {
     gardenDOI = appears[0].entries[0].content.doi;
   }
-
-  const fakeDatasets = [
-    {
-      title: "Crystal Dataset One Crystal Dataset One",
-      size: "5 GB",
-      number: "48",
-      type: ["CSV", "JPEG", "Other", "JPEG", "Other", "JPEG", "Other"],
-      pluses: 75,
-      doi: "10.3792.12344321",
-      url: "https://foundry-ml.org/#/datasets",
-    },
-    {
-      title: "Crystal Dataset Two",
-      size: "5 GB",
-      number: "48",
-      type: ["CSV", "JPEG", "Other"],
-      pluses: 75,
-      doi: "10.3792.1234",
-      url: "https://foundry-ml.org/#/datasets",
-    },
-    {
-      title: "Crystal Dataset Three",
-      size: "5 GB",
-      number: "48",
-      type: ["CSV", "JPEG", "Other"],
-      pluses: 75,
-      doi: "10.3792.1234",
-      url: "https://foundry-ml.org/#/datasets",
-    },
-    {
-      title: "Crystal Dataset Four",
-      size: "5 GB",
-      number: "48",
-      type: ["CSV", "JPEG", "Other"],
-      pluses: 75,
-      doi: "10.3792.1234",
-      url: "https://foundry-ml.org/#/datasets",
-    },
-  ];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -385,7 +346,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
           </div>
         </div>
 
-        <AccordionTop />
+        <AccordionTop pipeline={result} />
 
         <div>
           <div className="flex justify-evenly h-12 ">
@@ -563,9 +524,9 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   <h1 className="underline text-2xl py-8">
                     Datasets used in this pipeline
                   </h1>
-                  {result[0].models.datasets ? (
+                  {result[0].models[0].dataset ? (
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
-                      {result[0].models.datasets.map((dataset: any) => {
+                      {result[0].models[0].dataset.map((dataset: any) => {
                         return <DatasetBoxPipeline dataset={dataset} />;
                       })}
                     </div>

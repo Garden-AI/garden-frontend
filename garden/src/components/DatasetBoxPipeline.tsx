@@ -10,6 +10,12 @@ const DatasetBoxPipeline = ({ dataset }: { dataset: any }) => {
   //     }
   // }
 
+  // useEffect(() => {
+  //   if (dataset.url.contains("foundry")) {
+  //     showFoundry();
+  //   }
+  // },[props])
+
   return (
     <div className="flex flex-col gap-2 border border-gray rounded-lg px-4">
       <h1 className="font-semibold text-2xl pt-4">{dataset.title}</h1>
@@ -17,13 +23,17 @@ const DatasetBoxPipeline = ({ dataset }: { dataset: any }) => {
         {dataset.url}
       </a>
       <div className="pb-4">
-        <p className="p-1">DOI: {dataset.doi}</p>
-        <p className="p-1">
-          File Types:{" "}
-          {dataset.type
-            .map((type: any) => <span>{type}</span>)
-            .reduce((prev: any, curr: any) => [prev, ", ", curr])}
-        </p>
+        {dataset.doi ? <p className="p-1">DOI: {dataset.doi}</p> : <></>}
+        {dataset.type ? (
+          <p className="p-1">
+            File Types:{" "}
+            {dataset.type
+              .map((type: any) => <span>{type}</span>)
+              .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+          </p>
+        ) : (
+          <></>
+        )}
       </div>
       {/* <div className="flex pb-4">
                 <div className="flex items-center gap-3 border border-gray">

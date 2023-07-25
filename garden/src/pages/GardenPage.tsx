@@ -4,7 +4,6 @@ import PipelineBox from "../components/PipelineBox";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Breadcrumbs from "../components/Breadcrumbs";
-import DatasetBox from "../components/DatasetBox";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
 import { fetchWithScope } from "../globusHelpers";
 import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
@@ -107,36 +106,36 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const text = doi?.replace("/", "%2f");
   bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
   bread.pipeline = [];
-  const fakeDatasets = [
-    {
-      models: [
-        {
-          datasets: [
-            {
-              title: "dataset",
-              doi: "10.1234",
-              url: "https://www.google.com/",
-              type: ["csv", "jpeg"],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      models: [
-        {
-          datasets: [
-            {
-              title: "dataset",
-              doi: "10.1234",
-              url: "dataset.com",
-              type: ["csv", "jpeg"],
-            },
-          ],
-        },
-      ],
-    },
-  ];
+  // const fakeDatasets = [
+  //   {
+  //     models: [
+  //       {
+  //         datasets: [
+  //           {
+  //             title: "dataset",
+  //             doi: "10.1234",
+  //             url: "https://www.google.com/",
+  //             type: ["csv", "jpeg"],
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     models: [
+  //       {
+  //         datasets: [
+  //           {
+  //             title: "dataset",
+  //             doi: "10.1234",
+  //             url: "dataset.com",
+  //             type: ["csv", "jpeg"],
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -160,8 +159,15 @@ const GardenPage = ({ bread }: { bread: any }) => {
     sc!.scrollLeft = sc!.scrollLeft + 283;
   };
 
-  const foundry = () => {
-    setShowFoundry(true);
+  let index = 0;
+  const noDatasets = () => {
+    if (index === 0) {
+      return (
+        <p className="text-center pt-8 pb-16 text-xl col-span-2">
+          No datasets available for this garden
+        </p>
+      );
+    }
   };
 
   return (
@@ -306,19 +312,24 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 <div>
                   {/* result[0]?.entries[0].content.pipelines */}
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
-                    {result[0]?.entries[0].content.pipelines.map((pipe: any) => {
-                      return pipe.models[0].datasets ? (
-                        <>
-                          {pipe.models[0].datasets.map((dataset: any) => {
-                            return <DatasetBoxPipeline dataset={dataset} />;
-                          })}
-                        </>
-                      ) : (
-                        <p className="text-center pt-8 pb-16 text-xl">
-                          No datasets available for this pipeline
-                        </p>
-                      );
-                    })}
+                    {result[0]?.entries[0].content.pipelines.map(
+                      (pipe: any) => {
+                        return pipe.models[0].dataset ? (
+                          <>
+                            {index++}
+                            {pipe.models[0].dataset.map((dataset: any) => {
+                              if (dataset.url.contains("foundry")) {
+                                setShowFoundry(true);
+                              }
+                              return <DatasetBoxPipeline dataset={dataset} />;
+                            })}
+                          </>
+                        ) : (
+                          <></>
+                        );
+                      }
+                    )}
+                    <>{noDatasets()}</>
                   </div>
                 </div>
                 {showFoundry === true ? (
