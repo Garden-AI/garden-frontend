@@ -24,6 +24,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const [buttonIndex, setButtonIndex] = useState(0);
   const [result, setResult] = useState<any>(undefined);
   const [appears, setAppears] = useState<any>(undefined);
+  const [showFoundry, setShowFoundry] = useState(false);
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLButtonElement>(null);
@@ -155,6 +156,10 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
   const scrollToTop = () => {
     top?.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const foundry = () => {
+    setShowFoundry(true);
   };
 
   return (
@@ -527,7 +532,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   {result[0].models[0].dataset ? (
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
                       {result[0].models[0].dataset.map((dataset: any) => {
-                        return <DatasetBoxPipeline dataset={dataset} />;
+                        return <DatasetBoxPipeline dataset={dataset} showFoundry={foundry}/>;
                       })}
                     </div>
                   ) : (
@@ -535,6 +540,48 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                       No datasets available for this pipeline
                     </p>
                   )}
+                  {showFoundry === true ? (
+                  <div>
+                    <p className="mx-16 text-xl pb-4">
+                      *One or more of these datasets uses Foundry, here is how
+                      you can view it:
+                    </p>
+                    <div className="bg-gray-800 sm:mx-8 lg:mx-32 text-white pl-6 py-6 rounded-xl">
+                      <code className="leading-loose">
+                        <span className="text-gray-400">
+                          # Make sure you've imported and instantiated foundry{" "}
+                          <br />
+                        </span>
+                        <span className="text-purple">from</span> foundry{" "}
+                        <span className="text-purple">import</span> Foundry{" "}
+                        <br />
+                        f = Foundry()
+                        <br />
+                        <br />
+                        <span className="text-gray-400">
+                          # Load the data here <br />
+                        </span>
+                        f.load(
+                        <span className="text-green">'DOI goes here'</span>,
+                        globus=<span className="text-orange">False</span>)
+                        <br />
+                        res = f.load_data()
+                      </code>
+                    </div>
+                    <p className="mx-16 pt-8 text-xl">
+                      New to Foundry or need a refresher? Click{" "}
+                      <a
+                        target="blank"
+                        href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                      >
+                        here
+                      </a>{" "}
+                      to learn more.
+                    </p>
+                  </div>
+                ) : (
+                  <p></p>
+                )}
                 </div>
               </div>
             )}

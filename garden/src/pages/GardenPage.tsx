@@ -170,6 +170,10 @@ const GardenPage = ({ bread }: { bread: any }) => {
     }
   };
 
+  const foundry = () => {
+    setShowFoundry(true);
+  };
+
   return (
     <div className="font-display">
       <div
@@ -321,7 +325,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                               if (dataset.url.contains("foundry")) {
                                 setShowFoundry(true);
                               }
-                              return <DatasetBoxPipeline dataset={dataset} />;
+                              return <DatasetBoxPipeline dataset={dataset} showFoundry={foundry}/>;
                             })}
                           </>
                         ) : (

@@ -5,7 +5,7 @@ const Navbar = () => {
   return (
     <nav className="border-b border-gray-200 flex justify-between px-8 py-2">
       <img
-        src="img/garden-v0-logo.png"
+        src="img/smallColorIcon_Garden.png"
         alt="Garden AI Logo"
         className="w-28 object-contain"
       ></img>
