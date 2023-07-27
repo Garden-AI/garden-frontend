@@ -16,7 +16,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
       try {
         const response = await fetchWithScope(
           SEARCH_SCOPE,
-          GARDEN_INDEX_URL + "/search?q=2023"
+          GARDEN_INDEX_URL + "/search?q=2023&limit=10000"
         );
 
         if (!response.ok) {
@@ -60,7 +60,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
     })
     setFilteredResult(updatedResults)
   }
-  console.log(query, 'query')
+  console.log(result)
 
 
   return (

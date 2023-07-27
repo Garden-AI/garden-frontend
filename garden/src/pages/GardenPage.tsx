@@ -18,6 +18,8 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [relatedResults, setRelatedResults] = useState<Array<any>>([]);
   const [showFoundry, setShowFoundry] = useState(false);
   const [result, setResult] = useState<any>(undefined);
+
+  //API call to get data for a garden associted with the DOI
   useEffect(() => {
     async function Search() {
       try {
@@ -38,6 +40,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
     Search();
   }, [doi]);
 
+  //API call for the "Other Gardens" section
   useEffect(() => {
     async function Search() {
       try {
@@ -61,6 +64,8 @@ const GardenPage = ({ bread }: { bread: any }) => {
     }
     Search();
   }, [doi]);
+
+  //Loading animation
   if (result === undefined) {
     return (
       <div className="flex items-center justify-center h-[100vh]">
@@ -82,6 +87,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
+  //If no garden is associated with the DOI in the URL, not found page comes up
   if (result.length === 0) {
     return (
       <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
@@ -149,6 +155,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
     setShow(false);
   };
 
+  //Scroll functionality for the related gardens section
   const leftScroll = () => {
     let sc = document.querySelector("#related");
     sc!.scrollLeft = sc!.scrollLeft - 283;
@@ -159,9 +166,13 @@ const GardenPage = ({ bread }: { bread: any }) => {
     sc!.scrollLeft = sc!.scrollLeft + 283;
   };
 
-  let index = 0;
+  //Handles if no datasets are associated with a garden
+  let datasetCount = 0;
+  const increaseCount = () =>{
+    datasetCount++
+  }
   const noDatasets = () => {
-    if (index === 0) {
+    if (datasetCount === 0) {
       return (
         <p className="text-center pt-8 pb-16 text-xl col-span-2">
           No datasets available for this garden
@@ -318,9 +329,9 @@ const GardenPage = ({ bread }: { bread: any }) => {
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
                     {result[0]?.entries[0].content.pipelines.map(
                       (pipe: any) => {
-                        return pipe.models[0].dataset ? (
+                        return pipe.models[0].dataset ? pipe.models[0].dataset.length > 0 ? (
                           <>
-                            {index++}
+                            {increaseCount()}
                             {pipe.models[0].dataset.map((dataset: any) => {
                               if (dataset.url.contains("foundry")) {
                                 setShowFoundry(true);
@@ -330,7 +341,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                           </>
                         ) : (
                           <></>
-                        );
+                        ) : <></>;
                       }
                     )}
                     <>{noDatasets()}</>

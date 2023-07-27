@@ -22,6 +22,10 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
     await navigator.clipboard.writeText(text);
   };
   let associatedCount = 0;
+  const increaseCount = () =>{
+    associatedCount++
+    console.log(associatedCount)
+  }
 
   return (
     <div>
@@ -77,10 +81,12 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
           }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-x-12 lg:gap-x-32 gap-y-12 px-8 lg:px-16">
-            {pipeline[0].papers ? (
+            {pipeline[0].papers ? pipeline[0].papers.length > 0 ? (
               <>
-                {associatedCount++}
+              {increaseCount()}
                 {pipeline[0].papers.map((paper: any) => {
+                  associatedCount++
+                  console.log(associatedCount, 'aso')
                   return (
                     <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
                       <div className="flex items-center px-2 pt-2 pb-6 gap-4">
@@ -171,11 +177,11 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
               </>
             ) : (
               <></>
-            )}
+            ): <></>}
             {/* repo box */}
-            {pipeline[0].repositories ? (
+            {pipeline[0].repositories ? pipeline[0].repositories.length>0 ? (
               <>
-                {associatedCount++}
+                {increaseCount()}
                 {pipeline[0].repositories.map((repo: any) => {
                   return (
                     <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
@@ -242,7 +248,7 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
               </>
             ) : (
               <></>
-            )}
+            ): <></>}
 
             {/* Container Image */}
             {/* <ContainerImage container={fakeContainer}/> */}

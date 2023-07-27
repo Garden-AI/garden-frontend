@@ -30,6 +30,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const top = useRef<HTMLButtonElement>(null);
   const div = useRef<HTMLDivElement>(null);
 
+  //These two useEffects determine if overflow is happening so it can be handled
   useEffect(() => {
     if (widthRef.current) {
       const container = widthRef.current;
@@ -48,6 +49,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     }
   }, []);
 
+  //API call to get the data based on the doi of the pipeline
   useEffect(() => {
     async function Search() {
       try {
@@ -74,6 +76,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     Search();
   }, [doi]);
 
+  //Loading screen while the call waits to return
   if (result === undefined) {
     return (
       <div className="flex items-center justify-center h-[100vh]">
@@ -95,6 +98,8 @@ const PipelinePage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
+
+  //The doi does not match up to a pipeline, message appears
   if (result.length === 0) {
     return (
       <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
@@ -115,9 +120,11 @@ const PipelinePage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
-  console.log(result);
+  console.log(result)
   const text = doi?.replace("/", "%2f");
   bread.pipeline = [result[0].title, `/pipeline/${text}`];
+
+  //Garden doi for the code block
   let gardenDOI = "";
   if (bread.garden.length !== 0) {
     gardenDOI = bread.garden[1].replace("/garden/", "");
@@ -138,6 +145,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     setShow(false);
   };
 
+  //Show more/show less functionality
   const contributorMore = () => {
     setPClass("");
     setIsOverflowing(false);
@@ -150,6 +158,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     setHasOverflow(false);
   };
 
+  //scroll button for steps tab if there is overflow
   const scrollToBottom = () => {
     bottom?.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -456,6 +465,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
                     {result[0].steps[buttonIndex].description}
                   </p>
+                  {/* Loop through object keys for a step and put them on the page */}
                   {Object.keys(result[0].steps[buttonIndex]).map(
                     (key, index) => {
                       if (result[0].steps[buttonIndex][key]) {

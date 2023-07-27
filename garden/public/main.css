@@ -710,10 +710,6 @@ video {
   margin-left: 4rem;
 }
 
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
 .ml-4 {
   margin-left: 1rem;
 }
@@ -764,6 +760,10 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.block {
+  display: block;
 }
 
 .flex {
@@ -1148,10 +1148,6 @@ video {
 
 .border-b-4 {
   border-bottom-width: 4px;
-}
-
-.border-l {
-  border-left-width: 1px;
 }
 
 .border-solid {
