@@ -112,36 +112,6 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const text = doi?.replace("/", "%2f");
   bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
   bread.pipeline = [];
-  // const fakeDatasets = [
-  //   {
-  //     models: [
-  //       {
-  //         datasets: [
-  //           {
-  //             title: "dataset",
-  //             doi: "10.1234",
-  //             url: "https://www.google.com/",
-  //             type: ["csv", "jpeg"],
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     models: [
-  //       {
-  //         datasets: [
-  //           {
-  //             title: "dataset",
-  //             doi: "10.1234",
-  //             url: "dataset.com",
-  //             type: ["csv", "jpeg"],
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
