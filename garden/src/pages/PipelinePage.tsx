@@ -540,10 +540,11 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                     Datasets used in this pipeline
                   </h1>
                   {result[0].models[0].dataset ? (
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
-                      {result[0].models[0].dataset.map((dataset: any) => {
+                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
+                      {/* {result[0].models[0].dataset.map((dataset: any) => {
                         return <DatasetBoxPipeline dataset={dataset} showFoundry={foundry}/>;
-                      })}
+                      })} */}
+                      <DatasetBoxPipeline dataset={result[0].models[0].dataset} showFoundry={foundry}/>
                     </div>
                   ) : (
                     <p className="text-center pt-8 pb-16 text-xl">
@@ -583,6 +584,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                       <a
                         target="blank"
                         href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                        className="text-blue hover:underline"
                       >
                         here
                       </a>{" "}

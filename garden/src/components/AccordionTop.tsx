@@ -85,8 +85,6 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
               <>
               {increaseCount()}
                 {pipeline[0].papers.map((paper: any) => {
-                  associatedCount++
-                  console.log(associatedCount, 'aso')
                   return (
                     <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
                       <div className="flex items-center px-2 pt-2 pb-6 gap-4">

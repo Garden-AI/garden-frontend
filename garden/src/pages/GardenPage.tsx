@@ -326,22 +326,17 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 </div>
                 <div>
                   {/* result[0]?.entries[0].content.pipelines */}
-                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
                     {result[0]?.entries[0].content.pipelines.map(
                       (pipe: any) => {
-                        return pipe.models[0].dataset ? pipe.models[0].dataset.length > 0 ? (
+                        return pipe.models[0].dataset ? (
                           <>
                             {increaseCount()}
-                            {pipe.models[0].dataset.map((dataset: any) => {
-                              if (dataset.url.contains("foundry")) {
-                                setShowFoundry(true);
-                              }
-                              return <DatasetBoxPipeline dataset={dataset} showFoundry={foundry}/>;
-                            })}
+                            {<DatasetBoxPipeline dataset={pipe.models[0].dataset} showFoundry={foundry}/>}
                           </>
                         ) : (
                           <></>
-                        ) : <></>;
+                        )
                       }
                     )}
                     <>{noDatasets()}</>
@@ -380,6 +375,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                       <a
                         target="blank"
                         href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                        className="text-blue hover:underline"
                       >
                         here
                       </a>{" "}
