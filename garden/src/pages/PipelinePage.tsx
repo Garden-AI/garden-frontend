@@ -7,6 +7,7 @@ import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
 import { fetchWithScope } from "../globusHelpers";
 import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
 import Breadcrumbs from "../components/Breadcrumbs";
+// import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
 // import PipelineMetrics from "../components/PipelineMetrics";
 // import DiscussionTabContent from "../components/DiscussionTabContent";
@@ -301,7 +302,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
         <div className="flex flex-col gap-8 w-full">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
-          <div className="sm:flex justify-center py-2 lg:pr-24 gap-4 md:gap-20">
+          <div className="sm:flex justify-center py-2">
             <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
               <code className="leading-loose">
                 <span className="text-purple">import</span> GardenClient <br />
@@ -325,37 +326,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             </div>
 
             <div className="flex flex-col items-center justify-center">
-              {/* <a
-                href="https://wholetale.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-              >
-                <span className="text-center text-xl text-green">
-                  Open in Whole Tale
-                </span>
-              </a>
-              <a
-                href="https://huggingface.co/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-              >
-                <span className="text-center text-xl text-green">
-                  Open in HuggingFace
-                </span>
-              </a> */}
-              <a
-                href="https://colab.research.google.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
-              >
-                <span className="text-center text-xl text-green">
-                  Open in Google Colab
-                </span>
-              </a>
-              {/* <p className="max-w-[18vw] pl-1 text-center">Open our notebook template and put the pipeline DOI in the appropiately labeled field to load and run it.</p> */}
+              {/* <OpenInButtons/> */}
             </div>
           </div>
         </div>

@@ -87,7 +87,7 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
                 {pipeline[0].papers.map((paper: any) => {
                   return (
                     <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
-                      <div className="flex items-center px-2 pt-2 pb-6 gap-4">
+                      <div className="flex items-center px-2 pt-2 pb-6 gap-4 w-full">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -103,7 +103,7 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
                           />
                         </svg>
 
-                        <h1 className="text-2xl">{paper.title}</h1>
+                        <h1 className="text-2xl w-full break-words">{paper.title}</h1>
                       </div>
                       <div className="px-2 py-2">
                         
@@ -183,14 +183,14 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
                 {pipeline[0].repositories.map((repo: any) => {
                   return (
                     <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
-                      <div className="flex items-center px-2 pt-2 pb-6 gap-4">
+                      <div className="flex items-center px-2 pt-2 pb-6 gap-4 w-full">
                         <img
                           src="img/github-logo.png"
                           className="max-w-[5vw]"
                           alt="Github logo"
                         />
 
-                        <h1 className="text-2xl">{repo.repo_name}</h1>
+                        <h1 className="text-2xl w-full break-words">{repo.repo_name}</h1>
                       </div>
                       <div className="px-2 py-2">
                         {repo.contributors ? repo.contributors.length > 0 ? (

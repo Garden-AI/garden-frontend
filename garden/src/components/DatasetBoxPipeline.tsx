@@ -10,7 +10,7 @@ const DatasetBoxPipeline = (props: { dataset: any; showFoundry: Function }) => {
 
   return (
     <div className="flex flex-col gap-2 border border-gray rounded-lg px-4">
-      <h1 className="font-semibold text-2xl pt-4">{props.dataset.title}</h1>
+      <h1 className="font-semibold text-2xl pt-4 break-words">{props.dataset.title}</h1>
       <a target="blank" className="break-words text-blue hover:underline" href={props.dataset.url}>
         {props.dataset.url}
       </a>
