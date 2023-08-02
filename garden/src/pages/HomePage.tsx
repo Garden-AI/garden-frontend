@@ -27,26 +27,23 @@ const HomePage = () => {
     Search();
   }, []);
 
+  //   <img
+  //   src="img/AIGeneratedImg.png"
+  //   alt="Garden AI Logo"
+  //   className="w-[10rem] h-[10rem] sm:w-[16rem] sm:h-[16rem] object-contain"
+  // ></img>
+
   return (
     <>
       <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
-        <p className="font-semibold text-3xl sm:text-6xl text-center max-w-3xl">
+        <p className="pt-8 font-semibold text-3xl sm:text-5xl text-center max-w-3xl">
           Build a garden where your model can thrive
         </p>
-        <p className="pt-8 sm:pt-16 text-lg sm:text-3xl text-center max-w-lg">
-          An ecosystem of ML models and datasets ready to be explored
-        </p>
-        <Link
-          to="/search"
-          className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
-        >
-          Search
-        </Link>
       </div>
 
       <div
         id="icons-text"
-        className="grid grid-cols-3 place-items-top gap-4 pt-14 px-[10%] font-display text-sm sm:text-2xl "
+        className="grid grid-cols-3 place-items-top gap-4 pt-14 px-[10%] font-display text-sm sm:text-xl "
       >
         {/* chart */}
         <div className="flex flex-col items-center">
@@ -56,7 +53,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[10rem] sm:h-[10rem]"
+            className="w-[6rem] h-[6rem] sm:w-[8rem] sm:h-[8rem]"
           >
             <path
               strokeLinecap="round"
@@ -77,7 +74,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[10rem] sm:h-[10rem]"
+            className="w-[6rem] h-[6rem] sm:w-[8rem] sm:h-[8rem]"
           >
             <path
               strokeLinecap="round"
@@ -98,7 +95,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[10rem] sm:h-[10rem]"
+            className="w-[6rem] h-[6rem] sm:w-[8rem] sm:h-[8rem]"
           >
             <path
               strokeLinecap="round"
@@ -110,6 +107,19 @@ const HomePage = () => {
             Find solutions to similar problems
           </p>
         </div>
+      </div>
+
+      <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
+        <p className="pt-8 sm:pt-16 text-lg sm:text-2xl text-center max-w-sm">
+          An ecosystem of ML models and datasets ready to be explored
+        </p>
+        <Link
+          to="/search"
+          className="mt-12 bg-green w-40 h-[48px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
+        >
+          Search
+        </Link>
+        <hr className="mt-10 w-10/12 bg-black" />
       </div>
 
       {/* First section (We overcome...) */}
