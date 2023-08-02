@@ -1,15 +1,34 @@
-import React from "react";
-import Navbar from "../components/Navbar";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "../components/GardenBox";
+import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants";
+import { fetchWithScope } from "../globusHelpers";
 
 const HomePage = () => {
+  const [result, setResult] = useState<Array<any>>([]);
+
+  useEffect(() => {
+    async function Search() {
+      try {
+        const response = await fetchWithScope(
+          SEARCH_SCOPE,
+          GARDEN_INDEX_URL + "/search?q=2023&limit=6"
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const content = await response.json();
+        setResult(content.gmeta);
+      } catch (error) {
+        setResult([]);
+      }
+    }
+    Search();
+  }, []);
+
   return (
     <>
-      {/* <div className="container-max-w-full bg-gray-200 shadow border p-6">
-        HomePage
-      </div> */}
-      <Navbar />
       <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
         <p className="font-semibold text-3xl sm:text-6xl text-center max-w-3xl">
           Build a garden where your model can thrive
@@ -154,12 +173,9 @@ const HomePage = () => {
           id="Garden-Squares"
           className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-8"
         >
-          <GardenBox />
-          <GardenBox />
-          <GardenBox />
-          <GardenBox />
-          <GardenBox />
-          <GardenBox />
+          {result.map((res) => (
+            <GardenBox garden={res} />
+          ))}
         </div>
       </div>
 
@@ -232,7 +248,8 @@ const HomePage = () => {
               Globus
             </h1>
             <p className="text-center text-sm md:text-lg mx-5 pt-4 max-w-xs">
-            Research cyberinfrastructure, developed and operated as a not-for-profit service by the University of Chicago
+              Research cyberinfrastructure, developed and operated as a
+              not-for-profit service by the University of Chicago
             </p>
           </section>
         </div>

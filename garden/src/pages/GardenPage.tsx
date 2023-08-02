@@ -1,114 +1,117 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import PipelineBox from "../components/PipelineBox";
-import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
-import CommentBox from "../components/CommentBox";
-import DatasetBox from "../components/DatasetBox";
+import Breadcrumbs from "../components/Breadcrumbs";
+import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
+import { fetchWithScope } from "../globusHelpers";
+import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
+// import DiscussionTab from "../components/DiscussionTab";
+// import DiscussionTabContent from "../components/DiscussionTabContent";
 
-const GardenPage = () => {
-  const { uuid } = useParams();
+const GardenPage = ({ bread }: { bread: any }) => {
+  const { doi } = useParams();
+  const navigate = useNavigate();
   const [active, setActive] = useState("");
   const [show, setShow] = useState(false);
-  const [showComment, setShowComment] = useState(true);
+  const [relatedResults, setRelatedResults] = useState<Array<any>>([]);
   const [showFoundry, setShowFoundry] = useState(false);
-  console.log(uuid);
-  const fakeData = {
-    uuid: "91b35f79-2639-44e4-8323-6cfcav1b9592",
-    name: "Crystal Garden",
-    doi: "10.3792.1234",
-    pipelines: [
-      "10.2345.55555",
-      "10.2345.55556",
-      "10.2345.55557",
-      "10.2345.55558",
-    ],
-    description: "Models for predicting crystal structure",
-    authors: ["KJ Schmidt, Will Engler, Owen Price Skelly, Ben B"],
-  };
-  const fakeDatasets = [
-    {
-      type: "dataset",
-      doi: "10.3792.1234",
-      repository: "Foundry",
-      url: "https://foundry-ml.org/#/datasets",
-    },
-    {
-      type: "dataset",
-      doi: "10.3792.1235",
-      repository: "Zenodo",
-      url: "https://zenodo.org/",
-    },
-  ];
-  const fakeComments = [
-    {
-      user: "Chase Jenkins",
-      type: "Comment",
-      title: "This is a great garden",
-      body: "I love this garden! It's very well done, and I was able to take a look at the models and was very impressed with what I saw. I am definilty going to have to share this with some friends and colleagues.",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "I agree",
-        },
-        {
-          user: "Chase Three",
-          body: "It is a great garden",
-        },
-        {
-          user: "Chase Four",
-          body: "Well said",
-        },
-        {
-          user: "Chase Five",
-          body: "Just came from the link you sent me! Thanks for sharing",
-        },
-        {
-          user: "Chase Six",
-          body: "You are so right",
-        },
-      ],
-    },
-    {
-      user: "Jenkins Chase",
-      type: "Comment",
-      title: "This garden is very relevant to my work!",
-      body: "I'm going to use this! I also work in this field and have been looking for models that I can easily use for quite some time now. This is excellent work and I'm glad I came across it",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "Me too",
-        },
-        {
-          user: "Chase Three",
-          body: "This also relates to my work",
-        },
-      ],
-    },
-    {
-      user: "Jenkins Chase",
-      type: "Question",
-      title: "What are crystals?",
-      body: "I was just exploring this site, and came across this garden. It looks very interesting, but I have no idea what crystals are in this context? Could anyone explain?",
-      upvotes: 150,
-      downvotes: 50,
-      replies: [
-        {
-          user: "Chase Two",
-          body: "Crystal structure is a description of the ordered arrangement of atoms, ions, or molecules in a crystalline material.",
-        },
-        {
-          user: "Chase Three",
-          body: "I had the same question",
-        },
-      ],
-    },
-  ];
+  const [result, setResult] = useState<any>(undefined);
+
+  //API call to get data for a garden associted with the DOI
+  useEffect(() => {
+    async function Search() {
+      try {
+        const response = await fetchWithScope(
+          SEARCH_SCOPE,
+          GARDEN_INDEX_URL + `/search?q="${doi}"`
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const content = await response.json();
+        setResult(content.gmeta);
+      } catch (error) {
+        setResult([]);
+      }
+    }
+    Search();
+  }, [doi]);
+
+  //API call for the "Other Gardens" section
+  useEffect(() => {
+    async function Search() {
+      try {
+        const response = await fetchWithScope(
+          SEARCH_SCOPE,
+          GARDEN_INDEX_URL + "/search?q=2023&limit=6"
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const content = await response.json();
+        setRelatedResults(
+          content.gmeta.filter(
+            (gard: any) => gard.entries[0].content.doi !== doi
+          )
+        );
+      } catch (error) {
+        setRelatedResults([]);
+      }
+    }
+    Search();
+  }, [doi]);
+
+  //Loading animation
+  if (result === undefined) {
+    return (
+      <div className="flex items-center justify-center h-[100vh]">
+        <svg
+          className="w-24 h-24 mr-2 text-gray-200 animate-spin fill-green"
+          viewBox="0 0 100 101"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+            fill="currentColor"
+          />
+          <path
+            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+            fill="currentFill"
+          />
+        </svg>
+      </div>
+    );
+  }
+  //If no garden is associated with the DOI in the URL, not found page comes up
+  if (result.length === 0) {
+    return (
+      <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
+        <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] border border-black rounded-xl bg-white flex flex-col items-center">
+          <h1 className=" py-12 px-4 text-4xl font-semibold text-center">
+            No Garden Found
+          </h1>
+          <p className="text-center px-4">
+            The page you were looking for does not exist
+          </p>
+          <button
+            className="bg-green text-white mt-16 border border-green rounded-lg py-3 px-4 shadow-lg hover:shadow-xl hover:border-black"
+            onClick={() => navigate("/home")}
+          >
+            Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+  console.log(result);
+  const text = doi?.replace("/", "%2f");
+  bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
+  bread.pipeline = [];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -122,6 +125,7 @@ const GardenPage = () => {
     setShow(false);
   };
 
+  //Scroll functionality for the related gardens section
   const leftScroll = () => {
     let sc = document.querySelector("#related");
     sc!.scrollLeft = sc!.scrollLeft - 283;
@@ -132,16 +136,19 @@ const GardenPage = () => {
     sc!.scrollLeft = sc!.scrollLeft + 283;
   };
 
-  const commentFilter = () => {
-    return fakeComments
-      .filter((comment) => comment.type === "Comment")
-      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
-  };
-
-  const questionFilter = () => {
-    return fakeComments
-      .filter((comment) => comment.type === "Question")
-      .map((comment) => <CommentBox key={comment.body} comment={comment} />);
+  //Handles if no datasets are associated with a garden
+  let datasetCount = 0;
+  const increaseCount = () =>{
+    datasetCount++
+  }
+  const noDatasets = () => {
+    if (datasetCount === 0) {
+      return (
+        <p className="text-center pt-8 pb-16 text-xl col-span-2">
+          No datasets available for this garden
+        </p>
+      );
+    }
   };
 
   const foundry = () => {
@@ -150,16 +157,15 @@ const GardenPage = () => {
 
   return (
     <div className="font-display">
-      <Navbar />
       <div
         autoFocus
         className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display"
       >
         {/* Place breadcrumbs here */}
-        {/* <Breadcrumbs /> */}
+        <Breadcrumbs crumbs={bread} />
         {/* Garden Header */}
         <div className="flex gap-8">
-          <h1 className="text-3xl">{fakeData.name}</h1>
+          <h1 className="text-3xl">{result[0]?.entries[0].content.title}</h1>
           <div className="flex gap-3 items-center">
             <button title="Copy link" onClick={copy}>
               <svg
@@ -197,7 +203,7 @@ const GardenPage = () => {
               show={show}
               close={closeModal}
               copy={copy}
-              doi={fakeData.doi}
+              doi={result[0]?.entries[0].content.doi}
             />
           </div>
         </div>
@@ -206,21 +212,27 @@ const GardenPage = () => {
         <div className="border-0 rounded-lg bg-gray-100 flex flex-col gap-5 p-4 text-sm text-gray-700">
           <div>
             <h2 className="font-semibold">Contributors</h2>
-            <p>{fakeData.authors}</p>
+            <p>
+              {result[0]?.entries[0].content.authors.map(
+                (author: any, index: number) => (
+                  <span>{author}</span>
+                )
+              )}
+            </p>
           </div>
           <div>
             <h2 className="font-semibold">DOI</h2>
             <a
-              href={`https://doi.org/${fakeData.doi}`}
+              href={`https://doi.org/${result[0]?.entries[0].content.doi}`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {fakeData.doi}
+              {result[0]?.entries[0].content.doi}
             </a>
           </div>
           <div>
             <h2 className="font-semibold">Description</h2>
-            <p>{fakeData.description}</p>
+            <p>{result[0]?.entries[0].content.description}</p>
           </div>
         </div>
 
@@ -241,16 +253,8 @@ const GardenPage = () => {
             >
               Pipelines
             </button>
-            <button
-              className={
-                active === "Discussion"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
-              }
-              onClick={() => setActive("Discussion")}
-            >
-              Discussion
-            </button>
+            {/* Discussion Tab Here */}
+            {/* <DiscussionTab active={active} setActive={setDiscussionTab}/> */}
             <button
               className={
                 active === "Datasets"
@@ -265,45 +269,24 @@ const GardenPage = () => {
           <div className="pt-8">
             {active === "" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fakeData.pipelines.map((pipeline) => (
-                  <PipelineBox key={pipeline} doi={pipeline} />
-                ))}
+                {result[0]?.entries[0].content.pipelines.map(
+                  (pipeline: any) => (
+                    <PipelineBox key={pipeline.doi} pipeline={pipeline} />
+                  )
+                )}
               </div>
             )}
             {active === "Pipelines" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fakeData.pipelines.map((pipeline) => (
-                  <PipelineBox key={pipeline} doi={pipeline} />
-                ))}
+                {result[0]?.entries[0].content.pipelines.map(
+                  (pipeline: any) => (
+                    <PipelineBox key={pipeline.doi} pipeline={pipeline} />
+                  )
+                )}
               </div>
             )}
-            {active === "Discussion" && (
-              <div className="mx-16">
-                <div className="flex pb-6 gap-6">
-                  <button
-                    className={
-                      showComment === true
-                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
-                        : "border border-1 border-black w-max px-3 rounded-2xl"
-                    }
-                    onClick={() => setShowComment(true)}
-                  >
-                    <p>Comments</p>
-                  </button>
-                  <button
-                    className={
-                      showComment === false
-                        ? " bg-green text-white border border-1 border-white w-max px-3 rounded-2xl"
-                        : "border border-1 border-black w-max px-3 rounded-2xl"
-                    }
-                    onClick={() => setShowComment(false)}
-                  >
-                    <p>Questions</p>
-                  </button>
-                </div>
-                {showComment === true ? commentFilter() : questionFilter()}
-              </div>
-            )}
+            {/* Discussion Tab Content Here */}
+            {/* <DiscussionTabContent comments={fakeComments} active={active}/> */}
             {active === "Datasets" && (
               <div>
                 <div className="mx-16 text-xl pb-4">
@@ -312,9 +295,22 @@ const GardenPage = () => {
                   you to learn more about them and how to view them.
                 </div>
                 <div>
-                  {fakeDatasets.map((dataset) => (
-                    <DatasetBox key={dataset.doi} dataset={dataset} showFoundry={foundry} />
-                  ))}
+                  {/* result[0]?.entries[0].content.pipelines */}
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
+                    {result[0]?.entries[0].content.pipelines.map(
+                      (pipe: any) => {
+                        return pipe.models[0].dataset ? (
+                          <>
+                            {increaseCount()}
+                            {<DatasetBoxPipeline dataset={pipe.models[0].dataset} showFoundry={foundry}/>}
+                          </>
+                        ) : (
+                          <></>
+                        )
+                      }
+                    )}
+                    <>{noDatasets()}</>
+                  </div>
                 </div>
                 {showFoundry === true ? (
                   <div>
@@ -349,6 +345,7 @@ const GardenPage = () => {
                       <a
                         target="blank"
                         href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                        className="text-blue hover:underline"
                       >
                         here
                       </a>{" "}
@@ -364,7 +361,7 @@ const GardenPage = () => {
         </div>
       </div>
 
-      <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">Related Gardens</h1>
+      <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">Explore Other Gardens</h1>
       <div className="relative flex items-center pb-12">
         <button
           className="w-16 h-16 ml-12 mr-6 bg-gray-100"
@@ -389,12 +386,9 @@ const GardenPage = () => {
           id="related"
           className="w-full h-full overflow-x-scroll scroll-smooth whitespace-nowrap inline-flex gap-4"
         >
-          <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
-          <RelatedGardenBox />
+          {relatedResults.map((related) => (
+            <RelatedGardenBox related={related} />
+          ))}
         </div>
 
         <button
