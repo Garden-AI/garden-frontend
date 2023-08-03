@@ -2,7 +2,6 @@ import React from 'react';
 import RealStuff from './RealStuff'
 import { HashRouter, Routes, Route } from "react-router-dom";
 import GardenPage from './pages/GardenPage';
-import AboutPage from './pages/AboutPage';
 import ScrollToTop from './components/ScrollToTop'
 import SearchPage from './pages/SearchPage';
 import HomePage from './pages/HomePage';
@@ -68,7 +67,6 @@ function App() {
           <Route path="/" element={<HomePage/>}/>
           <Route path="secret" element={MainApp()}/>
           <Route path="/home" element={<HomePage/>}/>
-          <Route path="/about" element={<AboutPage />}/>
           <Route path="/search" element={<SearchPage bread={breadcrumbs}/>}/>
           <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs}/>}/>
           <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs}/>}/>
