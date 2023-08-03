@@ -333,7 +333,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
         <AccordionTop pipeline={result} />
 
-        <div>
+        <div className="pb-12">
           <div className="flex justify-evenly h-12 ">
             <button
               className={
