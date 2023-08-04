@@ -7,21 +7,21 @@ const GardenBox = ({ garden }: { garden: any }) => {
 
   return (
     <div
-      className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer text-display"
+      className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer text-display min-w-[75%]"
       onClick={() => navigate(`/garden/${text}`)}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-l font-semibold">
           {garden.entries[0].content.title}
         </h2>
         <div className="max-h-[120px] overflow-y-hidden">
-          <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent h-[160px] overflow-y-hidden">
+          <p className="bg-gradient-to-b from-black bg-clip-text text-transparent h-[160px] overflow-y-hidden">
             {garden.entries[0].content.description}
           </p>
         </div>
       </div>
       {garden.entries[0].content.tags.length > 0 ? (
-        <div className="text-gray-500 flex gap-2">
+        <div className="text-sm text-gray-500 flex gap-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
