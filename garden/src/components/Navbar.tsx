@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <nav className="border-b border-gray-200 flex justify-between px-8 py-2">
-      <img
+      <Link to="/home"><img
         src="img/smallColorIcon_Garden.png"
         alt="Garden AI Logo"
         className="w-28 object-contain"
       ></img>
+      </Link>
       <ul className="flex items-center gap-8">
-        <Link to="/home">Home</Link>
         {/* <Link to="/search">Search</Link> */}
         <Link to="/about">About</Link>
         <li>

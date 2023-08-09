@@ -44,8 +44,8 @@ const HomePage = () => {
   return (
     <>
       <div className="flex flex-row mx-10 mt-16">
-        <div className="font-display items-center pt-5 sm:pt-10 px-5 grow mt-8">
-          <p className="font-semibold text-3xl sm:text-5xl max-w-3xl">
+        <div className="flex flex-col font-display pt-5 sm:pt-10 px-5 grow mt-8">
+          <p className="font-semibold text-3xl sm:text-5xl max-w-3xl min-w-[50%]">
             Build a garden where your model can thrive
           </p>
           <p className="pt-14 font-normal text-xl sm:text-2xl max-w-3xl grow">
@@ -64,7 +64,7 @@ const HomePage = () => {
         <img
           src="img/AIGeneratedImg.png"
           alt="Garden AI Logo"
-          className="w-[14rem] sm:w-[18rem] md:w-[24rem] lg:w-[28rem] object-scale-down items-center"
+          className="w-[14rem] sm:w-[18rem] md:w-[24rem] lg:w-[28rem] object-scale-down"
         ></img>
 
       </div>
@@ -85,7 +85,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[8rem] sm:h-[8rem]"
+            className="w-[6rem] h-[6rem] sm:w-[7rem] sm:h-[7rem]"
           >
             <path
               strokeLinecap="round"
@@ -106,7 +106,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[8rem] sm:h-[8rem]"
+            className="w-[6rem] h-[6rem] sm:w-[7rem] sm:h-[7rem]"
           >
             <path
               strokeLinecap="round"
@@ -127,7 +127,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[8rem] sm:h-[8rem]"
+            className="w-[6rem] h-[6rem] sm:w-[7rem] sm:h-[7rem]"
           >
             <path
               strokeLinecap="round"
@@ -225,8 +225,7 @@ const HomePage = () => {
             alt="Garden AI Logo"
             className="max-w-[150px] object-contain mb-6">
           </img>
-          <div>Terms & Policies</div>
-          <div>Privacy Policy</div>
+          <div><Link to="/terms">Terms & Policies</Link></div>
           <div>Brand guidelines</div>
           <div>Team</div>
         </div>

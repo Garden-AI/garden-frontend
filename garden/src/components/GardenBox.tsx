@@ -7,7 +7,7 @@ const GardenBox = ({ garden }: { garden: any }) => {
 
   return (
     <div
-      className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer text-display min-w-[75%]"
+      className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer text-display min-w-[50%]"
       onClick={() => navigate(`/garden/${text}`)}
     >
       <div className="flex flex-col gap-2">

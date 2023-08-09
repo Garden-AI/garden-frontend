@@ -3,6 +3,7 @@ import RealStuff from './RealStuff'
 import { HashRouter, Routes, Route } from "react-router-dom";
 import GardenPage from './pages/GardenPage';
 import AboutPage from './pages/AboutPage';
+import TermsPage from './pages/TermsPage';
 import ScrollToTop from './components/ScrollToTop'
 import SearchPage from './pages/SearchPage';
 import HomePage from './pages/HomePage';
@@ -32,27 +33,27 @@ const pkce = authorization.pkce({
 function App() {
   const [isAuthenticated, setAuthenticated] = useState(pkce.hasToken());
 
-    useEffect(() => {
-        async function getToken() {
-            await pkce.handleCodeRedirect();
-            setAuthenticated(pkce.hasToken());
-        }
-        getToken();
-    }, []);
-
-    function handleLogin() {
-        pkce.redirect();
+  useEffect(() => {
+    async function getToken() {
+      await pkce.handleCodeRedirect();
+      setAuthenticated(pkce.hasToken());
     }
+    getToken();
+  }, []);
 
-    function handleLogOut() {
-        setAuthenticated(false);
-        pkce.revoke();
-        window.location.replace("/");
-    }
+  function handleLogin() {
+    pkce.redirect();
+  }
 
-    const MainApp = () => <RealStuff isAuthenticated={isAuthenticated} handleLogOut={handleLogOut} handleLogin={handleLogin} />
+  function handleLogOut() {
+    setAuthenticated(false);
+    pkce.revoke();
+    window.location.replace("/");
+  }
 
-  const breadcrumbs: {home: string; search: string; garden: Array<string>; pipeline: Array<string>;} = {
+  const MainApp = () => <RealStuff isAuthenticated={isAuthenticated} handleLogOut={handleLogOut} handleLogin={handleLogin} />
+
+  const breadcrumbs: { home: string; search: string; garden: Array<string>; pipeline: Array<string>; } = {
     home: 'Home',
     search: '',
     garden: [],
@@ -62,16 +63,17 @@ function App() {
   return (
     <div>
       <HashRouter>
-      <ScrollToTop/>
+        <ScrollToTop />
         <Navbar />
         <Routes>
-          <Route path="/" element={<HomePage/>}/>
-          <Route path="secret" element={MainApp()}/>
-          <Route path="/home" element={<HomePage/>}/>
-          <Route path="/about" element={<AboutPage />}/>
-          <Route path="/search" element={<SearchPage bread={breadcrumbs}/>}/>
-          <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs}/>}/>
-          <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs}/>}/>
+          <Route path="/" element={<HomePage />} />
+          <Route path="secret" element={MainApp()} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/search" element={<SearchPage bread={breadcrumbs} />} />
+          <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs} />} />
+          <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs} />} />
         </Routes>
       </HashRouter>
     </div>
