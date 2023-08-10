@@ -27,20 +27,6 @@ const HomePage = () => {
     Search();
   }, []);
 
-
-  // <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
-  //       <p className="pt-8 sm:pt-16 text-lg sm:text-2xl text-center max-w-sm">
-  //         An ecosystem of ML models and datasets ready to be explored
-  //       </p>
-  //       <Link
-  //         to="/search"
-  //         className="mt-12 bg-green w-40 h-[48px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
-  //       >
-  //         Search
-  //       </Link>
-  //       <hr className="mt-10 w-11/12 bg-black" />
-  //     </div>
-
   return (
     <>
       <div className="flex flex-row mx-10 mt-16">
