@@ -2,7 +2,6 @@ import React from 'react';
 import RealStuff from './RealStuff'
 import { HashRouter, Routes, Route } from "react-router-dom";
 import GardenPage from './pages/GardenPage';
-import AboutPage from './pages/AboutPage';
 import TermsPage from './pages/TermsPage';
 import ScrollToTop from './components/ScrollToTop'
 import SearchPage from './pages/SearchPage';

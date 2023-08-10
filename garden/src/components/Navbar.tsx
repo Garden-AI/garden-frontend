@@ -11,8 +11,8 @@ const Navbar = () => {
       ></img>
       </Link>
       <ul className="flex items-center gap-8">
-        {/* <Link to="/search">Search</Link> */}
-        <Link to="/about">About</Link>
+        <Link to="/home">Home</Link>
+        <Link to="/search">Search</Link>
         <li>
           <a
             href="https://github.com/Garden-AI/garden-frontend"
