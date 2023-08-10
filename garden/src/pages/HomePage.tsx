@@ -29,24 +29,39 @@ const HomePage = () => {
 
   return (
     <>
+      <div className="flex flex-row mx-10 mt-16">
+        <div className="flex flex-col font-display pt-5 sm:pt-10 px-5 grow mt-8">
+          <p className="font-semibold text-3xl sm:text-5xl max-w-3xl min-w-[50%]">
+            Build a garden where your model can thrive
+          </p>
+          <p className="pt-14 font-normal text-xl sm:text-2xl max-w-3xl grow">
+            Garden is an ecosystem of machine learning models and datasets—made by researchers to simplify ML.
+          </p>
+          <div className="font-display pt-5 sm:pt-10 px-5">
+            <Link
+              to="/search"
+              className="mt-12 bg-green w-32 h-[48px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
+            >
+              Search
+            </Link>
+          </div>
+        </div>
+
+        <img
+          src="img/AIGeneratedImg.png"
+          alt="Garden AI Logo"
+          className="w-[14rem] sm:w-[18rem] md:w-[24rem] lg:w-[28rem] object-scale-down"
+        ></img>
+
+      </div>
+
       <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
-        <p className="font-semibold text-3xl sm:text-6xl text-center max-w-3xl">
-          Build a garden where your model can thrive
-        </p>
-        <p className="pt-8 sm:pt-16 text-lg sm:text-3xl text-center max-w-lg">
-          An ecosystem of ML models and datasets ready to be explored
-        </p>
-        <Link
-          to="/search"
-          className="mt-12 bg-green w-48 h-[64px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
-        >
-          Search
-        </Link>
+        <hr className="mt-10 w-11/12 bg-black" />
       </div>
 
       <div
         id="icons-text"
-        className="grid grid-cols-3 place-items-top gap-4 pt-14 px-[10%] font-display text-sm sm:text-2xl "
+        className="grid grid-cols-3 place-items-top gap-4 pt-14 px-[10%] font-display text-sm sm:text-xl "
       >
         {/* chart */}
         <div className="flex flex-col items-center">
@@ -56,7 +71,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[10rem] sm:h-[10rem]"
+            className="w-[6rem] h-[6rem] sm:w-[7rem] sm:h-[7rem]"
           >
             <path
               strokeLinecap="round"
@@ -77,7 +92,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[10rem] sm:h-[10rem]"
+            className="w-[6rem] h-[6rem] sm:w-[7rem] sm:h-[7rem]"
           >
             <path
               strokeLinecap="round"
@@ -98,7 +113,7 @@ const HomePage = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#53A86C"
-            className="w-[6rem] h-[6rem] sm:w-[10rem] sm:h-[10rem]"
+            className="w-[6rem] h-[6rem] sm:w-[7rem] sm:h-[7rem]"
           >
             <path
               strokeLinecap="round"
@@ -113,11 +128,11 @@ const HomePage = () => {
       </div>
 
       {/* First section (We overcome...) */}
-      <div className="bg-green font-display px-5 sm:px-20 py-8 mt-8 text-white">
-        <h1 className="text-xl sm:text-4xl font-semibold pb-10">
-          We overcome barriers surrounding ML
+      <div className="font-display px-5 sm:px-20 py-8 mt-8 text-black">
+        <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">
+          We overcome barriers surrounding ML.
         </h1>
-        <p className="text-md sm:text-xl">
+        <p className="text-md sm:text-lg">
           We seek to create collections of ML models that are linked with the
           data and computing resources required to advance the work of research
           communities. These gardens make it easy to publish models that can be
@@ -129,10 +144,10 @@ const HomePage = () => {
 
       {/* Second Section (What are...) */}
       <div className="font-display px-5 sm:px-20 py-8">
-        <h1 className="text-xl sm:text-4xl text-right font-semibold pb-10">
+        <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">
           What are Gardens?
         </h1>
-        <p className="text-md sm:text-xl">
+        <p className="text-md sm:text-lg">
           Gardens contain a full ML ecosystem. Models, data, tests, and
           benchmarks are all linked together and are required to meet FAIR
           principles to ensure accessibility and reproducibility. Gardens allow
@@ -143,9 +158,9 @@ const HomePage = () => {
       </div>
 
       {/* Third section (Pipelines...) */}
-      <div className="bg-green font-display px-5 sm:px-20 py-8 mt-8 text-white">
-        <h1 className="text-xl sm:text-4xl font-semibold pb-10">Pipelines</h1>
-        <p className="text-md sm:text-xl">
+      <div className="font-display px-5 sm:px-20 py-8 mt-8 text-black">
+        <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">Pipelines</h1>
+        <p className="text-md sm:text-lg">
           Pipelines are pages within a garden where all the relevant models and
           its associated materials are stored. Each pipeline is composed of
           steps such as input, function, output, etc. If a particular model is
@@ -156,12 +171,16 @@ const HomePage = () => {
         </p>
       </div>
 
+      <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
+        <hr className="mt-5 w-11/12 bg-black" />
+      </div>
+
       {/* Featured Gardens */}
-      <div className="font-display py-8 px-5 sm:px-20">
-        <h1 className="text-center text-xl sm:text-4xl font-semibold underline underline-offset-4 decoration-green decoration-4 pb-10">
-          Featured Gardens
+      <div className="font-display py-8 px-5 sm:px-20 ">
+        <h1 className="text-left text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">
+          Explore Featured Gardens
         </h1>
-        <p className="text-md sm:text-xl">
+        <p className="text-md sm:text-lg">
           Take a look at some popular gardens that have been getting a lot of
           attention! You can view the models, datasets, papers, and anything
           else associated with the garden. Additionally, you can run the models
@@ -171,7 +190,7 @@ const HomePage = () => {
 
         <div
           id="Garden-Squares"
-          className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-8"
+          className="flex flex-row overflow-auto min-h-min gap-6 p-2 pt-8"
         >
           {result.map((res) => (
             <GardenBox garden={res} />
@@ -179,79 +198,114 @@ const HomePage = () => {
         </div>
       </div>
 
+      <div className="flex flex-col items-center pt-5 sm:pt-10 px-5">
+        <hr className="mt-5 w-11/12 bg-black" />
+      </div>
+
       {/* Bottom section/credits */}
-      <div className="font-display bg-green pb-8">
-        <p className="text-white text-lg sm:text-xl pt-8 text-center">
-          This project was made possible by:
-        </p>
-        <div className="bg-white my-8 mx-6 sm:mx-16 md:mx-16 rounded-xl flex flex-wrap items-center justify-evenly py-10">
-          <section className="flex flex-col items-center">
-            <a target="blank" href="https://materialsdatafacility.org/">
-              <img
-                src="img/MDF-logo.png"
-                alt="MDF logo"
-                className="max-w-[200px] hover:opacity-75"
-              />
-            </a>
-            <h1 className="font-bold text-md md:text-xl pt-6 text-center">
-              MDF
-            </h1>
-            <p className="text-center text-sm md:text-lg mx-1 md:mx-5 pt-2 pb-8 md:pt-4 max-w-xs">
-              Data services to help material scientists publish and discover
-              data
-            </p>
-          </section>
+      <div className="flex columns-2 font-display text-black mx-20 my-10">
 
-          <section className="flex flex-col items-center">
-            <a target="blank" href="https://www.nsf.gov/">
-              <img
-                src="img/National-Science-Foundation-logo.jpeg"
-                className="max-w-[70px] hover:opacity-75"
-                alt="NSF logo"
-              />
-            </a>
-            <h1 className="font-bold text-md md:text-xl pt-6 text-center">
-              National Science Foundation
-            </h1>
-            <p className="text-center mx-1 md:mx-5 pt-4 max-w-xs text-sm pb-8">
-              Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for
-              Publishing and Applying AI Models for Translational Research in
-              Science, Engineering, Education, and Industry”
-            </p>
-          </section>
+        <div className="flex flex-col">
+          <img
+            src="img/smallColorIcon_Garden.png"
+            alt="Garden AI Logo"
+            className="max-w-[150px] object-contain mb-6">
+          </img>
+          <div><Link to="/terms">Terms & Policies</Link></div>
+          <div>Brand guidelines</div>
+          <div>Team</div>
+        </div>
 
-          <section className="flex flex-col items-center">
-            <a target="blank" href="https://foundry-ml.org/#/">
-              <img
-                src="img/foundry-logo.png"
-                alt="Foundry logo"
-                className="max-w-[200px] hover:opacity-75"
-              />
-            </a>
-            <h1 className="font-bold text-md md:text-xl pt-6 text-center">
-              Foundry
-            </h1>
-            <p className="text-center text-sm md:text-lg mx-5 pt-4 max-w-xs">
-              An open source machine learning platform for scientists
-            </p>
-          </section>
+        <div className="py-10 flex-auto">
+        </div>
 
-          <section className="flex flex-col items-center">
-            <a target="blank" href="https://www.globus.org/">
-              <img
-                src="img/globus-logo.png"
-                alt="Gloubs logo"
-                className="max-w-[200px] hover:opacity-75"
-              />
-            </a>
-            <h1 className="font-bold text-md md:text-xl pt-6 text-center">
-              Globus
-            </h1>
-            <p className="text-center text-sm md:text-lg mx-5 pt-4 max-w-xs">
-              Research cyberinfrastructure, developed and operated as a
-              not-for-profit service by the University of Chicago
-            </p>
-          </section>
+        <div className="py-10 ml-10">
+          <p className="text-sm pt-8">
+            This project was made possible by:
+          </p>
+          <div className="grid grid-rows-4 grid-flow-col gap-2 items-center">
+
+            <section className="">
+              <h1 className="font-bold text-sm pt-2">
+                MDF
+              </h1>
+              <p className="text-xs max-w-sm">
+                Data services to help material scientists publish and discover
+                data
+              </p>
+            </section>
+
+            <section className="">
+              <h1 className="font-bold text-sm pt-2">
+                National Science Foundation
+              </h1>
+              <p className="text-xs max-w-sm">
+                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for
+                Publishing and Applying AI Models for Translational Research in
+                Science, Engineering, Education, and Industry”
+              </p>
+            </section>
+
+            <section className="">
+              <h1 className="font-bold text-sm pt-2">
+                Foundry
+              </h1>
+              <p className="text-xs max-w-sm">
+                An open source machine learning platform for scientists
+              </p>
+            </section>
+
+            <section className="">
+              <h1 className="font-bold text-sm pt-2">
+                Globus
+              </h1>
+              <p className="text-xs max-w-sm">
+                Research cyberinfrastructure, developed and operated as a
+                not-for-profit service by the University of Chicago
+              </p>
+            </section>
+
+            <section className="place-self-center">
+              <a target="blank" href="https://materialsdatafacility.org/">
+                <img
+                  src="img/MDF-logo.png"
+                  alt="MDF logo"
+                  className="max-w-[150px] hover:opacity-75"
+                />
+              </a>
+            </section>
+
+            <section className="place-self-center">
+              <a target="blank" href="https://www.nsf.gov/">
+                <img
+                  src="img/National-Science-Foundation-logo.jpeg"
+                  className="max-w-[60px] hover:opacity-75"
+                  alt="NSF logo"
+                />
+              </a>
+            </section>
+
+            <section className="place-self-center">
+              <a target="blank" href="https://foundry-ml.org/#/">
+                <img
+                  src="img/foundry-logo.png"
+                  alt="Foundry logo"
+                  className="max-w-[150px] hover:opacity-75"
+                />
+              </a>
+            </section>
+
+            <section className="place-self-center">
+              <a target="blank" href="https://www.globus.org/">
+                <img
+                  src="img/globus-logo.png"
+                  alt="Gloubs logo"
+                  className="max-w-[100px] hover:opacity-75"
+                />
+              </a>
+            </section>
+
+          </div>
         </div>
       </div>
     </>
