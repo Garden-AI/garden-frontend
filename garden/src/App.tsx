@@ -68,7 +68,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="secret" element={MainApp()} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/search" element={<SearchPage bread={breadcrumbs} />} />
           <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs} />} />
