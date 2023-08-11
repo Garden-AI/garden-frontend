@@ -7,14 +7,14 @@ const Navbar = () => {
       <Link to="/home"><img
         src="img/smallColorIcon_Garden.png"
         alt="Garden AI Logo"
-        className="w-28 object-contain"
+        className="w-28"
       ></img>
       </Link>
       <ul className="flex items-center gap-8">
         <Link to="/search">Search</Link>
         <li>
           <a
-            href="https://github.com/Garden-AI/garden-frontend"
+            href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
             target="_blank"
             rel="noopener noreferrer"
           >
