@@ -29,30 +29,27 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="flex flex-row mx-10 mt-16">
-        <div className="flex flex-col font-display pt-5 sm:pt-10 px-5 grow mt-8">
-          <p className="font-semibold text-3xl sm:text-5xl max-w-3xl min-w-[50%]">
-            Build a garden where your model can thrive
-          </p>
-          <p className="pt-14 font-normal text-xl sm:text-2xl max-w-3xl grow">
-            Garden is an ecosystem of machine learning models and datasets—made by researchers to simplify ML.
-          </p>
-          <div className="font-display pt-5 sm:pt-10 px-5">
-            <Link
-              to="/search"
-              className="mt-12 bg-green w-32 h-[48px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
-            >
-              Search
-            </Link>
-          </div>
-        </div>
-
+      <div className="flex flex-col items-center mx-auto font-display w-11/12 p-8 grow sm:pt-10 sm:grid sm:grid-cols-2 sm:gap-4">
+        <p className="font-semibold text-3xl sm:text-5xl max-w-3xl min-w-[50%]">
+          Build a garden where your model can thrive.
+        </p>
         <img
           src="img/AIGeneratedImg.png"
           alt="Garden AI Logo"
-          className="w-[14rem] sm:w-[18rem] md:w-[24rem] lg:w-[28rem] object-scale-down"
+          className="grow sm:w-[18rem] md:w-[24rem] lg:w-[28rem]"
         ></img>
+        <p className="pt-4 font-normal text-xl sm:text-2xl max-w-3xl">
+          Garden is an ecosystem of machine learning models and datasets—made by researchers to simplify ML.
+        </p>
+      </div>
 
+      <div className="font-display pt-5 sm:pt-10 px-5 flex justify-center">
+        <Link
+          to="/search"
+          className="bg-green w-32 h-[48px] rounded-xl text-white flex justify-center items-center hover:saturate-150"
+        >
+          Search
+        </Link>
       </div>
 
       <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
@@ -158,7 +155,7 @@ const HomePage = () => {
       </div>
 
       {/* Third section (Pipelines...) */}
-      <div className="font-display px-5 sm:px-20 py-8 mt-8 text-black">
+      <div className="font-display px-5 sm:px-20 py-8 text-black">
         <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">Pipelines</h1>
         <p className="text-md sm:text-lg">
           Pipelines are pages within a garden where all the relevant models and
@@ -203,40 +200,38 @@ const HomePage = () => {
       </div>
 
       {/* Bottom section/credits */}
-      <div className="flex columns-2 font-display text-black mx-20 my-10">
+      <div className="m-10 md:mx-20 md:my-10 md:flex md:columns-2 font-display text-black">
 
         <div className="flex flex-col">
           <img
             src="img/smallColorIcon_Garden.png"
             alt="Garden AI Logo"
-            className="max-w-[150px] object-contain mb-6">
+            className="max-w-[100px] object-contain mb-4 md:max-w-[150px]">
           </img>
           <div><Link to="/terms">Terms & Policies</Link></div>
           <div>Brand guidelines</div>
           <div>Team</div>
         </div>
 
-        <div className="py-10 flex-auto">
-        </div>
-
-        <div className="py-10 ml-10">
+        <div className="py-10 md:ml-10">
           <p className="text-sm pt-8">
-            This project was made possible by:
+            Garden is funded by NSF Award #2209892: "Frameworks: Garden: A FAIR Framework for Publishing and Applying AI Models for Translational Research in Science, Engineering, Education, and Industry"          </p>
+          <p className="text-sm pt-8">
+            This project builds upon work including:
           </p>
-          <div className="grid grid-rows-4 grid-flow-col gap-2 items-center">
-
+          <div className="grid grid-rows-4 grid-flow-col gap-1 items-center">
             <section className="">
-              <h1 className="font-bold text-sm pt-2">
-                MDF
+              <h1 className="font-bold text-sm md:pt-2">
+                The Materials Data Facility (MDF)
               </h1>
               <p className="text-xs max-w-sm">
-                Data services to help material scientists publish and discover
-                data
+                NIST-supported effort to build data services to help material scientists publish and discover data
+
               </p>
             </section>
 
             <section className="">
-              <h1 className="font-bold text-sm pt-2">
+              <h1 className="font-bold text-sm md:pt-2">
                 National Science Foundation
               </h1>
               <p className="text-xs max-w-sm">
@@ -247,7 +242,7 @@ const HomePage = () => {
             </section>
 
             <section className="">
-              <h1 className="font-bold text-sm pt-2">
+              <h1 className="font-bold text-sm md:pt-2">
                 Foundry
               </h1>
               <p className="text-xs max-w-sm">
@@ -256,7 +251,7 @@ const HomePage = () => {
             </section>
 
             <section className="">
-              <h1 className="font-bold text-sm pt-2">
+              <h1 className="font-bold text-sm md:pt-2">
                 Globus
               </h1>
               <p className="text-xs max-w-sm">

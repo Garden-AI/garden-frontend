@@ -10,8 +10,8 @@ const TermsPage = () => {
           This page is under construction!
         </h1>
 
-        <p className="text-md sm:text-lg">
-          This page is still growing! Come back another time to see this page fully sprouted!
+        <p className="text-md mx-12 text-center sm:text-lg">
+          This page is still growing! Come back another time when this page is fully sprouted!
         </p>
 
         <div className="font-display pt-5 sm:pt-10 px-5">
