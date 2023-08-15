@@ -29,14 +29,14 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center mx-auto font-display w-11/12 p-8 grow sm:pt-10 sm:grid sm:grid-cols-2 sm:gap-4">
-        <p className="font-semibold text-3xl sm:text-5xl max-w-3xl min-w-[50%]">
+      <div className="flex flex-col items-center mx-auto font-display w-11/12 p-8 grow md:pt-10 md:grid md:grid-cols-2 md:gap-4">
+        <p className="font-semibold text-3xl md:text-5xl max-w-3xl min-w-[50%]">
           Build a garden where your model can thrive.
         </p>
         <img
           src="img/AIGeneratedImg.png"
           alt="Garden AI Logo"
-          className="grow sm:w-[18rem] md:w-[24rem] lg:w-[28rem]"
+          className="w-[24rem] lg:w-[28rem] justify-self-center md:row-span-2"
         ></img>
         <p className="pt-4 font-normal text-xl sm:text-2xl max-w-3xl">
           Garden is an ecosystem of machine learning models and datasets—made by researchers to simplify ML.
@@ -124,56 +124,59 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* First section (We overcome...) */}
-      <div className="font-display px-5 sm:px-20 py-8 mt-8 text-black">
-        <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">
-          We overcome barriers surrounding ML.
-        </h1>
-        <p className="text-md sm:text-lg">
-          We seek to create collections of ML models that are linked with the
-          data and computing resources required to advance the work of research
-          communities. These gardens make it easy to publish models that can be
-          integrated into academia and industry alike. Researchers can provide
-          broad access to their models, without having to worry about the
-          difficulties surrounding discovery, access, and deployment.
-        </p>
-      </div>
+      <div className="font-display px-5 sm:px-12 md:px-20 py-8 text-black">
+        {/* First section (We overcome...) */}
+        <div className="mt-12">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">
+            We overcome barriers surrounding ML.
+          </h1>
+          <p className="text-md sm:text-lg">
+            We seek to create collections of ML models that are linked with the
+            data and computing resources required to advance the work of research
+            communities. These gardens make it easy to publish models that can be
+            integrated into academia and industry alike. Researchers can provide
+            broad access to their models, without having to worry about the
+            difficulties surrounding discovery, access, and deployment.
+          </p>
+        </div>
 
-      {/* Second Section (What are...) */}
-      <div className="font-display px-5 sm:px-20 py-8">
-        <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">
-          What are Gardens?
-        </h1>
-        <p className="text-md sm:text-lg">
-          Gardens contain a full ML ecosystem. Models, data, tests, and
-          benchmarks are all linked together and are required to meet FAIR
-          principles to ensure accessibility and reproducibility. Gardens allow
-          you engage with a broader audience by making publication of models
-          quick and easy. This is efficiently achieved through sub-sections of a
-          garden called “pipelines”.
-        </p>
-      </div>
+        {/* Second Section (What are...) */}
+        <div className="mt-12">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">
+            What are Gardens?
+          </h1>
+          <p className="text-md sm:text-lg">
+            Gardens contain a full ML ecosystem. Models, data, tests, and
+            benchmarks are all linked together and are required to meet FAIR
+            principles to ensure accessibility and reproducibility. Gardens allow
+            you engage with a broader audience by making publication of models
+            quick and easy. This is efficiently achieved through sub-sections of a
+            garden called “pipelines”.
+          </p>
+        </div>
 
-      {/* Third section (Pipelines...) */}
-      <div className="font-display px-5 sm:px-20 py-8 text-black">
-        <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">Pipelines</h1>
-        <p className="text-md sm:text-lg">
-          Pipelines are pages within a garden where all the relevant models and
-          its associated materials are stored. Each pipeline is composed of
-          steps such as input, function, output, etc. If a particular model is
-          relevant in more than one garden, then that pipeline can be reused and
-          displayed across them all, as they are not garden specific. Pipelines
-          play a key role in the accessibility and reproducibility of a garden
-          page.
-        </p>
+        {/* Third section (Pipelines...) */}
+        <div className="mt-12">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">Pipelines</h1>
+          <p className="text-md sm:text-lg">
+            Pipelines are pages within a garden where all the relevant models and
+            its associated materials are stored. Each pipeline is composed of
+            steps such as input, function, output, etc. If a particular model is
+            relevant in more than one garden, then that pipeline can be reused and
+            displayed across them all, as they are not garden specific. Pipelines
+            play a key role in the accessibility and reproducibility of a garden
+            page.
+          </p>
+        </div>
       </div>
 
       <div className="font-display flex flex-col items-center pt-5 sm:pt-10 px-5">
         <hr className="mt-5 w-11/12 bg-black" />
       </div>
 
-      {/* Featured Gardens */}
-      <div className="font-display py-8 px-5 sm:px-20 ">
+      <div className="font-display py-8 px-5 sm:px-12 md:px-20">
+
+        {/* Featured Gardens */}
         <h1 className="text-left text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">
           Explore Featured Gardens
         </h1>

@@ -913,6 +913,10 @@ video {
   width: max-content;
 }
 
+.w-\[24rem\] {
+  width: 24rem;
+}
+
 .min-w-\[25px\] {
   min-width: 25px;
 }
@@ -1091,6 +1095,10 @@ video {
 
 .place-self-center {
   place-self: center;
+}
+
+.justify-self-center {
+  justify-self: center;
 }
 
 .overflow-auto {
@@ -1301,6 +1309,10 @@ video {
 
 .object-contain {
   object-fit: contain;
+}
+
+.object-center {
+  object-position: center;
 }
 
 .p-1 {
@@ -1822,6 +1834,10 @@ video {
     grid-column-end: 3;
   }
 
+  .sm\:row-span-2 {
+    grid-row: span 2 / span 2;
+  }
+
   .sm\:m-2 {
     margin: 0.5rem;
   }
@@ -1859,6 +1875,10 @@ video {
     width: 7rem;
   }
 
+  .sm\:w-\[24rem\] {
+    width: 24rem;
+  }
+
   .sm\:max-w-\[3vw\] {
     max-width: 3vw;
   }
@@ -1887,6 +1907,16 @@ video {
   .sm\:px-20 {
     padding-left: 5rem;
     padding-right: 5rem;
+  }
+
+  .sm\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .sm\:px-12 {
+    padding-left: 3rem;
+    padding-right: 3rem;
   }
 
   .sm\:pl-36 {
@@ -1942,6 +1972,10 @@ video {
     grid-column-end: 3;
   }
 
+  .md\:row-span-2 {
+    grid-row: span 2 / span 2;
+  }
+
   .md\:mx-12 {
     margin-left: 3rem;
     margin-right: 3rem;
@@ -1970,8 +2004,16 @@ video {
     display: flex;
   }
 
+  .md\:grid {
+    display: grid;
+  }
+
   .md\:w-\[24rem\] {
     width: 24rem;
+  }
+
+  .md\:w-\[18rem\] {
+    width: 18rem;
   }
 
   .md\:max-w-\[150px\] {
@@ -1991,13 +2033,31 @@ video {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .md\:gap-4 {
+    gap: 1rem;
+  }
+
   .md\:px-36 {
     padding-left: 9rem;
     padding-right: 9rem;
   }
 
+  .md\:px-20 {
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+
   .md\:pt-2 {
     padding-top: 0.5rem;
+  }
+
+  .md\:pt-10 {
+    padding-top: 2.5rem;
+  }
+
+  .md\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
   }
 }
 
@@ -2017,6 +2077,10 @@ video {
 
   .lg\:w-\[28rem\] {
     width: 28rem;
+  }
+
+  .lg\:w-\[24rem\] {
+    width: 24rem;
   }
 
   .lg\:grid-cols-3 {
@@ -2056,5 +2120,11 @@ video {
   .lg\:text-xl {
     font-size: 1.25rem;
     line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:w-\[28rem\] {
+    width: 28rem;
   }
 }
