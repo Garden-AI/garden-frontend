@@ -155,7 +155,7 @@ const HomePage = () => {
       </div>
 
       {/* Third section (Pipelines...) */}
-      <div className="font-display px-5 sm:px-20 py-8 mt-8 text-black">
+      <div className="font-display px-5 sm:px-20 py-8 text-black">
         <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">Pipelines</h1>
         <p className="text-md sm:text-lg">
           Pipelines are pages within a garden where all the relevant models and
@@ -206,7 +206,7 @@ const HomePage = () => {
           <img
             src="img/smallColorIcon_Garden.png"
             alt="Garden AI Logo"
-            className="max-w-[75px] object-contain mb-4 md:max-w-[150px]">
+            className="max-w-[100px] object-contain mb-4 md:max-w-[150px]">
           </img>
           <div><Link to="/terms">Terms & Policies</Link></div>
           <div>Brand guidelines</div>
@@ -215,16 +215,18 @@ const HomePage = () => {
 
         <div className="py-10 md:ml-10">
           <p className="text-sm pt-8">
-            This project was made possible by:
+            Garden is funded by NSF Award #2209892: "Frameworks: Garden: A FAIR Framework for Publishing and Applying AI Models for Translational Research in Science, Engineering, Education, and Industry"          </p>
+          <p className="text-sm pt-8">
+            This project builds upon work including:
           </p>
           <div className="grid grid-rows-4 grid-flow-col gap-1 items-center">
             <section className="">
               <h1 className="font-bold text-sm md:pt-2">
-                MDF
+                The Materials Data Facility (MDF)
               </h1>
               <p className="text-xs max-w-sm">
-                Data services to help material scientists publish and discover
-                data
+                NIST-supported effort to build data services to help material scientists publish and discover data
+
               </p>
             </section>
 
