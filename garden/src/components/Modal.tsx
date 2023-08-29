@@ -91,7 +91,7 @@ const Modal = (props: {
         </div>
         <p className="pt-12 pl-12">Copy Link</p>
         <div className="flex items-center">
-          <div className="ml-14 mt-2 border-2 border-solid border-gray-100 w-[30vw] overflow-auto whitespace-nowrap">
+          <div className="ml-4 sm:ml-14 mt-2 border-2 border-solid border-gray-100 sm:w-[30vw] overflow-auto whitespace-nowrap">
             <span className="px-4 text-sm">{window.location.href}</span>
           </div>
           <button onClick={() => props.copy()}>
@@ -101,7 +101,7 @@ const Modal = (props: {
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="black"
-              className="w-6 h-6 ml-4"
+              className="w-6 h-6 mx-2 sm:ml-4"
             >
               <path
                 strokeLinecap="round"
@@ -114,7 +114,7 @@ const Modal = (props: {
 
         <p className="pt-6 pl-12">Copy DOI</p>
         <div className="flex items-center pb-8">
-          <div className="ml-14 mt-2 border-2 border-solid border-gray-100 w-[30vw] overflow-auto whitespace-nowrap">
+          <div className="ml-4 sm:ml-14 mt-2 border-2 border-solid border-gray-100 sm:w-[30vw] overflow-auto whitespace-nowrap">
             <span className="px-4 text-sm">{props.doi}</span>
           </div>
           <button onClick={copyDOI}>
@@ -124,7 +124,7 @@ const Modal = (props: {
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="black"
-              className="w-6 h-6 ml-4"
+              className="w-6 h-6 mx-2 sm:ml-4"
             >
               <path
                 strokeLinecap="round"
