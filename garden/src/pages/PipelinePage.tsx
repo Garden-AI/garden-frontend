@@ -174,13 +174,13 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
   return (
     <>
-      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-24 pb-2 font-display">
+      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-12 sm:pt-24 pb-2 font-display">
         {/* Place breadcrumbs here */}
         <Breadcrumbs crumbs={bread} />
         {/* Pipeline Header */}
         <div className="flex flex-col gap-1">
-          <div className="flex gap-8">
-            <h1 className="text-3xl font-display">{result[0].title}</h1>
+          <div className="flex gap4 sm:gap-8">
+            <h1 className="text-2xl sm:text-3xl font-display">{result[0].title}</h1>
             <div className="flex gap-4 items-center">
               <button title="Copy link" onClick={copy}>
                 <svg
@@ -258,7 +258,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
           </div>
           {/* Total Runs/Pins/Shares/Citations goes here */}
           {/* <PipelineMetrics/> */}
-          <div className="sm:flex pt-4 mr-8 text-lg">
+          <div className="flex flex-wrap pt-4 mr-8 text-base sm:text-lg">
             <p className="font-semibold pr-2">Contributors:</p>
             <p className={pClass} ref={widthRef}>
               {result[0].authors
@@ -301,7 +301,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
         </div>
 
         <div className="flex flex-col gap-8 w-full">
-          <h2 className="text-3xl text-center">Run this pipeline</h2>
+          <h2 className="text-2xl sm:text-3xl text-center">Run this pipeline</h2>
           <div className="sm:flex justify-center py-2">
             <div className="bg-gray-800 text-white py-6 px-4 sm:px-6 text-sm sm:text-base rounded-xl break-words">
               <code className="leading-loose">
@@ -360,12 +360,12 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               Related
             </button>
           </div>
-          <div className="pt-8">
+          <div className="pt-4 sm:pt-8">
             {/* Side panel steps tab */}
             {active === "" && (
-              <div className="grid grid-cols-5 h-[650px]">
+              <div className="inline-grid sm:grid grid-cols-5">
                 <div
-                  className=" col-span-2 lg:col-span-1 bg-gray overflow-y-scroll"
+                  className="col-span-full sm:col-span-2 lg:col-span-1 bg-gray overflow-y-scroll h-full sm:h-[650px]"
                   ref={div}
                 >
                   {stepsOverflow ? (
@@ -405,12 +405,12 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                         <div
                           className={
                             buttonIndex === index
-                              ? "border border-4 border-gray-400 flex justify-center my-4 text-center w-full bg-gray-100"
-                              : "border border-gray-400 border-1 flex justify-center my-4 text-center w-full"
+                              ? "border border-4 border-gray-400 flex justify-center my-2 sm:my-4 text-center w-full bg-gray-100"
+                              : "border border-gray-400 border-1 flex justify-center my-2 sm:my-4 text-center w-full"
                           }
                         >
-                          <button onClick={() => setButtonIndex(index)}>
-                            <p className="p-4 break-all">{step.title}</p>
+                          <button className="w-full" onClick={() => setButtonIndex(index)}>
+                            <p className="p-2 sm:p-4 break-all">{step.title}</p>
                           </button>
                         </div>
                       </div>
@@ -428,7 +428,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   )}
                   <div ref={bottom}></div>
                 </div>
-                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8 break-words whitespace-pre-line">
+                <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
                   <h1 className="text-xl lg:text-3xl font-bold">
                     {result[0].steps[buttonIndex].title}
                   </h1>
