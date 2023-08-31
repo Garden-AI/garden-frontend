@@ -340,7 +340,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                         res = f.load_data()
                       </code>
                     </div>
-                    <p className="sm:mx-16 pt-8 text-xl">
+                    <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
                       New to Foundry or need a refresher? Click{" "}
                       <a
                         target="blank"

@@ -220,7 +220,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               />
             </div>
           </div>
-          <div className="text-gray-500 text-sm flex gap-1">
+          <div className="text-gray-500 text-sm flex flex-wrap gap-1">
             <span>Version {result[0].version}</span>
             <span>|</span>
             <span>{result[0].year}</span>
@@ -303,7 +303,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
         <div className="flex flex-col gap-8 w-full">
           <h2 className="text-3xl text-center">Run this pipeline</h2>
           <div className="sm:flex justify-center py-2">
-            <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
+            <div className="bg-gray-800 text-white py-6 px-4 sm:px-6 text-sm sm:text-base rounded-xl break-words">
               <code className="leading-loose">
                 <span className="text-purple">import</span> GardenClient <br />
                 client = garden_ai.GardenClient()
@@ -524,7 +524,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   )}
                   {showFoundry === true ? (
                   <div>
-                    <p className="mx-16 text-xl pb-4">
+                    <p className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
                       *One or more of these datasets uses Foundry, here is how
                       you can view it:
                     </p>
@@ -550,7 +550,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                         res = f.load_data()
                       </code>
                     </div>
-                    <p className="mx-16 pt-8 text-xl">
+                    <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
                       New to Foundry or need a refresher? Click{" "}
                       <a
                         target="blank"

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="border-b border-gray-200 flex gap-4 justify-between py-1 mx-3 text-xs sm:text-lg">
+    <nav className="border-b border-gray-200 flex gap-4 justify-between py-1 mx-1 sm:mx-3 text-xs sm:text-lg">
       <div className="flex-shrink-0">
         <Link to="/home"><img
           src="img/smallColorIcon_Garden.png"
