@@ -31,7 +31,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const top = useRef<HTMLButtonElement>(null);
   const div = useRef<HTMLDivElement>(null);
 
-  //These two useEffects determine if overflow is happening so it can be handled
+  //These two functions determine if overflow is happening so it can be handled
   useEffect(() => {
     if (widthRef.current) {
       const container = widthRef.current;
@@ -41,14 +41,17 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     }
   }, []);
 
-  useEffect(() => {
+
+  const checkStepOverflow =() =>{
     if (div.current) {
+      console.log('kljsfdlkjad')
       const contain = div.current;
-      if (contain!.offsetHeight < contain!.scrollHeight) {
+      if (contain!.clientHeight < contain!.scrollHeight && stepsOverflow===false) {
         setStepsOverflow(true);
       }
     }
-  }, []);
+  ;
+}
 
   //API call to get the data based on the doi of the pipeline
   useEffect(() => {
@@ -161,16 +164,26 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
   //scroll button for steps tab if there is overflow
   const scrollToBottom = () => {
-    bottom?.current?.scrollIntoView({ behavior: "smooth" });
+    div.current?.scrollTo({top:div.current.scrollHeight, behavior: "smooth"})
   };
 
   const scrollToTop = () => {
-    top?.current?.scrollIntoView({ behavior: "smooth" });
+    div.current?.scrollTo({top:0, behavior: "smooth"})
   };
 
   const foundry = () => {
     setShowFoundry(true);
   };
+
+  // const checkStepsOverFlow = () => {
+  //   const stepsFlow: any = document.querySelector('#step_scroll')
+  //   if(stepsFlow){
+  //     console.log('yayayya')
+  //   }
+  //   if(stepsFlow!.offsetHeight < stepsFlow?.scrollHeight){
+  //     setStepsOverflow(true)
+  //   }
+  // }
 
   return (
     <>
@@ -365,12 +378,13 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             {active === "" && (
               <div className="inline-grid sm:grid grid-cols-5">
                 <div
-                  className="col-span-full sm:col-span-2 lg:col-span-1 bg-gray overflow-y-scroll h-full sm:h-[650px]"
+                  className="col-span-full sm:col-span-2 lg:col-span-1 bg-gray overflow-y-scroll h-full max-h-[200px] sm:max-h-[650px]"
+                  id="step_scroll"
                   ref={div}
                 >
                   {stepsOverflow ? (
                     <button
-                      className="rounded-xl bg-green p-1 px-2 mb-2 hover:border hover:border-black hover:border-2 text-white "
+                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white "
                       ref={top}
                       onClick={() => scrollToBottom()}
                     >
@@ -418,7 +432,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   })}
                   {stepsOverflow ? (
                     <button
-                      className="rounded-xl bg-green p-1 px-2 my-2 hover:border hover:border-black hover:border-2 text-white"
+                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white"
                       onClick={() => scrollToTop()}
                     >
                       Scroll to top
@@ -426,6 +440,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   ) : (
                     <></>
                   )}
+                  {checkStepOverflow()}
                   <div ref={bottom}></div>
                 </div>
                 <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
