@@ -128,12 +128,12 @@ const GardenPage = ({ bread }: { bread: any }) => {
   //Scroll functionality for the related gardens section
   const leftScroll = () => {
     let sc = document.querySelector("#related");
-    sc!.scrollLeft = sc!.scrollLeft - 283;
+    sc!.scrollLeft = sc!.scrollLeft - 287;
   };
 
   const rightScroll = () => {
     let sc = document.querySelector("#related");
-    sc!.scrollLeft = sc!.scrollLeft + 283;
+    sc!.scrollLeft = sc!.scrollLeft + 287;
   };
 
   //Handles if no datasets are associated with a garden
@@ -144,7 +144,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const noDatasets = () => {
     if (datasetCount === 0) {
       return (
-        <p className="text-center pt-8 pb-16 text-xl col-span-2">
+        <p className="text-center pt-8 pb-16 text-base sm:text-xl col-span-2">
           No datasets available for this garden
         </p>
       );
@@ -159,13 +159,13 @@ const GardenPage = ({ bread }: { bread: any }) => {
     <div className="font-display">
       <div
         autoFocus
-        className="h-full w-full flex flex-col gap-10 sm:px-16 md:px-36 py-20 font-display"
+        className="h-full w-full flex flex-col gap-10 px-6 sm:px-16 md:px-36 py-12 sm:py-20 font-display"
       >
         {/* Place breadcrumbs here */}
         <Breadcrumbs crumbs={bread} />
         {/* Garden Header */}
-        <div className="flex gap-8">
-          <h1 className="text-3xl">{result[0]?.entries[0].content.title}</h1>
+        <div className="flex gap-4 sm:gap-8">
+          <h1 className="text-2xl sm:text-3xl">{result[0]?.entries[0].content.title}</h1>
           <div className="flex gap-3 items-center">
             <button title="Copy link" onClick={copy}>
               <svg
@@ -174,7 +174,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
               >
                 <path
                   strokeLinecap="round"
@@ -190,7 +190,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
               >
                 <path
                   strokeLinecap="round"
@@ -289,7 +289,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
             {/* <DiscussionTabContent comments={fakeComments} active={active}/> */}
             {active === "Datasets" && (
               <div>
-                <div className="mx-16 text-xl pb-4">
+                <div className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
                   Below are the datasets that are used in this garden. Clicking
                   on the URL will take you to where they are hosted, and allow
                   you to learn more about them and how to view them.
@@ -314,7 +314,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 </div>
                 {showFoundry === true ? (
                   <div>
-                    <p className="mx-16 text-xl pb-4">
+                    <p className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
                       *One or more of these datasets uses Foundry, here is how
                       you can view it:
                     </p>
@@ -340,7 +340,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                         res = f.load_data()
                       </code>
                     </div>
-                    <p className="mx-16 pt-8 text-xl">
+                    <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
                       New to Foundry or need a refresher? Click{" "}
                       <a
                         target="blank"
@@ -364,7 +364,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
       <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">Explore Other Gardens</h1>
       <div className="relative flex items-center pb-12">
         <button
-          className="w-16 h-16 ml-12 mr-6 bg-gray-100"
+          className="w-16 h-16 ml-4 sm:ml-12 mr-2 sm:mr-6 bg-gray-100"
           onClick={leftScroll}
         >
           <svg
@@ -392,7 +392,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
         </div>
 
         <button
-          className="w-16 h-16 ml-6 mr-12 bg-gray-100"
+          className="w-16 h-16 ml-2 mr-4 sm:ml-6 sm:mr-12 bg-gray-100"
           onClick={rightScroll}
         >
           <svg

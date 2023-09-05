@@ -31,7 +31,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const top = useRef<HTMLButtonElement>(null);
   const div = useRef<HTMLDivElement>(null);
 
-  //These two useEffects determine if overflow is happening so it can be handled
+  //These two functions determine if overflow is happening so it can be handled
   useEffect(() => {
     if (widthRef.current) {
       const container = widthRef.current;
@@ -41,14 +41,17 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     }
   }, []);
 
-  useEffect(() => {
+
+  const checkStepOverflow =() =>{
     if (div.current) {
+      console.log('kljsfdlkjad')
       const contain = div.current;
-      if (contain!.offsetHeight < contain!.scrollHeight) {
+      if (contain!.clientHeight < contain!.scrollHeight && stepsOverflow===false) {
         setStepsOverflow(true);
       }
     }
-  }, []);
+  ;
+}
 
   //API call to get the data based on the doi of the pipeline
   useEffect(() => {
@@ -161,26 +164,36 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
   //scroll button for steps tab if there is overflow
   const scrollToBottom = () => {
-    bottom?.current?.scrollIntoView({ behavior: "smooth" });
+    div.current?.scrollTo({top:div.current.scrollHeight, behavior: "smooth"})
   };
 
   const scrollToTop = () => {
-    top?.current?.scrollIntoView({ behavior: "smooth" });
+    div.current?.scrollTo({top:0, behavior: "smooth"})
   };
 
   const foundry = () => {
     setShowFoundry(true);
   };
 
+  // const checkStepsOverFlow = () => {
+  //   const stepsFlow: any = document.querySelector('#step_scroll')
+  //   if(stepsFlow){
+  //     console.log('yayayya')
+  //   }
+  //   if(stepsFlow!.offsetHeight < stepsFlow?.scrollHeight){
+  //     setStepsOverflow(true)
+  //   }
+  // }
+
   return (
     <>
-      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-24 pb-2 font-display">
+      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-12 sm:pt-24 pb-2 font-display">
         {/* Place breadcrumbs here */}
         <Breadcrumbs crumbs={bread} />
         {/* Pipeline Header */}
         <div className="flex flex-col gap-1">
-          <div className="flex gap-8">
-            <h1 className="text-3xl font-display">{result[0].title}</h1>
+          <div className="flex gap4 sm:gap-8">
+            <h1 className="text-2xl sm:text-3xl font-display">{result[0].title}</h1>
             <div className="flex gap-4 items-center">
               <button title="Copy link" onClick={copy}>
                 <svg
@@ -220,7 +233,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               />
             </div>
           </div>
-          <div className="text-gray-500 text-sm flex gap-1">
+          <div className="text-gray-500 text-sm flex flex-wrap gap-1">
             <span>Version {result[0].version}</span>
             <span>|</span>
             <span>{result[0].year}</span>
@@ -258,7 +271,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
           </div>
           {/* Total Runs/Pins/Shares/Citations goes here */}
           {/* <PipelineMetrics/> */}
-          <div className="sm:flex pt-4 mr-8 text-lg">
+          <div className="flex flex-wrap pt-4 mr-8 text-base sm:text-lg">
             <p className="font-semibold pr-2">Contributors:</p>
             <p className={pClass} ref={widthRef}>
               {result[0].authors
@@ -301,9 +314,9 @@ const PipelinePage = ({ bread }: { bread: any }) => {
         </div>
 
         <div className="flex flex-col gap-8 w-full">
-          <h2 className="text-3xl text-center">Run this pipeline</h2>
+          <h2 className="text-2xl sm:text-3xl text-center">Run this pipeline</h2>
           <div className="sm:flex justify-center py-2">
-            <div className="bg-gray-800 text-white py-6 px-6 rounded-xl">
+            <div className="bg-gray-800 text-white py-6 px-4 sm:px-6 text-sm sm:text-base rounded-xl break-words">
               <code className="leading-loose">
                 <span className="text-purple">import</span> GardenClient <br />
                 client = garden_ai.GardenClient()
@@ -360,17 +373,18 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               Related
             </button>
           </div>
-          <div className="pt-8">
+          <div className="pt-4 sm:pt-8">
             {/* Side panel steps tab */}
             {active === "" && (
-              <div className="grid grid-cols-5 h-[650px]">
+              <div className="inline-grid sm:grid grid-cols-5">
                 <div
-                  className=" col-span-2 lg:col-span-1 bg-gray overflow-y-scroll"
+                  className="col-span-full sm:col-span-2 lg:col-span-1 bg-gray overflow-y-scroll h-full max-h-[200px] sm:max-h-[650px]"
+                  id="step_scroll"
                   ref={div}
                 >
                   {stepsOverflow ? (
                     <button
-                      className="rounded-xl bg-green p-1 px-2 mb-2 hover:border hover:border-black hover:border-2 text-white "
+                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white "
                       ref={top}
                       onClick={() => scrollToBottom()}
                     >
@@ -405,12 +419,12 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                         <div
                           className={
                             buttonIndex === index
-                              ? "border border-4 border-gray-400 flex justify-center my-4 text-center w-full bg-gray-100"
-                              : "border border-gray-400 border-1 flex justify-center my-4 text-center w-full"
+                              ? "border border-4 border-gray-400 flex justify-center my-2 sm:my-4 text-center w-full bg-gray-100"
+                              : "border border-gray-400 border-1 flex justify-center my-2 sm:my-4 text-center w-full"
                           }
                         >
-                          <button onClick={() => setButtonIndex(index)}>
-                            <p className="p-4 break-all">{step.title}</p>
+                          <button className="w-full" onClick={() => setButtonIndex(index)}>
+                            <p className="p-2 sm:p-4 break-all">{step.title}</p>
                           </button>
                         </div>
                       </div>
@@ -418,7 +432,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   })}
                   {stepsOverflow ? (
                     <button
-                      className="rounded-xl bg-green p-1 px-2 my-2 hover:border hover:border-black hover:border-2 text-white"
+                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white"
                       onClick={() => scrollToTop()}
                     >
                       Scroll to top
@@ -426,9 +440,10 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   ) : (
                     <></>
                   )}
+                  {checkStepOverflow()}
                   <div ref={bottom}></div>
                 </div>
-                <div className=" col-span-3 lg:col-span-4 border border-2 border-gray p-8 break-words whitespace-pre-line">
+                <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
                   <h1 className="text-xl lg:text-3xl font-bold">
                     {result[0].steps[buttonIndex].title}
                   </h1>
@@ -524,7 +539,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   )}
                   {showFoundry === true ? (
                   <div>
-                    <p className="mx-16 text-xl pb-4">
+                    <p className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
                       *One or more of these datasets uses Foundry, here is how
                       you can view it:
                     </p>
@@ -550,7 +565,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                         res = f.load_data()
                       </code>
                     </div>
-                    <p className="mx-16 pt-8 text-xl">
+                    <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
                       New to Foundry or need a refresher? Click{" "}
                       <a
                         target="blank"
