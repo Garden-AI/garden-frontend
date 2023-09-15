@@ -203,25 +203,21 @@ const HomePage = () => {
       </div>
 
       {/* Bottom section/credits */}
-      <div className="flex columns-2 font-display text-black mx-20 my-10">
-
+      <div className="m-10 md:mx-24 md:my-10 md:flex md:columns-2 font-display text-black">
         <div className="flex flex-col">
           <img
             src="img/smallColorIcon_Garden.png"
             alt="Garden AI Logo"
             className="max-w-[150px] object-contain mb-6">
           </img>
-          <div><Link to="/terms">Terms & Policies</Link></div>
-          <div>Brand guidelines</div>
-          <div>Team</div>
+          <Link to="/terms" className="no-underline hover:underline">Terms & Policies</Link>
+          <a href="#" className="no-underline hover:underline">Brand guidelines</a>
+          <a href="#" className="no-underline hover:underline">Team</a>
         </div>
 
-        <div className="py-10 flex-auto">
-        </div>
-
-        <div className="py-10 ml-10">
-          <p className="text-sm pt-8">
-            This project was made possible by:
+        <div className="py-10 md:ml-10">
+          <p className="text-sm pt-5 sm:text-md">
+            Garden is funded by:
           </p>
           <div className="grid grid-rows-4 grid-flow-col gap-2 items-center">
 
