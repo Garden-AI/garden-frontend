@@ -16,6 +16,7 @@ import Navbar from './components/Navbar';
 import { useEffect, useState } from "react";
 import { authorization } from "@globus/sdk";
 import { GLOBUS_NATIVE_CLIENT_ID, SEARCH_SCOPE } from './constants';
+import Footer from './components/Footer';
 
 const pkce = authorization.pkce({
   client_id: GLOBUS_NATIVE_CLIENT_ID,
@@ -73,6 +74,7 @@ function App() {
           <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs} />} />
           <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs} />} />
         </Routes>
+        <Footer />
       </HashRouter>
     </div>
   )

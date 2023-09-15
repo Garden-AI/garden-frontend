@@ -17,7 +17,7 @@ const TermsPage = () => {
         <div className="font-display pt-5 sm:pt-10 px-5">
           <Link
             to="/home"
-            className="mt-12 bg-green w-36 h-[48px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
+            className="mt-12 mb-72 bg-green w-36 h-[48px] rounded-xl text-white text-center flex justify-center items-center hover:saturate-150"
           >
             Send Me Back
           </Link>
