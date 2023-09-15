@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="border-b border-gray-200 flex justify-between px-8 py-2">
+    <nav className="border-b border-gray-200 flex justify-between px-8 py-3">
       <Link to="/home"><img
-        src="img/smallColorIcon_Garden.png"
+        src="img/normalColorIcon_Garden.jpg"
         alt="Garden AI Logo"
         className="w-28 object-contain"
       ></img>

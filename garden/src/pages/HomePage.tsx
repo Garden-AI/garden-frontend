@@ -206,13 +206,13 @@ const HomePage = () => {
       <div className="m-10 md:mx-24 md:my-10 md:flex md:columns-2 font-display text-black">
         <div className="flex flex-col">
           <img
-            src="img/smallColorIcon_Garden.png"
+            src="img/normalColorIcon_Garden.jpg"
             alt="Garden AI Logo"
             className="max-w-[150px] object-contain mb-6">
           </img>
           <Link to="/terms" className="no-underline hover:underline">Terms & Policies</Link>
           <a href="#" className="no-underline hover:underline">Brand guidelines</a>
-          <a href="#" className="no-underline hover:underline">Team</a>
+          <a href="http://labs.globus.org/group-website/" className="no-underline hover:underline">Team</a>
         </div>
 
         <div className="py-10 md:ml-10">
