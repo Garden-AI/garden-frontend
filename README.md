@@ -1,6 +1,26 @@
 # garden-frontend
 Web UI for thegardens.ai
 
+# Branches and deployment
+
+- `staging` is the main branch in this repo. It is the one that you should make PRs against. Merges to `staging` trigger a deployment to our staging site, https://garden-ai.github.io/garden-frontend-staging/
+    - To get to the home page, include /#/home at the end of the url
+- `prod` is a branch used to deploy vetted code from the `staging` branch to production, https://thegardens.ai/. 
+
+The `staging` branch is the source of truth for development in this repo. `prod` only exists for deployment purposes. If you make a change to `prod` that isn't on `staging`, it will soon get blown away. If there are merge conflicts between `prod` and `staging`, we will force push the contents of `staging` to `prod` with `git push origin --force staging:prod`.
+
+# Workflow
+
+1. When you pick up a feature or bug, make a branch off of staging. Like `will/45-new-page`.
+2. Make the needed changes on your branch and test them locally.
+3. Open a PR from your branch to `staging`.
+4. If the tests pass and another developer approves your change, merge in to staging. After merging, see if everything is looking good on [the staging site](https://garden-ai.github.io/garden-frontend-staging/).
+5. If so, open a "deployment" PR from staging into prod and merge it
+
+# Getting started locally
+
+After cloning, run `npm install` to pull in dependencies and then `npm start` to test changes locally with hot reloading. More detailed instructions on npm commands are below from Create React App scaffolding.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
