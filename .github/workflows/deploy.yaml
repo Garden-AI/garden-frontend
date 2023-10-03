@@ -28,7 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm install    
       - name: Generate build
-        run: npm run predeploy
+        run: |
+          cp ${{ steps.set_env_file.outputs.env_file }} ./.env
+          npm run predeploy
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
