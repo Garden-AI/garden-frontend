@@ -209,7 +209,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 />
               </svg>
             </button>
-            {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
+            {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
             <Modal
               show={show}
               close={closeModal}
