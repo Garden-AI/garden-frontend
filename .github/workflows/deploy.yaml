@@ -21,9 +21,9 @@ jobs:
         id: set_env_file
         run: |
           if [[ "${{ github.ref }}" == 'refs/heads/prod' ]]; then
-            echo "::set-output name=env_file::.env.production"
+            echo "env_file=.env.production" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == 'refs/heads/staging' ]]; then
-            echo "::set-output name=env_file::.env.staging"
+            echo "env_file=.env.staging" >> $GITHUB_OUTPUT
           fi
       - name: Install dependencies
         run: npm install    
