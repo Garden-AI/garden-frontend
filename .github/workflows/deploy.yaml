@@ -17,10 +17,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+      - name: Set .env file path
+        id: set_env_file
+        run: |
+          if [[ "${{ github.ref }}" == 'refs/heads/prod' ]]; then
+            echo "env_file=.env.production" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == 'refs/heads/staging' ]]; then
+            echo "env_file=.env.staging" >> $GITHUB_OUTPUT
+          fi
       - name: Install dependencies
         run: npm install    
       - name: Generate build
-        run: npm run predeploy
+        run: |
+          cp ${{ steps.set_env_file.outputs.env_file }} ./.env
+          npm run predeploy
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
