@@ -27,7 +27,6 @@ jobs:
           fi
       - name: Install dependencies
         run: npm install    
-      - name: Generate build
       # https://create-react-app.dev/docs/adding-custom-environment-variables/
       # .env.local takes precedent by default.
       # But .env.production.local "beats" .env.local.
