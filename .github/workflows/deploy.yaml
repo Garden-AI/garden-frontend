@@ -28,8 +28,13 @@ jobs:
       - name: Install dependencies
         run: npm install    
       - name: Generate build
+      # https://create-react-app.dev/docs/adding-custom-environment-variables/
+      # .env.local takes precedent by default.
+      # But .env.production.local "beats" .env.local.
+      # So depending on what env we're in, set the staging or prod env file to .env.production.local
+      - name: Generate build
         run: |
-          cp ${{ steps.set_env_file.outputs.env_file }} ./.env
+          cp ${{ steps.set_env_file.outputs.env_file }} ./.env.production.local
           npm run predeploy
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
