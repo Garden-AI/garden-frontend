@@ -16,6 +16,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 const PipelinePage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
   const navigate = useNavigate();
+
   const [show, setShow] = useState(false);
   const [active, setActive] = useState("");
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -26,6 +27,10 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const [result, setResult] = useState<any>(undefined);
   const [appears, setAppears] = useState<any>(undefined);
   const [showFoundry, setShowFoundry] = useState(false);
+  const [tooltipVisible, setTooltipVisible]= useState(false);
+
+
+
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLButtonElement>(null);
@@ -139,7 +144,17 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
+    showTooltip()
   };
+
+  const showTooltip = () => {
+    if(tooltipVisible===false){
+      setTooltipVisible(true)
+      setTimeout(()=>{
+        setTooltipVisible(false)
+      }, 3000)
+    }
+  }
 
   const showModal = () => {
     setShow(true);
@@ -225,11 +240,13 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               </button>
               {/* Pin and Cite buttons to be added later */}
               {/* <CitePinButtons/> */}
+              {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
               <Modal
                 show={show}
                 close={closeModal}
                 copy={copy}
                 doi={result[0].doi}
+                showTooltip={showTooltip}
               />
             </div>
           </div>
