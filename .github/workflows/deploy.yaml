@@ -17,14 +17,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Set .env file path
-        id: set_env_file
-        run: |
-          if [[ "${{ github.ref }}" == 'refs/heads/prod' ]]; then
-            echo "::set-output name=env_file::.env.production"
-          elif [[ "${{ github.ref }}" == 'refs/heads/staging' ]]; then
-            echo "::set-output name=env_file::.env.staging"
-          fi
       - name: Install dependencies
         run: npm install    
       - name: Generate build
