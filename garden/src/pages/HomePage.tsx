@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import GardenBox from "../components/GardenBox";
+// import GardenBox from "../components/GardenBox";
+import GardenBox2 from "../components/GardenBox";
 import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants";
 import { fetchWithScope } from "../globusHelpers";
 
@@ -190,10 +191,10 @@ const HomePage = () => {
 
         <div
           id="Garden-Squares"
-          className="flex flex-row overflow-auto min-h-min gap-6 p-2 pt-8"
+          className="flex flex-row overflow-auto min-h-min gap-6 p-2 pt-8 scroll-auto"
         >
           {result.map((res) => (
-            <GardenBox garden={res} />
+            <GardenBox2 garden={res} />
           ))}
         </div>
       </div>

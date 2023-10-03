@@ -11,12 +11,13 @@ const Navbar = () => {
       ></img>
       </Link>
       <ul className="flex items-center gap-8">
-        <Link to="/search">Search</Link>
+        <Link to="/search" className="no-underline hover:underline">Search</Link>
         <li>
           <a
             href="https://github.com/Garden-AI/garden-frontend"
             target="_blank"
             rel="noopener noreferrer"
+            className="no-underline hover:underline"
           >
             Documentation
           </a>
@@ -26,6 +27,7 @@ const Navbar = () => {
             href="https://github.com/Garden-AI/matminer-example"
             target="_blank"
             rel="noopener noreferrer"
+            className="no-underline hover:underline"
           >
             Examples
           </a>

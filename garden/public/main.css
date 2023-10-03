@@ -679,6 +679,10 @@ video {
   margin-bottom: 1.5rem;
 }
 
+.mb-72 {
+  margin-bottom: 18rem;
+}
+
 .mb-8 {
   margin-bottom: 2rem;
 }
@@ -757,22 +761,6 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
-}
-
-.mb-20 {
-  margin-bottom: 5rem;
-}
-
-.mb-48 {
-  margin-bottom: 12rem;
-}
-
-.mb-64 {
-  margin-bottom: 16rem;
-}
-
-.mb-72 {
-  margin-bottom: 18rem;
 }
 
 .block {
@@ -1109,6 +1097,10 @@ video {
 
 .overflow-y-scroll {
   overflow-y: scroll;
+}
+
+.scroll-auto {
+  scroll-behavior: auto;
 }
 
 .scroll-smooth {
