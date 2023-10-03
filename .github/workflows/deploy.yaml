@@ -17,10 +17,24 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+      - name: Set .env file path
+        id: set_env_file
+        run: |
+          if [[ "${{ github.ref }}" == 'refs/heads/prod' ]]; then
+            echo "env_file=.env.production" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == 'refs/heads/staging' ]]; then
+            echo "env_file=.env.staging" >> $GITHUB_OUTPUT
+          fi
       - name: Install dependencies
         run: npm install    
+      # https://create-react-app.dev/docs/adding-custom-environment-variables/
+      # .env.local takes precedent by default.
+      # But .env.production.local "beats" .env.local.
+      # So depending on what env we're in, set the staging or prod env file to .env.production.local
       - name: Generate build
-        run: npm run predeploy
+        run: |
+          cp ${{ steps.set_env_file.outputs.env_file }} ./.env.production.local
+          npm run predeploy
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
