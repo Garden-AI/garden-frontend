@@ -206,9 +206,9 @@ const HomePage = () => {
       <div className="m-10 md:mx-20 md:my-10 md:flex md:columns-2 font-display text-black">
         <div className="flex flex-col">
           <img
-            src="img/smallColorIcon_Garden.png"
+            src="img/normalColorIcon_Garden.jpg"
             alt="Garden AI Logo"
-            className="max-w-[100px] object-contain mb-4 md:max-w-[150px]">
+            className="max-w-[150px] object-contain mb-6">
           </img>
           <div><Link to="/terms">Terms & Policies</Link></div>
           <div>Brand guidelines</div>

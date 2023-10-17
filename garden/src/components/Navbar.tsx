@@ -6,7 +6,7 @@ const Navbar = () => {
     <nav className="border-b border-gray-200 flex gap-4 justify-between py-1 mx-1 sm:mx-3 text-xs sm:text-lg">
       <div className="flex-shrink-0">
         <Link to="/home"><img
-          src="img/smallColorIcon_Garden.png"
+          src="img/normalColorIcon_Garden.jpg"
           alt="Garden AI Logo"
           className="w-24 sm:w-28 flex object-contain ml-2 sm:m-2"
         ></img>

@@ -686,8 +686,8 @@ video {
   margin-bottom: 1rem;
 }
 
-.mb-4 {
-  margin-bottom: 1rem;
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 
 .mb-8 {
@@ -2070,10 +2070,6 @@ video {
 
   .md\:grid {
     display: grid;
-  }
-
-  .md\:max-w-\[150px\] {
-    max-width: 150px;
   }
 
   .md\:columns-2 {
