@@ -620,6 +620,10 @@ video {
   grid-column: 1 / -1;
 }
 
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
 .float-right {
   float: right;
 }
@@ -684,6 +688,11 @@ video {
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.mx-10 {
+  margin-left: 2.5rem;
+  margin-right: 2.5rem;
 }
 
 .mb-6 {
@@ -758,6 +767,34 @@ video {
   margin-top: 1.5rem;
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-72 {
+  margin-bottom: 18rem;
+}
+
+.ml-12 {
+  margin-left: 3rem;
+}
+
+.ml-14 {
+  margin-left: 3.5rem;
+}
+
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
+.mr-12 {
+  margin-right: 3rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
 .block {
   display: block;
 }
@@ -830,6 +867,10 @@ video {
 
 .h-full {
   height: 100%;
+}
+
+.h-\[650px\] {
+  height: 650px;
 }
 
 .max-h-\[120px\] {
@@ -908,6 +949,18 @@ video {
 .w-max {
   width: -webkit-max-content;
   width: max-content;
+}
+
+.w-28 {
+  width: 7rem;
+}
+
+.w-\[14rem\] {
+  width: 14rem;
+}
+
+.w-\[30vw\] {
+  width: 30vw;
 }
 
 .min-w-\[25px\] {
@@ -1003,6 +1056,10 @@ video {
 
 .grid-rows-3 {
   grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+.grid-rows-4 {
+  grid-template-rows: repeat(4, minmax(0, 1fr));
 }
 
 .flex-row {
@@ -1116,6 +1173,10 @@ video {
 
 .overflow-y-scroll {
   overflow-y: scroll;
+}
+
+.scroll-auto {
+  scroll-behavior: auto;
 }
 
 .scroll-smooth {
@@ -1308,6 +1369,10 @@ video {
   object-fit: contain;
 }
 
+.object-scale-down {
+  object-fit: scale-down;
+}
+
 .p-1 {
   padding: 0.25rem;
 }
@@ -1413,6 +1478,11 @@ video {
   padding-bottom: 2rem;
 }
 
+.py-20 {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
 .pb-0 {
   padding-bottom: 0px;
 }
@@ -1511,6 +1581,14 @@ video {
 
 .pt-8 {
   padding-top: 2rem;
+}
+
+.pb-24 {
+  padding-bottom: 6rem;
+}
+
+.pb-64 {
+  padding-bottom: 16rem;
 }
 
 .text-left {
@@ -1940,6 +2018,10 @@ video {
     width: 7rem;
   }
 
+  .sm\:w-\[18rem\] {
+    width: 18rem;
+  }
+
   .sm\:max-w-\[3vw\] {
     max-width: 3vw;
   }
@@ -1982,6 +2064,11 @@ video {
   .sm\:py-20 {
     padding-top: 5rem;
     padding-bottom: 5rem;
+  }
+
+  .sm\:px-20 {
+    padding-left: 5rem;
+    padding-right: 5rem;
   }
 
   .sm\:pl-36 {
@@ -2029,6 +2116,11 @@ video {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
+
+  .sm\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
 }
 
 @media (min-width: 768px) {
@@ -2064,6 +2156,11 @@ video {
     margin-bottom: 2.5rem;
   }
 
+  .md\:mx-24 {
+    margin-left: 6rem;
+    margin-right: 6rem;
+  }
+
   .md\:ml-10 {
     margin-left: 2.5rem;
   }
@@ -2074,6 +2171,10 @@ video {
 
   .md\:grid {
     display: grid;
+  }
+
+  .md\:w-\[24rem\] {
+    width: 24rem;
   }
 
   .md\:columns-2 {

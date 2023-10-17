@@ -8,6 +8,7 @@ import SearchPage from './pages/SearchPage';
 import HomePage from './pages/HomePage';
 import PipelinePage from './pages/PipelinePage';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 // The App.css styles conflict with the placeholder,
 // but we can bring them back once we get rid of the placeholder.
@@ -73,6 +74,7 @@ function App() {
           <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs} />} />
           <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs} />} />
         </Routes>
+        <Footer />
       </HashRouter>
     </div>
   )

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const TermsPage = () => {
   return (
     <>
-      <div className='flex flex-col items-center mt-28'>
+      <div className='flex flex-col items-center mt-28 pb-64'>
         <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-10">
           This page is under construction!
         </h1>
