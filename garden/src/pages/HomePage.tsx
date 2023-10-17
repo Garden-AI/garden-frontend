@@ -126,8 +126,8 @@ const HomePage = () => {
 
       <div className="font-display px-5 sm:px-12 md:px-20 py-8 text-black">
         {/* First section (We overcome...) */}
-        <div className="mt-12">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">
+        <div className="mt-14">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">
             We overcome barriers surrounding ML.
           </h1>
           <p className="text-md sm:text-lg">
@@ -141,8 +141,8 @@ const HomePage = () => {
         </div>
 
         {/* Second Section (What are...) */}
-        <div className="mt-12">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">
+        <div className="mt-14">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">
             What are Gardens?
           </h1>
           <p className="text-md sm:text-lg">
@@ -156,8 +156,8 @@ const HomePage = () => {
         </div>
 
         {/* Third section (Pipelines...) */}
-        <div className="mt-12">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">Pipelines</h1>
+        <div className="mt-14">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">Pipelines</h1>
           <p className="text-md sm:text-lg">
             Pipelines are pages within a garden where all the relevant models and
             its associated materials are stored. Each pipeline is composed of
