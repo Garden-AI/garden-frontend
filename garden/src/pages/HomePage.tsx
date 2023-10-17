@@ -210,9 +210,9 @@ const HomePage = () => {
             alt="Garden AI Logo"
             className="max-w-[150px] object-contain mb-6">
           </img>
-          <div><Link to="/terms">Terms & Policies</Link></div>
-          <div>Brand guidelines</div>
-          <div>Team</div>
+          <div><Link to="/terms" className="no-underline hover:underline">Terms & Policies</Link></div>
+          <a href="https://labs.globus.org/group-website/team.html" className="no-underline hover:underline">Team</a>
+          <div className="no-underline">Brand guidelines</div>
         </div>
 
         <div className="py-10 md:ml-10">
