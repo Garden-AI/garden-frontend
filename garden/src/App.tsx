@@ -15,7 +15,7 @@ import Navbar from './components/Navbar';
   is the only way to trigger the createStorage() side effect. 
   That lets us use the Globus SDK to make search calls.
 */
-const pkce = new authorization.PKCEAuthorization({
+new authorization.PKCEAuthorization({
   client_id: GLOBUS_NATIVE_CLIENT_ID,
   redirect_uri: "http://localhost:3000/",
   requested_scopes: `openid profile email ${SEARCH_SCOPE}`,
