@@ -4,8 +4,7 @@ import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
-import { fetchWithScope } from "../globusHelpers";
-import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
+import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
@@ -57,21 +56,12 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   useEffect(() => {
     async function Search() {
       try {
-        const response = await fetchWithScope(
-          SEARCH_SCOPE,
-          GARDEN_INDEX_URL + `/search?q="${doi}"`
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const content = await response.json();
-        setResult(
-          content.gmeta[0].entries[0].content.pipelines.filter(
-            (pipe: any) => pipe.doi === doi
-          )
-        );
-        setAppears(content.gmeta);
+        const gmetaArray = await searchGardenIndex({q: doi || ""});
+        const selectedPipeline = gmetaArray[0].entries[0].content.pipelines.filter(
+          (pipe: any) => pipe.doi === doi
+        )
+        setResult(selectedPipeline)
+        setAppears(gmetaArray);
       } catch (error) {
         setResult([]);
         setAppears([]);
