@@ -5,6 +5,7 @@ const Modal = (props: {
   close: Function;
   copy: Function;
   doi: string;
+  showTooltip: Function;
 }) => {
   if (!props.show) {
     return <div></div>;
@@ -12,10 +13,11 @@ const Modal = (props: {
 
   const copyDOI = async () => {
     await navigator.clipboard.writeText(props.doi);
+    props.showTooltip()
   };
 
   return (
-    <div className="justify-center items-center flex fixed inset-0 z-50 bg-gray-500 bg-opacity-70 font-display">
+    <div className="justify-center items-center flex fixed inset-0 z-45 bg-gray-500 bg-opacity-70 font-display">
       <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] bg-white">
         <button className="float-right mr-4 mt-2" onClick={() => props.close()}>
           <span className="px-4 py-4 font-bold text-lg">X</span>
