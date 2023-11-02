@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "../components/GardenBox";
-import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants";
-import { fetchWithScope } from "../globusHelpers";
+import { searchGardenIndex } from "../globusHelpers";
 
 const HomePage = () => {
   const [result, setResult] = useState<Array<any>>([]);
@@ -10,16 +9,8 @@ const HomePage = () => {
   useEffect(() => {
     async function Search() {
       try {
-        const response = await fetchWithScope(
-          SEARCH_SCOPE,
-          GARDEN_INDEX_URL + "/search?q=2023&limit=6"
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const content = await response.json();
-        setResult(content.gmeta);
+        const gmetaArray = await searchGardenIndex({q: "2023", limit: "6"});
+        setResult(gmetaArray);
       } catch (error) {
         setResult([]);
       }

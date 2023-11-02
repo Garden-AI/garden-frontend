@@ -5,10 +5,7 @@ import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Breadcrumbs from "../components/Breadcrumbs";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
-import { fetchWithScope } from "../globusHelpers";
-import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
-// import DiscussionTab from "../components/DiscussionTab";
-// import DiscussionTabContent from "../components/DiscussionTabContent";
+import { searchGardenIndex } from "../globusHelpers";
 
 const GardenPage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
@@ -24,16 +21,8 @@ const GardenPage = ({ bread }: { bread: any }) => {
   useEffect(() => {
     async function Search() {
       try {
-        const response = await fetchWithScope(
-          SEARCH_SCOPE,
-          GARDEN_INDEX_URL + `/search?q="${doi}"`
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const content = await response.json();
-        setResult(content.gmeta);
+        const gmetaArray = await searchGardenIndex({q: doi || ""});
+        setResult(gmetaArray);
       } catch (error) {
         setResult([]);
       }
@@ -45,20 +34,11 @@ const GardenPage = ({ bread }: { bread: any }) => {
   useEffect(() => {
     async function Search() {
       try {
-        const response = await fetchWithScope(
-          SEARCH_SCOPE,
-          GARDEN_INDEX_URL + "/search?q=2023&limit=6"
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const content = await response.json();
-        setRelatedResults(
-          content.gmeta.filter(
-            (gard: any) => gard.entries[0].content.doi !== doi
-          )
-        );
+        const gmetaArray = await searchGardenIndex({q: "2023", limit: "6"});
+        const otherGardenEntries = gmetaArray.filter(
+          (gard: any) => gard.entries[0].content.doi !== doi
+        )
+        setRelatedResults(otherGardenEntries);
       } catch (error) {
         setRelatedResults([]);
       }
