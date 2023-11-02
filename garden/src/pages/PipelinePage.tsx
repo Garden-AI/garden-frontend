@@ -4,8 +4,7 @@ import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
-import { fetchWithScope } from "../globusHelpers";
-import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
+import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
@@ -16,6 +15,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 const PipelinePage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
   const navigate = useNavigate();
+
   const [show, setShow] = useState(false);
   const [active, setActive] = useState("");
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -26,6 +26,10 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const [result, setResult] = useState<any>(undefined);
   const [appears, setAppears] = useState<any>(undefined);
   const [showFoundry, setShowFoundry] = useState(false);
+  const [tooltipVisible, setTooltipVisible]= useState(false);
+
+
+
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLButtonElement>(null);
@@ -57,21 +61,12 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   useEffect(() => {
     async function Search() {
       try {
-        const response = await fetchWithScope(
-          SEARCH_SCOPE,
-          GARDEN_INDEX_URL + `/search?q="${doi}"`
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const content = await response.json();
-        setResult(
-          content.gmeta[0].entries[0].content.pipelines.filter(
-            (pipe: any) => pipe.doi === doi
-          )
-        );
-        setAppears(content.gmeta);
+        const gmetaArray = await searchGardenIndex({q: doi || ""});
+        const selectedPipeline = gmetaArray[0].entries[0].content.pipelines.filter(
+          (pipe: any) => pipe.doi === doi
+        )
+        setResult(selectedPipeline)
+        setAppears(gmetaArray);
       } catch (error) {
         setResult([]);
         setAppears([]);
@@ -139,7 +134,17 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
+    showTooltip()
   };
+
+  const showTooltip = () => {
+    if(tooltipVisible===false){
+      setTooltipVisible(true)
+      setTimeout(()=>{
+        setTooltipVisible(false)
+      }, 3000)
+    }
+  }
 
   const showModal = () => {
     setShow(true);
@@ -225,11 +230,13 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               </button>
               {/* Pin and Cite buttons to be added later */}
               {/* <CitePinButtons/> */}
+              {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
               <Modal
                 show={show}
                 close={closeModal}
                 copy={copy}
                 doi={result[0].doi}
+                showTooltip={showTooltip}
               />
             </div>
           </div>

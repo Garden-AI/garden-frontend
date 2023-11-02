@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "../components/GardenBox";
-import { GARDEN_INDEX_URL, SEARCH_SCOPE } from "../constants";
-import { fetchWithScope } from "../globusHelpers";
+import { searchGardenIndex } from "../globusHelpers";
 
 const HomePage = () => {
   const [result, setResult] = useState<Array<any>>([]);
@@ -10,16 +9,8 @@ const HomePage = () => {
   useEffect(() => {
     async function Search() {
       try {
-        const response = await fetchWithScope(
-          SEARCH_SCOPE,
-          GARDEN_INDEX_URL + "/search?q=2023&limit=6"
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const content = await response.json();
-        setResult(content.gmeta);
+        const gmetaArray = await searchGardenIndex({q: "2023", limit: "6"});
+        setResult(gmetaArray);
       } catch (error) {
         setResult([]);
       }
@@ -126,8 +117,8 @@ const HomePage = () => {
 
       <div className="font-display px-5 sm:px-12 md:px-20 py-8 text-black">
         {/* First section (We overcome...) */}
-        <div className="mt-12">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">
+        <div className="mt-14">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">
             We overcome barriers surrounding ML.
           </h1>
           <p className="text-md sm:text-lg">
@@ -141,8 +132,8 @@ const HomePage = () => {
         </div>
 
         {/* Second Section (What are...) */}
-        <div className="mt-12">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">
+        <div className="mt-14">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">
             What are Gardens?
           </h1>
           <p className="text-md sm:text-lg">
@@ -156,8 +147,8 @@ const HomePage = () => {
         </div>
 
         {/* Third section (Pipelines...) */}
-        <div className="mt-12">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-6">Pipelines</h1>
+        <div className="mt-14">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">Pipelines</h1>
           <p className="text-md sm:text-lg">
             Pipelines are pages within a garden where all the relevant models and
             its associated materials are stored. Each pipeline is composed of
@@ -198,119 +189,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center pt-5 sm:pt-10 px-5">
-        <hr className="w-11/12 bg-black" />
-      </div>
-
-      {/* Bottom section/credits */}
-      <div className="m-10 md:mx-20 md:my-10 md:flex md:columns-2 font-display text-black">
-        <div className="flex flex-col">
-          <img
-            src="img/smallColorIcon_Garden.png"
-            alt="Garden AI Logo"
-            className="max-w-[100px] object-contain mb-4 md:max-w-[150px]">
-          </img>
-          <div><Link to="/terms">Terms & Policies</Link></div>
-          <div>Brand guidelines</div>
-          <div>Team</div>
-        </div>
-
-        <div className="py-10 md:ml-10">
-          <p className="text-sm pt-5 sm:text-md">
-            Garden is funded by:
-          </p>
-          <div className="grid grid-rows-1 grid-flow-col gap-1 items-center">
-            <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
-                National Science Foundation
-              </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
-                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for
-                Publishing and Applying AI Models for Translational Research in
-                Science, Engineering, Education, and Industry”
-              </p>
-            </section>
-            <section className="place-self-center">
-              <a target="blank" href="https://www.nsf.gov/">
-                <img
-                  src="img/National-Science-Foundation-logo.jpeg"
-                  className="max-w-[60px] hover:opacity-75"
-                  alt="NSF logo"
-                />
-              </a>
-            </section>
-          </div>
-
-          <div className="flex flex-col items-center pt-5 sm:pt-10 px-5">
-            <hr className="w-11/12 bg-black" />
-          </div>
-
-          <p className="text-sm pt-8 sm:text-md">
-            This project builds upon work including:
-          </p>
-          <div className="grid grid-rows-3 grid-flow-col gap-1 items-center">
-            <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
-                The Materials Data Facility (MDF)
-              </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
-                NIST-supported effort to build data services to help material scientists publish and discover data
-
-              </p>
-            </section>
-
-            <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
-                Foundry
-              </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
-                An open source machine learning platform for scientists
-              </p>
-            </section>
-
-            <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
-                Globus
-              </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
-                Research cyberinfrastructure, developed and operated as a
-                not-for-profit service by the University of Chicago
-              </p>
-            </section>
-
-            <section className="place-self-center">
-              <a target="blank" href="https://materialsdatafacility.org/">
-                <img
-                  src="img/MDF-logo.png"
-                  alt="MDF logo"
-                  className="max-w-[150px] hover:opacity-75"
-                />
-              </a>
-            </section>
-
-            <section className="place-self-center">
-              <a target="blank" href="https://foundry-ml.org/#/">
-                <img
-                  src="img/foundry-logo.png"
-                  alt="Foundry logo"
-                  className="max-w-[150px] hover:opacity-75"
-                />
-              </a>
-            </section>
-
-            <section className="place-self-center">
-              <a target="blank" href="https://www.globus.org/">
-                <img
-                  src="img/globus-logo.png"
-                  alt="Gloubs logo"
-                  className="max-w-[100px] hover:opacity-75"
-                />
-              </a>
-            </section>
-
-          </div>
-        </div>
-      </div>
     </>
   );
 };
