@@ -18,6 +18,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [relatedResults, setRelatedResults] = useState<Array<any>>([]);
   const [showFoundry, setShowFoundry] = useState(false);
   const [result, setResult] = useState<any>(undefined);
+  const [tooltipVisible, setTooltipVisible]= useState(false);
 
   //API call to get data for a garden associted with the DOI
   useEffect(() => {
@@ -115,7 +116,16 @@ const GardenPage = ({ bread }: { bread: any }) => {
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
+    showTooltip()
   };
+  const showTooltip = () => {
+    if(tooltipVisible===false){
+      setTooltipVisible(true)
+      setTimeout(()=>{
+        setTooltipVisible(false)
+      }, 3000)
+    }
+  }
 
   const showModal = () => {
     setShow(true);
@@ -199,11 +209,13 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 />
               </svg>
             </button>
+            {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
             <Modal
               show={show}
               close={closeModal}
               copy={copy}
               doi={result[0]?.entries[0].content.doi}
+              showTooltip={showTooltip}
             />
           </div>
         </div>
