@@ -12,10 +12,6 @@ const PipelineBox = ({ pipeline }: { pipeline: any }) => {
     >
       <div className="flex flex-col gap-2">
         <h2 className="text-xl">{pipeline.title}</h2>
-        <p className="text-gray-500">
-          {pipeline.steps.length}{" "}
-          {pipeline.steps.length < 2 ? <span>step</span> : <span>steps</span>}
-        </p>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent h-[160px] overflow-y-hidden">
             {pipeline.description}

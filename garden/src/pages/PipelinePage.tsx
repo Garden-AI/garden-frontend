@@ -6,6 +6,7 @@ import RelatedGardenBox from "../components/RelatedGardenBox";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
 import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { NotebookViewer } from "../components/NotebookViewer";
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
 // import PipelineMetrics from "../components/PipelineMetrics";
@@ -20,7 +21,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const [active, setActive] = useState("");
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
-  const [stepsOverflow, setStepsOverflow] = useState(false);
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
   const [buttonIndex, setButtonIndex] = useState(0);
   const [result, setResult] = useState<any>(undefined);
@@ -44,18 +44,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
       }
     }
   }, []);
-
-
-  const checkStepOverflow =() =>{
-    if (div.current) {
-      console.log('kljsfdlkjad')
-      const contain = div.current;
-      if (contain!.clientHeight < contain!.scrollHeight && stepsOverflow===false) {
-        setStepsOverflow(true);
-      }
-    }
-  ;
-}
 
   //API call to get the data based on the doi of the pipeline
   useEffect(() => {
@@ -179,16 +167,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const foundry = () => {
     setShowFoundry(true);
   };
-
-  // const checkStepsOverFlow = () => {
-  //   const stepsFlow: any = document.querySelector('#step_scroll')
-  //   if(stepsFlow){
-  //     console.log('yayayya')
-  //   }
-  //   if(stepsFlow!.offsetHeight < stepsFlow?.scrollHeight){
-  //     setStepsOverflow(true)
-  //   }
-  // }
 
   return (
     <>
@@ -333,9 +311,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                 client.get_published_garden(
                 <span className="text-green">"{gardenDOI}"</span>)<br />
                 <br />
-                <span className="text-gray-400">
-                  #The input type is {result[0].steps[0].input_info}
-                </span>
                 <br />
                 <span className="text-orange">
                   garden.
@@ -381,131 +356,9 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             </button>
           </div>
           <div className="pt-4 sm:pt-8">
-            {/* Side panel steps tab */}
             {active === "" && (
-              <div className="inline-grid sm:grid grid-cols-5">
-                <div
-                  className="col-span-full sm:col-span-2 lg:col-span-1 bg-gray overflow-y-scroll h-full max-h-[200px] sm:max-h-[650px]"
-                  id="step_scroll"
-                  ref={div}
-                >
-                  {stepsOverflow ? (
-                    <button
-                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white "
-                      ref={top}
-                      onClick={() => scrollToBottom()}
-                    >
-                      Scroll to bottom
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                  {result[0].steps.map((step: any, index: number) => {
-                    return (
-                      <div className="px-4">
-                        {index > 0 ? (
-                          <div className="flex justify-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-                              />
-                            </svg>
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                        <div
-                          className={
-                            buttonIndex === index
-                              ? "border border-4 border-gray-400 flex justify-center my-2 sm:my-4 text-center w-full bg-gray-100"
-                              : "border border-gray-400 border-1 flex justify-center my-2 sm:my-4 text-center w-full"
-                          }
-                        >
-                          <button className="w-full" onClick={() => setButtonIndex(index)}>
-                            <p className="p-2 sm:p-4 break-all">{step.title}</p>
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {stepsOverflow ? (
-                    <button
-                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white"
-                      onClick={() => scrollToTop()}
-                    >
-                      Scroll to top
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                  {checkStepOverflow()}
-                  <div ref={bottom}></div>
-                </div>
-                <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
-                  <h1 className="text-xl lg:text-3xl font-bold">
-                    {result[0].steps[buttonIndex].title}
-                  </h1>
-                  <div></div>
-                  <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
-                    {result[0].steps[buttonIndex].description}
-                  </p>
-                  {/* Loop through object keys for a step and put them on the page */}
-                  {Object.keys(result[0].steps[buttonIndex]).map(
-                    (key, index) => {
-                      if (result[0].steps[buttonIndex][key]) {
-                        if (key === "title" || key === "description") {
-                          return <></>;
-                        }
-                        if (Array.isArray(result[0].steps[buttonIndex][key])) {
-                          if (result[0].steps[buttonIndex][key].length === 0) {
-                            return <></>;
-                          } else {
-                            return (
-                              <div key={index}>
-                                <p className="pb-2 whitspace-normal">
-                                  <span className="font-semibold text-green">
-                                    {key}:{" "}
-                                  </span>
-                                  {result[0].steps[buttonIndex][key]
-                                    .map((author: any) => <span>{author}</span>)
-                                    .reduce((prev: any, curr: any) => [
-                                      prev,
-                                      ", ",
-                                      curr,
-                                    ])}
-                                </p>
-                              </div>
-                            );
-                          }
-                        }
-                        return (
-                          <div key={index}>
-                            <p className="pb-2">
-                              <span className="font-semibold text-green">
-                                {key}:
-                              </span>{" "}
-                              {result[0].steps[buttonIndex][key]}
-                            </p>
-                          </div>
-                        );
-                      } else {
-                        return <></>;
-                      }
-                    }
-                  )}
-                </div>
-              </div>
+              <NotebookViewer notebookJson={JSON.parse(result[0].notebook)} />
             )}
-
             {/* Discussion Tab Content here */}
             {/* {active === "Discussion" && (
               <DiscussionTabContent active={active} comments={fakeComments}/>

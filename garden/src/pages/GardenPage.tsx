@@ -291,10 +291,10 @@ const GardenPage = ({ bread }: { bread: any }) => {
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
                     {result[0]?.entries[0].content.pipelines.map(
                       (pipe: any) => {
-                        return pipe.models[0].dataset ? (
+                        return pipe.models[0].datasets[0] ? (
                           <>
                             {increaseCount()}
-                            {<DatasetBoxPipeline dataset={pipe.models[0].dataset} showFoundry={foundry}/>}
+                            {<DatasetBoxPipeline dataset={pipe.models[0].datasets[0]} showFoundry={foundry}/>}
                           </>
                         ) : (
                           <></>
