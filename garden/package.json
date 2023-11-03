@@ -29,6 +29,7 @@
     "start": "react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
     "start-https": "HTTPS=true react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
     "build": "react-scripts build && npx tailwindcss -i ./src/App.css -o public/main.css",
+    "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
