@@ -30,7 +30,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
 
   const widthRef = useRef<HTMLParagraphElement>(null);
-  const div = useRef<HTMLDivElement>(null);
 
   //These two functions determine if overflow is happening so it can be handled
   useEffect(() => {
