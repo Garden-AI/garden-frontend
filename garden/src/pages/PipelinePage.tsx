@@ -22,7 +22,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
-  const [buttonIndex, setButtonIndex] = useState(0);
   const [result, setResult] = useState<any>(undefined);
   const [appears, setAppears] = useState<any>(undefined);
   const [showFoundry, setShowFoundry] = useState(false);
@@ -31,8 +30,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
 
   const widthRef = useRef<HTMLParagraphElement>(null);
-  const bottom = useRef<HTMLDivElement>(null);
-  const top = useRef<HTMLButtonElement>(null);
   const div = useRef<HTMLDivElement>(null);
 
   //These two functions determine if overflow is happening so it can be handled
@@ -153,15 +150,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     setPClass("overflow-x-hidden whitespace-nowrap");
     setIsOverflowing(true);
     setHasOverflow(false);
-  };
-
-  //scroll button for steps tab if there is overflow
-  const scrollToBottom = () => {
-    div.current?.scrollTo({top:div.current.scrollHeight, behavior: "smooth"})
-  };
-
-  const scrollToTop = () => {
-    div.current?.scrollTo({top:0, behavior: "smooth"})
   };
 
   const foundry = () => {
