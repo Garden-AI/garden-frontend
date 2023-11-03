@@ -50,6 +50,9 @@ export const handlers = [
                                             }
                                         ],
                                         "year": "2023",
+                                        "base_image_name": "3.10-torch",
+                                        "base_image_uri": "docker://index.docker.io/maxtuecke/garden-ai:python-3.10-jupyter-torch",
+                                        "full_image_uri": "docker://index.docker.io/willengler/dev:latest",
                                         "description": "Pipeline for predicting the tensile strength (in MPa) of different compositions of alloy steels",
                                         "func_uuid": "2a4fff73-6e1d-479f-8ad2-a92fc20070ca",
                                         "title": "Steel Alloy Tensile Strength Prediction",
