@@ -22,9 +22,8 @@ export const handlers = [
                                     {
                                         "models": [
                                             {
-                                                "full_name": "willengler-uc/steel-classifier",
-                                                "model_name": "steel-classifier",
-                                                "repository": "Hugging Face",
+                                                "model_identifier": "willengler-uc/steel-classifier",
+                                                "model_repository": "Hugging Face",
                                                 "datasets": [{
                                                     "title": "Training Dataset for Locating Atoms in STEM images", 
                                                     "doi": "10.18126/qsdl-aj6x", 
