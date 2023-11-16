@@ -49,7 +49,6 @@ export const handlers = [
                                             }
                                         ],
                                         "year": "2023",
-                                        "base_image_name": "3.10-torch",
                                         "base_image_uri": "docker://index.docker.io/maxtuecke/garden-ai:python-3.10-jupyter-torch",
                                         "full_image_uri": "docker://index.docker.io/willengler/dev:latest",
                                         "description": "Pipeline for predicting the tensile strength (in MPa) of different compositions of alloy steels",
@@ -57,6 +56,13 @@ export const handlers = [
                                         "title": "Steel Alloy Tensile Strength Prediction",
                                         "notebook": "{\"cells\":[{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"### Running the cell below will load every definition in your original notebook within a containerized environment.\"]},{\"cell_type\":\"code\",\"execution_count\":null,\"metadata\":{},\"outputs\":[],\"source\":[\"import dill\\n\",\"\\n\",\"_globals_pre_load = dict(globals())\\n\",\"\\n\",\"dill.load_session(\\\"session.pkl\\\")\\n\",\"print([k for k in globals() if k not in _globals_pre_load])  # displays everything that was loaded\\n\",\"\\n\",\"del dill\\n\",\"del _globals_pre_load\"]},{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"### Now that your definitions have been loaded, feel free to test anything you like with confidence that this environment is nearly identical to the one that is executed remotely.\"]},{\"cell_type\":\"code\",\"execution_count\":null,\"metadata\":{},\"outputs\":[],\"source\":[]}],\"metadata\":{\"kernelspec\":{\"display_name\":\"Python 3 (ipykernel)\",\"language\":\"python\",\"name\":\"python3\"},\"language_info\":{\"codemirror_mode\":{\"name\":\"ipython\",\"version\":3},\"file_extension\":\".py\",\"mimetype\":\"text/x-python\",\"name\":\"python\",\"nbconvert_exporter\":\"python\",\"pygments_lexer\":\"ipython3\",\"version\":\"3.10.12\"}},\"nbformat\":4,\"nbformat_minor\":4}",
                                         "tags": [],
+                                        "steps": [
+                                            {
+                                                "function_name": "predict_tensile_strength",
+                                                "function_text": "def predict_tensile_strength(composition: str) -> float:\n    \"\"\"Predicts the tensile strength of a steel alloy given its composition.\n\n    Args:\n        composition (str): The composition of the alloy in the form of \"Fe0.8C0.2\".\n\n    Returns:\n        float: The predicted tensile strength of the alloy in MPa.\n    \"\"\"\n    # Load the model\n    model = load_model()\n\n    # Convert the composition to a feature vector\n    feature_vector = convert_composition_to_feature_vector(composition)\n\n    # Predict the tensile strength\n    prediction = model.predict(feature_vector)\n\n    # Return the prediction\n    return prediction[0][0]\n",
+                                                "description": "Predicts the tensile strength of a steel alloy given its composition."
+                                            }
+                                        ],
                                         "short_name": "sklearn_tensile_strength_predict",
                                         "doi": "10.23677/etya-kq52",
                                         "authors": [
