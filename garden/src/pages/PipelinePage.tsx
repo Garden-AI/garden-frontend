@@ -8,7 +8,6 @@ import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { NotebookViewer } from "../components/NotebookViewer";
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
 // import PipelineMetrics from "../components/PipelineMetrics";
@@ -454,7 +453,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
                     {result[0].steps[buttonIndex].description}
                   </p>
-                  <SyntaxHighlighter language="javascript" style={docco}>
+                  <SyntaxHighlighter language="python">
                     {result[0].steps[buttonIndex].function_text}
                   </SyntaxHighlighter>
                 </div>
