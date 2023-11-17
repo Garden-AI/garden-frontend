@@ -446,9 +446,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   <div ref={bottom}></div>
                 </div>
                 <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
-                  {/* <h1 className="text-xl lg:text-3xl font-bold">
-                    {result[0].steps[buttonIndex].function_name}
-                  </h1> */}
                   <div></div>
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
                     {result[0].steps[buttonIndex].description}
