@@ -287,14 +287,21 @@ const GardenPage = ({ bread }: { bread: any }) => {
                   you to learn more about them and how to view them.
                 </div>
                 <div>
-                  {/* result[0]?.entries[0].content.pipelines */}
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
                     {result[0]?.entries[0].content.pipelines.map(
                       (pipe: any) => {
-                        return pipe.models[0].dataset ? (
+                        const allDatasets = [];
+                        for (let model of pipe.models) {
+                          for (let dataset of model.datasets) {
+                            allDatasets.push(dataset);
+                          }
+                        }
+                        return allDatasets.length > 0 ? (
                           <>
                             {increaseCount()}
-                            {<DatasetBoxPipeline dataset={pipe.models[0].dataset} showFoundry={foundry}/>}
+                            <div>
+                              {allDatasets.map(dataset => <DatasetBoxPipeline dataset={dataset} showFoundry={foundry}/>)}
+                            </div>
                           </>
                         ) : (
                           <></>

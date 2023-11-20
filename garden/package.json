@@ -16,8 +16,10 @@
     "@types/react-dom": "^18.0.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-ipynb-renderer": "^2.1.2",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
+    "react-syntax-highlighter": "^15.5.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -28,6 +30,7 @@
     "start": "react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
     "start-https": "HTTPS=true react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
     "build": "react-scripts build && npx tailwindcss -i ./src/App.css -o public/main.css",
+    "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -50,6 +53,11 @@
     ]
   },
   "devDependencies": {
+    "@types/react-syntax-highlighter": "^15.5.10",
+    "msw": "^2.0.2",
     "tailwindcss": "^3.3.1"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

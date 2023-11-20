@@ -6,6 +6,8 @@ import RelatedGardenBox from "../components/RelatedGardenBox";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
 import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { NotebookViewer } from "../components/NotebookViewer";
+import SyntaxHighlighter from 'react-syntax-highlighter';
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
 // import PipelineMetrics from "../components/PipelineMetrics";
@@ -45,17 +47,14 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     }
   }, []);
 
-
-  const checkStepOverflow =() =>{
+  const checkStepOverflow = () => {
     if (div.current) {
-      console.log('kljsfdlkjad')
       const contain = div.current;
       if (contain!.clientHeight < contain!.scrollHeight && stepsOverflow===false) {
         setStepsOverflow(true);
       }
     }
-  ;
-}
+  }
 
   //API call to get the data based on the doi of the pipeline
   useEffect(() => {
@@ -179,16 +178,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const foundry = () => {
     setShowFoundry(true);
   };
-
-  // const checkStepsOverFlow = () => {
-  //   const stepsFlow: any = document.querySelector('#step_scroll')
-  //   if(stepsFlow){
-  //     console.log('yayayya')
-  //   }
-  //   if(stepsFlow!.offsetHeight < stepsFlow?.scrollHeight){
-  //     setStepsOverflow(true)
-  //   }
-  // }
 
   return (
     <>
@@ -333,9 +322,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                 client.get_published_garden(
                 <span className="text-green">"{gardenDOI}"</span>)<br />
                 <br />
-                <span className="text-gray-400">
-                  #The input type is {result[0].steps[0].input_info}
-                </span>
                 <br />
                 <span className="text-orange">
                   garden.
@@ -371,6 +357,16 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             {/* <DiscussionTab active={active} setActive={setActive}/> */}
             <button
               className={
+                active === "Notebook"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+              }
+              onClick={() => setActive("Notebook")}
+            >
+              Notebook
+            </button>
+            <button
+              className={
                 active === "Related"
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
@@ -381,7 +377,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             </button>
           </div>
           <div className="pt-4 sm:pt-8">
-            {/* Side panel steps tab */}
             {active === "" && (
               <div className="inline-grid sm:grid grid-cols-5">
                 <div
@@ -431,7 +426,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                           }
                         >
                           <button className="w-full" onClick={() => setButtonIndex(index)}>
-                            <p className="p-2 sm:p-4 break-all">{step.title}</p>
+                            <p className="p-2 sm:p-4 break-all">{step.function_name}</p>
                           </button>
                         </div>
                       </div>
@@ -451,66 +446,23 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   <div ref={bottom}></div>
                 </div>
                 <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
-                  <h1 className="text-xl lg:text-3xl font-bold">
-                    {result[0].steps[buttonIndex].title}
-                  </h1>
                   <div></div>
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
                     {result[0].steps[buttonIndex].description}
                   </p>
-                  {/* Loop through object keys for a step and put them on the page */}
-                  {Object.keys(result[0].steps[buttonIndex]).map(
-                    (key, index) => {
-                      if (result[0].steps[buttonIndex][key]) {
-                        if (key === "title" || key === "description") {
-                          return <></>;
-                        }
-                        if (Array.isArray(result[0].steps[buttonIndex][key])) {
-                          if (result[0].steps[buttonIndex][key].length === 0) {
-                            return <></>;
-                          } else {
-                            return (
-                              <div key={index}>
-                                <p className="pb-2 whitspace-normal">
-                                  <span className="font-semibold text-green">
-                                    {key}:{" "}
-                                  </span>
-                                  {result[0].steps[buttonIndex][key]
-                                    .map((author: any) => <span>{author}</span>)
-                                    .reduce((prev: any, curr: any) => [
-                                      prev,
-                                      ", ",
-                                      curr,
-                                    ])}
-                                </p>
-                              </div>
-                            );
-                          }
-                        }
-                        return (
-                          <div key={index}>
-                            <p className="pb-2">
-                              <span className="font-semibold text-green">
-                                {key}:
-                              </span>{" "}
-                              {result[0].steps[buttonIndex][key]}
-                            </p>
-                          </div>
-                        );
-                      } else {
-                        return <></>;
-                      }
-                    }
-                  )}
+                  <SyntaxHighlighter language="python">
+                    {result[0].steps[buttonIndex].function_text}
+                  </SyntaxHighlighter>
                 </div>
               </div>
             )}
-
             {/* Discussion Tab Content here */}
             {/* {active === "Discussion" && (
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
-
+            {active === "Notebook" && (
+              <NotebookViewer notebookJson={JSON.parse(result[0].notebook)} />
+            )}
             {active === "Related" && (
               <div className="px-6">
                 {appears.length > 0 ? (

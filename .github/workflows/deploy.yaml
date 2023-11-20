@@ -35,6 +35,9 @@ jobs:
         run: |
           cp ${{ steps.set_env_file.outputs.env_file }} ./.env.production.local
           npm run predeploy
+      - name: Don't serve msw
+        run: |
+          npm run remove-mock-service-worker
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
