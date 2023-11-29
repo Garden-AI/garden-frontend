@@ -461,7 +461,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
             {active === "Notebook" && (
-              <NotebookViewer notebookJson={JSON.parse(result[0].notebook)} />
+              <NotebookViewer notebookURL={result[0].notebook_url} />
             )}
             {active === "Related" && (
               <div className="px-6">
