@@ -1,6 +1,11 @@
 import { http, HttpResponse } from 'msw'
 
 export const handlers = [
+    http.get('https://pipeline-notebooks-dev.s3.amazonaws.com/willengler@uchicago.edu/iris_classifier.ipynb-23e7e94c476b299a73c446ad1ea25351b8025d011b26b784de07cdd544ebd874.ipynb', () => {
+        return HttpResponse.text(
+            "{\"cells\":[{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"### Running the cell below will load every definition in your original notebook within a containerized environment.\"]},{\"cell_type\":\"code\",\"execution_count\":null,\"metadata\":{},\"outputs\":[],\"source\":[\"import dill\\n\",\"\\n\",\"_globals_pre_load = dict(globals())\\n\",\"\\n\",\"dill.load_session(\\\"session.pkl\\\")\\n\",\"print([k for k in globals() if k not in _globals_pre_load])  # displays everything that was loaded\\n\",\"\\n\",\"del dill\\n\",\"del _globals_pre_load\"]},{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"### Now that your definitions have been loaded, feel free to test anything you like with confidence that this environment is nearly identical to the one that is executed remotely.\"]},{\"cell_type\":\"code\",\"execution_count\":null,\"metadata\":{},\"outputs\":[],\"source\":[]}],\"metadata\":{\"kernelspec\":{\"display_name\":\"Python 3 (ipykernel)\",\"language\":\"python\",\"name\":\"python3\"},\"language_info\":{\"codemirror_mode\":{\"name\":\"ipython\",\"version\":3},\"file_extension\":\".py\",\"mimetype\":\"text/x-python\",\"name\":\"python\",\"nbconvert_exporter\":\"python\",\"pygments_lexer\":\"ipython3\",\"version\":\"3.10.12\"}},\"nbformat\":4,\"nbformat_minor\":4}"
+        );
+    }),
     http.get('https://search.api.globus.org/v1/index/58e4df29-4492-4e7d-9317-b27eba62a911/search', () => {
         return HttpResponse.json({
             "total": 1,
@@ -54,7 +59,7 @@ export const handlers = [
                                         "description": "Pipeline for predicting the tensile strength (in MPa) of different compositions of alloy steels",
                                         "func_uuid": "2a4fff73-6e1d-479f-8ad2-a92fc20070ca",
                                         "title": "Steel Alloy Tensile Strength Prediction",
-                                        "notebook": "{\"cells\":[{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"### Running the cell below will load every definition in your original notebook within a containerized environment.\"]},{\"cell_type\":\"code\",\"execution_count\":null,\"metadata\":{},\"outputs\":[],\"source\":[\"import dill\\n\",\"\\n\",\"_globals_pre_load = dict(globals())\\n\",\"\\n\",\"dill.load_session(\\\"session.pkl\\\")\\n\",\"print([k for k in globals() if k not in _globals_pre_load])  # displays everything that was loaded\\n\",\"\\n\",\"del dill\\n\",\"del _globals_pre_load\"]},{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"### Now that your definitions have been loaded, feel free to test anything you like with confidence that this environment is nearly identical to the one that is executed remotely.\"]},{\"cell_type\":\"code\",\"execution_count\":null,\"metadata\":{},\"outputs\":[],\"source\":[]}],\"metadata\":{\"kernelspec\":{\"display_name\":\"Python 3 (ipykernel)\",\"language\":\"python\",\"name\":\"python3\"},\"language_info\":{\"codemirror_mode\":{\"name\":\"ipython\",\"version\":3},\"file_extension\":\".py\",\"mimetype\":\"text/x-python\",\"name\":\"python\",\"nbconvert_exporter\":\"python\",\"pygments_lexer\":\"ipython3\",\"version\":\"3.10.12\"}},\"nbformat\":4,\"nbformat_minor\":4}",
+                                        "notebook_url": "https://pipeline-notebooks-dev.s3.amazonaws.com/willengler@uchicago.edu/iris_classifier.ipynb-23e7e94c476b299a73c446ad1ea25351b8025d011b26b784de07cdd544ebd874.ipynb",
                                         "tags": [],
                                         "steps": [
                                             {
