@@ -17,13 +17,13 @@ export const handlers = [
                     "entries": [
                         {
                             "content": {
-                                "pipeline_aliases": {},
+                                "entrypoint_aliases": {},
                                 "year": "2023",
                                 "description": "A collection of seedling gardens that illustrate the different flavors of ML libraries that Garden supports",
                                 "language": "en",
                                 "title": "Flavor Examples",
                                 "tags": ["science"],
-                                "pipelines": [
+                                "entrypoints": [
                                     {
                                         "models": [
                                             {
@@ -77,7 +77,7 @@ export const handlers = [
                                 ],
                                 "publisher": "Garden-AI",
                                 "contributors": [],
-                                "pipeline_ids": [
+                                "entrypoint_ids": [
                                     "10.23677/etya-kq52",
                                 ],
                                 "authors": [

@@ -261,7 +261,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
           <div className="pt-8">
             {active === "" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {result[0]?.entries[0].content.pipelines.map(
+                {result[0]?.entries[0].content.entrypoints.map(
                   (pipeline: any) => (
                     <PipelineBox key={pipeline.doi} pipeline={pipeline} />
                   )
@@ -270,7 +270,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
             )}
             {active === "Pipelines" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {result[0]?.entries[0].content.pipelines.map(
+                {result[0]?.entries[0].content.entrypoints.map(
                   (pipeline: any) => (
                     <PipelineBox key={pipeline.doi} pipeline={pipeline} />
                   )
@@ -288,7 +288,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 </div>
                 <div>
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
-                    {result[0]?.entries[0].content.pipelines.map(
+                    {result[0]?.entries[0].content.entrypoints.map(
                       (pipe: any) => {
                         const allDatasets = [];
                         for (let model of pipe.models) {
