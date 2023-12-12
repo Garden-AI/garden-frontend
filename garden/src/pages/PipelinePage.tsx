@@ -4,9 +4,10 @@ import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
-import { fetchWithScope } from "../globusHelpers";
-import { SEARCH_SCOPE, GARDEN_INDEX_URL } from "../constants";
+import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { NotebookViewer } from "../components/NotebookViewer";
+import SyntaxHighlighter from 'react-syntax-highlighter';
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
 // import PipelineMetrics from "../components/PipelineMetrics";
@@ -16,6 +17,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 const PipelinePage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
   const navigate = useNavigate();
+
   const [show, setShow] = useState(false);
   const [active, setActive] = useState("");
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -26,6 +28,10 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const [result, setResult] = useState<any>(undefined);
   const [appears, setAppears] = useState<any>(undefined);
   const [showFoundry, setShowFoundry] = useState(false);
+  const [tooltipVisible, setTooltipVisible]= useState(false);
+
+
+
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLButtonElement>(null);
@@ -41,37 +47,25 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     }
   }, []);
 
-
-  const checkStepOverflow =() =>{
+  const checkStepOverflow = () => {
     if (div.current) {
-      console.log('kljsfdlkjad')
       const contain = div.current;
       if (contain!.clientHeight < contain!.scrollHeight && stepsOverflow===false) {
         setStepsOverflow(true);
       }
     }
-  ;
-}
+  }
 
   //API call to get the data based on the doi of the pipeline
   useEffect(() => {
     async function Search() {
       try {
-        const response = await fetchWithScope(
-          SEARCH_SCOPE,
-          GARDEN_INDEX_URL + `/search?q="${doi}"`
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const content = await response.json();
-        setResult(
-          content.gmeta[0].entries[0].content.pipelines.filter(
-            (pipe: any) => pipe.doi === doi
-          )
-        );
-        setAppears(content.gmeta);
+        const gmetaArray = await searchGardenIndex({q: doi || ""});
+        const selectedPipeline = gmetaArray[0].entries[0].content.entrypoints.filter(
+          (pipe: any) => pipe.doi === doi
+        )
+        setResult(selectedPipeline)
+        setAppears(gmetaArray);
       } catch (error) {
         setResult([]);
         setAppears([]);
@@ -139,7 +133,17 @@ const PipelinePage = ({ bread }: { bread: any }) => {
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
+    showTooltip()
   };
+
+  const showTooltip = () => {
+    if(tooltipVisible===false){
+      setTooltipVisible(true)
+      setTimeout(()=>{
+        setTooltipVisible(false)
+      }, 3000)
+    }
+  }
 
   const showModal = () => {
     setShow(true);
@@ -174,16 +178,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const foundry = () => {
     setShowFoundry(true);
   };
-
-  // const checkStepsOverFlow = () => {
-  //   const stepsFlow: any = document.querySelector('#step_scroll')
-  //   if(stepsFlow){
-  //     console.log('yayayya')
-  //   }
-  //   if(stepsFlow!.offsetHeight < stepsFlow?.scrollHeight){
-  //     setStepsOverflow(true)
-  //   }
-  // }
 
   return (
     <>
@@ -225,11 +219,13 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               </button>
               {/* Pin and Cite buttons to be added later */}
               {/* <CitePinButtons/> */}
+              {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
               <Modal
                 show={show}
                 close={closeModal}
                 copy={copy}
                 doi={result[0].doi}
+                showTooltip={showTooltip}
               />
             </div>
           </div>
@@ -326,9 +322,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                 client.get_published_garden(
                 <span className="text-green">"{gardenDOI}"</span>)<br />
                 <br />
-                <span className="text-gray-400">
-                  #The input type is {result[0].steps[0].input_info}
-                </span>
                 <br />
                 <span className="text-orange">
                   garden.
@@ -364,6 +357,16 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             {/* <DiscussionTab active={active} setActive={setActive}/> */}
             <button
               className={
+                active === "Notebook"
+                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+              }
+              onClick={() => setActive("Notebook")}
+            >
+              Notebook
+            </button>
+            <button
+              className={
                 active === "Related"
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
@@ -374,7 +377,6 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             </button>
           </div>
           <div className="pt-4 sm:pt-8">
-            {/* Side panel steps tab */}
             {active === "" && (
               <div className="inline-grid sm:grid grid-cols-5">
                 <div
@@ -424,7 +426,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                           }
                         >
                           <button className="w-full" onClick={() => setButtonIndex(index)}>
-                            <p className="p-2 sm:p-4 break-all">{step.title}</p>
+                            <p className="p-2 sm:p-4 break-all">{step.function_name}</p>
                           </button>
                         </div>
                       </div>
@@ -444,66 +446,23 @@ const PipelinePage = ({ bread }: { bread: any }) => {
                   <div ref={bottom}></div>
                 </div>
                 <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
-                  <h1 className="text-xl lg:text-3xl font-bold">
-                    {result[0].steps[buttonIndex].title}
-                  </h1>
                   <div></div>
                   <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
                     {result[0].steps[buttonIndex].description}
                   </p>
-                  {/* Loop through object keys for a step and put them on the page */}
-                  {Object.keys(result[0].steps[buttonIndex]).map(
-                    (key, index) => {
-                      if (result[0].steps[buttonIndex][key]) {
-                        if (key === "title" || key === "description") {
-                          return <></>;
-                        }
-                        if (Array.isArray(result[0].steps[buttonIndex][key])) {
-                          if (result[0].steps[buttonIndex][key].length === 0) {
-                            return <></>;
-                          } else {
-                            return (
-                              <div key={index}>
-                                <p className="pb-2 whitspace-normal">
-                                  <span className="font-semibold text-green">
-                                    {key}:{" "}
-                                  </span>
-                                  {result[0].steps[buttonIndex][key]
-                                    .map((author: any) => <span>{author}</span>)
-                                    .reduce((prev: any, curr: any) => [
-                                      prev,
-                                      ", ",
-                                      curr,
-                                    ])}
-                                </p>
-                              </div>
-                            );
-                          }
-                        }
-                        return (
-                          <div key={index}>
-                            <p className="pb-2">
-                              <span className="font-semibold text-green">
-                                {key}:
-                              </span>{" "}
-                              {result[0].steps[buttonIndex][key]}
-                            </p>
-                          </div>
-                        );
-                      } else {
-                        return <></>;
-                      }
-                    }
-                  )}
+                  <SyntaxHighlighter language="python">
+                    {result[0].steps[buttonIndex].function_text}
+                  </SyntaxHighlighter>
                 </div>
               </div>
             )}
-
             {/* Discussion Tab Content here */}
             {/* {active === "Discussion" && (
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
-
+            {active === "Notebook" && (
+              <NotebookViewer notebookURL={result[0].notebook_url} />
+            )}
             {active === "Related" && (
               <div className="px-6">
                 {appears.length > 0 ? (
