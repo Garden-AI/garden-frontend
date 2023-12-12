@@ -61,7 +61,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     async function Search() {
       try {
         const gmetaArray = await searchGardenIndex({q: doi || ""});
-        const selectedPipeline = gmetaArray[0].entries[0].content.pipelines.filter(
+        const selectedPipeline = gmetaArray[0].entries[0].content.entrypoints.filter(
           (pipe: any) => pipe.doi === doi
         )
         setResult(selectedPipeline)
