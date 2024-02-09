@@ -199,7 +199,7 @@
 	vertical-align: text-top;
 }
 .ipynb-renderer-root .fa-folder:before {
-	color: #126dce;
+	color: var(--header-color);
 }
 .ipynb-renderer-root .fa-arrow-up:before {
 	font-size: 14px;
@@ -223,7 +223,7 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	content: "\f07b";
-	color: #126dce;
+	color: var(--header-color);
 }
 .ipynb-renderer-root .notebook_icon:before {
 	display: inline-block;
@@ -341,7 +341,7 @@
 	font-size: 13pt;
 }
 .ipynb-renderer-root .item_icon {
-	color: #126dce;
+	color: var(--header-color);
 	font-size: 13pt;
 	vertical-align: middle;
 }
@@ -666,7 +666,7 @@
 	z-index: 0;
 }
 .ipynb-renderer-root .notification_widget {
-	color: #126dce;
+	color: var(--header-color);
 	z-index: -500;
 	font-size: 9pt;
 	background: 0 0;
@@ -703,11 +703,11 @@
 	display: none;
 }
 .ipynb-renderer-root .item_icon {
-	color: #126dce;
+	color: var(--header-color);
 }
 .ipynb-renderer-root .item_buttons .kernel-name {
 	font-size: 13pt;
-	color: #126dce;
+	color: var(--header-color);
 }
 .ipynb-renderer-root .running_notebook_icon:before {
 	color: #009e07 !important;
@@ -1729,7 +1729,7 @@
 	cursor: auto;
 }
 .ipynb-renderer-root #clusters > a:hover {
-	color: #126dce;
+	color: var(--header-color);
 	text-decoration: underline;
 	cursor: auto;
 }
@@ -3034,7 +3034,7 @@
 }
 .ipynb-renderer-root .rendered_html h1,
 .ipynb-renderer-root .text_cell_render h1 {
-	color: #126dce !important;
+	color: var(--header-color) !important;
 	font-size: 200%;
 	text-align: left;
 	font-style: normal;
@@ -3042,28 +3042,28 @@
 }
 .ipynb-renderer-root .rendered_html h2,
 .ipynb-renderer-root .text_cell_render h2 {
-	color: #126dce !important;
+	color: var(--header-color) !important;
 	font-size: 170%;
 	font-style: normal;
 	font-weight: 400;
 }
 .ipynb-renderer-root .rendered_html h3,
 .ipynb-renderer-root .text_cell_render h3 {
-	color: #126dce !important;
+	color: var(--header-color) !important;
 	font-size: 140%;
 	font-style: normal;
 	font-weight: 400;
 }
 .ipynb-renderer-root .rendered_html h4,
 .ipynb-renderer-root .text_cell_render h4 {
-	color: #126dce !important;
+	color: var(--header-color) !important;
 	font-size: 110%;
 	font-style: normal;
 	font-weight: 400;
 }
 .ipynb-renderer-root .rendered_html h5,
 .ipynb-renderer-root .text_cell_render h5 {
-	color: #126dce !important;
+	color: var(--header-color) !important;
 	font-size: 100%;
 	font-style: normal;
 	font-weight: 400;
@@ -3072,11 +3072,11 @@
 	margin-top: 8px;
 	margin-bottom: 10px;
 	border: 0;
-	border-top: 1px solid #126dce;
+	border-top: 1px solid var(--header-color);
 }
 .ipynb-renderer-root .rendered_html hr {
-	color: #126dce;
-	background-color: #126dce;
+	color: var(--header-color);
+	background-color: var(--header-color);
 	margin-right: 2em;
 }
 .ipynb-renderer-root #complete > select > option:hover {
@@ -3337,7 +3337,7 @@
 .ipynb-renderer-root div.cell.text_cell .cm-s-default .cm-header {
 	font-family: sans-serif;
 	font-weight: 400;
-	color: #126dce !important;
+	color: var(--header-color) !important;
 	margin-top: 0.3em !important;
 	margin-bottom: 0.3em !important;
 }
@@ -3445,3 +3445,43 @@
 	width: 80px !important;
 	min-width: 80px !important;
 }
+
+/* CUSTOM CHANGES */
+:root{
+	--header-color: #000;
+}
+
+span {
+	color: #353535; /* Same color as <p> */
+}
+
+/* Change light purple tokens to darker purple */
+/* e.g. numbers and '=' */
+span.token[style="color: rgb(167, 122, 254);"] {
+	color: #aa22ff !important; 
+}
+
+/* Change light gray tokens to navy */
+/* e.g. '.', ':', '()' */
+span.token[style="color: rgb(190, 190, 197);"] {
+	color: #0055aa !important; 
+}
+
+/* Change light yellow tokens to dark red */
+/* e.g. strings and block comments */
+span.token[style="color: rgb(230, 208, 108);"] {
+	color: #ba2121 !important; 
+}
+
+/* Change comment color to classic green */
+span.token[style="color: rgb(111, 112, 94);"] {
+	color: #008001 !important; 
+}
+
+/* Change medium pink tokens to classic green */
+/* e.g. from, import, def, return */
+span.token[style="color: rgb(239, 59, 125);"] {
+	color: #b82f64 !important; 
+	font-weight: bold;
+}
+
