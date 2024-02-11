@@ -461,7 +461,11 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
             {active === "Notebook" && (
-              <NotebookViewer notebookURL={result[0].notebook_url} />
+              <div className="px-6">
+                <p>This notebook contains the function that executes the model(s) in this pipeline.</p>
+                <p className="mb-6">Running this pipeline is equivalent to running all cells of this notebook once!</p>
+                <NotebookViewer notebookURL={result[0].notebook_url} />
+              </div>
             )}
             {active === "Related" && (
               <div className="px-6">
