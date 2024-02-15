@@ -13,7 +13,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
   useEffect(() => {
     async function Search() {
       try {
-        const gmetaArray = await searchGardenIndex({q: "2023", limit: "1000"});
+        const gmetaArray = await searchGardenIndex({q: "*", limit: "1000"});
         setResult(gmetaArray);
       } catch (error) {
         setResult([]);

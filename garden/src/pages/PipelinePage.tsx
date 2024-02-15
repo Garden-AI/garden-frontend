@@ -461,7 +461,11 @@ const PipelinePage = ({ bread }: { bread: any }) => {
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
             {active === "Notebook" && (
-              <NotebookViewer notebookURL={result[0].notebook_url} />
+              <div className="px-6">
+                <p>This notebook contains the definition of this pipeline, tagged with @garden_entrypoint</p>
+                <p className="mb-6">When you execute the pipeline, it runs in a Python session created by running every cell in this notebook once.</p>
+                <NotebookViewer notebookURL={result[0].notebook_url} />
+              </div>
             )}
             {active === "Related" && (
               <div className="px-6">
