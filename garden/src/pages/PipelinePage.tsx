@@ -462,8 +462,8 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             )} */}
             {active === "Notebook" && (
               <div className="px-6">
-                <p>This notebook contains the function that executes the model(s) in this pipeline.</p>
-                <p className="mb-6">Running this pipeline is equivalent to running all cells of this notebook once!</p>
+                <p>This notebook contains the definition of this pipeline, tagged with @garden_entrypoint</p>
+                <p className="mb-6">When you execute the pipeline, it runs in a Python session created by running every cell in this notebook once.</p>
                 <NotebookViewer notebookURL={result[0].notebook_url} />
               </div>
             )}

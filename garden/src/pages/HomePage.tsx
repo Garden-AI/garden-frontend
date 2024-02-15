@@ -9,7 +9,7 @@ const HomePage = () => {
   useEffect(() => {
     async function Search() {
       try {
-        const gmetaArray = await searchGardenIndex({q: "2023", limit: "6"});
+        const gmetaArray = await searchGardenIndex({q: "*", limit: "6"});
         setResult(gmetaArray);
       } catch (error) {
         setResult([]);
