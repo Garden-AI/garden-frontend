@@ -34,7 +34,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   useEffect(() => {
     async function Search() {
       try {
-        const gmetaArray = await searchGardenIndex({q: "2023", limit: "6"});
+        const gmetaArray = await searchGardenIndex({q: "*", limit: "6"});
         const otherGardenEntries = gmetaArray.filter(
           (gard: any) => gard.entries[0].content.doi !== doi
         )
