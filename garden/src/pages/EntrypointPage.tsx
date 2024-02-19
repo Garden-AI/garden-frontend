@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
-import RelatedGardenBox from "../components/RelatedGardenBox";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -26,11 +25,9 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
   const [buttonIndex, setButtonIndex] = useState(0);
   const [result, setResult] = useState<any>(undefined);
-  const [appears, setAppears] = useState<any>(undefined);
+  const [gardenDOI, setGardenDOI] = useState("");
   const [showFoundry, setShowFoundry] = useState(false);
   const [tooltipVisible, setTooltipVisible]= useState(false);
-
-
 
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
@@ -61,14 +58,15 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
     async function Search() {
       try {
         const gmetaArray = await searchGardenIndex({q: doi || ""});
-        const selectedEntrypoint = gmetaArray[0].entries[0].content.entrypoints.filter(
+        const selectedGarden = gmetaArray[0].entries[0].content
+        const selectedEntrypoint = selectedGarden.entrypoints.filter(
           (pipe: any) => pipe.doi === doi
         )
         setResult(selectedEntrypoint)
-        setAppears(gmetaArray);
+        setGardenDOI(selectedGarden.doi)
       } catch (error) {
         setResult([]);
-        setAppears([]);
+        setGardenDOI("");
       }
     }
     Search();
@@ -121,15 +119,6 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   console.log(result)
   const text = doi?.replace("/", "%2f");
   bread.entrypoint = [result[0].title, `/entrypoint/${text}`];
-
-  //Garden doi for the code block
-  let gardenDOI = "";
-  if (bread.garden.length !== 0) {
-    gardenDOI = bread.garden[1].replace("/garden/", "");
-    gardenDOI = gardenDOI.replace("%2f", "/");
-  } else {
-    gardenDOI = appears[0].entries[0].content.doi;
-  }
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -469,26 +458,11 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
             )}
             {active === "Related" && (
               <div className="px-6">
-                {appears.length > 0 ? (
-                  <div>
-                    <h1 className="underline text-2xl pb-8">
-                      Appears in these Gardens
-                    </h1>
-                    <div className=" grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
-                      {appears.map((related: any) => (
-                        <RelatedGardenBox related={related} />
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <></>
-                )}
-
                 <div>
                   <h1 className="underline text-2xl py-8">
                     Datasets used in this entrypoint
                   </h1>
-                  {result[0].models[0].dataset ? (
+                  {result[0].models[0]?.dataset ? (
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
                       {/* {result[0].models[0].dataset.map((dataset: any) => {
                         return <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry}/>;
