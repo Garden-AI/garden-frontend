@@ -31,7 +31,7 @@ const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
             </>
           )}
           <span className="text-black">/</span>
-          {crumbs.pipeline.length === 0 ? (
+          {crumbs.entrypoint.length === 0 ? (
             <button
               onClick={() => navigate(crumbs.garden[1])}
               className="text-black underline"
@@ -46,16 +46,16 @@ const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
               {crumbs.garden[0]}
             </button>
           )}
-          {crumbs.pipeline.length === 0 ? (
+          {crumbs.entrypoint.length === 0 ? (
             <></>
           ) : (
             <span className="text-black">/</span>
           )}
           <button
-            onClick={() => navigate(crumbs.pipeline[1])}
+            onClick={() => navigate(crumbs.entrypoint[1])}
             className="underline"
           >
-            {crumbs.pipeline[0]}
+            {crumbs.entrypoint[0]}
           </button>
         </div>
       </div>

@@ -6,7 +6,7 @@ const FairScore = () => {
       className="border-y border-gray-300"
       header={({ state: { isEnter } }) => (
         <div className="inline-flex w-full justify-between p-4">
-          <span className="">&#128167; Pipeline FAIR-ness</span>
+          <span className="">&#128167; Entrypoint FAIR-ness</span>
           {isEnter ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const DatasetBoxPipeline = (props: { dataset: any; showFoundry: Function }) => {
+const DatasetBoxEntrypoint = (props: { dataset: any; showFoundry: Function }) => {
 
   useEffect(() => {
     if (props.dataset.url.toString().includes("foundry")) {
@@ -29,4 +29,4 @@ const DatasetBoxPipeline = (props: { dataset: any; showFoundry: Function }) => {
   );
 };
 
-export default DatasetBoxPipeline;
+export default DatasetBoxEntrypoint;

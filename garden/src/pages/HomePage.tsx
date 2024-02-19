@@ -142,19 +142,19 @@ const HomePage = () => {
             principles to ensure accessibility and reproducibility. Gardens allow
             you engage with a broader audience by making publication of models
             quick and easy. This is efficiently achieved through sub-sections of a
-            garden called “pipelines”.
+            garden called “entrypoints”.
           </p>
         </div>
 
-        {/* Third section (Pipelines...) */}
+        {/* Third section (Entrypoints...) */}
         <div className="mt-14">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">Pipelines</h1>
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">Entrypoints</h1>
           <p className="text-md sm:text-lg">
-            Pipelines are pages within a garden where all the relevant models and
-            its associated materials are stored. Each pipeline is composed of
+            Entrypoints are pages within a garden where all the relevant models and
+            its associated materials are stored. Each entrypoint is composed of
             steps such as input, function, output, etc. If a particular model is
-            relevant in more than one garden, then that pipeline can be reused and
-            displayed across them all, as they are not garden specific. Pipelines
+            relevant in more than one garden, then that entrypoint can be reused and
+            displayed across them all, as they are not garden specific. Entrypoints
             play a key role in the accessibility and reproducibility of a garden
             page.
           </p>
