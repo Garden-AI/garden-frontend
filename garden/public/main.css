@@ -1585,6 +1585,16 @@ video {
   line-height: 1rem;
 }
 
+.text-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -1670,6 +1680,14 @@ video {
 
 .no-underline {
   text-decoration-line: none;
+}
+
+.decoration-green {
+  text-decoration-color: #53A86C;
+}
+
+.underline-offset-4 {
+  text-underline-offset: 4px;
 }
 
 .shadow-lg {

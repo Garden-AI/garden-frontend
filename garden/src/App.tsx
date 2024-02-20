@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import PipelinePage from './pages/PipelinePage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import TeamsPage from './pages/TeamsPage';
 
 /*
   We are not making calls that need authentication, but making a PKCEAuthorization 
@@ -42,6 +43,7 @@ function App() {
           <Route path="/search" element={<SearchPage bread={breadcrumbs} />} />
           <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs} />} />
           <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs} />} />
+          <Route path="/team" element={<TeamsPage/>}/>
         </Routes>
         <Footer />
       </HashRouter>
