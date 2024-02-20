@@ -10,7 +10,7 @@ import { ExampleFunction } from "../components/ExampleFunction";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
-// import entrypointMetrics from "../components/entrypointMetrics";
+// import EntrypointMetrics from "../components/EntrypointMetrics";
 // import DiscussionTabContent from "../components/DiscussionTabContent";
 // import DiscussionTab from "../components/DiscussionTab";
 
@@ -341,26 +341,6 @@ return my_entrypoint(input)`
           <h2 className="text-2xl sm:text-3xl text-center">Run this entrypoint</h2>
           <div className="sm:flex justify-center py-2">
             <ExampleFunction functionText={exampleFunctionText(gardenDOI, result[0])}/>
-            
-            {/* <div className="bg-gray-800 text-white py-6 px-4 sm:px-6 text-sm sm:text-base rounded-xl break-words">
-              <code className="leading-loose">
-                <span className="text-purple">import</span> GardenClient <br />
-                client = garden_ai.GardenClient()
-                <br />
-                <br />
-                <span className="text-orange">garden</span> =
-                client.get_published_garden(
-                <span className="text-green">"{gardenDOI}"</span>)<br />
-                <br />
-                <br />
-                <span className="text-orange">
-                  garden.
-                  <span className="text-white">{result[0].short_name}</span>
-                </span>
-                (<span className="text-green">'Data Here'</span>)
-              </code>
-            </div> */}
-
             <div className="flex flex-col items-center justify-center">
               {/* <OpenInButtons/> */}
             </div>
