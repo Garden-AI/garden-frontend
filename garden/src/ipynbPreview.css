@@ -3485,3 +3485,6 @@ span.token[style="color: rgb(239, 59, 125);"] {
 	font-weight: bold;
 }
 
+.no-input-number .ipynb-renderer-root div.prompt {
+	display: none;
+}

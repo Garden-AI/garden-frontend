@@ -6,6 +6,7 @@ import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { NotebookViewer } from "../components/NotebookViewer";
+import { ExampleFunction } from "../components/ExampleFunction";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
@@ -51,6 +52,44 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
         setStepsOverflow(true);
       }
     }
+  }
+
+  const exampleFunctionText = (
+    gardenDOI: string, 
+    entrypoint: {test_functions: Array<string>, doi: string, short_name?: string}
+  ): string => {
+    const prefixText = `from garden_ai import GardenClient
+client = GardenClient()
+garden = client.get_published_garden("${gardenDOI}")
+\n`
+    
+    // Ideally we have a test function and we can display that.
+    if (entrypoint.test_functions.length > 0) {
+      let functionText = entrypoint.test_functions[0];
+      // The test function writer called it by its short name, 
+      // but the consumer will call it by garden.short_name
+      if (entrypoint.short_name) {
+        functionText = functionText.replaceAll(entrypoint.short_name, `garden.${entrypoint.short_name}`);
+      }
+      const fullFunction = prefixText + functionText;
+      
+      // Remove the @entrypoint_test decorator if it's in this snippet
+      const lines = fullFunction.split('\n');
+      const filteredLines = lines.filter(line => !line.trim().startsWith('@entrypoint_test'));
+      return filteredLines.join('\n');
+    }
+    // If we don't have a test function, 
+    // we can use a generic template that shows how to call the entrypoint.
+    let fallbackFunction = prefixText + `input = ['Data Here']\n`;
+    if (entrypoint.short_name) {
+      fallbackFunction += `return garden.${entrypoint.short_name}(input)`
+    }
+    else {
+      fallbackFunction += `my_entrypoint = next(e for e in garden.entrypoints if e.doi == ${entrypoint.doi})
+return my_entrypoint(input)`
+    }
+
+    return fallbackFunction
   }
 
   //API call to get the data based on the doi of the entrypoint
@@ -301,7 +340,9 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
         <div className="flex flex-col gap-8 w-full">
           <h2 className="text-2xl sm:text-3xl text-center">Run this entrypoint</h2>
           <div className="sm:flex justify-center py-2">
-            <div className="bg-gray-800 text-white py-6 px-4 sm:px-6 text-sm sm:text-base rounded-xl break-words">
+            <ExampleFunction functionText={exampleFunctionText(gardenDOI, result[0])}/>
+            
+            {/* <div className="bg-gray-800 text-white py-6 px-4 sm:px-6 text-sm sm:text-base rounded-xl break-words">
               <code className="leading-loose">
                 <span className="text-purple">import</span> GardenClient <br />
                 client = garden_ai.GardenClient()
@@ -318,7 +359,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
                 </span>
                 (<span className="text-green">'Data Here'</span>)
               </code>
-            </div>
+            </div> */}
 
             <div className="flex flex-col items-center justify-center">
               {/* <OpenInButtons/> */}
@@ -451,7 +492,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
             )} */}
             {active === "Notebook" && (
               <div className="px-6">
-                <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint</p>
+                <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint.</p>
                 <p className="mb-6">When you execute the entrypoint, it runs in a Python session created by running every cell in this notebook once.</p>
                 <NotebookViewer notebookURL={result[0].notebook_url} />
               </div>
