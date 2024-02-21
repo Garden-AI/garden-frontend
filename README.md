@@ -24,7 +24,7 @@ After cloning, run `npm install` to pull in dependencies and then `npm start` to
 # Using msw mocks
 
 The `src/mocks` folder has configuration for `msw`, a library that mocks external API responses. 
-This is useful to set up static garden/pipeline responses to develop against no matter the state of the backend.
+This is useful to set up static garden/entrypoint responses to develop against no matter the state of the backend.
 
 To use this when developing locally, uncomment `REACT_APP_SHOULD_MOCK="true"` in `.env.development`.
 

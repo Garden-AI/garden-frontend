@@ -7,7 +7,7 @@ import TermsPage from './pages/TermsPage';
 import ScrollToTop from './components/ScrollToTop'
 import SearchPage from './pages/SearchPage';
 import HomePage from './pages/HomePage';
-import PipelinePage from './pages/PipelinePage';
+import EntrypointPage from './pages/EntrypointPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -23,11 +23,11 @@ new authorization.PKCEAuthorization({
 });
 
 function App() {
-  const breadcrumbs: { home: string; search: string; garden: Array<string>; pipeline: Array<string>; } = {
+  const breadcrumbs: { home: string; search: string; garden: Array<string>; entrypoint: Array<string>; } = {
     home: 'Home',
     search: '',
     garden: [],
-    pipeline: []
+    entrypoint: []
 
   }
   return (
@@ -41,7 +41,7 @@ function App() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/search" element={<SearchPage bread={breadcrumbs} />} />
           <Route path="/garden/:doi" element={<GardenPage bread={breadcrumbs} />} />
-          <Route path="/pipeline/:doi" element={<PipelinePage bread={breadcrumbs} />} />
+          <Route path="/entrypoint/:doi" element={<EntrypointPage bread={breadcrumbs} />} />
         </Routes>
         <Footer />
       </HashRouter>
