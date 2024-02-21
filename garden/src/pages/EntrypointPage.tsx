@@ -2,19 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
-import RelatedGardenBox from "../components/RelatedGardenBox";
-import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
+import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { NotebookViewer } from "../components/NotebookViewer";
+import { ExampleFunction } from "../components/ExampleFunction";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
-// import PipelineMetrics from "../components/PipelineMetrics";
+// import EntrypointMetrics from "../components/EntrypointMetrics";
 // import DiscussionTabContent from "../components/DiscussionTabContent";
 // import DiscussionTab from "../components/DiscussionTab";
 
-const PipelinePage = ({ bread }: { bread: any }) => {
+const EntrypointPage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
   const navigate = useNavigate();
 
@@ -26,11 +26,9 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
   const [buttonIndex, setButtonIndex] = useState(0);
   const [result, setResult] = useState<any>(undefined);
-  const [appears, setAppears] = useState<any>(undefined);
+  const [gardenDOI, setGardenDOI] = useState("");
   const [showFoundry, setShowFoundry] = useState(false);
   const [tooltipVisible, setTooltipVisible]= useState(false);
-
-
 
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
@@ -56,19 +54,58 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     }
   }
 
-  //API call to get the data based on the doi of the pipeline
+  const exampleFunctionText = (
+    gardenDOI: string, 
+    entrypoint: {test_functions: Array<string>, doi: string, short_name?: string}
+  ): string => {
+    const prefixText = `from garden_ai import GardenClient
+client = GardenClient()
+garden = client.get_published_garden("${gardenDOI}")
+\n`
+    
+    // Ideally we have a test function and we can display that.
+    if (entrypoint.test_functions.length > 0) {
+      let functionText = entrypoint.test_functions[0];
+      // The test function writer called it by its short name, 
+      // but the consumer will call it by garden.short_name
+      if (entrypoint.short_name) {
+        functionText = functionText.replaceAll(entrypoint.short_name, `garden.${entrypoint.short_name}`);
+      }
+      const fullFunction = prefixText + functionText;
+      
+      // Remove the @entrypoint_test decorator if it's in this snippet
+      const lines = fullFunction.split('\n');
+      const filteredLines = lines.filter(line => !line.trim().startsWith('@entrypoint_test'));
+      return filteredLines.join('\n');
+    }
+    // If we don't have a test function, 
+    // we can use a generic template that shows how to call the entrypoint.
+    let fallbackFunction = prefixText + `input = ['Data Here']\n`;
+    if (entrypoint.short_name) {
+      fallbackFunction += `return garden.${entrypoint.short_name}(input)`
+    }
+    else {
+      fallbackFunction += `my_entrypoint = next(e for e in garden.entrypoints if e.doi == ${entrypoint.doi})
+return my_entrypoint(input)`
+    }
+
+    return fallbackFunction
+  }
+
+  //API call to get the data based on the doi of the entrypoint
   useEffect(() => {
     async function Search() {
       try {
         const gmetaArray = await searchGardenIndex({q: doi || ""});
-        const selectedPipeline = gmetaArray[0].entries[0].content.entrypoints.filter(
+        const selectedGarden = gmetaArray[0].entries[0].content
+        const selectedEntrypoint = selectedGarden.entrypoints.filter(
           (pipe: any) => pipe.doi === doi
         )
-        setResult(selectedPipeline)
-        setAppears(gmetaArray);
+        setResult(selectedEntrypoint)
+        setGardenDOI(selectedGarden.doi)
       } catch (error) {
         setResult([]);
-        setAppears([]);
+        setGardenDOI("");
       }
     }
     Search();
@@ -97,13 +134,13 @@ const PipelinePage = ({ bread }: { bread: any }) => {
     );
   }
 
-  //The doi does not match up to a pipeline, message appears
+  //The doi does not match up to a entrypoint, message appears
   if (result.length === 0) {
     return (
       <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
         <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] border border-black rounded-xl bg-white flex flex-col items-center">
           <h1 className=" py-12 px-4 text-4xl font-semibold text-center">
-            No Pipeline Found
+            No Entrypoint Found
           </h1>
           <p className="text-center px-4">
             The page you were looking for does not exist
@@ -120,16 +157,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   }
   console.log(result)
   const text = doi?.replace("/", "%2f");
-  bread.pipeline = [result[0].title, `/pipeline/${text}`];
-
-  //Garden doi for the code block
-  let gardenDOI = "";
-  if (bread.garden.length !== 0) {
-    gardenDOI = bread.garden[1].replace("/garden/", "");
-    gardenDOI = gardenDOI.replace("%2f", "/");
-  } else {
-    gardenDOI = appears[0].entries[0].content.doi;
-  }
+  bread.entrypoint = [result[0].title, `/entrypoint/${text}`];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -184,7 +212,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
       <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-12 sm:pt-24 pb-2 font-display">
         {/* Place breadcrumbs here */}
         <Breadcrumbs crumbs={bread} />
-        {/* Pipeline Header */}
+        {/* Entrypoint Header */}
         <div className="flex flex-col gap-1">
           <div className="flex gap4 sm:gap-8">
             <h1 className="text-2xl sm:text-3xl font-display">{result[0].title}</h1>
@@ -266,7 +294,7 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             )}
           </div>
           {/* Total Runs/Pins/Shares/Citations goes here */}
-          {/* <PipelineMetrics/> */}
+          {/* <EntrypointMetrics/> */}
           <div className="flex flex-wrap pt-4 mr-8 text-base sm:text-lg">
             <p className="font-semibold pr-2">Contributors:</p>
             <p className={pClass} ref={widthRef}>
@@ -310,34 +338,16 @@ const PipelinePage = ({ bread }: { bread: any }) => {
         </div>
 
         <div className="flex flex-col gap-8 w-full">
-          <h2 className="text-2xl sm:text-3xl text-center">Run this pipeline</h2>
+          <h2 className="text-2xl sm:text-3xl text-center">Run this entrypoint</h2>
           <div className="sm:flex justify-center py-2">
-            <div className="bg-gray-800 text-white py-6 px-4 sm:px-6 text-sm sm:text-base rounded-xl break-words">
-              <code className="leading-loose">
-                <span className="text-purple">import</span> GardenClient <br />
-                client = garden_ai.GardenClient()
-                <br />
-                <br />
-                <span className="text-orange">garden</span> =
-                client.get_published_garden(
-                <span className="text-green">"{gardenDOI}"</span>)<br />
-                <br />
-                <br />
-                <span className="text-orange">
-                  garden.
-                  <span className="text-white">{result[0].short_name}</span>
-                </span>
-                (<span className="text-green">'Data Here'</span>)
-              </code>
-            </div>
-
+            <ExampleFunction functionText={exampleFunctionText(gardenDOI, result[0])}/>
             <div className="flex flex-col items-center justify-center">
               {/* <OpenInButtons/> */}
             </div>
           </div>
         </div>
 
-        <AccordionTop pipeline={result} />
+        <AccordionTop entrypoint={result} />
 
         <div className="pb-12">
           <div className="flex justify-evenly h-12 ">
@@ -462,42 +472,27 @@ const PipelinePage = ({ bread }: { bread: any }) => {
             )} */}
             {active === "Notebook" && (
               <div className="px-6">
-                <p>This notebook contains the definition of this pipeline, tagged with @garden_entrypoint</p>
-                <p className="mb-6">When you execute the pipeline, it runs in a Python session created by running every cell in this notebook once.</p>
+                <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint.</p>
+                <p className="mb-6">When you execute the entrypoint, it runs in a Python session created by running every cell in this notebook once.</p>
                 <NotebookViewer notebookURL={result[0].notebook_url} />
               </div>
             )}
             {active === "Related" && (
               <div className="px-6">
-                {appears.length > 0 ? (
-                  <div>
-                    <h1 className="underline text-2xl pb-8">
-                      Appears in these Gardens
-                    </h1>
-                    <div className=" grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24">
-                      {appears.map((related: any) => (
-                        <RelatedGardenBox related={related} />
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <></>
-                )}
-
                 <div>
                   <h1 className="underline text-2xl py-8">
-                    Datasets used in this pipeline
+                    Datasets used in this entrypoint
                   </h1>
-                  {result[0].models[0].dataset ? (
+                  {result[0].models[0]?.dataset ? (
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
                       {/* {result[0].models[0].dataset.map((dataset: any) => {
-                        return <DatasetBoxPipeline dataset={dataset} showFoundry={foundry}/>;
+                        return <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry}/>;
                       })} */}
-                      <DatasetBoxPipeline dataset={result[0].models[0].dataset} showFoundry={foundry}/>
+                      <DatasetBoxEntrypoint dataset={result[0].models[0].dataset} showFoundry={foundry}/>
                     </div>
                   ) : (
                     <p className="text-center pt-8 pb-16 text-xl">
-                      No datasets available for this pipeline
+                      No datasets available for this entrypoint
                     </p>
                   )}
                   {showFoundry === true ? (
@@ -553,4 +548,4 @@ const PipelinePage = ({ bread }: { bread: any }) => {
   );
 };
 
-export default PipelinePage;
+export default EntrypointPage;

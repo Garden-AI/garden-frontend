@@ -11,7 +11,7 @@ import {
 
 // https://szhsin.github.io/react-accordion/ for the accordion tabs
 
-const AccordionTop = ({ pipeline }: { pipeline: any }) => {
+const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
   const providerValue = useAccordionProvider({
     allowMultiple: true,
   });
@@ -81,10 +81,10 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
           }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-x-12 lg:gap-x-32 gap-y-12 px-8 lg:px-16">
-            {pipeline[0].papers ? pipeline[0].papers.length > 0 ? (
+            {entrypoint[0].papers ? entrypoint[0].papers.length > 0 ? (
               <>
               {increaseCount()}
-                {pipeline[0].papers.map((paper: any) => {
+                {entrypoint[0].papers.map((paper: any) => {
                   return (
                     <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
                       <div className="flex items-center px-2 pt-2 pb-6 gap-4 w-full">
@@ -177,10 +177,10 @@ const AccordionTop = ({ pipeline }: { pipeline: any }) => {
               <></>
             ): <></>}
             {/* repo box */}
-            {pipeline[0].repositories ? pipeline[0].repositories.length>0 ? (
+            {entrypoint[0].repositories ? entrypoint[0].repositories.length>0 ? (
               <>
                 {increaseCount()}
-                {pipeline[0].repositories.map((repo: any) => {
+                {entrypoint[0].repositories.map((repo: any) => {
                   return (
                     <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
                       <div className="flex items-center px-2 pt-2 pb-6 gap-4 w-full">

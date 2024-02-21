@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import PipelineBox from "../components/PipelineBox";
+import EntrypointBox from "../components/EntrypointBox";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Breadcrumbs from "../components/Breadcrumbs";
-import DatasetBoxPipeline from "../components/DatasetBoxPipeline";
+import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { searchGardenIndex } from "../globusHelpers";
 
 const GardenPage = ({ bread }: { bread: any }) => {
@@ -92,7 +92,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
-  bread.pipeline = [];
+  bread.entrypoint = [];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -235,15 +235,15 @@ const GardenPage = ({ bread }: { bread: any }) => {
           <div className="flex justify-evenly h-12 ">
             <button
               className={
-                active === "Pipelines"
+                active === "Entrypoints"
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : active === ""
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
               }
-              onClick={() => setActive("Pipelines")}
+              onClick={() => setActive("Entrypoints")}
             >
-              Pipelines
+              Entrypoints
             </button>
             {/* Discussion Tab Here */}
             {/* <DiscussionTab active={active} setActive={setDiscussionTab}/> */}
@@ -262,17 +262,17 @@ const GardenPage = ({ bread }: { bread: any }) => {
             {active === "" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {result[0]?.entries[0].content.entrypoints.map(
-                  (pipeline: any) => (
-                    <PipelineBox key={pipeline.doi} pipeline={pipeline} />
+                  (entrypoint: any) => (
+                    <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
                   )
                 )}
               </div>
             )}
-            {active === "Pipelines" && (
+            {active === "Entrypoints" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {result[0]?.entries[0].content.entrypoints.map(
-                  (pipeline: any) => (
-                    <PipelineBox key={pipeline.doi} pipeline={pipeline} />
+                  (entrypoint: any) => (
+                    <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
                   )
                 )}
               </div>
@@ -300,7 +300,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                           <>
                             {increaseCount()}
                             <div>
-                              {allDatasets.map(dataset => <DatasetBoxPipeline dataset={dataset} showFoundry={foundry}/>)}
+                              {allDatasets.map(dataset => <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry}/>)}
                             </div>
                           </>
                         ) : (

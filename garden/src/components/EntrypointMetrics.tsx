@@ -1,4 +1,4 @@
-const PipelineMetrics = () =>{
+const EntrypointMetrics = () =>{
 
     return (
         <div className="flex gap-4">
@@ -67,4 +67,4 @@ const PipelineMetrics = () =>{
     )
 }
 
-export default PipelineMetrics
+export default EntrypointMetrics

@@ -1,28 +1,28 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const PipelineBox = ({ pipeline }: { pipeline: any }) => {
+const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
   const navigate = useNavigate();
-  const text = pipeline.doi.replace("/", "%2f");
+  const text = entrypoint.doi.replace("/", "%2f");
 
   return (
     <div
       className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer"
-      onClick={() => navigate(`/pipeline/${text}`)}
+      onClick={() => navigate(`/entrypoint/${text}`)}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl">{pipeline.title}</h2>
+        <h2 className="text-xl">{entrypoint.title}</h2>
         <p className="text-gray-500">
-          {pipeline.steps.length}{" "}
-          {pipeline.steps.length < 2 ? <span>step</span> : <span>steps</span>}
+          {entrypoint.steps.length}{" "}
+          {entrypoint.steps.length < 2 ? <span>step</span> : <span>steps</span>}
         </p>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent h-[160px] overflow-y-hidden">
-            {pipeline.description}
+            {entrypoint.description}
           </p>
         </div>
       </div>
-      {pipeline.tags.length > 0 ? (
+      {entrypoint.tags.length > 0 ? (
         <div className="text-black flex gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ const PipelineBox = ({ pipeline }: { pipeline: any }) => {
             />
           </svg>
           <div>
-            {pipeline.tags
+            {entrypoint.tags
               .map((t: any) => <span key={t}>{t}</span>)
               .reduce((prev: any, curr: any) => [prev, ", ", curr])}
           </div>
@@ -56,4 +56,4 @@ const PipelineBox = ({ pipeline }: { pipeline: any }) => {
   );
 };
 
-export default PipelineBox;
+export default EntrypointBox;
