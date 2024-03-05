@@ -21,7 +21,8 @@ const TeamsPage = () =>{
             title: "Co-PI",
             twitter_link:"https://twitter.com/BenBlaiszik",
             linkedin_link:"https://www.linkedin.com/in/benblaiszik/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/benb.jpeg"
         },
         {
             name: "Ian Foster",
@@ -30,7 +31,8 @@ const TeamsPage = () =>{
             title: "Co-PI",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/ianfoster/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/ian.jpeg"
         },
         {
             name: "Eliu Huerta",
@@ -39,7 +41,8 @@ const TeamsPage = () =>{
             title: "PI",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/eliu-huerta-72a84165/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/eliu.jpeg"
         },
         {
             name: "Rebecca Willett",
@@ -48,7 +51,8 @@ const TeamsPage = () =>{
             title: "Co-PI",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/rebecca-willett-90b95973/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/rebecca.jpeg"
         },
         {
             name: "Aristana Scourtas",
@@ -57,7 +61,8 @@ const TeamsPage = () =>{
             title: "Senior Personnel",
             twitter_link:"https://twitter.com/aristana_s",
             linkedin_link:"https://www.linkedin.com/in/aristana/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/ari.jpg"
         },
         {
             name: "KJ Schmidt",
@@ -66,7 +71,8 @@ const TeamsPage = () =>{
             title: "Senior Personnel",
             twitter_link:"https://twitter.com/kj_schmidt",
             linkedin_link:"https://www.linkedin.com/in/schmidtkj/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/kj.jpeg"
         },
         {
             name: "Dane Morgan",
@@ -75,7 +81,8 @@ const TeamsPage = () =>{
             title: "Senior Personnel",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/dane-morgan-694a38/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/dane.jpeg"
         },
         {
             name: "Rafael Gomez-Bombarelli",
@@ -84,7 +91,8 @@ const TeamsPage = () =>{
             title: "Co-PI",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/rgbombarelli/",
-            github_link:""
+            github_link:"",
+            photo: "img/team-images/rafael.jpeg"
         },
         {
             name: "Ben Galewsky",
@@ -93,7 +101,8 @@ const TeamsPage = () =>{
             title: "Senior Research Software Engineer",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/bengalewsky/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/beng.jpeg"
         },
         {
             name: "Will Engler",
@@ -102,7 +111,8 @@ const TeamsPage = () =>{
             title: "Senior Personnel",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/will-engler-82190b140/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/will.jpeg"
         },
         {
             name: "Owen Price-Skelly",
@@ -111,7 +121,8 @@ const TeamsPage = () =>{
             title: "Senior Personnel",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/owen-price-skelly-350045234/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/owen.jpeg"
         },
         {
             name: "Logan Ward",
@@ -120,7 +131,8 @@ const TeamsPage = () =>{
             title: "Computational Scientist",
             twitter_link:"https://twitter.com/WardLT2",
             linkedin_link:"https://www.linkedin.com/in/logan-ward-4b7811126/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/logan.jpeg"
         },
         // {
         //     name: "Eric Blau",
@@ -138,7 +150,8 @@ const TeamsPage = () =>{
             title: "Computational Scientist",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/noah-paulson-9980661b/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/noah.jpeg"
         },
         {
             name: "Marcus Schwarting",
@@ -147,7 +160,8 @@ const TeamsPage = () =>{
             title: "AI Research Scientist",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/marcus-s-a7779486/",
-            github_link:""
+            github_link:"",
+            photo:"img/team-images/marcus.jpeg"
         },
         // {
         //     name: "Stephen Wangen",
@@ -213,7 +227,7 @@ const TeamsPage = () =>{
             <div className="flex justify-center">
                 <h1 className="text-5xl pt-8 underline decoration-green underline-offset-4">Our team</h1>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-16">
                     {people.map((person) => (
                         <TeamMember key={person.name} member={person}/>
                     ))}
@@ -221,7 +235,7 @@ const TeamsPage = () =>{
             <div className="flex justify-center">
                 <h1 className="text-5xl pt-8 underline decoration-green underline-offset-4">Current Students</h1>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-16">
                     {students.map((student) => (
                         <StudentMember key={student.name} member={student}/>
                     ))}
