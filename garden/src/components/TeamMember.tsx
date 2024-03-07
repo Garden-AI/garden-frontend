@@ -1,6 +1,5 @@
 const TeamMember = ({member} : {member: any}) =>{
     
-    console.log(member.twitter_link.length)
     return(
         <div className="border border-gray-200 shadow-sm rounded-lg p-5">
             <img className="h-40 w-auto ml-auto mr-auto rounded-full" src={member.photo} alt={member.name} />

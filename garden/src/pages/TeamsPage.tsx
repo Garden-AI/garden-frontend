@@ -108,7 +108,7 @@ const TeamsPage = () =>{
             name: "Will Engler",
             description: "Senior Software Engineer",
             workplace: "University of Chicago",
-            title: "Senior Personnel",
+            title: "Senior Software Engineer",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/will-engler-82190b140/",
             github_link:"",
@@ -118,7 +118,7 @@ const TeamsPage = () =>{
             name: "Owen Price-Skelly",
             description: "Software Engineer",
             workplace: "University of Chicago",
-            title: "Senior Personnel",
+            title: "Software Engineer",
             twitter_link:"",
             linkedin_link:"https://www.linkedin.com/in/owen-price-skelly-350045234/",
             github_link:"",
@@ -174,8 +174,6 @@ const TeamsPage = () =>{
         // }
     ]
 
-
-    //Allison
     const students = [
         {
             name: "Isaac Darling",
