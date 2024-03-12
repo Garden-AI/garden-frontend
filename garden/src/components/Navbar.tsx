@@ -30,7 +30,6 @@ const Navbar = () => {
         >
           Examples
         </a>
-        <Link to="/team" className="no-underline hover:underline">Team</Link>
         </div>
     </nav>
   );
