@@ -29,7 +29,9 @@ const Navbar = () => {
           className="no-underline hover:underline"
         >
           Examples
-        </a></div>
+        </a>
+        <Link to="/team" className="no-underline hover:underline">Team</Link>
+        </div>
     </nav>
   );
 };
