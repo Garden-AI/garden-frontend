@@ -83,7 +83,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
           {/* <button className="py-2 my-1 bg-green rounded-3xl text-white px-6">Search</button> */}
         </div>
         <div
-          className="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-16"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-16"
         >
           {filteredResult === undefined ? result.map((res: any) => (
             <GardenBox garden={res} />

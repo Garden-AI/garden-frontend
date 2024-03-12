@@ -22,7 +22,7 @@ const Footer = () => {
             </img>
           </Link>
           <div><Link to="/terms" className="no-underline hover:underline">Terms & Policies</Link></div>
-          <a href="https://labs.globus.org/group-website/team.html" className="no-underline hover:underline">Team</a>
+          <Link to="/team" className="no-underline hover:underline">Team</Link>
           <div className="no-underline">Brand guidelines</div>
         </div>
 
