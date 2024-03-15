@@ -483,7 +483,7 @@ return my_entrypoint(input)`
                   <h1 className="underline text-2xl py-8">
                     Datasets used in this entrypoint
                   </h1>
-                  {result[0].models[0]?.datasets ? (
+                  {result[0].models[0]?.datasets.length > 0 ? (
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
                       {
                         result[0].models[0].datasets.map((dataset: any) => (
