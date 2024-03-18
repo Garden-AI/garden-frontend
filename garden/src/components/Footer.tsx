@@ -28,12 +28,12 @@ const Footer = () => {
 
         <div className="py-10 md:ml-10">
           <p className="text-sm pt-5 sm:text-md">
-            Garden is funded by:
+            Garden is made possible by:
           </p>
           <div className="grid grid-rows-1 grid-flow-col gap-1 items-center">
             <section className="">
               <h1 className="font-bold text-sm sm:text-md md:pt-2">
-                National Science Foundation
+                The National Science Foundation
               </h1>
               <p className="text-xs max-w-sm sm:text-sm">
                 Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for
@@ -43,11 +43,13 @@ const Footer = () => {
             </section>
             <section className="place-self-center">
               <a target="blank" href="https://www.nsf.gov/">
-                <img
-                  src="img/National-Science-Foundation-logo.jpeg"
-                  className="max-w-[60px] hover:opacity-75"
-                  alt="NSF logo"
-                />
+                <div className="grayscale">
+                  <img
+                    src="img/National-Science-Foundation-logo.jpeg"
+                    className="max-w-[60px] hover:opacity-75"
+                    alt="NSF logo"
+                  />
+                </div>
               </a>
             </section>
           </div>
@@ -65,17 +67,17 @@ const Footer = () => {
                 The Materials Data Facility (MDF)
               </h1>
               <p className="text-xs max-w-sm sm:text-sm">
-                NIST-supported effort to build data services to help material scientists publish and discover data
-
+                NIST-supported effort to build data services to help material 
+                scientists publish and discover data.
               </p>
             </section>
 
             <section className="">
               <h1 className="font-bold text-sm sm:text-md md:pt-2">
-                Foundry
+                Foundry-ML
               </h1>
               <p className="text-xs max-w-sm sm:text-sm">
-                An open source machine learning platform for scientists
+                An open source ML-ready data access tool for scientists.
               </p>
             </section>
 
@@ -85,37 +87,45 @@ const Footer = () => {
               </h1>
               <p className="text-xs max-w-sm sm:text-sm">
                 Research cyberinfrastructure, developed and operated as a
-                not-for-profit service by the University of Chicago
+                not-for-profit service by the University of Chicago to enable
+                research data transfer, sharing, access, discovery, and automation. 
+
               </p>
             </section>
 
             <section className="place-self-center">
               <a target="blank" href="https://materialsdatafacility.org/">
-                <img
-                  src="img/MDF-logo.png"
-                  alt="MDF logo"
-                  className="max-w-[150px] hover:opacity-75"
-                />
+                <div className="grayscale">
+                  <img
+                    src="img/MDF-logo.png"
+                    alt="MDF logo"
+                    className="max-w-[150px] hover:opacity-75"
+                  />
+                </div>
               </a>
             </section>
 
             <section className="place-self-center">
               <a target="blank" href="https://foundry-ml.org/#/">
-                <img
-                  src="img/foundry-logo.png"
-                  alt="Foundry logo"
-                  className="max-w-[150px] hover:opacity-75"
-                />
+                <div className="grayscale">
+                  <img
+                    src="img/foundry-logo.png"
+                    alt="Foundry logo"
+                    className="max-w-[150px] hover:opacity-75"
+                  />
+                </div>
               </a>
             </section>
 
             <section className="place-self-center">
               <a target="blank" href="https://www.globus.org/">
+                <div className="grayscale">
                 <img
                   src="img/globus-logo.png"
                   alt="Gloubs logo"
                   className="max-w-[100px] hover:opacity-75"
                 />
+                </div>
               </a>
             </section>
 
