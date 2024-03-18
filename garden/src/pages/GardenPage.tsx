@@ -15,7 +15,27 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [relatedResults, setRelatedResults] = useState<Array<any>>([]);
   const [showFoundry, setShowFoundry] = useState(false);
   const [result, setResult] = useState<any>(undefined);
+  const [datasets, setDatasets] = useState<Array<Object>>([]);
   const [tooltipVisible, setTooltipVisible]= useState(false);
+
+  const getDatasetListFromResult = (result: any): Array<Object> => {
+    if (!result[0]?.entries[0]?.content?.entrypoints) {
+      return [];
+    }
+    const doiToDataset: { [key: string]: any } = {};
+    const entrypoints = result[0].entries[0].content.entrypoints;
+    for (let entrypoint of entrypoints) {
+      for (let model of entrypoint.models) {
+        for (let dataset of model.datasets) {
+          if (dataset.doi) {
+            doiToDataset[dataset.doi] = dataset;
+          }
+        }
+      }
+    }
+    const allDatasets = Object.values(doiToDataset)
+    return allDatasets;
+  };
 
   //API call to get data for a garden associted with the DOI
   useEffect(() => {
@@ -23,6 +43,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
       try {
         const gmetaArray = await searchGardenIndex({q: doi || ""});
         setResult(gmetaArray);
+        setDatasets(getDatasetListFromResult(gmetaArray));
       } catch (error) {
         setResult([]);
       }
@@ -126,20 +147,11 @@ const GardenPage = ({ bread }: { bread: any }) => {
     sc!.scrollLeft = sc!.scrollLeft + 287;
   };
 
-  //Handles if no datasets are associated with a garden
-  let datasetCount = 0;
-  const increaseCount = () =>{
-    datasetCount++
-  }
-  const noDatasets = () => {
-    if (datasetCount === 0) {
-      return (
-        <p className="text-center pt-8 pb-16 text-base sm:text-xl col-span-2">
-          No datasets available for this garden
-        </p>
-      );
-    }
-  };
+  const NoDatasets = () => (
+    <p className="text-center pt-8 pb-16 text-base sm:text-xl col-span-2">
+      No datasets available for this garden
+    </p>
+  );
 
   const foundry = () => {
     setShowFoundry(true);
@@ -288,27 +300,11 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 </div>
                 <div>
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
-                    {result[0]?.entries[0].content.entrypoints.map(
-                      (pipe: any) => {
-                        const allDatasets = [];
-                        for (let model of pipe.models) {
-                          for (let dataset of model.datasets) {
-                            allDatasets.push(dataset);
-                          }
-                        }
-                        return allDatasets.length > 0 ? (
-                          <>
-                            {increaseCount()}
-                            <div>
-                              {allDatasets.map(dataset => <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry}/>)}
-                            </div>
-                          </>
-                        ) : (
-                          <></>
-                        )
-                      }
-                    )}
-                    <>{noDatasets()}</>
+                    {
+                      datasets.length > 0
+                      ?  datasets.map(dataset => <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry}/>)
+                      : <NoDatasets/>
+                    }
                   </div>
                 </div>
                 {showFoundry === true ? (

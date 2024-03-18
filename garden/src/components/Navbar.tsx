@@ -29,7 +29,8 @@ const Navbar = () => {
           className="no-underline hover:underline"
         >
           Examples
-        </a></div>
+        </a>
+        </div>
     </nav>
   );
 };
