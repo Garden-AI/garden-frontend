@@ -377,13 +377,13 @@ return my_entrypoint(input)`
             </button>
             <button
               className={
-                active === "Related"
+                active === "Datasets"
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
               }
-              onClick={() => setActive("Related")}
+              onClick={() => setActive("Datasets")}
             >
-              Related
+              Datasets
             </button>
           </div>
           <div className="pt-4 sm:pt-8">
@@ -477,7 +477,7 @@ return my_entrypoint(input)`
                 <NotebookViewer notebookURL={result[0].notebook_url} />
               </div>
             )}
-            {active === "Related" && (
+            {active === "Datasets" && (
               <div className="px-6">
                 <div>
                   <h1 className="underline text-2xl py-8">
