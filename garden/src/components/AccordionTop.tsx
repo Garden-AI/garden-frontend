@@ -103,7 +103,7 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                           />
                         </svg>
                         { paper.doi ?
-                        <a href={'https://www.doi.org/'+paper.doi} target="_blank">
+                        <a href={'https://www.doi.org/'+paper.doi} target="_blank" rel="noreferrer">
                           <h1 className="text-2xl w-full break-words">{paper.title}</h1>
                         </a>
                         :
