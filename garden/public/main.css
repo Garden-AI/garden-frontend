@@ -783,6 +783,10 @@ video {
   margin-top: 1.5rem;
 }
 
+.mt-0 {
+  margin-top: 0px;
+}
+
 .flex {
   display: flex;
 }
@@ -1554,6 +1558,10 @@ video {
   padding-top: 2rem;
 }
 
+.pt-0 {
+  padding-top: 0px;
+}
+
 .text-left {
   text-align: left;
 }
@@ -1796,6 +1804,10 @@ video {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg);
   }
+}
+
+.visited\:text-green:visited {
+  color: rgb(83 168 108 );
 }
 
 .hover\:cursor-pointer:hover {
