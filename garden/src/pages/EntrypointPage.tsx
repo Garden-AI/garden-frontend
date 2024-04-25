@@ -339,11 +339,14 @@ return my_entrypoint(input)`
 
         <div className="flex flex-col gap-8 w-full">
           <h2 className="text-2xl sm:text-3xl text-center">Run this entrypoint</h2>
-          <div className="sm:flex justify-center py-2">
+          <div className="sm:flex justify-center pt-2">
             <ExampleFunction functionText={exampleFunctionText(gardenDOI, result[0])}/>
             <div className="flex flex-col items-center justify-center">
               {/* <OpenInButtons/> */}
             </div>
+          </div>
+          <div className="flex pt-0 mt-0 justify-center" >
+            <p>To run this entrypoint, you need to be a part of <a className="text-green underline" target="_blank" href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about">this Globus group</a></p>
           </div>
         </div>
 
