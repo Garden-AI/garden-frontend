@@ -751,6 +751,10 @@ video {
   margin-right: auto;
 }
 
+.mt-0 {
+  margin-top: 0px;
+}
+
 .mt-10 {
   margin-top: 2.5rem;
 }
@@ -781,10 +785,6 @@ video {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mt-0 {
-  margin-top: 0px;
 }
 
 .flex {
@@ -1518,6 +1518,10 @@ video {
   padding-right: 0.5rem;
 }
 
+.pt-0 {
+  padding-top: 0px;
+}
+
 .pt-10 {
   padding-top: 2.5rem;
 }
@@ -1556,10 +1560,6 @@ video {
 
 .pt-8 {
   padding-top: 2rem;
-}
-
-.pt-0 {
-  padding-top: 0px;
 }
 
 .text-left {
@@ -1804,10 +1804,6 @@ video {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg);
   }
-}
-
-.visited\:text-green:visited {
-  color: rgb(83 168 108 );
 }
 
 .hover\:cursor-pointer:hover {
