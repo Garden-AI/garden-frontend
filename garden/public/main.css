@@ -2248,4 +2248,25 @@ video {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
+
+  /* Jamie's edits below */
+  .title-reduce-ws {
+    margin-bottom: -200px;
+  }
+
+  .entrypoints{
+    margin-bottom: -50px;
+  }
+
+  .top-section{
+    margin-top: -20px;
+    margin-bottom: -50px;
+  }
+
+  .gardens-title{
+    margin-top: -50px;
+    margin-bottom: -20px;
+  }
+
 }
+

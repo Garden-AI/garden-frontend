@@ -20,8 +20,8 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center mx-auto font-display w-11/12 p-8 grow md:pt-10 md:grid md:grid-cols-2 md:gap-4">
-        <p className="font-semibold text-3xl md:text-5xl max-w-3xl min-w-[50%]">
+      <div className="flex flex-col items-center mx-auto font-display w-11/12 p-8 grow md:pt-10 md:grid md:grid-cols-2 md:gap-4 top-section">
+        <p className="font-semibold text-3xl md:text-5xl max-w-3xl min-w-[50%] title title-reduce-ws">
           Build a garden where your model can thrive.
         </p>
         <img
@@ -117,7 +117,7 @@ const HomePage = () => {
 
       <div className="font-display px-5 sm:px-12 md:px-20 py-8 text-black">
         {/* First section (We overcome...) */}
-        <div className="mt-14">
+        <div className="mt-14 middle-text-section">
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">
             We overcome barriers surrounding ML.
           </h1>
@@ -149,7 +149,7 @@ const HomePage = () => {
         {/* Third section (Entrypoints...) */}
         <div className="mt-14">
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold pb-8">Entrypoints</h1>
-          <p className="text-md sm:text-lg">
+          <p className="text-md sm:text-lg entrypoints">
             Entrypoints are pages within a garden where all the relevant models and
             its associated materials are stored. Each entrypoint is composed of
             steps such as input, function, output, etc. If a particular model is

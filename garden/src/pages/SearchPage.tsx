@@ -57,7 +57,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
   return (
     <>
       <div className="pt-24 px-16 font-display">
-        <p className="text-3xl">Gardens</p>
+        <p className="text-3xl gardens-title">Gardens</p>
         <div className="border border-gray rounded-3xl px-4 mt-12 md:mx-12 md:mx-36 flex justify-between items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
