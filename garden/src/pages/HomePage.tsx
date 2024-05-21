@@ -20,8 +20,8 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center mx-auto font-display w-11/12 p-8 grow md:pt-10 md:grid md:grid-cols-2 md:gap-4 top-section">
-        <p className="font-semibold text-3xl md:text-5xl max-w-3xl min-w-[50%] title title-reduce-ws">
+      <div className="flex flex-col items-center mx-auto font-display w-11/12 p-8 grow md:pt-10 md:grid md:grid-cols-2 md:gap-4 -mt-10">
+        <p className="font-semibold text-3xl md:text-5xl max-w-3xl min-w-[50%] title -mt-10 -mb-28">
           Build a garden where your model can thrive.
         </p>
         <img
@@ -29,12 +29,12 @@ const HomePage = () => {
           alt="Garden AI Logo"
           className="w-[24rem] lg:w-[28rem] justify-self-center md:row-span-2"
         ></img>
-        <p className="pt-4 font-normal text-xl sm:text-2xl max-w-3xl">
+        <p className="pt-4 font-normal text-xl sm:text-2xl max-w-3xl -mt-12">
           Garden is an ecosystem of machine learning models and datasets—made by researchers to simplify ML.
         </p>
       </div>
 
-      <div className="font-display pt-5 sm:pt-10 px-5 flex justify-center">
+      <div className="font-display pt-5 sm:pt-10 px-5 flex justify-center -mt-15">
         <Link
           to="/search"
           className="bg-green w-32 h-[48px] rounded-xl text-white flex justify-center items-center hover:saturate-150"

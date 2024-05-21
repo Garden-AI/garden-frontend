@@ -787,6 +787,58 @@ video {
   margin-top: 1.5rem;
 }
 
+.-mt-10 {
+  margin-top: -2.5rem;
+}
+
+.-mt-5 {
+  margin-top: -1.25rem;
+}
+
+.-mt-2 {
+  margin-top: -0.5rem;
+}
+
+.-mb-10 {
+  margin-bottom: -2.5rem;
+}
+
+.mb-20 {
+  margin-bottom: 5rem;
+}
+
+.-mt-20 {
+  margin-top: -5rem;
+}
+
+.-mt-12 {
+  margin-top: -3rem;
+}
+
+.mb-0 {
+  margin-bottom: 0px;
+}
+
+.-mb-20 {
+  margin-bottom: -5rem;
+}
+
+.-mb-28 {
+  margin-bottom: -7rem;
+}
+
+.-mt-40 {
+  margin-top: -10rem;
+}
+
+.-mt-28 {
+  margin-top: -7rem;
+}
+
+.-mb-2 {
+  margin-bottom: -0.5rem;
+}
+
 .flex {
   display: flex;
 }
@@ -2248,25 +2300,4 @@ video {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
-
-  /* Jamie's edits below */
-  .title-reduce-ws {
-    margin-bottom: -200px;
-  }
-
-  .entrypoints{
-    margin-bottom: -50px;
-  }
-
-  .top-section{
-    margin-top: -20px;
-    margin-bottom: -50px;
-  }
-
-  .gardens-title{
-    margin-top: -50px;
-    margin-bottom: -20px;
-  }
-
 }
-
