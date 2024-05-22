@@ -3,6 +3,10 @@ import {
   AccordionItem,
   useAccordionProvider,
 } from "@szhsin/react-accordion";
+import {useState} from "react";
+import Modal from '../components/Modal';
+import closeModal from "../pages/EntrypointPage";
+
 // import ContainerImage from "./ContainerImage";
 // import MachineRequirements from "./MachineRequirements";
 // import FairScore from "./FairScore";
@@ -12,6 +16,8 @@ import {
 // https://szhsin.github.io/react-accordion/ for the accordion tabs
 
 const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
+  const [tooltipVisible, setTooltipVisible]= useState(false);
+  const [show] = useState(false);
   const providerValue = useAccordionProvider({
     allowMultiple: true,
   });
@@ -20,7 +26,18 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
 
   const copy = async (text: any) => {
     await navigator.clipboard.writeText(text);
+    showTooltip()
   };
+
+  const showTooltip = () => {
+    if(tooltipVisible===false){
+      setTooltipVisible(true)
+      setTimeout(()=>{
+        setTooltipVisible(false)
+      }, 3000)
+    }
+  }
+  
   let associatedCount = 0;
   const increaseCount = () =>{
     associatedCount++
@@ -144,6 +161,18 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                                 />
                               </svg>
                             </button>
+                            {tooltipVisible && (
+                              <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">
+                                Copied to Clipboard
+                              </p>
+                            )}
+                            <Modal
+                              show={show}
+                              close={closeModal}
+                              copy={copy}
+                              doi={paper.doi}
+                              showTooltip={showTooltip}
+                            />
                           </p>
                         ) : (
                           <></>
@@ -169,10 +198,23 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                                 d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
                               />
                             </svg>
+            
                           </button>
                         ) : (
                           <></>
                         )}
+                          {tooltipVisible && (
+                            <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">
+                              Copied to Clipboard
+                            </p>
+                          )}
+                          <Modal
+                            show={show}
+                            close={closeModal}
+                            copy={copy}
+                            doi={paper.doi}
+                            showTooltip={showTooltip}
+                          />
                       </div>
                     </div>
                   );
