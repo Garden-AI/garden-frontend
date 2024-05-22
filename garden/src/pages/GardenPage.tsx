@@ -4,7 +4,6 @@ import EntrypointBox from "../components/EntrypointBox";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Breadcrumbs from "../components/Breadcrumbs";
-import AccordionTop from "../components/AccordionTop";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { searchGardenIndex } from "../globusHelpers";
 
