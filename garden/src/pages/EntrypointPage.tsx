@@ -254,7 +254,7 @@ return my_entrypoint(input)`
                 copy={copy}
                 doi={result[0].doi}
                 showTooltip={showTooltip}
-              />
+              />Enpoinsx
             </div>
           </div>
           <div className="text-gray-500 text-sm flex flex-wrap gap-1">
