@@ -6,6 +6,7 @@ import {
 import {useState} from "react";
 import Modal from '../components/Modal';
 import closeModal from "../pages/EntrypointPage";
+/*import showTooltip from "../pages/EntrypointPage"; */
 
 // import ContainerImage from "./ContainerImage";
 // import MachineRequirements from "./MachineRequirements";
@@ -26,7 +27,7 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
 
   const copy = async (text: any) => {
     await navigator.clipboard.writeText(text);
-    showTooltip()
+    /*showTooltip()*/
   };
 
   const showTooltip = () => {
@@ -37,6 +38,7 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
       }, 3000)
     }
   }
+
   
   let associatedCount = 0;
   const increaseCount = () =>{

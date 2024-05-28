@@ -350,15 +350,9 @@ return my_entrypoint(input)`
         <div className="flex flex-col gap-8 w-full">
           <h2 className="text-2xl sm:text-3xl text-center">Run this entrypoint</h2>
           <div className="sm:flex justify-center pt-2">
+            <div className="relative">
             <ExampleFunction functionText={exampleFunctionText(gardenDOI, result[0])}/>
-
-            <div className="flex flex-col items-center justify-center">
-              {/* <OpenInButtons/> */}
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-center">Copy Code:</p>
-            <button title="Copy Code" onClick={copyCode} className="w-full flex items-center justify-center">
+            <button title="Copy Code" onClick={copyCode} className="absolute top-0 right-0 mt-6 mr-8 flex items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -374,6 +368,11 @@ return my_entrypoint(input)`
               />
             </svg>
             </button>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              
+              {/* <OpenInButtons/> */}
+            </div>
           </div>
           <div className="flex pt-0 mt-0 justify-center" >
             <p>To run this entrypoint, you need to be a part of <a className="text-green underline" target="_blank" href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about">this Globus group</a></p>
@@ -475,6 +474,7 @@ return my_entrypoint(input)`
                       </div>
                     );
                   })}
+                  {/*
                   <div className="flex flex-col gap-2">
                     <p className="text-center">Copy Code:</p>
                     <button title="Copy Code" onClick={copyCodeStepsTab} className="w-full flex items-center justify-center">
@@ -494,6 +494,7 @@ return my_entrypoint(input)`
                     </svg>
                     </button>
                   </div>
+                */}
                   {stepsOverflow ? (
                     <button
                       className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white"
