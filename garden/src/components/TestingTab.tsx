@@ -66,13 +66,9 @@ const TestingTab = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 12h-15"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
             </svg>
           ) : (
             <svg
@@ -81,32 +77,27 @@ const TestingTab = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
           )}
         </div>
       )}
       buttonProps={{
-        className: ({ isEnter }) =>
-          `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
+        className: ({ isEnter }) => `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
       }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-x-12 lg:gap-x-32 gap-y-12 px-8 lg:px-16">
-        <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
-          <h1 className="text-2xl p-4 underline">Software Testing</h1>
+      <div className="grid grid-cols-1 gap-x-12 gap-y-12 px-8 py-4 md:grid-cols-2 lg:gap-x-32 lg:px-16">
+        <div className="border-1 flex flex-col gap-2 rounded-xl border border-gray-300 pb-2">
+          <h1 className="p-4 text-2xl underline">Software Testing</h1>
           {fakeSoftwareTesting.map((test) => {
             return (
               <div className="flex items-center gap-4 px-4 py-1">
                 {test.status === "p" ? (
-                  <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span>
+                  <span className="h-[25px] min-w-[25px] rounded-xl bg-green"></span>
                 ) : (
-                  <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>
+                  <span className="h-[25px] min-w-[25px] rounded-xl bg-fail"></span>
                 )}
                 <p>{test.test}</p>
                 <span className="text-gray-500">{test.date}</span>
@@ -114,29 +105,27 @@ const TestingTab = () => {
             );
           })}
         </div>
-        <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
-          <h1 className="text-2xl p-4 underline">Reliability Testing</h1>
+        <div className="border-1 flex flex-col gap-2 rounded-xl border border-gray-300 pb-2">
+          <h1 className="p-4 text-2xl underline">Reliability Testing</h1>
           {fakeReliabilityTesting.map((test) => {
             return (
               <div className="flex gap-4 px-4 py-1">
                 {test.status === "p" ? (
-                  <span className="min-w-[25px] h-[25px] bg-green rounded-xl"></span>
+                  <span className="h-[25px] min-w-[25px] rounded-xl bg-green"></span>
                 ) : (
-                  <span className="min-w-[25px] h-[25px] bg-fail rounded-xl"></span>
+                  <span className="h-[25px] min-w-[25px] rounded-xl bg-fail"></span>
                 )}
                 <div className="flex flex-col gap-0">
                   <p>{test.test}</p>
-                  <p className="text-sm text-gray-500">
-                    Accuracy: {test.accuracy}
-                  </p>
+                  <p className="text-sm text-gray-500">Accuracy: {test.accuracy}</p>
                 </div>
                 <span className="text-gray-500">{test.date}</span>
               </div>
             );
           })}
         </div>
-        <div className="flex flex-col border border-gray-300 gap-2 border-1 rounded-xl pb-2">
-          <h1 className="text-2xl p-4 underline">Performance Testing</h1>
+        <div className="border-1 flex flex-col gap-2 rounded-xl border border-gray-300 pb-2">
+          <h1 className="p-4 text-2xl underline">Performance Testing</h1>
           <div className="grid grid-cols-2 gap-y-4">
             {fakePerformanceTesting.map((test) => {
               return (

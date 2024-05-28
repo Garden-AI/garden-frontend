@@ -5,11 +5,11 @@ const DatasetBox = (props: { dataset: any; showFoundry: Function }) => {
     if (props.dataset.repository === "Foundry") {
       props.showFoundry();
     }
-  },[props])
-  
+  }, [props]);
+
   return (
-    <div className="mb-8 pb-4 mx-16 border border-2 border-gray">
-      <p className="mx-16 pt-4 pb-2 text-xl">
+    <div className="border-gray mx-16 mb-8 border-2 pb-4">
+      <p className="mx-16 pb-2 pt-4 text-xl">
         Find the dataset here:{" "}
         <a target="blank" href={`https://doi.org/${props.dataset.doi}`}>
           {`https://doi.org/${props.dataset.doi}`}

@@ -5,31 +5,25 @@ const OpenInButtons = () => {
         href="https://wholetale.org/"
         target="_blank"
         rel="noopener noreferrer"
-        className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+        className="my-2 items-center justify-between rounded-lg border border-green p-5 shadow-sm hover:no-underline hover:shadow-md"
       >
-        <span className="text-center text-xl text-green">
-          Open in Whole Tale
-        </span>
+        <span className="text-center text-xl text-green">Open in Whole Tale</span>
       </a>
       <a
         href="https://huggingface.co/"
         target="_blank"
         rel="noopener noreferrer"
-        className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+        className="my-2 items-center justify-between rounded-lg border border-green p-5 shadow-sm hover:no-underline hover:shadow-md"
       >
-        <span className="text-center text-xl text-green">
-          Open in HuggingFace
-        </span>
+        <span className="text-center text-xl text-green">Open in HuggingFace</span>
       </a>
       <a
         href="https://colab.research.google.com/"
         target="_blank"
         rel="noopener noreferrer"
-        className="border border-green shadow-sm rounded-lg hover:shadow-md p-5 my-2 items-center justify-between hover:no-underline"
+        className="my-2 items-center justify-between rounded-lg border border-green p-5 shadow-sm hover:no-underline hover:shadow-md"
       >
-        <span className="text-center text-xl text-green">
-          Open in Google Colab
-        </span>
+        <span className="text-center text-xl text-green">Open in Google Colab</span>
       </a>
     </>
   );

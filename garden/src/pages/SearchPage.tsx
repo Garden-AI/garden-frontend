@@ -5,15 +5,15 @@ import GardenBox from "../components/GardenBox";
 
 const SearchPage = ({ bread }: { bread: any }) => {
   const [result, setResult] = useState<any>(undefined);
-  const [filteredResult, setFilteredResult] = useState<any>(undefined)
-  const [query, setQuery] = useState('')
+  const [filteredResult, setFilteredResult] = useState<any>(undefined);
+  const [query, setQuery] = useState("");
 
-  bread.search = 'Search'
+  bread.search = "Search";
 
   useEffect(() => {
     async function Search() {
       try {
-        const gmetaArray = await searchGardenIndex({q: "*", limit: "1000"});
+        const gmetaArray = await searchGardenIndex({ q: "*", limit: "1000" });
         setResult(gmetaArray);
       } catch (error) {
         setResult([]);
@@ -23,9 +23,9 @@ const SearchPage = ({ bread }: { bread: any }) => {
   }, []);
   if (result === undefined) {
     return (
-      <div className="flex items-center justify-center h-[100vh]">
+      <div className="flex h-[100vh] items-center justify-center">
         <svg
-          className="w-24 h-24 mr-2 text-gray-200 animate-spin fill-green"
+          className="mr-2 h-24 w-24 animate-spin fill-green text-gray-200"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -43,29 +43,27 @@ const SearchPage = ({ bread }: { bread: any }) => {
     );
   }
 
-
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value)
+    setQuery(event.target.value);
     const updatedResults = result.filter((res: any) => {
-      return res.entries[0].content.title.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setFilteredResult(updatedResults)
-  }
-  console.log(result)
-
+      return res.entries[0].content.title.toLowerCase().includes(event.target.value.toLowerCase());
+    });
+    setFilteredResult(updatedResults);
+  };
+  console.log(result);
 
   return (
     <>
-      <div className="pt-24 px-16 font-display">
-        <p className="text-3xl -mt-20 -mb-20">Gardens</p>
-        <div className="border border-gray rounded-3xl px-4 mt-12 md:mx-12 md:mx-36 flex justify-between items-center">
+      <div className="px-16 pt-24 font-display">
+        <p className="-mb-20 -mt-20 text-3xl">Gardens</p>
+        <div className="border-gray mt-12 flex items-center justify-between rounded-3xl border px-4 md:mx-36">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6"
+            className="h-6 w-6"
           >
             <path
               strokeLinecap="round"
@@ -77,20 +75,22 @@ const SearchPage = ({ bread }: { bread: any }) => {
           <input
             type="text"
             placeholder="Search for a Garden..."
-            className=" w-full mx-2 px-2 outline-none py-2"
+            className=" mx-2 w-full px-2 py-2 outline-none"
             onInput={handleInputChange}
           />
           {/* <button className="py-2 my-1 bg-green rounded-3xl text-white px-6">Search</button> */}
         </div>
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-16"
-        >
-          {filteredResult === undefined ? result.map((res: any) => (
-            <GardenBox garden={res} />
-          )): filteredResult.map((res: any) => (
-            <GardenBox garden={res} />
-          ))}
-          {filteredResult && filteredResult.length === 0?<p className="text-2xl text-gray-500 text-center sm:col-start-1 sm:col-end-3 md:col-start-2 md:col-end-3">No results found for "{query}"</p>: <></>}
+        <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3">
+          {filteredResult === undefined
+            ? result.map((res: any) => <GardenBox garden={res} />)
+            : filteredResult.map((res: any) => <GardenBox garden={res} />)}
+          {filteredResult && filteredResult.length === 0 ? (
+            <p className="text-center text-2xl text-gray-500 sm:col-start-1 sm:col-end-3 md:col-start-2 md:col-end-3">
+              No results found for "{query}"
+            </p>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </>
