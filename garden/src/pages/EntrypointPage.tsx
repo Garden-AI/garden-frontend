@@ -169,14 +169,6 @@ return my_entrypoint(input)`
     showTooltip()
   };
 
-  {/*
-
-  const copyCodeStepsTab = async () => {
-    await navigator.clipboard.writeText(result[0].steps[buttonIndex].function_text);
-    showTooltip()
-  }
-*/}
-
   const showTooltip = () => {
     if(tooltipVisible===false){
       setTooltipVisible(true)
@@ -477,27 +469,6 @@ return my_entrypoint(input)`
                       </div>
                     );
                   })}
-                  {/*
-                  <div className="flex flex-col gap-2">
-                    <p className="text-center">Copy Code:</p>
-                    <button title="Copy Code" onClick={copyCodeStepsTab} className="w-full flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="gray"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
-                      />
-                    </svg>
-                    </button>
-                  </div>
-                */}
                   {stepsOverflow ? (
                     <button
                       className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white"
