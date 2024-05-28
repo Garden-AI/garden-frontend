@@ -169,10 +169,13 @@ return my_entrypoint(input)`
     showTooltip()
   };
 
+  {/*
+
   const copyCodeStepsTab = async () => {
     await navigator.clipboard.writeText(result[0].steps[buttonIndex].function_text);
     showTooltip()
   }
+*/}
 
   const showTooltip = () => {
     if(tooltipVisible===false){
