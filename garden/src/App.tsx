@@ -11,6 +11,7 @@ import EntrypointPage from './pages/EntrypointPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import TeamsPage from './pages/TeamsPage';
+import ReactGA from "react-ga4";
 
 /*
   We are not making calls that need authentication, but making a PKCEAuthorization 
@@ -24,12 +25,17 @@ new authorization.PKCEAuthorization({
 });
 
 function App() {
+  ReactGA.initialize("G-99GHD3HEZP");
+  ReactGA.send({
+    hitType: "pageview",
+    page: window.location.pathname + window.location.search,
+  });
+
   const breadcrumbs: { home: string; search: string; garden: Array<string>; entrypoint: Array<string>; } = {
     home: 'Home',
     search: '',
     garden: [],
     entrypoint: []
-
   }
   return (
     <div>
