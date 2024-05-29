@@ -34,7 +34,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
         }
       }
     }
-    const allDatasets = Object.values(doiToDataset);
+    const allDatasets = Object.values(doiToDataset)
     return allDatasets;
   };
 
