@@ -15,7 +15,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [show, setShow] = useState(false);
   const [relatedResults, setRelatedResults] = useState<Array<any>>([]);
   const [showFoundry, setShowFoundry] = useState(false);
-  const [result, setResult] = useState<any>(        undefined);
+  const [result, setResult] = useState<any>(undefined);
   const [datasets, setDatasets] = useState<Array<Object>>([]);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
@@ -29,12 +29,12 @@ const GardenPage = ({ bread }: { bread: any }) => {
       for (let model of entrypoint.models) {
         for (let dataset of model.datasets) {
           if (dataset.doi) {
-            doiToDataset[dataset.doi] = dataset
+            doiToDataset[dataset.doi] = dataset;
           }
         }
       }
     }
-    const allDatasets = Object.values(doiToDataset)
+    const allDatasets = Object.values(doiToDataset);
     return allDatasets;
   };
 
