@@ -12,7 +12,7 @@ const trackPageView = () => {
     hitType: "pageview",
     page: window.location.hash,
   });
-  console.log("Page view tracked");
+  // console.log("Page view tracked");
 };
 
 const useGoogleAnalytics = () => {
