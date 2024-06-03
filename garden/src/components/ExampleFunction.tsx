@@ -1,24 +1,23 @@
 import { IpynbRenderer } from "react-ipynb-renderer";
-import "../../src/ipynbPreview.css"
+import "react-ipynb-renderer/dist/styles/monokai.css";
 
 type ExampleFunctionProps = {
-    functionText: string;
+  functionText: string;
 };
 
 export const ExampleFunction = ({ functionText }: ExampleFunctionProps) => {
-    // break up functionText into lines
-    const lines = functionText.split("\n").map((line) => line + "\n");
-    const notebookJson = makeMinimalNotebook(lines);
-    return (
-        <div className="px-4 no-input-number">
-            <IpynbRenderer ipynb={notebookJson} />
-        </div>
-        
-    );
+  // break up functionText into lines
+  const lines = functionText.split("\n").map((line) => line + "\n");
+  const notebookJson = makeMinimalNotebook(lines);
+  return (
+    <div className="px-4 no-input-number">
+      <IpynbRenderer ipynb={notebookJson} />
+    </div>    
+  );
 };
 
 function makeMinimalNotebook(code: Array<string>) {
-    const notebook = {
+  const notebook = {
         "nbformat": 4,
         "nbformat_minor": 2,
         "metadata": {
@@ -26,7 +25,7 @@ function makeMinimalNotebook(code: Array<string>) {
             "name": "python3",
             "display_name": "Python 3",
             "language": "python"
-          },
+      },
           "language_info": {
             "name": "python",
             "version": "3.x",
@@ -36,9 +35,9 @@ function makeMinimalNotebook(code: Array<string>) {
             "nbconvert_exporter": "python",
             "file_extension": ".py"
           }
-        },
+    },
         "cells": [
-          {
+      {
             "cell_type": "code",
             "execution_count": null,
             "metadata": {},
@@ -46,6 +45,6 @@ function makeMinimalNotebook(code: Array<string>) {
             "source": code
           }
         ]
-      };
-    return notebook;
+  };
+  return notebook;
 }

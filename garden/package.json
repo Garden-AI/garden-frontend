@@ -2,37 +2,38 @@
   "name": "garden",
   "version": "0.1.0",
   "homepage": ".",
-  "//": "For homepage, see https://create-react-app.dev/docs/deployment/#serving-the-same-build-from-different-paths",
+  "type": "module",
   "private": true,
   "dependencies": {
-    "@globus/sdk": "1.12.0-alpha",
-    "@szhsin/react-accordion": "^1.2.1",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.23",
-    "@types/react": "^18.0.37",
-    "@types/react-dom": "^18.0.11",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-ipynb-renderer": "^2.1.2",
-    "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
+    "@globus/sdk": "3.3.1",
+    "@globus/types": "^0.0.7",
+    "@szhsin/react-accordion": "^1.2.4",
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^15.0.7",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.13.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-ipynb-renderer": "^2.2.1",
+    "react-router-dom": "^6.23.1",
     "react-syntax-highlighter": "^15.5.0",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.12",
+    "vite-tsconfig-paths": "^4.3.2",
+    "web-vitals": "^4.0.1"
   },
   "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy-staging": "gh-pages -d build -r https://github.com/Garden-AI/garden-frontend-staging",
     "deploy-prod": "gh-pages -d build",
-    "start": "react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
-    "start-https": "HTTPS=true react-scripts start & npx tailwindcss -i ./src/App.css -o public/main.css --watch",
-    "build": "react-scripts build && npx tailwindcss -i ./src/App.css -o public/main.css",
-    "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\""
   },
   "eslintConfig": {
     "extends": [
@@ -53,9 +54,9 @@
     ]
   },
   "devDependencies": {
-    "@types/react-syntax-highlighter": "^15.5.10",
-    "msw": "^2.0.2",
-    "tailwindcss": "^3.3.1"
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "msw": "^2.3.0",
+    "tailwindcss": "^3.4.3"
   },
   "msw": {
     "workerDirectory": "public"
