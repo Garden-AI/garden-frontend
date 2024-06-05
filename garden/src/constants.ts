@@ -1,5 +1,0 @@
-const GARDEN_INDEX_UUID =
-  import.meta.env.VITE_APP_SEARCH_INDEX_UUID ||
-  "58e4df29-4492-4e7d-9317-b27eba62a911";
-
-export { GARDEN_INDEX_UUID };
