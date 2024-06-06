@@ -1,5 +1,8 @@
 import React from 'react';
 import { authorization } from "@globus/sdk/cjs";
+
+/* import { AuthorizationManager } from "@globus/sdk/lib/core/authorization/AuthorizationManager"; */
+
 import { SEARCH_SCOPE, GLOBUS_NATIVE_CLIENT_ID } from "./constants";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import GardenPage from './pages/GardenPage';
@@ -27,7 +30,7 @@ function App() {
   const breadcrumbs: { home: string; search: string; garden: Array<string>; entrypoint: Array<string>; } = {
     home: 'Home',
     search: '',
-    garden: [],
+    garden: [], 
     entrypoint: []
 
   }

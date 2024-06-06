@@ -1,6 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+function LoggedIn({ loggedIn }) {
+  if (loggedIn) {
+    return (
+      <button className="bg-green-500 text-white px-4 py-1 rounded shadow-md hover:bg-green-600">
+        Logout
+      </button>
+    );
+  }
+  return (
+    // Replace TEMPORARY with the actual user profile icon component or JSX
+    <button className="bg-green-500 text-white px-4 py-1 rounded shadow-md hover:bg-green-600">
+      TEMPORARY
+    </button>
+  );
+}
+
 const Navbar = () => {
   return (
     <nav className="border-b border-gray-200 flex gap-4 justify-between py-1 mx-1 sm:mx-3 text-xs sm:text-lg">
@@ -30,7 +46,8 @@ const Navbar = () => {
         >
           Examples
         </a>
-        </div>
+        <LoggedIn/>
+      </div>
     </nav>
   );
 };
