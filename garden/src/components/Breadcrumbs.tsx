@@ -11,10 +11,7 @@ const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
     <div>
       <div>
         <div className="flex flex-wrap gap-2 text-xs sm:text-base">
-          <button
-            onClick={() => navigate(`/home`)}
-            className="text-gray-500 hover:text-black hover:underline"
-          >
+          <button onClick={() => navigate(`/home`)} className="text-gray-500 hover:text-black hover:underline">
             {crumbs.home}
           </button>
           {crumbs.search === "" ? (
@@ -22,20 +19,14 @@ const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
           ) : (
             <>
               <span className="text-black">/</span>
-              <button
-                onClick={() => navigate(`/search`)}
-                className="text-gray-500 hover:text-black hover:underline"
-              >
+              <button onClick={() => navigate(`/search`)} className="text-gray-500 hover:text-black hover:underline">
                 {crumbs.search}
               </button>
             </>
           )}
           <span className="text-black">/</span>
           {crumbs.entrypoint.length === 0 ? (
-            <button
-              onClick={() => navigate(crumbs.garden[1])}
-              className="text-black underline"
-            >
+            <button onClick={() => navigate(crumbs.garden[1])} className="text-black underline">
               {crumbs.garden[0]}
             </button>
           ) : (
@@ -46,15 +37,8 @@ const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
               {crumbs.garden[0]}
             </button>
           )}
-          {crumbs.entrypoint.length === 0 ? (
-            <></>
-          ) : (
-            <span className="text-black">/</span>
-          )}
-          <button
-            onClick={() => navigate(crumbs.entrypoint[1])}
-            className="underline"
-          >
+          {crumbs.entrypoint.length === 0 ? <></> : <span className="text-black">/</span>}
+          <button onClick={() => navigate(crumbs.entrypoint[1])} className="underline">
             {crumbs.entrypoint[0]}
           </button>
         </div>

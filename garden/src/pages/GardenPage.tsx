@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+
 import EntrypointBox from "../components/EntrypointBox";
 import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
@@ -50,9 +51,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
     async function Search() {
       try {
         const gmetaArray = await searchGardenIndex({ q: "*", limit: "6" });
-        const otherGardenEntries = gmetaArray.filter(
-          (gard: any) => gard.entries[0].content.doi !== doi
-        );
+        const otherGardenEntries = gmetaArray.filter((gard: any) => gard.entries[0].content.doi !== doi);
         setRelatedResults(otherGardenEntries);
       } catch (error) {
         setRelatedResults([]);
@@ -64,9 +63,9 @@ const GardenPage = ({ bread }: { bread: any }) => {
   //Loading animation
   if (result === undefined) {
     return (
-      <div className="flex items-center justify-center h-[100vh]">
+      <div className="flex h-[100vh] items-center justify-center">
         <svg
-          className="w-24 h-24 mr-2 text-gray-200 animate-spin fill-green"
+          className="mr-2 h-24 w-24 animate-spin fill-green text-gray-200"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -86,16 +85,12 @@ const GardenPage = ({ bread }: { bread: any }) => {
   //If no garden is associated with the DOI in the URL, not found page comes up
   if (result.length === 0) {
     return (
-      <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
-        <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] border border-black rounded-xl bg-white flex flex-col items-center">
-          <h1 className=" py-12 px-4 text-4xl font-semibold text-center">
-            No Garden Found
-          </h1>
-          <p className="text-center px-4">
-            The page you were looking for does not exist
-          </p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-green font-display">
+        <div className="flex min-h-[50vh] w-[75vw] flex-col items-center rounded-xl border border-black bg-white sm:w-[50vw]">
+          <h1 className=" px-4 py-12 text-center text-4xl font-semibold">No Garden Found</h1>
+          <p className="px-4 text-center">The page you were looking for does not exist</p>
           <button
-            className="bg-green text-white mt-16 border border-green rounded-lg py-3 px-4 shadow-lg hover:shadow-xl hover:border-black"
+            className="mt-16 rounded-lg border border-green bg-green px-4 py-3 text-white shadow-lg hover:border-black hover:shadow-xl"
             onClick={() => navigate("/home")}
           >
             Back to Home
@@ -154,9 +149,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   };
 
   const NoDatasets = () => (
-    <p className="text-center pt-8 pb-16 text-base sm:text-xl col-span-2">
-      No datasets available for this garden
-    </p>
+    <p className="col-span-2 pb-16 pt-8 text-center text-base sm:text-xl">No datasets available for this garden</p>
   );
 
   const foundry = () => {
@@ -165,18 +158,13 @@ const GardenPage = ({ bread }: { bread: any }) => {
 
   return (
     <div className="font-display">
-      <div
-        autoFocus
-        className="h-full w-full flex flex-col gap-10 px-6 sm:px-16 md:px-36 py-12 sm:py-20 font-display"
-      >
+      <div autoFocus className="flex h-full w-full flex-col gap-10 px-6 py-12 font-display sm:px-16 sm:py-20 md:px-36">
         {/* Place breadcrumbs here */}
         <Breadcrumbs crumbs={bread} />
         {/* Garden Header */}
         <div className="flex gap-4 sm:gap-8">
-          <h1 className="text-2xl sm:text-3xl">
-            {result[0]?.entries[0].content.title}
-          </h1>
-          <div className="flex gap-3 items-center">
+          <h1 className="text-2xl sm:text-3xl">{result[0]?.entries[0].content.title}</h1>
+          <div className="flex items-center gap-3">
             <button title="Copy link" onClick={copy}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +172,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                className="h-5 w-5 text-gray-700 hover:cursor-pointer hover:text-gray-500 sm:h-6 sm:w-6"
               >
                 <path
                   strokeLinecap="round"
@@ -200,7 +188,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                className="h-5 w-5 text-gray-700 hover:cursor-pointer hover:text-gray-500 sm:h-6 sm:w-6"
               >
                 <path
                   strokeLinecap="round"
@@ -210,7 +198,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
               </svg>
             </button>
             {tooltipVisible && (
-              <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">
+              <p className="fixed right-[35vw] top-[10vh] z-50 min-w-[10vw] rounded-lg bg-green p-2 text-center text-white sm:right-[45vw]">
                 Copied to Clipboard
               </p>
             )}
@@ -225,14 +213,10 @@ const GardenPage = ({ bread }: { bread: any }) => {
         </div>
 
         {/* Garden Overview */}
-        <div className="border-0 rounded-lg bg-gray-100 flex flex-col gap-5 p-4 text-sm text-gray-700">
+        <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
           <div>
             <h2 className="font-semibold">Contributors</h2>
-            <p>
-              {result[0]?.entries[0].content.authors.map(
-                (author: any, index: number) => <span>{author}</span>
-              )}
-            </p>
+            <p>{result[0]?.entries[0].content.authors.map((author: any, index: number) => <span>{author}</span>)}</p>
           </div>
           <div>
             <h2 className="font-semibold">DOI</h2>
@@ -244,14 +228,14 @@ const GardenPage = ({ bread }: { bread: any }) => {
             >
               {result[0]?.entries[0].content.doi}
             </a>
-            <button title="Copy DOI" onClick={copyDOI} className="ml-2 -mb-1">
+            <button title="Copy DOI" onClick={copyDOI} className="-mb-1 ml-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="gray"
-                className="w-6 h-6"
+                className="h-6 w-6"
               >
                 <path
                   strokeLinecap="round"
@@ -271,14 +255,14 @@ const GardenPage = ({ bread }: { bread: any }) => {
 
         <div>
           {/* Tabs */}
-          <div className="flex justify-evenly h-12 ">
+          <div className="flex h-12 justify-evenly ">
             <button
               className={
                 active === "Entrypoints"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
                   : active === ""
-                    ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                    : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+                    ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                    : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
               onClick={() => setActive("Entrypoints")}
             >
@@ -289,8 +273,8 @@ const GardenPage = ({ bread }: { bread: any }) => {
             <button
               className={
                 active === "Datasets"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                  : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
               onClick={() => setActive("Datasets")}
             >
@@ -299,47 +283,31 @@ const GardenPage = ({ bread }: { bread: any }) => {
           </div>
           <div className="pt-8">
             {active === "" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {result[0]?.entries[0].content.entrypoints.map(
-                  (entrypoint: any) => (
-                    <EntrypointBox
-                      key={entrypoint.doi}
-                      entrypoint={entrypoint}
-                    />
-                  )
-                )}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {result[0]?.entries[0].content.entrypoints.map((entrypoint: any) => (
+                  <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
+                ))}
               </div>
             )}
             {active === "Entrypoints" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {result[0]?.entries[0].content.entrypoints.map(
-                  (entrypoint: any) => (
-                    <EntrypointBox
-                      key={entrypoint.doi}
-                      entrypoint={entrypoint}
-                    />
-                  )
-                )}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {result[0]?.entries[0].content.entrypoints.map((entrypoint: any) => (
+                  <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
+                ))}
               </div>
             )}
             {/* Discussion Tab Content Here */}
             {/* <DiscussionTabContent comments={fakeComments} active={active}/> */}
             {active === "Datasets" && (
               <div>
-                <div className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
-                  Below are the datasets that are used in this garden. Clicking
-                  on the URL will take you to where they are hosted, and allow
-                  you to learn more about them and how to view them.
+                <div className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
+                  Below are the datasets that are used in this garden. Clicking on the URL will take you to where they
+                  are hosted, and allow you to learn more about them and how to view them.
                 </div>
                 <div>
-                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
+                  <div className="grid grid-cols-1 gap-2 pb-4 sm:gap-12 md:grid-cols-2 lg:px-24">
                     {datasets.length > 0 ? (
-                      datasets.map((dataset) => (
-                        <DatasetBoxEntrypoint
-                          dataset={dataset}
-                          showFoundry={foundry}
-                        />
-                      ))
+                      datasets.map((dataset) => <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry} />)
                     ) : (
                       <NoDatasets />
                     )}
@@ -347,19 +315,16 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 </div>
                 {showFoundry === true ? (
                   <div>
-                    <p className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
-                      *One or more of these datasets uses Foundry, here is how
-                      you can view it:
+                    <p className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
+                      *One or more of these datasets uses Foundry, here is how you can view it:
                     </p>
-                    <div className="bg-gray-800 sm:mx-8 lg:mx-32 text-white pl-6 py-6 rounded-xl">
+                    <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
                       <code className="leading-loose">
                         <span className="text-gray-400">
-                          # Make sure you've imported and instantiated foundry{" "}
-                          <br />
+                          # Make sure you've imported and instantiated foundry <br />
                         </span>
-                        <span className="text-purple">from</span> foundry{" "}
-                        <span className="text-purple">import</span> Foundry{" "}
-                        <br />
+                        <span className="text-purple">from</span> foundry <span className="text-purple">import</span>{" "}
+                        Foundry <br />
                         f = Foundry()
                         <br />
                         <br />
@@ -367,13 +332,13 @@ const GardenPage = ({ bread }: { bread: any }) => {
                           # Load the data here <br />
                         </span>
                         f.load(
-                        <span className="text-green">'DOI goes here'</span>,
-                        globus=<span className="text-orange">False</span>)
+                        <span className="text-green">'DOI goes here'</span>, globus=
+                        <span className="text-orange">False</span>)
                         <br />
                         res = f.load_data()
                       </code>
                     </div>
-                    <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
+                    <p className="mx-6 pt-8 text-base sm:mx-16 sm:text-xl">
                       New to Foundry or need a refresher? Click{" "}
                       <a
                         target="blank"
@@ -394,7 +359,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
         </div>
       </div>
 
-      <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">
+      <h1 className=" pb-6 pl-8 text-3xl sm:pl-36 ">
         <div className="flex flex-row">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -402,7 +367,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            className="w-8 h-8 ml-0 mr-4"
+            className="ml-0 mr-4 h-8 w-8"
           >
             <path
               stroke-linecap="round"
@@ -414,10 +379,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
         </div>
       </h1>
       <div className="relative flex items-center pb-12">
-        <button
-          className="w-16 h-16 ml-4 sm:ml-12 mr-2 sm:mr-6 bg-gray-100"
-          onClick={leftScroll}
-        >
+        <button className="ml-4 mr-2 h-16 w-16 bg-gray-100 sm:ml-12 sm:mr-6" onClick={leftScroll}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -426,26 +388,16 @@ const GardenPage = ({ bread }: { bread: any }) => {
             stroke="currentColor"
             className="object-fit"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
         </button>
-        <div
-          id="related"
-          className="w-full h-full overflow-x-scroll scroll-smooth whitespace-nowrap inline-flex gap-4"
-        >
+        <div id="related" className="inline-flex h-full w-full gap-4 overflow-x-scroll scroll-smooth whitespace-nowrap">
           {relatedResults.map((related) => (
             <RelatedGardenBox related={related} />
           ))}
         </div>
 
-        <button
-          className="w-16 h-16 ml-2 mr-4 sm:ml-6 sm:mr-12 bg-gray-100"
-          onClick={rightScroll}
-        >
+        <button className="ml-2 mr-4 h-16 w-16 bg-gray-100 sm:ml-6 sm:mr-12" onClick={rightScroll}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -454,11 +406,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
             stroke="currentColor"
             className="object-fit"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8.25 4.5l7.5 7.5-7.5 7.5"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
         </button>
       </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { IpynbRenderer } from "react-ipynb-renderer";
 // import "react-ipynb-renderer/dist/styles/monokai.css";
-import "../../src/ipynbPreview.css"
+import "../../src/ipynbPreview.css";
 
 type NotebookViewerProps = {
   notebookURL: string;
@@ -28,18 +28,9 @@ export const NotebookViewer = ({ notebookURL }: NotebookViewerProps) => {
 
   if (notebookJson) {
     return <IpynbRenderer ipynb={notebookJson} />;
-  }
-  else if (loadingError) {
-    return (
-      <p className="text-center pt-8 pb-16 text-xl">
-        Could not load notebook
-      </p>
-    );
+  } else if (loadingError) {
+    return <p className="pb-16 pt-8 text-center text-xl">Could not load notebook</p>;
   }
   // No error and no notebook yet, so we're still loading
-  return (
-    <p className="text-center pt-8 pb-16 text-xl">
-      Loading notebook ...
-    </p>
-  );
+  return <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>;
 };

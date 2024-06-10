@@ -1,19 +1,18 @@
 const ContainerImage = ({ container }: { container: any }) => {
-
   const copy = async (text: any) => {
     await navigator.clipboard.writeText(text);
   };
-  
+
   return (
-    <div className="flex flex-col justify-between border border-gray-300 border-1 rounded-xl">
-      <div className="flex items-center px-2 pt-2 pb-4 gap-4">
+    <div className="border-1 flex flex-col justify-between rounded-xl border border-gray-300">
+      <div className="flex items-center gap-4 px-2 pb-4 pt-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="gray"
-          className="w-12 h-12"
+          className="h-12 w-12"
         >
           <path
             strokeLinecap="round"
@@ -31,12 +30,8 @@ const ContainerImage = ({ container }: { container: any }) => {
           <p className="pb-4">Status: {container.status}</p>
           <p>Created: {container.created}</p>
         </div>
-        <div className="flex justify-between items-center">
-          <button
-            className="flex gap-2"
-            title="Copy Link"
-            onClick={() => copy(container.url)}
-          >
+        <div className="flex items-center justify-between">
+          <button className="flex gap-2" title="Copy Link" onClick={() => copy(container.url)}>
             Copy Link
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +39,7 @@ const ContainerImage = ({ container }: { container: any }) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="gray"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
               <path
                 strokeLinecap="round"
@@ -58,7 +53,7 @@ const ContainerImage = ({ container }: { container: any }) => {
             href={container.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-black border px-2 py-1 bg-gray-100 rounded-lg hover:bg-gray-300"
+            className="rounded-lg border bg-gray-100 px-2 py-1 text-black hover:bg-gray-300"
           >
             Download
           </a>
