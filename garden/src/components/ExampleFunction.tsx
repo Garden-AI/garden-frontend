@@ -1,5 +1,5 @@
 import { IpynbRenderer } from "react-ipynb-renderer";
-import "react-ipynb-renderer/dist/styles/monokai.css";
+import "../ipynbPreview.css";
 
 type ExampleFunctionProps = {
   functionText: string;
