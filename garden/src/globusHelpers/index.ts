@@ -7,7 +7,7 @@ export async function searchGardenIndex(query: {
 }) {
   const response = await search.query.get(
     import.meta.env.VITE_GLOBUS_SEARCH_INDEX_UUID,
-    { query }
+    { query },
   );
   if (!response.ok) {
     throw new Error("Network response was not ok");

@@ -6,39 +6,42 @@ const Footer = () => {
     <nav>
       {/* Bottom section/credits */}
 
-      <div className="flex flex-col items-center pt-5 sm:pt-10 px-5">
+      <div className="flex flex-col items-center px-5 pt-5 sm:pt-10">
         <hr className="w-11/12 bg-black" />
       </div>
 
       {/* Bottom section/credits */}
-      <div className="m-10 md:mx-20 md:my-10 md:flex md:columns-2 font-display text-black">
+      <div className="m-10 font-display text-black md:mx-20 md:my-10 md:flex md:columns-2">
         <div className="flex flex-col">
-
           <Link to="/home" className="hover:opacity-75">
             <img
               src="img/normalColorIcon_Garden.jpg"
               alt="Garden AI Logo"
-              className="max-w-[150px] object-contain mb-6">
-            </img>
+              className="mb-6 max-w-[150px] object-contain"
+            ></img>
           </Link>
-          <div><Link to="/terms" className="no-underline hover:underline">Terms & Policies</Link></div>
-          <Link to="/team" className="no-underline hover:underline">Team</Link>
+          <div>
+            <Link to="/terms" className="no-underline hover:underline">
+              Terms & Policies
+            </Link>
+          </div>
+          <Link to="/team" className="no-underline hover:underline">
+            Team
+          </Link>
           <div className="no-underline">Brand guidelines</div>
         </div>
 
         <div className="py-10 md:ml-10">
-          <p className="text-sm pt-5 sm:text-md">
-            Garden is made possible by:
-          </p>
-          <div className="grid grid-rows-1 grid-flow-col gap-1 items-center">
+          <p className="sm:text-md pt-5 text-sm">Garden is made possible by:</p>
+          <div className="grid grid-flow-col grid-rows-1 items-center gap-1">
             <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
+              <h1 className="sm:text-md text-sm font-bold md:pt-2">
                 The National Science Foundation
               </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
-                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for
-                Publishing and Applying AI Models for Translational Research in
-                Science, Engineering, Education, and Industry”
+              <p className="max-w-sm text-xs sm:text-sm">
+                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework
+                for Publishing and Applying AI Models for Translational Research
+                in Science, Engineering, Education, and Industry”
               </p>
             </section>
             <section className="place-self-center">
@@ -54,42 +57,40 @@ const Footer = () => {
             </section>
           </div>
 
-          <div className="flex flex-col items-center pt-5 sm:pt-10 px-5">
+          <div className="flex flex-col items-center px-5 pt-5 sm:pt-10">
             <hr className="w-11/12 bg-black" />
           </div>
 
-          <p className="text-sm pt-8 sm:text-md">
+          <p className="sm:text-md pt-8 text-sm">
             This project builds upon work including:
           </p>
-          <div className="grid grid-rows-3 grid-flow-col gap-1 items-center">
+          <div className="grid grid-flow-col grid-rows-3 items-center gap-1">
             <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
+              <h1 className="sm:text-md text-sm font-bold md:pt-2">
                 The Materials Data Facility (MDF)
               </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
-                NIST-supported effort to build data services to help material 
+              <p className="max-w-sm text-xs sm:text-sm">
+                NIST-supported effort to build data services to help material
                 scientists publish and discover data.
               </p>
             </section>
 
             <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
+              <h1 className="sm:text-md text-sm font-bold md:pt-2">
                 Foundry-ML
               </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
+              <p className="max-w-sm text-xs sm:text-sm">
                 An open source ML-ready data access tool for scientists.
               </p>
             </section>
 
             <section className="">
-              <h1 className="font-bold text-sm sm:text-md md:pt-2">
-                Globus
-              </h1>
-              <p className="text-xs max-w-sm sm:text-sm">
+              <h1 className="sm:text-md text-sm font-bold md:pt-2">Globus</h1>
+              <p className="max-w-sm text-xs sm:text-sm">
                 Research cyberinfrastructure, developed and operated as a
                 not-for-profit service by the University of Chicago to enable
-                research data transfer, sharing, access, discovery, and automation. 
-
+                research data transfer, sharing, access, discovery, and
+                automation.
               </p>
             </section>
 
@@ -120,19 +121,18 @@ const Footer = () => {
             <section className="place-self-center">
               <a target="blank" href="https://www.globus.org/">
                 <div className="grayscale">
-                <img
-                  src="img/globus-logo.png"
-                  alt="Gloubs logo"
-                  className="max-w-[100px] hover:opacity-75"
-                />
+                  <img
+                    src="img/globus-logo.png"
+                    alt="Gloubs logo"
+                    className="max-w-[100px] hover:opacity-75"
+                  />
                 </div>
               </a>
             </section>
-
           </div>
         </div>
       </div>
-    </nav >
+    </nav>
   );
 };
 

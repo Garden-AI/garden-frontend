@@ -1,3 +1,4 @@
+import React from "react";
 import { authorization } from "@globus/sdk/cjs";
 // import { SEARCH_SCOPE, GLOBUS_NATIVE_CLIENT_ID } from "./constants";
 import {

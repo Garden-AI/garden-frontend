@@ -63,7 +63,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
       test_functions: Array<string>;
       doi: string;
       short_name?: string;
-    }
+    },
   ): string => {
     const prefixText = `from garden_ai import GardenClient
 client = GardenClient()
@@ -78,7 +78,7 @@ garden = client.get_published_garden("${gardenDOI}")
       if (entrypoint.short_name) {
         functionText = functionText.replaceAll(
           entrypoint.short_name,
-          `garden.${entrypoint.short_name}`
+          `garden.${entrypoint.short_name}`,
         );
       }
       const fullFunction = prefixText + functionText;
@@ -86,7 +86,7 @@ garden = client.get_published_garden("${gardenDOI}")
       // Remove the @entrypoint_test decorator if it's in this snippet
       const lines = fullFunction.split("\n");
       const filteredLines = lines.filter(
-        (line) => !line.trim().startsWith("@entrypoint_test")
+        (line) => !line.trim().startsWith("@entrypoint_test"),
       );
       return filteredLines.join("\n");
     }
@@ -110,13 +110,14 @@ return my_entrypoint(input)`;
         const gmetaArray = await searchGardenIndex({ q: doi || "" });
         const selectedGarden = gmetaArray[0].entries[0].content;
         const selectedEntrypoint = selectedGarden.entrypoints.filter(
-          (pipe: any) => pipe.doi === doi
+          (pipe: any) => pipe.doi === doi,
         );
         console.log("Selected Entry Point: ", selectedEntrypoint);
         setResult(selectedEntrypoint);
         setGardenDOI(selectedGarden.doi);
       } catch (error) {
         setResult([]);
+        setGardenDOI("");
         setGardenDOI("");
       }
     }
@@ -126,9 +127,9 @@ return my_entrypoint(input)`;
   //Loading screen while the call waits to return
   if (result === undefined) {
     return (
-      <div className="flex items-center justify-center h-[100vh]">
+      <div className="flex h-[100vh] items-center justify-center">
         <svg
-          className="w-24 h-24 mr-2 text-gray-200 animate-spin fill-green"
+          className="mr-2 h-24 w-24 animate-spin fill-green text-gray-200"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -149,16 +150,16 @@ return my_entrypoint(input)`;
   //The doi does not match up to a entrypoint, message appears
   if (result.length === 0) {
     return (
-      <div className="justify-center items-center flex fixed inset-0 z-50 font-display bg-green">
-        <div className="w-[75vw] sm:w-[50vw] min-h-[50vh] border border-black rounded-xl bg-white flex flex-col items-center">
-          <h1 className=" py-12 px-4 text-4xl font-semibold text-center">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-green font-display">
+        <div className="flex min-h-[50vh] w-[75vw] flex-col items-center rounded-xl border border-black bg-white sm:w-[50vw]">
+          <h1 className=" px-4 py-12 text-center text-4xl font-semibold">
             No Entrypoint Found
           </h1>
-          <p className="text-center px-4">
+          <p className="px-4 text-center">
             The page you were looking for does not exist
           </p>
           <button
-            className="bg-green text-white mt-16 border border-green rounded-lg py-3 px-4 shadow-lg hover:shadow-xl hover:border-black"
+            className="mt-16 rounded-lg border border-green bg-green px-4 py-3 text-white shadow-lg hover:border-black hover:shadow-xl"
             onClick={() => navigate("/home")}
           >
             Back to Home
@@ -178,7 +179,7 @@ return my_entrypoint(input)`;
 
   const copyCode = async () => {
     await navigator.clipboard.writeText(
-      exampleFunctionText(gardenDOI, result[0])
+      exampleFunctionText(gardenDOI, result[0]),
     );
     showTooltip();
   };
@@ -202,6 +203,7 @@ return my_entrypoint(input)`;
 
   //Show more/show less functionality
   const contributorMore = () => {
+    setPClass("");
     setPClass("");
     setIsOverflowing(false);
     setHasOverflow(true);
@@ -231,16 +233,16 @@ return my_entrypoint(input)`;
 
   return (
     <>
-      <div className="h-full w-full flex flex-col gap-12 px-4 sm:px-16 lg:px-36 pt-12 sm:pt-24 pb-2 font-display">
+      <div className="flex h-full w-full flex-col gap-12 px-4 pb-2 pt-12 font-display sm:px-16 sm:pt-24 lg:px-36">
         {/* Place breadcrumbs here */}
         <Breadcrumbs crumbs={bread} />
         {/* Entrypoint Header */}
         <div className="flex flex-col gap-1">
-          <div className="flex gap4 sm:gap-8">
-            <h1 className="text-2xl sm:text-3xl font-display">
+          <div className="gap4 flex sm:gap-8">
+            <h1 className="font-display text-2xl sm:text-3xl">
               {result[0].title}
             </h1>
-            <div className="flex gap-4 items-center">
+            <div className="flex items-center gap-4">
               <button title="Copy link" onClick={copy}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -248,7 +250,7 @@ return my_entrypoint(input)`;
                   viewBox="0 0 24 24"
                   strokeWidth={2.0}
                   stroke="gray"
-                  className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                  className="h-6 w-6 text-gray-700 hover:cursor-pointer hover:text-gray-500"
                 >
                   <path
                     strokeLinecap="round"
@@ -264,7 +266,7 @@ return my_entrypoint(input)`;
                   viewBox="0 0 24 24"
                   strokeWidth={2.0}
                   stroke="gray"
-                  className="w-6 h-6 text-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                  className="h-6 w-6 text-gray-700 hover:cursor-pointer hover:text-gray-500"
                 >
                   <path d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
                 </svg>
@@ -272,7 +274,7 @@ return my_entrypoint(input)`;
               {/* Pin and Cite buttons to be added later */}
               {/* <CitePinButtons/> */}
               {tooltipVisible && (
-                <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">
+                <p className="fixed right-[35vw] top-[10vh] z-50 min-w-[10vw] rounded-lg bg-green p-2 text-center text-white sm:right-[45vw]">
                   Copied to Clipboard
                 </p>
               )}
@@ -286,7 +288,7 @@ return my_entrypoint(input)`;
               Enpoinsx
             </div>
           </div>
-          <div className="text-gray-500 text-sm flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 text-sm text-gray-500">
             <span>Version {result[0].version}</span>
             <span>|</span>
             <span>{result[0].year}</span>
@@ -299,7 +301,7 @@ return my_entrypoint(input)`;
                   viewBox="0 0 28 28"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                 >
                   <path
                     strokeLinecap="round"
@@ -317,6 +319,11 @@ return my_entrypoint(input)`;
                     .map((t: any) => <span>{t}</span>)
                     .reduce((prev: any, curr: any) => [prev, ", ", curr])}
                 </div>
+                <div>
+                  {result[0].tags
+                    .map((t: any) => <span>{t}</span>)
+                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                </div>
               </>
             ) : (
               <></>
@@ -324,8 +331,8 @@ return my_entrypoint(input)`;
           </div>
           {/* Total Runs/Pins/Shares/Citations goes here */}
           {/* <EntrypointMetrics/> */}
-          <div className="flex flex-wrap pt-4 mr-8 text-base sm:text-lg">
-            <p className="font-semibold pr-2">Contributors:</p>
+          <div className="mr-8 flex flex-wrap pt-4 text-base sm:text-lg">
+            <p className="pr-2 font-semibold">Contributors:</p>
             <p className={pClass} ref={widthRef}>
               {result[0].authors
                 .map((author: any) => {
@@ -334,7 +341,7 @@ return my_entrypoint(input)`;
                 .reduce((prev: any, curr: any) => [prev, ", ", curr])}
               {hasOverflow ? (
                 <button
-                  className="whitespace-nowrap text-blue hover:underline pl-2"
+                  className="whitespace-nowrap pl-2 text-blue hover:underline"
                   onClick={contributorLess}
                 >
                   {" "}
@@ -361,14 +368,14 @@ return my_entrypoint(input)`;
 
         <div className="pl-4">
           <div className="flex flex-row">
-            <div className="w-full border-b border-gray-300 text-2xl flex items-center">
+            <div className="flex w-full items-center border-b border-gray-300 text-2xl">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                className="w-5 h-5 mr-2"
+                className="mr-2 h-5 w-5"
               >
                 <path
                   stroke-linecap="round"
@@ -387,11 +394,11 @@ return my_entrypoint(input)`;
           <p className="p-4">{result[0].description}</p>
         </div>
 
-        <div className="flex flex-col gap-8 w-full">
-          <h2 className="text-2xl sm:text-3xl text-center">
+        <div className="flex w-full flex-col gap-8">
+          <h2 className="text-center text-2xl sm:text-3xl">
             Run this entrypoint
           </h2>
-          <div className="sm:flex justify-center pt-2">
+          <div className="justify-center pt-2 sm:flex">
             <div className="relative">
               <ExampleFunction
                 functionText={exampleFunctionText(gardenDOI, result[0])}
@@ -399,7 +406,7 @@ return my_entrypoint(input)`;
               <button
                 title="Copy Code"
                 onClick={copyCode}
-                className="absolute top-0 right-0 mt-6 mr-8 flex items-center justify-center"
+                className="absolute right-0 top-0 mr-8 mt-6 flex items-center justify-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -407,7 +414,7 @@ return my_entrypoint(input)`;
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="gray"
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                 >
                   <path
                     strokeLinecap="round"
@@ -421,7 +428,7 @@ return my_entrypoint(input)`;
               {/* <OpenInButtons/> */}
             </div>
           </div>
-          <div className="flex pt-0 mt-0 justify-center">
+          <div className="mt-0 flex justify-center pt-0">
             <p>
               To run this entrypoint, you need to be a part of{" "}
               <a
@@ -438,14 +445,14 @@ return my_entrypoint(input)`;
         <AccordionTop entrypoint={result} />
 
         <div className="pb-12">
-          <div className="flex justify-evenly h-12 ">
+          <div className="flex h-12 justify-evenly ">
             <button
               className={
                 active === "Steps"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
                   : active === ""
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+                    ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                    : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
               onClick={() => setActive("")}
             >
@@ -456,8 +463,8 @@ return my_entrypoint(input)`;
             <button
               className={
                 active === "Notebook"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                  : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
               onClick={() => setActive("Notebook")}
             >
@@ -466,8 +473,8 @@ return my_entrypoint(input)`;
             <button
               className={
                 active === "Datasets"
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                  : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
               onClick={() => setActive("Datasets")}
             >
@@ -476,15 +483,15 @@ return my_entrypoint(input)`;
           </div>
           <div className="pt-4 sm:pt-8">
             {active === "" && (
-              <div className="inline-grid sm:grid grid-cols-5">
+              <div className="inline-grid grid-cols-5 sm:grid">
                 <div
-                  className="col-span-full sm:col-span-2 lg:col-span-1 bg-gray overflow-y-scroll h-full max-h-[200px] sm:max-h-[650px]"
+                  className="bg-gray col-span-full h-full max-h-[200px] overflow-y-scroll sm:col-span-2 sm:max-h-[650px] lg:col-span-1"
                   id="step_scroll"
                   ref={div}
                 >
                   {stepsOverflow ? (
                     <button
-                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white "
+                      className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base "
                       ref={top}
                       onClick={() => scrollToBottom()}
                     >
@@ -504,7 +511,7 @@ return my_entrypoint(input)`;
                               viewBox="0 0 24 24"
                               strokeWidth={1.5}
                               stroke="currentColor"
-                              className="w-6 h-6"
+                              className="h-6 w-6"
                             >
                               <path
                                 strokeLinecap="round"
@@ -519,15 +526,15 @@ return my_entrypoint(input)`;
                         <div
                           className={
                             buttonIndex === index
-                              ? "border border-4 border-gray-400 flex justify-center my-2 sm:my-4 text-center w-full bg-gray-100"
-                              : "border border-gray-400 border-1 flex justify-center my-2 sm:my-4 text-center w-full"
+                              ? "my-2 flex w-full justify-center border border-4 border-gray-400 bg-gray-100 text-center sm:my-4"
+                              : "border-1 my-2 flex w-full justify-center border border-gray-400 text-center sm:my-4"
                           }
                         >
                           <button
                             className="w-full"
                             onClick={() => setButtonIndex(index)}
                           >
-                            <p className="p-2 sm:p-4 break-all">
+                            <p className="break-all p-2 sm:p-4">
                               {step.function_name}
                             </p>
                           </button>
@@ -538,7 +545,7 @@ return my_entrypoint(input)`;
 
                   {stepsOverflow ? (
                     <button
-                      className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white"
+                      className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base"
                       onClick={() => scrollToTop()}
                     >
                       Scroll to top
@@ -549,9 +556,9 @@ return my_entrypoint(input)`;
                   {checkStepOverflow()}
                   <div ref={bottom}></div>
                 </div>
-                <div className="col-span-full sm:col-span-3 lg:col-span-4 border border-2 border-gray p-8 my-4 sm:my-0 break-words whitespace-pre-line">
+                <div className="border-gray col-span-full my-4 whitespace-pre-line break-words border border-2 p-8 sm:col-span-3 sm:my-0 lg:col-span-4">
                   <div></div>
-                  <p className="pt-8 text-md lg:text-xl pb-6 font-semibold">
+                  <p className="text-md pb-6 pt-8 font-semibold lg:text-xl">
                     {result[0].steps[buttonIndex].description}
                   </p>
                   <SyntaxHighlighter language="python">
@@ -580,11 +587,11 @@ return my_entrypoint(input)`;
             {active === "Datasets" && (
               <div className="px-6">
                 <div>
-                  <h1 className="underline text-2xl py-8">
+                  <h1 className="py-8 text-2xl underline">
                     Datasets used in this entrypoint
                   </h1>
                   {result[0].datasets?.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
+                    <div className="grid grid-cols-1 gap-2 py-4 sm:gap-12 md:grid-cols-2 lg:px-24">
                       {result[0].datasets.map((dataset: any) => (
                         <DatasetBoxEntrypoint
                           dataset={dataset}
@@ -593,17 +600,17 @@ return my_entrypoint(input)`;
                       ))}
                     </div>
                   ) : (
-                    <p className="text-center pt-8 pb-16 text-xl">
+                    <p className="pb-16 pt-8 text-center text-xl">
                       No datasets available for this entrypoint
                     </p>
                   )}
                   {showFoundry === true ? (
                     <div>
-                      <p className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
+                      <p className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
                         *One or more of these datasets uses Foundry, here is how
                         you can view it:
                       </p>
-                      <div className="bg-gray-800 sm:mx-8 lg:mx-32 text-white pl-6 py-6 rounded-xl">
+                      <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
                         <code className="leading-loose">
                           <span className="text-gray-400">
                             # Make sure you've imported and instantiated foundry{" "}
@@ -620,12 +627,13 @@ return my_entrypoint(input)`;
                           </span>
                           f.load(
                           <span className="text-green">'DOI goes here'</span>,
-                          globus=<span className="text-orange">False</span>)
+                          globus=
+                          <span className="text-orange">False</span>)
                           <br />
                           res = f.load_data()
                         </code>
                       </div>
-                      <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
+                      <p className="mx-6 pt-8 text-base sm:mx-16 sm:text-xl">
                         New to Foundry or need a refresher? Click{" "}
                         <a
                           target="blank"

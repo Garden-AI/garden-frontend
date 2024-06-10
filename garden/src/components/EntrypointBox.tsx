@@ -7,7 +7,7 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
 
   return (
     <div
-      className="border border-gray-200 shadow-sm rounded-lg p-5 flex flex-col justify-between hover:shadow-md hover:cursor-pointer"
+      className="flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:cursor-pointer hover:shadow-md"
       onClick={() => navigate(`/entrypoint/${text}`)}
     >
       <div className="flex flex-col gap-2">
@@ -17,20 +17,20 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
           {entrypoint.steps.length < 2 ? <span>step</span> : <span>steps</span>}
         </p>
         <div className="max-h-[120px] overflow-y-hidden">
-          <p className="bg-gradient-to-b from-black to-white bg-clip-text text-transparent h-[160px] overflow-y-hidden">
+          <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
             {entrypoint.description}
           </p>
         </div>
       </div>
       {entrypoint.tags.length > 0 ? (
-        <div className="text-black flex gap-2">
+        <div className="flex gap-2 text-black">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6"
+            className="h-6 w-6"
           >
             <path
               strokeLinecap="round"

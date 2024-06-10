@@ -27,18 +27,11 @@ export const NotebookViewer = ({ notebookURL }: NotebookViewerProps) => {
 
   if (notebookJson) {
     return <IpynbRenderer ipynb={notebookJson} />;
-  }
-  else if (loadingError) {
+  } else if (loadingError) {
     return (
-      <p className="text-center pt-8 pb-16 text-xl">
-        Could not load notebook
-      </p>
+      <p className="pb-16 pt-8 text-center text-xl">Could not load notebook</p>
     );
   }
   // No error and no notebook yet, so we're still loading
-  return (
-    <p className="text-center pt-8 pb-16 text-xl">
-      Loading notebook ...
-    </p>
-  );
+  return <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>;
 };
