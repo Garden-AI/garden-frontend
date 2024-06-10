@@ -31,7 +31,11 @@ const ContainerImage = ({ container }: { container: any }) => {
           <p>Created: {container.created}</p>
         </div>
         <div className="flex items-center justify-between">
-          <button className="flex gap-2" title="Copy Link" onClick={() => copy(container.url)}>
+          <button
+            className="flex gap-2"
+            title="Copy Link"
+            onClick={() => copy(container.url)}
+          >
             Copy Link
             <svg
               xmlns="http://www.w3.org/2000/svg"

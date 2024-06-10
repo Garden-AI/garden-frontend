@@ -12,7 +12,9 @@ const RelatedGardenBox = ({ related }: { related: any }) => {
       onClick={() => navigate(`/garden/${text}`)}
     >
       <div className="my-10 overflow-y-hidden whitespace-normal">
-        <p className="text-center text-3xl">{related.entries[0].content.title}</p>
+        <p className="text-center text-3xl">
+          {related.entries[0].content.title}
+        </p>
       </div>
 
       {/* Pins Shares and Runs For Related Garden Box */}

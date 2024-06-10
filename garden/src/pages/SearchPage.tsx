@@ -46,7 +46,9 @@ const SearchPage = ({ bread }: { bread: any }) => {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     const updatedResults = result.filter((res: any) => {
-      return res.entries[0].content.title.toLowerCase().includes(event.target.value.toLowerCase());
+      return res.entries[0].content.title
+        .toLowerCase()
+        .includes(event.target.value.toLowerCase());
     });
     setFilteredResult(updatedResults);
   };

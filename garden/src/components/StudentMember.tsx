@@ -5,15 +5,33 @@ const StudentMember = ({ member }: { member: any }) => {
       <p className="italic text-gray-600">{member.major}</p>
       <div className="flex gap-5">
         {member.linkedin_link.length > 0 ? (
-          <a href={member.linkedin_link} target="_blank" rel="noreferrer" className="pt-5">
-            <img className="h-5 w-5" src="img/LinkedIn-logo.png" alt="linkedin logo" />
+          <a
+            href={member.linkedin_link}
+            target="_blank"
+            rel="noreferrer"
+            className="pt-5"
+          >
+            <img
+              className="h-5 w-5"
+              src="img/LinkedIn-logo.png"
+              alt="linkedin logo"
+            />
           </a>
         ) : (
           <></>
         )}
         {member.github_link.length > 0 ? (
-          <a href={member.github_link} target="_blank" rel="noreferrer" className="pt-5">
-            <img className="h-5 w-5" src="img/github-logo.png" alt="github logo" />
+          <a
+            href={member.github_link}
+            target="_blank"
+            rel="noreferrer"
+            className="pt-5"
+          >
+            <img
+              className="h-5 w-5"
+              src="img/github-logo.png"
+              alt="github logo"
+            />
           </a>
         ) : (
           <></>

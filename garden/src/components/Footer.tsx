@@ -35,10 +35,13 @@ const Footer = () => {
           <p className="sm:text-md pt-5 text-sm">Garden is made possible by:</p>
           <div className="grid grid-flow-col grid-rows-1 items-center gap-1">
             <section className="">
-              <h1 className="sm:text-md text-sm font-bold md:pt-2">The National Science Foundation</h1>
+              <h1 className="sm:text-md text-sm font-bold md:pt-2">
+                The National Science Foundation
+              </h1>
               <p className="max-w-sm text-xs sm:text-sm">
-                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for Publishing and Applying AI Models for
-                Translational Research in Science, Engineering, Education, and Industry”
+                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework
+                for Publishing and Applying AI Models for Translational Research
+                in Science, Engineering, Education, and Industry”
               </p>
             </section>
             <section className="place-self-center">
@@ -58,32 +61,47 @@ const Footer = () => {
             <hr className="w-11/12 bg-black" />
           </div>
 
-          <p className="sm:text-md pt-8 text-sm">This project builds upon work including:</p>
+          <p className="sm:text-md pt-8 text-sm">
+            This project builds upon work including:
+          </p>
           <div className="grid grid-flow-col grid-rows-3 items-center gap-1">
             <section className="">
-              <h1 className="sm:text-md text-sm font-bold md:pt-2">The Materials Data Facility (MDF)</h1>
+              <h1 className="sm:text-md text-sm font-bold md:pt-2">
+                The Materials Data Facility (MDF)
+              </h1>
               <p className="max-w-sm text-xs sm:text-sm">
-                NIST-supported effort to build data services to help material scientists publish and discover data.
+                NIST-supported effort to build data services to help material
+                scientists publish and discover data.
               </p>
             </section>
 
             <section className="">
-              <h1 className="sm:text-md text-sm font-bold md:pt-2">Foundry-ML</h1>
-              <p className="max-w-sm text-xs sm:text-sm">An open source ML-ready data access tool for scientists.</p>
+              <h1 className="sm:text-md text-sm font-bold md:pt-2">
+                Foundry-ML
+              </h1>
+              <p className="max-w-sm text-xs sm:text-sm">
+                An open source ML-ready data access tool for scientists.
+              </p>
             </section>
 
             <section className="">
               <h1 className="sm:text-md text-sm font-bold md:pt-2">Globus</h1>
               <p className="max-w-sm text-xs sm:text-sm">
-                Research cyberinfrastructure, developed and operated as a not-for-profit service by the University of
-                Chicago to enable research data transfer, sharing, access, discovery, and automation.
+                Research cyberinfrastructure, developed and operated as a
+                not-for-profit service by the University of Chicago to enable
+                research data transfer, sharing, access, discovery, and
+                automation.
               </p>
             </section>
 
             <section className="place-self-center">
               <a target="blank" href="https://materialsdatafacility.org/">
                 <div className="grayscale">
-                  <img src="img/MDF-logo.png" alt="MDF logo" className="max-w-[150px] hover:opacity-75" />
+                  <img
+                    src="img/MDF-logo.png"
+                    alt="MDF logo"
+                    className="max-w-[150px] hover:opacity-75"
+                  />
                 </div>
               </a>
             </section>
@@ -91,7 +109,11 @@ const Footer = () => {
             <section className="place-self-center">
               <a target="blank" href="https://foundry-ml.org/#/">
                 <div className="grayscale">
-                  <img src="img/foundry-logo.png" alt="Foundry logo" className="max-w-[150px] hover:opacity-75" />
+                  <img
+                    src="img/foundry-logo.png"
+                    alt="Foundry logo"
+                    className="max-w-[150px] hover:opacity-75"
+                  />
                 </div>
               </a>
             </section>
@@ -99,7 +121,11 @@ const Footer = () => {
             <section className="place-self-center">
               <a target="blank" href="https://www.globus.org/">
                 <div className="grayscale">
-                  <img src="img/globus-logo.png" alt="Gloubs logo" className="max-w-[100px] hover:opacity-75" />
+                  <img
+                    src="img/globus-logo.png"
+                    alt="Gloubs logo"
+                    className="max-w-[100px] hover:opacity-75"
+                  />
                 </div>
               </a>
             </section>

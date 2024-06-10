@@ -46,7 +46,7 @@ const CommentBox = ({ comment }: { comment: any }) => {
   return (
     <div>
       <div className="mt-6 h-full w-full bg-gray-200 shadow-lg">
-        <div className="max-w-6 float-left flex flex-col gap-1 pl-4 pt-4">
+        <div className="float-left flex max-w-6 flex-col gap-1 pl-4 pt-4">
           <button onClick={upVote}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,11 @@ const CommentBox = ({ comment }: { comment: any }) => {
               stroke="currentColor"
               className="m-0 h-6 w-6"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
+              />
             </svg>
           </button>
           <span>{votes}</span>
@@ -69,13 +73,19 @@ const CommentBox = ({ comment }: { comment: any }) => {
               stroke="currentColor"
               className="h-6 w-6"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+              />
             </svg>
           </button>
         </div>
         <div className="relative ml-16 flex h-fit flex-col gap-4 bg-white pl-6 pt-2">
           <div className="flex items-center gap-3 pb-2">
-            <section className="border-1 w-max rounded-2xl border border-black px-3">{comment.type}</section>
+            <section className="border-1 w-max rounded-2xl border border-black px-3">
+              {comment.type}
+            </section>
             <p className="text-gray-500">Posted by {comment.user}</p>
           </div>
           <div className="h-fit overflow-y-hidden pb-4">
@@ -84,7 +94,10 @@ const CommentBox = ({ comment }: { comment: any }) => {
           </div>
 
           <div className=" pb-2">
-            <button className="flex items-center justify-center gap-1" onClick={loadReplies}>
+            <button
+              className="flex items-center justify-center gap-1"
+              onClick={loadReplies}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -122,10 +135,16 @@ const CommentBox = ({ comment }: { comment: any }) => {
             })}
           {replies > 0 ? (
             <div className="pt-4">
-              <button className="mr-6 text-blue hover:underline" onClick={() => setReplies(replies + 3)}>
+              <button
+                className="mr-6 text-blue hover:underline"
+                onClick={() => setReplies(replies + 3)}
+              >
                 Load more replies
               </button>
-              <button className="text-blue hover:underline" onClick={() => setReplies(0)}>
+              <button
+                className="text-blue hover:underline"
+                onClick={() => setReplies(0)}
+              >
                 Hide replies
               </button>
             </div>

@@ -48,7 +48,10 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const checkStepOverflow = () => {
     if (div.current) {
       const contain = div.current;
-      if (contain!.clientHeight < contain!.scrollHeight && stepsOverflow === false) {
+      if (
+        contain!.clientHeight < contain!.scrollHeight &&
+        stepsOverflow === false
+      ) {
         setStepsOverflow(true);
       }
     }
@@ -73,13 +76,18 @@ garden = client.get_published_garden("${gardenDOI}")
       // The test function writer called it by its short name,
       // but the consumer will call it by garden.short_name
       if (entrypoint.short_name) {
-        functionText = functionText.replaceAll(entrypoint.short_name, `garden.${entrypoint.short_name}`);
+        functionText = functionText.replaceAll(
+          entrypoint.short_name,
+          `garden.${entrypoint.short_name}`,
+        );
       }
       const fullFunction = prefixText + functionText;
 
       // Remove the @entrypoint_test decorator if it's in this snippet
       const lines = fullFunction.split("\n");
-      const filteredLines = lines.filter((line) => !line.trim().startsWith("@entrypoint_test"));
+      const filteredLines = lines.filter(
+        (line) => !line.trim().startsWith("@entrypoint_test"),
+      );
       return filteredLines.join("\n");
     }
     // If we don't have a test function,
@@ -101,11 +109,15 @@ return my_entrypoint(input)`;
       try {
         const gmetaArray = await searchGardenIndex({ q: doi || "" });
         const selectedGarden = gmetaArray[0].entries[0].content;
-        const selectedEntrypoint = selectedGarden.entrypoints.filter((pipe: any) => pipe.doi === doi);
+        const selectedEntrypoint = selectedGarden.entrypoints.filter(
+          (pipe: any) => pipe.doi === doi,
+        );
+        console.log("Selected Entry Point: ", selectedEntrypoint);
         setResult(selectedEntrypoint);
         setGardenDOI(selectedGarden.doi);
       } catch (error) {
         setResult([]);
+        setGardenDOI("");
         setGardenDOI("");
       }
     }
@@ -140,8 +152,12 @@ return my_entrypoint(input)`;
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-green font-display">
         <div className="flex min-h-[50vh] w-[75vw] flex-col items-center rounded-xl border border-black bg-white sm:w-[50vw]">
-          <h1 className=" px-4 py-12 text-center text-4xl font-semibold">No Entrypoint Found</h1>
-          <p className="px-4 text-center">The page you were looking for does not exist</p>
+          <h1 className=" px-4 py-12 text-center text-4xl font-semibold">
+            No Entrypoint Found
+          </h1>
+          <p className="px-4 text-center">
+            The page you were looking for does not exist
+          </p>
           <button
             className="mt-16 rounded-lg border border-green bg-green px-4 py-3 text-white shadow-lg hover:border-black hover:shadow-xl"
             onClick={() => navigate("/home")}
@@ -152,6 +168,7 @@ return my_entrypoint(input)`;
       </div>
     );
   }
+  console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.entrypoint = [result[0].title, `/entrypoint/${text}`];
 
@@ -161,7 +178,9 @@ return my_entrypoint(input)`;
   };
 
   const copyCode = async () => {
-    await navigator.clipboard.writeText(exampleFunctionText(gardenDOI, result[0]));
+    await navigator.clipboard.writeText(
+      exampleFunctionText(gardenDOI, result[0]),
+    );
     showTooltip();
   };
 
@@ -184,6 +203,7 @@ return my_entrypoint(input)`;
 
   //Show more/show less functionality
   const contributorMore = () => {
+    setPClass("");
     setPClass("");
     setIsOverflowing(false);
     setHasOverflow(true);
@@ -219,7 +239,9 @@ return my_entrypoint(input)`;
         {/* Entrypoint Header */}
         <div className="flex flex-col gap-1">
           <div className="gap4 flex sm:gap-8">
-            <h1 className="font-display text-2xl sm:text-3xl">{result[0].title}</h1>
+            <h1 className="font-display text-2xl sm:text-3xl">
+              {result[0].title}
+            </h1>
             <div className="flex items-center gap-4">
               <button title="Copy link" onClick={copy}>
                 <svg
@@ -256,7 +278,13 @@ return my_entrypoint(input)`;
                   Copied to Clipboard
                 </p>
               )}
-              <Modal show={show} close={closeModal} copy={copy} doi={result[0].doi} showTooltip={showTooltip} />
+              <Modal
+                show={show}
+                close={closeModal}
+                copy={copy}
+                doi={result[0].doi}
+                showTooltip={showTooltip}
+              />
               Enpoinsx
             </div>
           </div>
@@ -280,8 +308,17 @@ return my_entrypoint(input)`;
                     strokeLinejoin="round"
                     d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
                   />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 6h.008v.008H6V6z"
+                  />
                 </svg>
+                <div>
+                  {result[0].tags
+                    .map((t: any) => <span>{t}</span>)
+                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                </div>
                 <div>
                   {result[0].tags
                     .map((t: any) => <span>{t}</span>)
@@ -303,7 +340,10 @@ return my_entrypoint(input)`;
                 })
                 .reduce((prev: any, curr: any) => [prev, ", ", curr])}
               {hasOverflow ? (
-                <button className="whitespace-nowrap pl-2 text-blue hover:underline" onClick={contributorLess}>
+                <button
+                  className="whitespace-nowrap pl-2 text-blue hover:underline"
+                  onClick={contributorLess}
+                >
                   {" "}
                   ...see less
                 </button>
@@ -313,7 +353,10 @@ return my_entrypoint(input)`;
             </p>
             <div>
               {isOverflowing ? (
-                <button className="whitespace-nowrap text-blue hover:underline" onClick={contributorMore}>
+                <button
+                  className="whitespace-nowrap text-blue hover:underline"
+                  onClick={contributorMore}
+                >
                   ...see more
                 </button>
               ) : (
@@ -339,7 +382,11 @@ return my_entrypoint(input)`;
                   stroke-linejoin="round"
                   d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
                 />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
               </svg>
               At a glance
             </div>
@@ -348,232 +395,263 @@ return my_entrypoint(input)`;
         </div>
 
         <div className="flex w-full flex-col gap-8">
-          <h2 className="text-center text-2xl sm:text-3xl">Run this entrypoint</h2>
+          <h2 className="text-center text-2xl sm:text-3xl">
+            Run this entrypoint
+          </h2>
           <div className="justify-center pt-2 sm:flex">
-            <ExampleFunction functionText={exampleFunctionText(gardenDOI, result[0])} />
-
-            <div className="flex flex-col items-center justify-center">{/* <OpenInButtons/> */}</div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-center">Copy Code:</p>
-            <button title="Copy Code" onClick={copyCode} className="flex w-full items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="gray"
-                className="h-6 w-6"
+            <div className="relative">
+              <ExampleFunction
+                functionText={exampleFunctionText(gardenDOI, result[0])}
+              />
+              <button
+                title="Copy Code"
+                onClick={copyCode}
+                className="absolute right-0 top-0 mr-8 mt-6 flex items-center justify-center"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="gray"
+                  className="h-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              {/* <OpenInButtons/> */}
+            </div>
           </div>
-          <div className="flex flex-col items-center justify-center">{/* <OpenInButtons/> */}</div>
+          <div className="mt-0 flex justify-center pt-0">
+            <p>
+              To run this entrypoint, you need to be a part of{" "}
+              <a
+                className="text-green underline"
+                target="_blank"
+                href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about"
+              >
+                this Globus group
+              </a>
+            </p>
+          </div>
         </div>
-        <div className="mt-0 flex justify-center pt-0">
-          <p>
-            To run this entrypoint, you need to be a part of{" "}
-            <a
-              className="text-green underline"
-              target="_blank"
-              href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about"
+
+        <AccordionTop entrypoint={result} />
+
+        <div className="pb-12">
+          <div className="flex h-12 justify-evenly ">
+            <button
+              className={
+                active === "Steps"
+                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                  : active === ""
+                    ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                    : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
+              }
+              onClick={() => setActive("")}
             >
-              this Globus group
-            </a>
-          </p>
-        </div>
-      </div>
-
-      <AccordionTop entrypoint={result} />
-
-      <div className="pb-12">
-        <div className="flex h-12 justify-evenly ">
-          <button
-            className={
-              active === "Steps"
-                ? "w-full border-b-4 border-green bg-green bg-opacity-30"
-                : active === ""
+              Steps
+            </button>
+            {/* Discussion Tab here */}
+            {/* <DiscussionTab active={active} setActive={setActive}/> */}
+            <button
+              className={
+                active === "Notebook"
                   ? "w-full border-b-4 border-green bg-green bg-opacity-30"
                   : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
-            }
-            onClick={() => setActive("")}
-          >
-            Steps
-          </button>
-          {/* Discussion Tab here */}
-          {/* <DiscussionTab active={active} setActive={setActive}/> */}
-          <button
-            className={
-              active === "Notebook"
-                ? "w-full border-b-4 border-green bg-green bg-opacity-30"
-                : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
-            }
-            onClick={() => setActive("Notebook")}
-          >
-            Notebook
-          </button>
-          <button
-            className={
-              active === "Datasets"
-                ? "w-full border-b-4 border-green bg-green bg-opacity-30"
-                : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
-            }
-            onClick={() => setActive("Datasets")}
-          >
-            Datasets
-          </button>
-        </div>
-        <div className="pt-4 sm:pt-8">
-          {active === "" && (
-            <div className="inline-grid grid-cols-5 sm:grid">
-              <div
-                className="bg-gray col-span-full h-full max-h-[200px] overflow-y-scroll sm:col-span-2 sm:max-h-[650px] lg:col-span-1"
-                id="step_scroll"
-                ref={div}
-              >
-                {stepsOverflow ? (
-                  <button
-                    className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base "
-                    ref={top}
-                    onClick={() => scrollToBottom()}
-                  >
-                    Scroll to bottom
-                  </button>
-                ) : (
-                  <></>
-                )}
-                {result[0].steps.map((step: any, index: number) => {
-                  return (
-                    <div className="px-4">
-                      {index > 0 ? (
-                        <div className="flex justify-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="h-6 w-6"
+              }
+              onClick={() => setActive("Notebook")}
+            >
+              Notebook
+            </button>
+            <button
+              className={
+                active === "Datasets"
+                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                  : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
+              }
+              onClick={() => setActive("Datasets")}
+            >
+              Datasets
+            </button>
+          </div>
+          <div className="pt-4 sm:pt-8">
+            {active === "" && (
+              <div className="inline-grid grid-cols-5 sm:grid">
+                <div
+                  className="bg-gray col-span-full h-full max-h-[200px] overflow-y-scroll sm:col-span-2 sm:max-h-[650px] lg:col-span-1"
+                  id="step_scroll"
+                  ref={div}
+                >
+                  {stepsOverflow ? (
+                    <button
+                      className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base "
+                      ref={top}
+                      onClick={() => scrollToBottom()}
+                    >
+                      Scroll to bottom
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                  {result[0].steps.map((step: any, index: number) => {
+                    return (
+                      <div className="px-4">
+                        {index > 0 ? (
+                          <div className="flex justify-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="h-6 w-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+                              />
+                            </svg>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                        <div
+                          className={
+                            buttonIndex === index
+                              ? "my-2 flex w-full justify-center border border-4 border-gray-400 bg-gray-100 text-center sm:my-4"
+                              : "border-1 my-2 flex w-full justify-center border border-gray-400 text-center sm:my-4"
+                          }
+                        >
+                          <button
+                            className="w-full"
+                            onClick={() => setButtonIndex(index)}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-                            />
-                          </svg>
+                            <p className="break-all p-2 sm:p-4">
+                              {step.function_name}
+                            </p>
+                          </button>
                         </div>
-                      ) : (
-                        <></>
-                      )}
-                      <div
-                        className={
-                          buttonIndex === index
-                            ? "my-2 flex w-full justify-center border-4 border-gray-400 bg-gray-100 text-center sm:my-4"
-                            : "border-1 my-2 flex w-full justify-center border border-gray-400 text-center sm:my-4"
-                        }
-                      >
-                        <button className="w-full" onClick={() => setButtonIndex(index)}>
-                          <p className="break-all p-2 sm:p-4">{step.function_name}</p>
-                        </button>
                       </div>
-                    </div>
-                  );
-                })}
-                {stepsOverflow ? (
-                  <button
-                    className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base"
-                    onClick={() => scrollToTop()}
-                  >
-                    Scroll to top
-                  </button>
-                ) : (
-                  <></>
-                )}
-                {checkStepOverflow()}
-                <div ref={bottom}></div>
+                    );
+                  })}
+
+                  {stepsOverflow ? (
+                    <button
+                      className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base"
+                      onClick={() => scrollToTop()}
+                    >
+                      Scroll to top
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                  {checkStepOverflow()}
+                  <div ref={bottom}></div>
+                </div>
+                <div className="border-gray col-span-full my-4 whitespace-pre-line break-words border border-2 p-8 sm:col-span-3 sm:my-0 lg:col-span-4">
+                  <div></div>
+                  <p className="text-md pb-6 pt-8 font-semibold lg:text-xl">
+                    {result[0].steps[buttonIndex].description}
+                  </p>
+                  <SyntaxHighlighter language="python">
+                    {result[0].steps[buttonIndex].function_text}
+                  </SyntaxHighlighter>
+                </div>
               </div>
-              <div className="border-gray col-span-full my-4 whitespace-pre-line break-words border-2 p-8 sm:col-span-3 sm:my-0 lg:col-span-4">
-                <div></div>
-                <p className="text-md pb-6 pt-8 font-semibold lg:text-xl">{result[0].steps[buttonIndex].description}</p>
-                <SyntaxHighlighter language="python">{result[0].steps[buttonIndex].function_text}</SyntaxHighlighter>
-              </div>
-            </div>
-          )}
-          {/* Discussion Tab Content here */}
-          {/* {active === "Discussion" && (
+            )}
+            {/* Discussion Tab Content here */}
+            {/* {active === "Discussion" && (
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
-          {active === "Notebook" && (
-            <div className="px-6">
-              <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint.</p>
-              <p className="mb-6">
-                When you execute the entrypoint, it runs in a Python session created by running every cell in this
-                notebook once.
-              </p>
-              <NotebookViewer notebookURL={result[0].notebook_url} />
-            </div>
-          )}
-          {active === "Datasets" && (
-            <div className="px-6">
-              <div>
-                <h1 className="py-8 text-2xl underline">Datasets used in this entrypoint</h1>
-                {result[0].datasets?.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-2 py-4 sm:gap-12 md:grid-cols-2 lg:px-24">
-                    {result[0].datasets.map((dataset: any) => (
-                      <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry} />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="pb-16 pt-8 text-center text-xl">No datasets available for this entrypoint</p>
-                )}
-                {showFoundry === true ? (
-                  <div>
-                    <p className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
-                      *One or more of these datasets uses Foundry, here is how you can view it:
-                    </p>
-                    <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
-                      <code className="leading-loose">
-                        <span className="text-gray-400">
-                          # Make sure you've imported and instantiated foundry <br />
-                        </span>
-                        <span className="text-purple">from</span> foundry <span className="text-purple">import</span>{" "}
-                        Foundry <br />
-                        f = Foundry()
-                        <br />
-                        <br />
-                        <span className="text-gray-400">
-                          # Load the data here <br />
-                        </span>
-                        f.load(
-                        <span className="text-green">'DOI goes here'</span>, globus=
-                        <span className="text-orange">False</span>)
-                        <br />
-                        res = f.load_data()
-                      </code>
-                    </div>
-                    <p className="mx-6 pt-8 text-base sm:mx-16 sm:text-xl">
-                      New to Foundry or need a refresher? Click{" "}
-                      <a
-                        target="blank"
-                        href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
-                        className="text-blue hover:underline"
-                      >
-                        here
-                      </a>{" "}
-                      to learn more.
-                    </p>
-                  </div>
-                ) : (
-                  <p></p>
-                )}
+            {active === "Notebook" && (
+              <div className="px-6">
+                <p>
+                  This notebook contains the definition of this entrypoint,
+                  tagged with @garden_entrypoint.
+                </p>
+                <p className="mb-6">
+                  When you execute the entrypoint, it runs in a Python session
+                  created by running every cell in this notebook once.
+                </p>
+                <NotebookViewer notebookURL={result[0].notebook_url} />
               </div>
-            </div>
-          )}
+            )}
+            {active === "Datasets" && (
+              <div className="px-6">
+                <div>
+                  <h1 className="py-8 text-2xl underline">
+                    Datasets used in this entrypoint
+                  </h1>
+                  {result[0].datasets?.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-2 py-4 sm:gap-12 md:grid-cols-2 lg:px-24">
+                      {result[0].datasets.map((dataset: any) => (
+                        <DatasetBoxEntrypoint
+                          dataset={dataset}
+                          showFoundry={foundry}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="pb-16 pt-8 text-center text-xl">
+                      No datasets available for this entrypoint
+                    </p>
+                  )}
+                  {showFoundry === true ? (
+                    <div>
+                      <p className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
+                        *One or more of these datasets uses Foundry, here is how
+                        you can view it:
+                      </p>
+                      <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
+                        <code className="leading-loose">
+                          <span className="text-gray-400">
+                            # Make sure you've imported and instantiated foundry{" "}
+                            <br />
+                          </span>
+                          <span className="text-purple">from</span> foundry{" "}
+                          <span className="text-purple">import</span> Foundry{" "}
+                          <br />
+                          f = Foundry()
+                          <br />
+                          <br />
+                          <span className="text-gray-400">
+                            # Load the data here <br />
+                          </span>
+                          f.load(
+                          <span className="text-green">'DOI goes here'</span>,
+                          globus=
+                          <span className="text-orange">False</span>)
+                          <br />
+                          res = f.load_data()
+                        </code>
+                      </div>
+                      <p className="mx-6 pt-8 text-base sm:mx-16 sm:text-xl">
+                        New to Foundry or need a refresher? Click{" "}
+                        <a
+                          target="blank"
+                          href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                          className="text-blue hover:underline"
+                        >
+                          here
+                        </a>{" "}
+                        to learn more.
+                      </p>
+                    </div>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>

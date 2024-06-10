@@ -1,6 +1,12 @@
 import React from "react";
 
-const Modal = (props: { show: boolean; close: Function; copy: Function; doi: string; showTooltip: Function }) => {
+const Modal = (props: {
+  show: boolean;
+  close: Function;
+  copy: Function;
+  doi: string;
+  showTooltip: Function;
+}) => {
   if (!props.show) {
     return <div></div>;
   }
@@ -18,23 +24,71 @@ const Modal = (props: { show: boolean; close: Function; copy: Function; doi: str
         </button>
         <p className="pl-12 pt-16 text-3xl font-medium"> Share </p>
         <div className="flex items-center justify-evenly pt-10">
-          <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
-            <img src="img/facebook-logo.png" alt="Facebook logo" className="max-w-[5vw] sm:max-w-[3vw]" />
+          <a
+            href="https://www.facebook.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/facebook-logo.png"
+              alt="Facebook logo"
+              className="max-w-[5vw] sm:max-w-[3vw]"
+            />
           </a>
-          <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
-            <img src="img/twitter-logo.png" alt="Twitter logo" className="max-w-[5vw] sm:max-w-[3vw]" />
+          <a
+            href="https://twitter.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/twitter-logo.png"
+              alt="Twitter logo"
+              className="max-w-[5vw] sm:max-w-[3vw]"
+            />
           </a>
-          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
-            <img src="img/LinkedIn-logo.png" alt="LinkedIn logo" className="max-w-[5vw] sm:max-w-[3vw]" />
+          <a
+            href="https://www.linkedin.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/LinkedIn-logo.png"
+              alt="LinkedIn logo"
+              className="max-w-[5vw] sm:max-w-[3vw]"
+            />
           </a>
-          <a href="https://www.reddit.com/" target="_blank" rel="noopener noreferrer">
-            <img src="img/reddit-logo.png" alt="Reddit logo" className="max-w-[5vw] sm:max-w-[3vw]" />
+          <a
+            href="https://www.reddit.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/reddit-logo.png"
+              alt="Reddit logo"
+              className="max-w-[5vw] sm:max-w-[3vw]"
+            />
           </a>
-          <a href="https://github.com/" target="_blank" rel="noopener noreferrer">
-            <img src="img/github-logo.png" alt="Github logo" className="max-w-[5vw] sm:max-w-[3vw]" />
+          <a
+            href="https://github.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/github-logo.png"
+              alt="Github logo"
+              className="max-w-[5vw] sm:max-w-[3vw]"
+            />
           </a>
-          <a href="https://discord.com/" target="_blank" rel="noopener noreferrer">
-            <img src="img/discord-logo.png" alt="Discord logo" className="max-w-[5vw] sm:max-w-[3vw]" />
+          <a
+            href="https://discord.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/discord-logo.png"
+              alt="Discord logo"
+              className="max-w-[5vw] sm:max-w-[3vw]"
+            />
           </a>
         </div>
         <p className="pl-12 pt-12">Copy Link</p>

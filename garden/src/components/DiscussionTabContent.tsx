@@ -6,13 +6,17 @@ const DiscussionTabContent = (props: { comments: any; active: string }) => {
   const commentFilter = () => {
     return props.comments
       .filter((comment: any) => comment.type === "Comment")
-      .map((comment: any) => <CommentBox key={comment.body} comment={comment} />);
+      .map((comment: any) => (
+        <CommentBox key={comment.body} comment={comment} />
+      ));
   };
 
   const questionFilter = () => {
     return props.comments
       .filter((comment: any) => comment.type === "Question")
-      .map((comment: any) => <CommentBox key={comment.body} comment={comment} />);
+      .map((comment: any) => (
+        <CommentBox key={comment.body} comment={comment} />
+      ));
   };
 
   return (

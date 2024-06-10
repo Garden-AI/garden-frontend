@@ -181,7 +181,8 @@ const TeamsPage = () => {
     },
     {
       name: "Jennifer Jin",
-      major: "Computer Science + Human-Computer Interaction @ Washington University in St. Louis",
+      major:
+        "Computer Science + Human-Computer Interaction @ Washington University in St. Louis",
       linkedin_link: "https://www.linkedin.com/in/jen-jin/",
       github_link: "",
     },
@@ -199,7 +200,8 @@ const TeamsPage = () => {
     },
     {
       name: "Philip Kim",
-      major: "Computer Science, Communication Design + Human Computer Interaction @ Washington University in St. Louis",
+      major:
+        "Computer Science, Communication Design + Human Computer Interaction @ Washington University in St. Louis",
       linkedin_link: "https://www.linkedin.com/in/phillip-kim-8601b6188/",
       github_link: "",
     },
@@ -211,7 +213,8 @@ const TeamsPage = () => {
     },
     {
       name: "Allison Daemicke",
-      major: "Computer Science + Statistics @ University of Illinois Urbana-Champaign",
+      major:
+        "Computer Science + Statistics @ University of Illinois Urbana-Champaign",
       linkedin_link: "https://www.linkedin.com/in/allison-daemicke/",
       github_link: "",
     },
@@ -220,7 +223,9 @@ const TeamsPage = () => {
   return (
     <div className="mx-10 font-display">
       <div className="flex justify-center">
-        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">Our team</h1>
+        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
+          Our team
+        </h1>
       </div>
       <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {people.map((person) => (
@@ -228,7 +233,9 @@ const TeamsPage = () => {
         ))}
       </div>
       <div className="flex justify-center">
-        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">Current Students</h1>
+        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
+          Current Students
+        </h1>
       </div>
       <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {students.map((student) => (

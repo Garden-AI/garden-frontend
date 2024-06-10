@@ -1,4 +1,8 @@
-import { ControlledAccordion, AccordionItem, useAccordionProvider } from "@szhsin/react-accordion";
+import {
+  ControlledAccordion,
+  AccordionItem,
+  useAccordionProvider,
+} from "@szhsin/react-accordion";
 import { useState } from "react";
 import Modal from "../components/Modal";
 import closeModal from "../pages/EntrypointPage";
@@ -44,7 +48,10 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
   return (
     <div>
       {/* <ToggleButtonsAccordion toggleAll={toggleAll}/> */}
-      <ControlledAccordion providerValue={providerValue} className=" mr-32 flex w-full flex-col font-display">
+      <ControlledAccordion
+        providerValue={providerValue}
+        className=" mr-32 flex w-full flex-col font-display"
+      >
         {/* <MachineRequirements/> */}
 
         <AccordionItem
@@ -80,7 +87,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                   stroke="currentColor"
                   className="h-6 w-6"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 12h-15"
+                  />
                 </svg>
               ) : (
                 <svg
@@ -91,13 +102,18 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                   stroke="currentColor"
                   className="h-6 w-6"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
                 </svg>
               )}
             </div>
           )}
           buttonProps={{
-            className: ({ isEnter }) => `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
+            className: ({ isEnter }) =>
+              `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
           }}
         >
           <div className="grid grid-cols-1 gap-x-12 gap-y-12 px-8 py-4 md:grid-cols-2 lg:gap-x-32 lg:px-16">
@@ -124,11 +140,19 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                             />
                           </svg>
                           {paper.doi ? (
-                            <a href={"https://www.doi.org/" + paper.doi} target="_blank" rel="noreferrer">
-                              <h1 className="w-full break-words text-2xl">{paper.title}</h1>
+                            <a
+                              href={"https://www.doi.org/" + paper.doi}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <h1 className="w-full break-words text-2xl">
+                                {paper.title}
+                              </h1>
                             </a>
                           ) : (
-                            <h1 className="w-full break-words text-2xl">{paper.title}</h1>
+                            <h1 className="w-full break-words text-2xl">
+                              {paper.title}
+                            </h1>
                           )}
                         </div>
                         <div className="px-2 py-2">
@@ -138,7 +162,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                                 Authors:
                                 {paper.authors
                                   .map((author: any) => <span> {author}</span>)
-                                  .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                                  .reduce((prev: any, curr: any) => [
+                                    prev,
+                                    ", ",
+                                    curr,
+                                  ])}
                               </p>
                             ) : (
                               <></>
@@ -149,7 +177,10 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                           {paper.doi ? (
                             <p className="flex gap-2 py-2">
                               DOI: {paper.doi}{" "}
-                              <button title="Copy DOI" onClick={() => copy(paper.doi)}>
+                              <button
+                                title="Copy DOI"
+                                onClick={() => copy(paper.doi)}
+                              >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
@@ -182,7 +213,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                             <></>
                           )}
                           {paper.citation ? (
-                            <button className="flex gap-2" title="Copy Citation" onClick={() => copy(paper.citation)}>
+                            <button
+                              className="flex gap-2"
+                              title="Copy Citation"
+                              onClick={() => copy(paper.citation)}
+                            >
                               Copy Citation
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -207,7 +242,13 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                               Copied to Clipboard
                             </p>
                           )}
-                          <Modal show={show} close={closeModal} copy={copy} doi={paper.doi} showTooltip={showTooltip} />
+                          <Modal
+                            show={show}
+                            close={closeModal}
+                            copy={copy}
+                            doi={paper.doi}
+                            showTooltip={showTooltip}
+                          />
                         </div>
                       </div>
                     );
@@ -228,9 +269,15 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                     return (
                       <div className="border-1 flex flex-col justify-between rounded-xl border border-gray-300">
                         <div className="flex w-full items-center gap-4 px-2 pb-6 pt-2">
-                          <img src="img/github-logo.png" className="max-w-[5vw]" alt="Github logo" />
+                          <img
+                            src="img/github-logo.png"
+                            className="max-w-[5vw]"
+                            alt="Github logo"
+                          />
 
-                          <h1 className="w-full break-words text-2xl">{repo.repo_name}</h1>
+                          <h1 className="w-full break-words text-2xl">
+                            {repo.repo_name}
+                          </h1>
                         </div>
                         <div className="px-2 py-2">
                           {repo.contributors ? (
@@ -239,7 +286,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                                 Contributors:
                                 {repo.contributors
                                   .map((author: any) => <span> {author}</span>)
-                                  .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                                  .reduce((prev: any, curr: any) => [
+                                    prev,
+                                    ", ",
+                                    curr,
+                                  ])}
                               </p>
                             ) : (
                               <></>
@@ -248,7 +299,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                             <></>
                           )}
                           <div className="flex items-center justify-between">
-                            <button className="flex gap-2" title="Copy Link" onClick={() => copy(repo.url)}>
+                            <button
+                              className="flex gap-2"
+                              title="Copy Link"
+                              onClick={() => copy(repo.url)}
+                            >
                               Copy Link
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +344,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
 
             {/* Container Image */}
             {/* <ContainerImage container={fakeContainer}/> */}
-            {associatedCount === 0 ? <p>No associated materials available</p> : <></>}
+            {associatedCount === 0 ? (
+              <p>No associated materials available</p>
+            ) : (
+              <></>
+            )}
           </div>
         </AccordionItem>
 

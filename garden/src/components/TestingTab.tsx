@@ -68,7 +68,11 @@ const TestingTab = () => {
               stroke="currentColor"
               className="h-6 w-6"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 12h-15"
+              />
             </svg>
           ) : (
             <svg
@@ -79,13 +83,18 @@ const TestingTab = () => {
               stroke="currentColor"
               className="h-6 w-6"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
             </svg>
           )}
         </div>
       )}
       buttonProps={{
-        className: ({ isEnter }) => `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
+        className: ({ isEnter }) =>
+          `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
       }}
     >
       <div className="grid grid-cols-1 gap-x-12 gap-y-12 px-8 py-4 md:grid-cols-2 lg:gap-x-32 lg:px-16">
@@ -117,7 +126,9 @@ const TestingTab = () => {
                 )}
                 <div className="flex flex-col gap-0">
                   <p>{test.test}</p>
-                  <p className="text-sm text-gray-500">Accuracy: {test.accuracy}</p>
+                  <p className="text-sm text-gray-500">
+                    Accuracy: {test.accuracy}
+                  </p>
                 </div>
                 <span className="text-gray-500">{test.date}</span>
               </div>

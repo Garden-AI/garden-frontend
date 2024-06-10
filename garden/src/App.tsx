@@ -1,7 +1,6 @@
-
 import React from "react";
 import { authorization } from "@globus/sdk/cjs";
-import { SEARCH_SCOPE, GLOBUS_NATIVE_CLIENT_ID } from "./constants";
+// import { SEARCH_SCOPE, GLOBUS_NATIVE_CLIENT_ID } from "./constants";
 import {
   Routes,
   Route,
@@ -25,10 +24,11 @@ import useGoogleAnalytics from "./services/analytics";
   is the only way to trigger the createStorage() side effect. 
   That lets us use the Globus SDK to make search calls.
 */
-new authorization.PKCEAuthorization({
-  client_id: GLOBUS_NATIVE_CLIENT_ID,
-  redirect_uri: "http://localhost:3000/",
-  requested_scopes: `openid profile email ${SEARCH_SCOPE}`,
+
+authorization.create({
+  client: import.meta.env.VITE_GLOBUS_CLIENT_ID,
+  redirect: import.meta.env.VITE_GLOBUS_REDIRECT_URI,
+  scopes: import.meta.env.VITE_GLOBUS_SEARCH_SCOPE,
 });
 
 const router = createHashRouter([

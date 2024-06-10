@@ -1,12 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 async function deferRender() {
-  console.log(process.env.REACT_APP_SHOULD_MOCK);
-  if (process.env.REACT_APP_SHOULD_MOCK !== "true") {
+  console.log(import.meta.env.VITE_APP_SHOULD_MOCK);
+  if (import.meta.env.VITE_APP_SHOULD_MOCK !== "true") {
     return;
   }
 
@@ -18,7 +17,9 @@ async function deferRender() {
 }
 
 deferRender().then(() => {
-  const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+  const root = ReactDOM.createRoot(
+    document.getElementById("root") as HTMLElement,
+  );
   root.render(
     <React.StrictMode>
       <App />

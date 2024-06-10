@@ -16,7 +16,11 @@ const MachineRequirements = () => {
               stroke="currentColor"
               className="h-6 w-6"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 12h-15"
+              />
             </svg>
           ) : (
             <svg
@@ -27,13 +31,18 @@ const MachineRequirements = () => {
               stroke="currentColor"
               className="h-6 w-6"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
             </svg>
           )}
         </div>
       )}
       buttonProps={{
-        className: ({ isEnter }) => `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
+        className: ({ isEnter }) =>
+          `w-full hover:bg-gray-100 ${isEnter && "bg-gray-100"}`,
       }}
     >
       <p className="p-4">Machine</p>
