@@ -19,14 +19,14 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const navigate = useNavigate();
 
   const [show, setShow] = useState(false);
-  const [active, setActive] = useState('');
+  const [active, setActive] = useState("");
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [stepsOverflow, setStepsOverflow] = useState(false);
-  const [pClass, setPClass] = useState('overflow-x-hidden whitespace-nowrap');
+  const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
   const [buttonIndex, setButtonIndex] = useState(0);
   const [result, setResult] = useState<any>(undefined);
-  const [gardenDOI, setGardenDOI] = useState('');
+  const [gardenDOI, setGardenDOI] = useState("");
   const [showFoundry, setShowFoundry] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
@@ -106,7 +106,7 @@ return my_entrypoint(input)`;
         setGardenDOI(selectedGarden.doi);
       } catch (error) {
         setResult([]);
-        setGardenDOI('');
+        setGardenDOI("");
       }
     }
     Search();
@@ -184,13 +184,13 @@ return my_entrypoint(input)`;
 
   //Show more/show less functionality
   const contributorMore = () => {
-    setPClass('');
+    setPClass("");
     setIsOverflowing(false);
     setHasOverflow(true);
   };
 
   const contributorLess = () => {
-    setPClass('overflow-x-hidden whitespace-nowrap');
+    setPClass("overflow-x-hidden whitespace-nowrap");
     setIsOverflowing(true);
     setHasOverflow(false);
   };
@@ -282,7 +282,11 @@ return my_entrypoint(input)`;
                   />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
                 </svg>
-                <div>{result[0].tags.map((t: any) => <span>{t}</span>).reduce((prev: any, curr: any) => [prev, ', ', curr])}</div>
+                <div>
+                  {result[0].tags
+                    .map((t: any) => <span>{t}</span>)
+                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                </div>
               </>
             ) : (
               <></>
@@ -297,7 +301,7 @@ return my_entrypoint(input)`;
                 .map((author: any) => {
                   return <span>{author}</span>;
                 })
-                .reduce((prev: any, curr: any) => [prev, ', ', curr])}
+                .reduce((prev: any, curr: any) => [prev, ", ", curr])}
               {hasOverflow ? (
                 <button className="whitespace-nowrap pl-2 text-blue hover:underline" onClick={contributorLess}>
                   {" "}
@@ -368,214 +372,208 @@ return my_entrypoint(input)`;
                 />
               </svg>
             </button>
-            </div>
-            <div className="flex flex-col items-center justify-center">
-              
-              {/* <OpenInButtons/> */}
-            </div>
           </div>
-          <div className="mt-0 flex justify-center pt-0">
-            <p>
-              To run this entrypoint, you need to be a part of{" "}
-              <a
-                className="text-green underline"
-                target="_blank"
-                href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about"
-              >
-                this Globus group
-              </a>
-            </p>
-          </div>
+          <div className="flex flex-col items-center justify-center">{/* <OpenInButtons/> */}</div>
         </div>
-
-        <AccordionTop entrypoint={result} />
-
-        <div className="pb-12">
-          <div className="flex h-12 justify-evenly ">
-            <button
-              className={
-                active === "Steps"
-                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
-                  : active === ""
-                    ? "w-full border-b-4 border-green bg-green bg-opacity-30"
-                    : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
-              }
-              onClick={() => setActive('')}
+        <div className="mt-0 flex justify-center pt-0">
+          <p>
+            To run this entrypoint, you need to be a part of{" "}
+            <a
+              className="text-green underline"
+              target="_blank"
+              href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about"
             >
-              Steps
-            </button>
-            {/* Discussion Tab here */}
-            {/* <DiscussionTab active={active} setActive={setActive}/> */}
-            <button
-              className={
-                active === "Notebook"
+              this Globus group
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <AccordionTop entrypoint={result} />
+
+      <div className="pb-12">
+        <div className="flex h-12 justify-evenly ">
+          <button
+            className={
+              active === "Steps"
+                ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                : active === ""
                   ? "w-full border-b-4 border-green bg-green bg-opacity-30"
                   : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
-              }
-              onClick={() => setActive('Notebook')}
-            >
-              Notebook
-            </button>
-            <button
-              className={
-                active === "Datasets"
-                  ? "w-full border-b-4 border-green bg-green bg-opacity-30"
-                  : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
-              }
-              onClick={() => setActive('Datasets')}
-            >
-              Datasets
-            </button>
-          </div>
-          <div className="pt-4 sm:pt-8">
-            {active === "" && (
-              <div className="inline-grid grid-cols-5 sm:grid">
-                <div
-                  className="bg-gray col-span-full h-full max-h-[200px] overflow-y-scroll sm:col-span-2 sm:max-h-[650px] lg:col-span-1"
-                  id="step_scroll"
-                  ref={div}
-                >
-                  {stepsOverflow ? (
-                    <button
-                      className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base "
-                      ref={top}
-                      onClick={() => scrollToBottom()}
-                    >
-                      Scroll to bottom
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                  {result[0].steps.map((step: any, index: number) => {
-                    return (
-                      <div className="px-4">
-                        {index > 0 ? (
-                          <div className="flex justify-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="h-6 w-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-                              />
-                            </svg>
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                        <div
-                          className={
-                            buttonIndex === index
-                              ? "my-2 flex w-full justify-center border-4 border-gray-400 bg-gray-100 text-center sm:my-4"
-                              : "border-1 my-2 flex w-full justify-center border border-gray-400 text-center sm:my-4"
-                          }
-                        >
-                          <button className="w-full" onClick={() => setButtonIndex(index)}>
-                            <p className="break-all p-2 sm:p-4">{step.function_name}</p>
-                          </button>
+            }
+            onClick={() => setActive("")}
+          >
+            Steps
+          </button>
+          {/* Discussion Tab here */}
+          {/* <DiscussionTab active={active} setActive={setActive}/> */}
+          <button
+            className={
+              active === "Notebook"
+                ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
+            }
+            onClick={() => setActive("Notebook")}
+          >
+            Notebook
+          </button>
+          <button
+            className={
+              active === "Datasets"
+                ? "w-full border-b-4 border-green bg-green bg-opacity-30"
+                : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
+            }
+            onClick={() => setActive("Datasets")}
+          >
+            Datasets
+          </button>
+        </div>
+        <div className="pt-4 sm:pt-8">
+          {active === "" && (
+            <div className="inline-grid grid-cols-5 sm:grid">
+              <div
+                className="bg-gray col-span-full h-full max-h-[200px] overflow-y-scroll sm:col-span-2 sm:max-h-[650px] lg:col-span-1"
+                id="step_scroll"
+                ref={div}
+              >
+                {stepsOverflow ? (
+                  <button
+                    className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base "
+                    ref={top}
+                    onClick={() => scrollToBottom()}
+                  >
+                    Scroll to bottom
+                  </button>
+                ) : (
+                  <></>
+                )}
+                {result[0].steps.map((step: any, index: number) => {
+                  return (
+                    <div className="px-4">
+                      {index > 0 ? (
+                        <div className="flex justify-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="h-6 w-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+                            />
+                          </svg>
                         </div>
+                      ) : (
+                        <></>
+                      )}
+                      <div
+                        className={
+                          buttonIndex === index
+                            ? "my-2 flex w-full justify-center border-4 border-gray-400 bg-gray-100 text-center sm:my-4"
+                            : "border-1 my-2 flex w-full justify-center border border-gray-400 text-center sm:my-4"
+                        }
+                      >
+                        <button className="w-full" onClick={() => setButtonIndex(index)}>
+                          <p className="break-all p-2 sm:p-4">{step.function_name}</p>
+                        </button>
                       </div>
-                    );
-                  })}
-                  {stepsOverflow ? (
-                    <button
-                      className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base"
-                      onClick={() => scrollToTop()}
-                    >
-                      Scroll to top
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                  {checkStepOverflow()}
-                  <div ref={bottom}></div>
-                </div>
-                <div className="border-gray col-span-full my-4 whitespace-pre-line break-words border-2 p-8 sm:col-span-3 sm:my-0 lg:col-span-4">
-                  <div></div>
-                  <p className="text-md pb-6 pt-8 font-semibold lg:text-xl">
-                    {result[0].steps[buttonIndex].description}
-                  </p>
-                  <SyntaxHighlighter language="python">{result[0].steps[buttonIndex].function_text}</SyntaxHighlighter>
-                </div>
+                    </div>
+                  );
+                })}
+                {stepsOverflow ? (
+                  <button
+                    className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base"
+                    onClick={() => scrollToTop()}
+                  >
+                    Scroll to top
+                  </button>
+                ) : (
+                  <></>
+                )}
+                {checkStepOverflow()}
+                <div ref={bottom}></div>
               </div>
-            )}
-            {/* Discussion Tab Content here */}
-            {/* {active === "Discussion" && (
+              <div className="border-gray col-span-full my-4 whitespace-pre-line break-words border-2 p-8 sm:col-span-3 sm:my-0 lg:col-span-4">
+                <div></div>
+                <p className="text-md pb-6 pt-8 font-semibold lg:text-xl">{result[0].steps[buttonIndex].description}</p>
+                <SyntaxHighlighter language="python">{result[0].steps[buttonIndex].function_text}</SyntaxHighlighter>
+              </div>
+            </div>
+          )}
+          {/* Discussion Tab Content here */}
+          {/* {active === "Discussion" && (
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
-            {active === 'Notebook' && (
-              <div className="px-6">
-                <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint.</p>
-                <p className="mb-6">
-                  When you execute the entrypoint, it runs in a Python session created by running every cell in this
-                  notebook once.
-                </p>
-                <NotebookViewer notebookURL={result[0].notebook_url} />
-              </div>
-            )}
-            {active === 'Datasets' && (
-              <div className="px-6">
-                <div>
-                  <h1 className="underline text-2xl py-8">Datasets used in this entrypoint</h1>
-                  {result[0].datasets?.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
-                      {result[0].datasets.map((dataset: any) => (
-                        <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry} />
-                      ))}
+          {active === "Notebook" && (
+            <div className="px-6">
+              <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint.</p>
+              <p className="mb-6">
+                When you execute the entrypoint, it runs in a Python session created by running every cell in this
+                notebook once.
+              </p>
+              <NotebookViewer notebookURL={result[0].notebook_url} />
+            </div>
+          )}
+          {active === "Datasets" && (
+            <div className="px-6">
+              <div>
+                <h1 className="py-8 text-2xl underline">Datasets used in this entrypoint</h1>
+                {result[0].datasets?.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-2 py-4 sm:gap-12 md:grid-cols-2 lg:px-24">
+                    {result[0].datasets.map((dataset: any) => (
+                      <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="pb-16 pt-8 text-center text-xl">No datasets available for this entrypoint</p>
+                )}
+                {showFoundry === true ? (
+                  <div>
+                    <p className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
+                      *One or more of these datasets uses Foundry, here is how you can view it:
+                    </p>
+                    <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
+                      <code className="leading-loose">
+                        <span className="text-gray-400">
+                          # Make sure you've imported and instantiated foundry <br />
+                        </span>
+                        <span className="text-purple">from</span> foundry <span className="text-purple">import</span>{" "}
+                        Foundry <br />
+                        f = Foundry()
+                        <br />
+                        <br />
+                        <span className="text-gray-400">
+                          # Load the data here <br />
+                        </span>
+                        f.load(
+                        <span className="text-green">'DOI goes here'</span>, globus=
+                        <span className="text-orange">False</span>)
+                        <br />
+                        res = f.load_data()
+                      </code>
                     </div>
-                  ) : (
-                    <p className="pb-16 pt-8 text-center text-xl">No datasets available for this entrypoint</p>
-                  )}
-                  {showFoundry === true ? (
-                    <div>
-                      <p className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
-                        *One or more of these datasets uses Foundry, here is how you can view it:
-                      </p>
-                      <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
-                        <code className="leading-loose">
-                          <span className="text-gray-400">
-                            # Make sure you've imported and instantiated foundry <br />
-                          </span>
-                          <span className="text-purple">from</span> foundry <span className="text-purple">import</span>{" "}
-                          Foundry <br />
-                          f = Foundry()
-                          <br />
-                          <br />
-                          <span className="text-gray-400">
-                            # Load the data here <br />
-                          </span>
-                          f.load(
-                          <span className="text-green">'DOI goes here'</span>, globus=
-                          <span className="text-orange">False</span>)
-                          <br />
-                          res = f.load_data()
-                        </code>
-                      </div>
-                      <p className="mx-6 pt-8 text-base sm:mx-16 sm:text-xl">
-                        New to Foundry or need a refresher? Click{" "}
-                        <a
-                          target="blank"
-                          href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
-                          className="text-blue hover:underline"
-                        >
-                          here
-                        </a>{" "}
-                        to learn more.
-                      </p>
-                    </div>
-                  ) : (
-                    <p></p>
-                  )}
-                </div>
+                    <p className="mx-6 pt-8 text-base sm:mx-16 sm:text-xl">
+                      New to Foundry or need a refresher? Click{" "}
+                      <a
+                        target="blank"
+                        href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                        className="text-blue hover:underline"
+                      >
+                        here
+                      </a>{" "}
+                      to learn more.
+                    </p>
+                  </div>
+                ) : (
+                  <p></p>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </>
