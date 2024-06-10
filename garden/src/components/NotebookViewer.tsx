@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { IpynbRenderer } from "react-ipynb-renderer";
-import "react-ipynb-renderer/dist/styles/monokai.css";
+import "../ipynbPreview.css";
 
 type NotebookViewerProps = {
   notebookURL: string;
