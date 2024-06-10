@@ -35,7 +35,8 @@
     "predeploy": "npm run build",
     "deploy-staging": "gh-pages -d build -r https://github.com/Garden-AI/garden-frontend-staging",
     "deploy-prod": "gh-pages -d build",
-    "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\""
+    "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
+    "test": "vitest"
   },
   "eslintConfig": {
     "extends": [
@@ -64,7 +65,8 @@
     "postcss": "^8.4.38",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
-    "tailwindcss": "^3.4.4"
+    "tailwindcss": "^3.4.4",
+    "vitest": "^1.6.0"
   },
   "msw": {
     "workerDirectory": "public"
