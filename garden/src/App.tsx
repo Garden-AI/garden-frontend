@@ -1,7 +1,5 @@
 import { authorization } from "@globus/sdk/cjs";
-
-/* import { AuthorizationManager } from "@globus/sdk/lib/core/authorization/AuthorizationManager"; */
-
+/*import { AuthorizationManager } from "@globus/sdk/lib/core/authorization/AuthorizationManager";*/
 import { SEARCH_SCOPE, GLOBUS_NATIVE_CLIENT_ID } from "./constants";
 import {
   Routes,
@@ -20,6 +18,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
+
+console.log('Authorization module exports:', authorization);
 
 /*
   We are not making calls that need authentication, but making a PKCEAuthorization 
