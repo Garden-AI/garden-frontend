@@ -19,14 +19,14 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const navigate = useNavigate();
 
   const [show, setShow] = useState(false);
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState('');
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [stepsOverflow, setStepsOverflow] = useState(false);
-  const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
+  const [pClass, setPClass] = useState('overflow-x-hidden whitespace-nowrap');
   const [buttonIndex, setButtonIndex] = useState(0);
   const [result, setResult] = useState<any>(undefined);
-  const [gardenDOI, setGardenDOI] = useState("");
+  const [gardenDOI, setGardenDOI] = useState('');
   const [showFoundry, setShowFoundry] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
@@ -106,7 +106,7 @@ return my_entrypoint(input)`;
         setGardenDOI(selectedGarden.doi);
       } catch (error) {
         setResult([]);
-        setGardenDOI("");
+        setGardenDOI('');
       }
     }
     Search();
@@ -152,7 +152,6 @@ return my_entrypoint(input)`;
       </div>
     );
   }
-  console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.entrypoint = [result[0].title, `/entrypoint/${text}`];
 
@@ -163,11 +162,6 @@ return my_entrypoint(input)`;
 
   const copyCode = async () => {
     await navigator.clipboard.writeText(exampleFunctionText(gardenDOI, result[0]));
-    showTooltip();
-  };
-
-  const copyCodeStepsTab = async () => {
-    await navigator.clipboard.writeText(result[0].steps[buttonIndex].function_text);
     showTooltip();
   };
 
@@ -190,13 +184,13 @@ return my_entrypoint(input)`;
 
   //Show more/show less functionality
   const contributorMore = () => {
-    setPClass("");
+    setPClass('');
     setIsOverflowing(false);
     setHasOverflow(true);
   };
 
   const contributorLess = () => {
-    setPClass("overflow-x-hidden whitespace-nowrap");
+    setPClass('overflow-x-hidden whitespace-nowrap');
     setIsOverflowing(true);
     setHasOverflow(false);
   };
@@ -288,11 +282,7 @@ return my_entrypoint(input)`;
                   />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
                 </svg>
-                <div>
-                  {result[0].tags
-                    .map((t: any) => <span>{t}</span>)
-                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
-                </div>
+                <div>{result[0].tags.map((t: any) => <span>{t}</span>).reduce((prev: any, curr: any) => [prev, ', ', curr])}</div>
               </>
             ) : (
               <></>
@@ -307,7 +297,7 @@ return my_entrypoint(input)`;
                 .map((author: any) => {
                   return <span>{author}</span>;
                 })
-                .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                .reduce((prev: any, curr: any) => [prev, ', ', curr])}
               {hasOverflow ? (
                 <button className="whitespace-nowrap pl-2 text-blue hover:underline" onClick={contributorLess}>
                   {" "}
@@ -378,6 +368,11 @@ return my_entrypoint(input)`;
                 />
               </svg>
             </button>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              
+              {/* <OpenInButtons/> */}
+            </div>
           </div>
           <div className="mt-0 flex justify-center pt-0">
             <p>
@@ -405,7 +400,7 @@ return my_entrypoint(input)`;
                     ? "w-full border-b-4 border-green bg-green bg-opacity-30"
                     : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
-              onClick={() => setActive("")}
+              onClick={() => setActive('')}
             >
               Steps
             </button>
@@ -417,7 +412,7 @@ return my_entrypoint(input)`;
                   ? "w-full border-b-4 border-green bg-green bg-opacity-30"
                   : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
-              onClick={() => setActive("Notebook")}
+              onClick={() => setActive('Notebook')}
             >
               Notebook
             </button>
@@ -427,7 +422,7 @@ return my_entrypoint(input)`;
                   ? "w-full border-b-4 border-green bg-green bg-opacity-30"
                   : "hover:border-b-1 w-full bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"
               }
-              onClick={() => setActive("Datasets")}
+              onClick={() => setActive('Datasets')}
             >
               Datasets
             </button>
@@ -488,29 +483,6 @@ return my_entrypoint(input)`;
                       </div>
                     );
                   })}
-                  <div className="flex flex-col gap-2">
-                    <p className="text-center">Copy Code:</p>
-                    <button
-                      title="Copy Code"
-                      onClick={copyCodeStepsTab}
-                      className="flex w-full items-center justify-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="gray"
-                        className="h-6 w-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
-                        />
-                      </svg>
-                    </button>
-                  </div>
                   {stepsOverflow ? (
                     <button
                       className="ml-[32%] w-[36%] rounded-xl bg-green p-1 px-2 text-xs text-white hover:border-2 hover:border-black sm:ml-[13%] sm:w-[74%] sm:text-base"
@@ -537,7 +509,7 @@ return my_entrypoint(input)`;
             {/* {active === "Discussion" && (
               <DiscussionTabContent active={active} comments={fakeComments}/>
             )} */}
-            {active === "Notebook" && (
+            {active === 'Notebook' && (
               <div className="px-6">
                 <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint.</p>
                 <p className="mb-6">
@@ -547,13 +519,13 @@ return my_entrypoint(input)`;
                 <NotebookViewer notebookURL={result[0].notebook_url} />
               </div>
             )}
-            {active === "Datasets" && (
+            {active === 'Datasets' && (
               <div className="px-6">
                 <div>
-                  <h1 className="py-8 text-2xl underline">Datasets used in this entrypoint</h1>
-                  {result[0].models[0]?.datasets.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-2 py-4 sm:gap-12 md:grid-cols-2 lg:px-24">
-                      {result[0].models[0].datasets.map((dataset: any) => (
+                  <h1 className="underline text-2xl py-8">Datasets used in this entrypoint</h1>
+                  {result[0].datasets?.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
+                      {result[0].datasets.map((dataset: any) => (
                         <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry} />
                       ))}
                     </div>

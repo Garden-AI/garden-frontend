@@ -2,6 +2,7 @@ import { ControlledAccordion, AccordionItem, useAccordionProvider } from "@szhsi
 import { useState } from "react";
 import Modal from "../components/Modal";
 import closeModal from "../pages/EntrypointPage";
+/*import showTooltip from "../pages/EntrypointPage"; */
 
 // import ContainerImage from "./ContainerImage";
 // import MachineRequirements from "./MachineRequirements";

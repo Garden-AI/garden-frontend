@@ -20,25 +20,19 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const getDatasetListFromResult = (result: any): Array<Object> => {
-    if (!result[0]?.entries[0]?.content?.entrypoints) {
-      return [];
-    }
-    const doiToDataset: { [key: string]: any } = {};
     const entrypoints = result[0].entries[0].content.entrypoints;
-    for (let entrypoint of entrypoints) {
-      for (let model of entrypoint.models) {
-        for (let dataset of model.datasets) {
-          if (dataset.doi) {
-            doiToDataset[dataset.doi] = dataset;
-          }
-        }
+
+    let allDatasets: Array<Object> = [];
+    entrypoints.forEach((entrypoint: any) => {
+      if (entrypoint.datasets) {
+        allDatasets = allDatasets.concat(entrypoint.datasets);
       }
-    }
-    const allDatasets = Object.values(doiToDataset);
+    });
+
     return allDatasets;
   };
 
-  //API call to get data for a garden associted with the DOI
+  // API call to get data for a garden associated with the DOI
   useEffect(() => {
     async function Search() {
       try {
@@ -105,7 +99,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
-  console.log(result);
+  // console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
   bread.entrypoint = [];
