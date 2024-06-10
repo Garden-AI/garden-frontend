@@ -7,7 +7,7 @@ import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { NotebookViewer } from "../components/NotebookViewer";
 import { ExampleFunction } from "../components/ExampleFunction";
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import SyntaxHighlighter from "react-syntax-highlighter";
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
 // import EntrypointMetrics from "../components/EntrypointMetrics";
@@ -28,7 +28,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const [result, setResult] = useState<any>(undefined);
   const [gardenDOI, setGardenDOI] = useState("");
   const [showFoundry, setShowFoundry] = useState(false);
-  const [tooltipVisible, setTooltipVisible]= useState(false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const widthRef = useRef<HTMLParagraphElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
@@ -48,61 +48,73 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const checkStepOverflow = () => {
     if (div.current) {
       const contain = div.current;
-      if (contain!.clientHeight < contain!.scrollHeight && stepsOverflow===false) {
+      if (
+        contain!.clientHeight < contain!.scrollHeight &&
+        stepsOverflow === false
+      ) {
         setStepsOverflow(true);
       }
     }
-  }
+  };
 
   const exampleFunctionText = (
-    gardenDOI: string, 
-    entrypoint: {test_functions: Array<string>, doi: string, short_name?: string}
+    gardenDOI: string,
+    entrypoint: {
+      test_functions: Array<string>;
+      doi: string;
+      short_name?: string;
+    }
   ): string => {
     const prefixText = `from garden_ai import GardenClient
 client = GardenClient()
 garden = client.get_published_garden("${gardenDOI}")
-\n`
-    
+\n`;
+
     // Ideally we have a test function and we can display that.
     if (entrypoint.test_functions.length > 0) {
       let functionText = entrypoint.test_functions[0];
-      // The test function writer called it by its short name, 
+      // The test function writer called it by its short name,
       // but the consumer will call it by garden.short_name
       if (entrypoint.short_name) {
-        functionText = functionText.replaceAll(entrypoint.short_name, `garden.${entrypoint.short_name}`);
+        functionText = functionText.replaceAll(
+          entrypoint.short_name,
+          `garden.${entrypoint.short_name}`
+        );
       }
       const fullFunction = prefixText + functionText;
-      
+
       // Remove the @entrypoint_test decorator if it's in this snippet
-      const lines = fullFunction.split('\n');
-      const filteredLines = lines.filter(line => !line.trim().startsWith('@entrypoint_test'));
-      return filteredLines.join('\n');
+      const lines = fullFunction.split("\n");
+      const filteredLines = lines.filter(
+        (line) => !line.trim().startsWith("@entrypoint_test")
+      );
+      return filteredLines.join("\n");
     }
-    // If we don't have a test function, 
+    // If we don't have a test function,
     // we can use a generic template that shows how to call the entrypoint.
     let fallbackFunction = prefixText + `input = ['Data Here']\n`;
     if (entrypoint.short_name) {
-      fallbackFunction += `return garden.${entrypoint.short_name}(input)`
-    }
-    else {
+      fallbackFunction += `return garden.${entrypoint.short_name}(input)`;
+    } else {
       fallbackFunction += `my_entrypoint = next(e for e in garden.entrypoints if e.doi == ${entrypoint.doi})
-return my_entrypoint(input)`
+return my_entrypoint(input)`;
     }
 
-    return fallbackFunction
-  }
+    return fallbackFunction;
+  };
 
   //API call to get the data based on the doi of the entrypoint
   useEffect(() => {
     async function Search() {
       try {
-        const gmetaArray = await searchGardenIndex({q: doi || ""});
-        const selectedGarden = gmetaArray[0].entries[0].content
+        const gmetaArray = await searchGardenIndex({ q: doi || "" });
+        const selectedGarden = gmetaArray[0].entries[0].content;
         const selectedEntrypoint = selectedGarden.entrypoints.filter(
           (pipe: any) => pipe.doi === doi
-        )
-        setResult(selectedEntrypoint)
-        setGardenDOI(selectedGarden.doi)
+        );
+        console.log("Selected Entry Point: ", selectedEntrypoint);
+        setResult(selectedEntrypoint);
+        setGardenDOI(selectedGarden.doi);
       } catch (error) {
         setResult([]);
         setGardenDOI("");
@@ -155,33 +167,30 @@ return my_entrypoint(input)`
       </div>
     );
   }
-  console.log(result)
+  console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.entrypoint = [result[0].title, `/entrypoint/${text}`];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
-    showTooltip()
-  };
-  
-  const copyCode = async () => {
-    await navigator.clipboard.writeText(exampleFunctionText(gardenDOI, result[0]));
-    showTooltip()
+    showTooltip();
   };
 
-  const copyCodeStepsTab = async () => {
-    await navigator.clipboard.writeText(result[0].steps[buttonIndex].function_text);
-    showTooltip()
-  }
+  const copyCode = async () => {
+    await navigator.clipboard.writeText(
+      exampleFunctionText(gardenDOI, result[0])
+    );
+    showTooltip();
+  };
 
   const showTooltip = () => {
-    if(tooltipVisible===false){
-      setTooltipVisible(true)
-      setTimeout(()=>{
-        setTooltipVisible(false)
-      }, 3000)
+    if (tooltipVisible === false) {
+      setTooltipVisible(true);
+      setTimeout(() => {
+        setTooltipVisible(false);
+      }, 3000);
     }
-  }
+  };
 
   const showModal = () => {
     setShow(true);
@@ -206,11 +215,14 @@ return my_entrypoint(input)`
 
   //scroll button for steps tab if there is overflow
   const scrollToBottom = () => {
-    div.current?.scrollTo({top:div.current.scrollHeight, behavior: "smooth"})
+    div.current?.scrollTo({
+      top: div.current.scrollHeight,
+      behavior: "smooth",
+    });
   };
 
   const scrollToTop = () => {
-    div.current?.scrollTo({top:0, behavior: "smooth"})
+    div.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const foundry = () => {
@@ -225,7 +237,9 @@ return my_entrypoint(input)`
         {/* Entrypoint Header */}
         <div className="flex flex-col gap-1">
           <div className="flex gap4 sm:gap-8">
-            <h1 className="text-2xl sm:text-3xl font-display">{result[0].title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-display">
+              {result[0].title}
+            </h1>
             <div className="flex gap-4 items-center">
               <button title="Copy link" onClick={copy}>
                 <svg
@@ -257,14 +271,19 @@ return my_entrypoint(input)`
               </button>
               {/* Pin and Cite buttons to be added later */}
               {/* <CitePinButtons/> */}
-              {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
+              {tooltipVisible && (
+                <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">
+                  Copied to Clipboard
+                </p>
+              )}
               <Modal
                 show={show}
                 close={closeModal}
                 copy={copy}
                 doi={result[0].doi}
                 showTooltip={showTooltip}
-              />Enpoinsx
+              />
+              Enpoinsx
             </div>
           </div>
           <div className="text-gray-500 text-sm flex flex-wrap gap-1">
@@ -343,46 +362,76 @@ return my_entrypoint(input)`
         <div className="pl-4">
           <div className="flex flex-row">
             <div className="w-full border-b border-gray-300 text-2xl flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-5 h-5 mr-2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-            At a glance
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-5 h-5 mr-2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
+              </svg>
+              At a glance
             </div>
           </div>
           <p className="p-4">{result[0].description}</p>
         </div>
 
         <div className="flex flex-col gap-8 w-full">
-          <h2 className="text-2xl sm:text-3xl text-center">Run this entrypoint</h2>
+          <h2 className="text-2xl sm:text-3xl text-center">
+            Run this entrypoint
+          </h2>
           <div className="sm:flex justify-center pt-2">
-            <ExampleFunction functionText={exampleFunctionText(gardenDOI, result[0])}/>
-
+            <div className="relative">
+              <ExampleFunction
+                functionText={exampleFunctionText(gardenDOI, result[0])}
+              />
+              <button
+                title="Copy Code"
+                onClick={copyCode}
+                className="absolute top-0 right-0 mt-6 mr-8 flex items-center justify-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="gray"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
+                  />
+                </svg>
+              </button>
+            </div>
             <div className="flex flex-col items-center justify-center">
               {/* <OpenInButtons/> */}
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-center">Copy Code:</p>
-            <button title="Copy Code" onClick={copyCode} className="w-full flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="gray"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
-              />
-            </svg>
-            </button>
-          </div>
-          <div className="flex pt-0 mt-0 justify-center" >
-            <p>To run this entrypoint, you need to be a part of <a className="text-green underline" target="_blank" href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about">this Globus group</a></p>
+          <div className="flex pt-0 mt-0 justify-center">
+            <p>
+              To run this entrypoint, you need to be a part of{" "}
+              <a
+                className="text-green underline"
+                target="_blank"
+                href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about"
+              >
+                this Globus group
+              </a>
+            </p>
           </div>
         </div>
 
@@ -474,32 +523,19 @@ return my_entrypoint(input)`
                               : "border border-gray-400 border-1 flex justify-center my-2 sm:my-4 text-center w-full"
                           }
                         >
-                          <button className="w-full" onClick={() => setButtonIndex(index)}>
-                            <p className="p-2 sm:p-4 break-all">{step.function_name}</p>
+                          <button
+                            className="w-full"
+                            onClick={() => setButtonIndex(index)}
+                          >
+                            <p className="p-2 sm:p-4 break-all">
+                              {step.function_name}
+                            </p>
                           </button>
                         </div>
                       </div>
                     );
                   })}
-                  <div className="flex flex-col gap-2">
-                    <p className="text-center">Copy Code:</p>
-                    <button title="Copy Code" onClick={copyCodeStepsTab} className="w-full flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="gray"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
-                      />
-                    </svg>
-                    </button>
-                  </div>
+
                   {stepsOverflow ? (
                     <button
                       className="text-xs sm:text-base rounded-xl bg-green p-1 px-2 ml-[32%] w-[36%] sm:w-[74%] sm:ml-[13%] hover:border hover:border-black hover:border-2 text-white"
@@ -530,8 +566,14 @@ return my_entrypoint(input)`
             )} */}
             {active === "Notebook" && (
               <div className="px-6">
-                <p>This notebook contains the definition of this entrypoint, tagged with @garden_entrypoint.</p>
-                <p className="mb-6">When you execute the entrypoint, it runs in a Python session created by running every cell in this notebook once.</p>
+                <p>
+                  This notebook contains the definition of this entrypoint,
+                  tagged with @garden_entrypoint.
+                </p>
+                <p className="mb-6">
+                  When you execute the entrypoint, it runs in a Python session
+                  created by running every cell in this notebook once.
+                </p>
                 <NotebookViewer notebookURL={result[0].notebook_url} />
               </div>
             )}
@@ -541,13 +583,14 @@ return my_entrypoint(input)`
                   <h1 className="underline text-2xl py-8">
                     Datasets used in this entrypoint
                   </h1>
-                  {result[0].models[0]?.datasets.length > 0 ? (
+                  {result[0].datasets?.length > 0 ? (
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 py-4">
-                      {
-                        result[0].models[0].datasets.map((dataset: any) => (
-                          <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry}/>
-                        ))
-                      }
+                      {result[0].datasets.map((dataset: any) => (
+                        <DatasetBoxEntrypoint
+                          dataset={dataset}
+                          showFoundry={foundry}
+                        />
+                      ))}
                     </div>
                   ) : (
                     <p className="text-center pt-8 pb-16 text-xl">
@@ -555,48 +598,48 @@ return my_entrypoint(input)`
                     </p>
                   )}
                   {showFoundry === true ? (
-                  <div>
-                    <p className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
-                      *One or more of these datasets uses Foundry, here is how
-                      you can view it:
-                    </p>
-                    <div className="bg-gray-800 sm:mx-8 lg:mx-32 text-white pl-6 py-6 rounded-xl">
-                      <code className="leading-loose">
-                        <span className="text-gray-400">
-                          # Make sure you've imported and instantiated foundry{" "}
+                    <div>
+                      <p className="mx-6 sm:mx-16 text-base sm:text-xl pb-4">
+                        *One or more of these datasets uses Foundry, here is how
+                        you can view it:
+                      </p>
+                      <div className="bg-gray-800 sm:mx-8 lg:mx-32 text-white pl-6 py-6 rounded-xl">
+                        <code className="leading-loose">
+                          <span className="text-gray-400">
+                            # Make sure you've imported and instantiated foundry{" "}
+                            <br />
+                          </span>
+                          <span className="text-purple">from</span> foundry{" "}
+                          <span className="text-purple">import</span> Foundry{" "}
                           <br />
-                        </span>
-                        <span className="text-purple">from</span> foundry{" "}
-                        <span className="text-purple">import</span> Foundry{" "}
-                        <br />
-                        f = Foundry()
-                        <br />
-                        <br />
-                        <span className="text-gray-400">
-                          # Load the data here <br />
-                        </span>
-                        f.load(
-                        <span className="text-green">'DOI goes here'</span>,
-                        globus=<span className="text-orange">False</span>)
-                        <br />
-                        res = f.load_data()
-                      </code>
+                          f = Foundry()
+                          <br />
+                          <br />
+                          <span className="text-gray-400">
+                            # Load the data here <br />
+                          </span>
+                          f.load(
+                          <span className="text-green">'DOI goes here'</span>,
+                          globus=<span className="text-orange">False</span>)
+                          <br />
+                          res = f.load_data()
+                        </code>
+                      </div>
+                      <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
+                        New to Foundry or need a refresher? Click{" "}
+                        <a
+                          target="blank"
+                          href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
+                          className="text-blue hover:underline"
+                        >
+                          here
+                        </a>{" "}
+                        to learn more.
+                      </p>
                     </div>
-                    <p className="mx-6 sm:mx-16 pt-8 text-base sm:text-xl">
-                      New to Foundry or need a refresher? Click{" "}
-                      <a
-                        target="blank"
-                        href="https://ai-materials-and-chemistry.gitbook.io/foundry/"
-                        className="text-blue hover:underline"
-                      >
-                        here
-                      </a>{" "}
-                      to learn more.
-                    </p>
-                  </div>
-                ) : (
-                  <p></p>
-                )}
+                  ) : (
+                    <p></p>
+                  )}
                 </div>
               </div>
             )}

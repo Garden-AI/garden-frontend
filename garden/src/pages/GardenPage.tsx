@@ -16,32 +16,26 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [showFoundry, setShowFoundry] = useState(false);
   const [result, setResult] = useState<any>(undefined);
   const [datasets, setDatasets] = useState<Array<Object>>([]);
-  const [tooltipVisible, setTooltipVisible]= useState(false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const getDatasetListFromResult = (result: any): Array<Object> => {
-    if (!result[0]?.entries[0]?.content?.entrypoints) {
-      return [];
-    }
-    const doiToDataset: { [key: string]: any } = {};
     const entrypoints = result[0].entries[0].content.entrypoints;
-    for (let entrypoint of entrypoints) {
-      for (let model of entrypoint.models) {
-        for (let dataset of model.datasets) {
-          if (dataset.doi) {
-            doiToDataset[dataset.doi] = dataset;
-          }
-        }
+
+    let allDatasets: Array<Object> = [];
+    entrypoints.forEach((entrypoint: any) => {
+      if (entrypoint.datasets) {
+        allDatasets = allDatasets.concat(entrypoint.datasets);
       }
-    }
-    const allDatasets = Object.values(doiToDataset)
+    });
+
     return allDatasets;
   };
 
-  //API call to get data for a garden associted with the DOI
+  // API call to get data for a garden associated with the DOI
   useEffect(() => {
     async function Search() {
       try {
-        const gmetaArray = await searchGardenIndex({q: doi || ""});
+        const gmetaArray = await searchGardenIndex({ q: doi || "" });
         setResult(gmetaArray);
         setDatasets(getDatasetListFromResult(gmetaArray));
       } catch (error) {
@@ -55,10 +49,10 @@ const GardenPage = ({ bread }: { bread: any }) => {
   useEffect(() => {
     async function Search() {
       try {
-        const gmetaArray = await searchGardenIndex({q: "*", limit: "6"});
+        const gmetaArray = await searchGardenIndex({ q: "*", limit: "6" });
         const otherGardenEntries = gmetaArray.filter(
           (gard: any) => gard.entries[0].content.doi !== doi
-        )
+        );
         setRelatedResults(otherGardenEntries);
       } catch (error) {
         setRelatedResults([]);
@@ -110,36 +104,35 @@ const GardenPage = ({ bread }: { bread: any }) => {
       </div>
     );
   }
-  console.log(result);
+  // console.log(result);
   const text = doi?.replace("/", "%2f");
   bread.garden = [result[0]?.entries[0].content.title, `/garden/${text}`];
   bread.entrypoint = [];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
-    showTooltip()
+    showTooltip();
   };
 
   const copyDOI = async () => {
-    const DOItext: string = doi?.replace("/", "%2f") ?? '';
+    const DOItext: string = doi?.replace("/", "%2f") ?? "";
 
     try {
       await navigator.clipboard.writeText(DOItext);
-      console.log('Content copied to clipboard');
+      console.log("Content copied to clipboard");
     } catch (err) {
-      console.error('Failed to copy: ', err);
+      console.error("Failed to copy: ", err);
     }
-
   };
 
   const showTooltip = () => {
-    if(tooltipVisible===false){
-      setTooltipVisible(true)
-      setTimeout(()=>{
-        setTooltipVisible(false)
-      }, 3000)
+    if (tooltipVisible === false) {
+      setTooltipVisible(true);
+      setTimeout(() => {
+        setTooltipVisible(false);
+      }, 3000);
     }
-  }
+  };
 
   const showModal = () => {
     setShow(true);
@@ -180,7 +173,9 @@ const GardenPage = ({ bread }: { bread: any }) => {
         <Breadcrumbs crumbs={bread} />
         {/* Garden Header */}
         <div className="flex gap-4 sm:gap-8">
-          <h1 className="text-2xl sm:text-3xl">{result[0]?.entries[0].content.title}</h1>
+          <h1 className="text-2xl sm:text-3xl">
+            {result[0]?.entries[0].content.title}
+          </h1>
           <div className="flex gap-3 items-center">
             <button title="Copy link" onClick={copy}>
               <svg
@@ -214,7 +209,11 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 />
               </svg>
             </button>
-            {tooltipVisible && <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">Copied to Clipboard</p>}
+            {tooltipVisible && (
+              <p className="z-50 fixed top-[10vh] min-w-[10vw] right-[35vw] sm:right-[45vw] p-2 rounded-lg bg-green text-white text-center">
+                Copied to Clipboard
+              </p>
+            )}
             <Modal
               show={show}
               close={closeModal}
@@ -231,9 +230,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
             <h2 className="font-semibold">Contributors</h2>
             <p>
               {result[0]?.entries[0].content.authors.map(
-                (author: any, index: number) => (
-                  <span>{author}</span>
-                )
+                (author: any, index: number) => <span>{author}</span>
               )}
             </p>
           </div>
@@ -243,19 +240,19 @@ const GardenPage = ({ bread }: { bread: any }) => {
               href={`https://doi.org/${result[0]?.entries[0].content.doi}`}
               target="_blank"
               rel="noopener noreferrer"
-              className = "text-green underline"
+              className="text-green underline"
             >
               {result[0]?.entries[0].content.doi}
             </a>
             <button title="Copy DOI" onClick={copyDOI} className="ml-2 -mb-1">
               <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="gray"
-                  className="w-6 h-6"
-                >
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="gray"
+                className="w-6 h-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -280,8 +277,8 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 active === "Entrypoints"
                   ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
                   : active === ""
-                  ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
-                  : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
+                    ? "bg-green bg-opacity-30 w-full border-b-4 border-green"
+                    : "bg-gray-100 w-full hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green hover:border-b-1 hover:border-green"
               }
               onClick={() => setActive("Entrypoints")}
             >
@@ -305,7 +302,10 @@ const GardenPage = ({ bread }: { bread: any }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {result[0]?.entries[0].content.entrypoints.map(
                   (entrypoint: any) => (
-                    <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
+                    <EntrypointBox
+                      key={entrypoint.doi}
+                      entrypoint={entrypoint}
+                    />
                   )
                 )}
               </div>
@@ -314,7 +314,10 @@ const GardenPage = ({ bread }: { bread: any }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {result[0]?.entries[0].content.entrypoints.map(
                   (entrypoint: any) => (
-                    <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
+                    <EntrypointBox
+                      key={entrypoint.doi}
+                      entrypoint={entrypoint}
+                    />
                   )
                 )}
               </div>
@@ -330,11 +333,16 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 </div>
                 <div>
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-12 lg:px-24 pb-4">
-                    {
-                      datasets.length > 0
-                      ?  datasets.map(dataset => <DatasetBoxEntrypoint dataset={dataset} showFoundry={foundry}/>)
-                      : <NoDatasets/>
-                    }
+                    {datasets.length > 0 ? (
+                      datasets.map((dataset) => (
+                        <DatasetBoxEntrypoint
+                          dataset={dataset}
+                          showFoundry={foundry}
+                        />
+                      ))
+                    ) : (
+                      <NoDatasets />
+                    )}
                   </div>
                 </div>
                 {showFoundry === true ? (
@@ -387,13 +395,23 @@ const GardenPage = ({ bread }: { bread: any }) => {
       </div>
 
       <h1 className=" pl-8 sm:pl-36 text-3xl pb-6 ">
-      <div className="flex flex-row">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-8 h-8 ml-0 mr-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-      </svg>
+        <div className="flex flex-row">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            className="w-8 h-8 ml-0 mr-4"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
+            />
+          </svg>
           Explore Other Gardens
-      </div>
-
+        </div>
       </h1>
       <div className="relative flex items-center pb-12">
         <button
