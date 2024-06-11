@@ -1,13 +1,19 @@
+import Markdown from "marked-react";
 import { useEffect, useState } from "react";
-import { IpynbRenderer } from "react-ipynb-renderer";
-import "../ipynbPreview.css";
+import SyntaxHighlighter from "./SyntaxHighlighter";
 
-type NotebookViewerProps = {
-  notebookURL: string;
-};
-
-export const NotebookViewer = ({ notebookURL }: NotebookViewerProps) => {
-  const [notebookJson, setNotebookJson] = useState<any>(null);
+interface Cell {
+  cell_type: string;
+  execution_count: number;
+  metadata: any;
+  outputs: Array<any>;
+  source: Array<any>;
+}
+interface Notebook {
+  cells: Array<Cell>;
+}
+export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {
+  const [notebook, setNotebook] = useState<Notebook>();
   const [loadingError, setLoadingError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -15,7 +21,7 @@ export const NotebookViewer = ({ notebookURL }: NotebookViewerProps) => {
       try {
         const response = await fetch(notebookURL);
         const json = await response.json();
-        setNotebookJson(json);
+        setNotebook(json);
       } catch (error) {
         console.error("Error fetching notebook:", error);
         setLoadingError(true);
@@ -25,13 +31,31 @@ export const NotebookViewer = ({ notebookURL }: NotebookViewerProps) => {
     fetchNotebook();
   }, [notebookURL]);
 
-  if (notebookJson) {
-    return <IpynbRenderer ipynb={notebookJson} />;
-  } else if (loadingError) {
+  if (loadingError) {
     return (
-      <p className="pb-16 pt-8 text-center text-xl">Could not load notebook</p>
+      <p className="pb-16 pt-8 text-center text-xl">Could not load notebook.</p>
+    );
+  } else if (!notebook) {
+    return (
+      <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>
+    );
+  } else {
+    return (
+      <div className="prose-lg mx-auto mt-20">
+        {notebook.cells
+          .slice(2, notebook.cells.length)
+          .map(
+            (cell, index) =>
+              cell.source.length > 0 &&
+              (cell.cell_type === "code" ? (
+                <SyntaxHighlighter key={index}>
+                  {cell.source.join("")}
+                </SyntaxHighlighter>
+              ) : (
+                <Markdown key={index}>{cell.source.join("")}</Markdown>
+              )),
+          )}
+      </div>
     );
   }
-  // No error and no notebook yet, so we're still loading
-  return <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>;
 };

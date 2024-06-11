@@ -6,8 +6,7 @@ import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { NotebookViewer } from "../components/NotebookViewer";
-import { ExampleFunction } from "../components/ExampleFunction";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import SyntaxHighlighter from "../components/SyntaxHighlighter";
 // import OpenInButtons from "../components/OpenInButtons";
 // import CitePinButtons from "../components/CitePinButtons";
 // import EntrypointMetrics from "../components/EntrypointMetrics";
@@ -91,6 +90,7 @@ garden = client.get_published_garden("${gardenDOI}")
       return filteredLines.join("\n");
     }
     // If we don't have a test function,
+    // If we don't have a test function,
     // we can use a generic template that shows how to call the entrypoint.
     let fallbackFunction = prefixText + `input = ['Data Here']\n`;
     if (entrypoint.short_name) {
@@ -168,7 +168,7 @@ return my_entrypoint(input)`;
       </div>
     );
   }
-  console.log(result);
+
   const text = doi?.replace("/", "%2f");
   bread.entrypoint = [result[0].title, `/entrypoint/${text}`];
 
@@ -285,7 +285,6 @@ return my_entrypoint(input)`;
                 doi={result[0].doi}
                 showTooltip={showTooltip}
               />
-              Enpoinsx
             </div>
           </div>
           <div className="flex flex-wrap gap-1 text-sm text-gray-500">
@@ -399,34 +398,32 @@ return my_entrypoint(input)`;
             Run this entrypoint
           </h2>
           <div className="justify-center pt-2 sm:flex">
-            <div className="relative">
-              <ExampleFunction
-                functionText={exampleFunctionText(gardenDOI, result[0])}
-              />
-              <button
-                title="Copy Code"
-                onClick={copyCode}
-                className="absolute right-0 top-0 mr-8 mt-6 flex items-center justify-center"
+            <SyntaxHighlighter>
+              {exampleFunctionText(gardenDOI, result[0])}
+            </SyntaxHighlighter>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-center">Copy Code:</p>
+            <button
+              title="Copy Code"
+              onClick={copyCode}
+              className="flex w-full items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="gray"
+                className="h-6 w-6"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="gray"
-                  className="h-6 w-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="flex flex-col items-center justify-center">
-              {/* <OpenInButtons/> */}
-            </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
+                />
+              </svg>
+            </button>
           </div>
           <div className="mt-0 flex justify-center pt-0">
             <p>
@@ -561,7 +558,7 @@ return my_entrypoint(input)`;
                   <p className="text-md pb-6 pt-8 font-semibold lg:text-xl">
                     {result[0].steps[buttonIndex].description}
                   </p>
-                  <SyntaxHighlighter language="python">
+                  <SyntaxHighlighter>
                     {result[0].steps[buttonIndex].function_text}
                   </SyntaxHighlighter>
                 </div>
