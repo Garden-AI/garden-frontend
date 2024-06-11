@@ -1,10 +1,10 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Garden } from "../types";
 // import RelatedGardenMetrics from "./RelatedGardenMetrics";
 
-const RelatedGardenBox = ({ related }: { related: any }) => {
+const RelatedGardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();
-  const text = related.entries[0].content.doi.replace("/", "%2f");
+  const text = garden.doi.replace("/", "%2f");
 
   return (
     <div
@@ -12,9 +12,7 @@ const RelatedGardenBox = ({ related }: { related: any }) => {
       onClick={() => navigate(`/garden/${text}`)}
     >
       <div className="my-10 overflow-y-hidden whitespace-normal">
-        <p className="text-center text-3xl">
-          {related.entries[0].content.title}
-        </p>
+        <p className="text-center text-3xl">{garden.title}</p>
       </div>
 
       {/* Pins Shares and Runs For Related Garden Box */}

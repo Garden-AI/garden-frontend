@@ -1,6 +1,4 @@
-import React from "react";
 import { authorization } from "@globus/sdk/cjs";
-// import { SEARCH_SCOPE, GLOBUS_NATIVE_CLIENT_ID } from "./constants";
 import {
   Routes,
   Route,
@@ -18,6 +16,16 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 20,
+    },
+  },
+});
 
 /*
   We are not making calls that need authentication, but making a PKCEAuthorization 
@@ -39,7 +47,11 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />;
+    </QueryClientProvider>
+  );
 }
 
 function Root() {

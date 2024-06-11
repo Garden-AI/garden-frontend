@@ -1,22 +1,10 @@
-import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "../components/GardenBox";
-import { searchGardenIndex } from "../globusHelpers";
+import { useSearchGardens } from "../api/search";
+import { Garden } from "../types";
 
 const HomePage = () => {
-  const [result, setResult] = useState<Array<any>>([]);
-
-  useEffect(() => {
-    async function Search() {
-      try {
-        const gmetaArray = await searchGardenIndex({ q: "*", limit: "6" });
-        setResult(gmetaArray);
-      } catch (error) {
-        setResult([]);
-      }
-    }
-    Search();
-  }, []);
+  const { data: gardens } = useSearchGardens("*", "6");
 
   return (
     <>
@@ -202,8 +190,8 @@ const HomePage = () => {
           id="Garden-Squares"
           className="flex min-h-min flex-row gap-6 overflow-auto p-2 pt-8"
         >
-          {result.map((res) => (
-            <GardenBox garden={res} />
+          {gardens?.map((garden: Garden) => (
+            <GardenBox garden={garden} key={garden.doi} />
           ))}
         </div>
       </div>
