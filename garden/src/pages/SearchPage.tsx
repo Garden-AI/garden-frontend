@@ -79,18 +79,15 @@ const SearchPage = ({ bread }: { bread: any }) => {
 };
 
 function prioritizeGardens(gardens: Garden[]) {
-  const testGardens = gardens.filter(
-    (garden: Garden) =>
-      RegExp(/test|tutorial|example|dummy|demo|toggle/).test(
-        garden.title.toLowerCase(),
-      ) || garden.description === "",
+  const gardenMapping = gardens.map(
+    (garden) =>
+      RegExp(/test|tutorial|example|dummy|demo|toggle/i).test(garden.title) ||
+      garden.entrypoints.some((entrypoint) =>
+        entrypoint.tags.includes("tutorial"),
+      ),
   );
-  const nonTestGardens = gardens.filter(
-    (garden: Garden) =>
-      !RegExp(/test|tutorial|example|dummy|demo|toggle/).test(
-        garden.title.toLowerCase(),
-      ) && garden.description !== "",
-  );
-  return nonTestGardens.concat(testGardens);
+  const testGardens = gardens.filter((garden, index) => gardenMapping[index]);
+  const realGardens = gardens.filter((garden, index) => !gardenMapping[index]);
+  return [...realGardens, ...testGardens];
 }
 export default SearchPage;
