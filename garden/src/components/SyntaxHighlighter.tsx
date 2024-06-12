@@ -10,14 +10,10 @@ export default function SyntaxHighlighterComponent({
   children: string;
 }) {
   return (
-    <SyntaxHighlighter
-      language={"python"}
-      customStyle={{
-        marginBottom: "3em",
-      }}
-      useInlineStyles={false}
-    >
-      {children}
-    </SyntaxHighlighter>
+    <div className="text-xs md:text-base 2xl:text-lg">
+      <SyntaxHighlighter language={"python"} useInlineStyles={false}>
+        {children}
+      </SyntaxHighlighter>
+    </div>
   );
 }

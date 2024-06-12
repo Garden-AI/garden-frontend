@@ -41,7 +41,7 @@ export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {
     );
   } else {
     return (
-      <div className="prose-lg mx-auto mt-20">
+      <div className="prose prose-sm mx-auto mt-20 lg:prose-base 2xl:prose-xl">
         {notebook.cells
           .slice(2, notebook.cells.length)
           .map(
