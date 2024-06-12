@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import LoggedIn from "./Login";
 
 const Navbar = () => {
   return (
@@ -30,6 +31,7 @@ const Navbar = () => {
         >
           Examples
         </a>
+        <LoggedIn/>
       </div>
     </nav>
   );

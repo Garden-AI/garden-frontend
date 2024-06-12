@@ -18,19 +18,28 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
-
-console.log('Authorization module exports:', authorization);
+import { GlobusAuthContextProvider } from "./components/globus-auth-context/GlobusAuthContext";
 
 /*
   We are not making calls that need authentication, but making a PKCEAuthorization 
   is the only way to trigger the createStorage() side effect. 
   That lets us use the Globus SDK to make search calls.
-*/
+
 new authorization.PKCEAuthorization({
   client_id: GLOBUS_NATIVE_CLIENT_ID,
   redirect_uri: "http://localhost:3000/",
   requested_scopes: `openid profile email ${SEARCH_SCOPE}`,
 });
+*/
+/*
+export const createAuthManager = () => {
+  return authorization.create({
+    client: GLOBUS_NATIVE_CLIENT_ID,
+    redirect: 'http://localhost:3000/',
+    scopes: `openid profile email ${SEARCH_SCOPE}`,
+  });
+};
+*/ 
 
 const router = createHashRouter([
   {
@@ -40,11 +49,44 @@ const router = createHashRouter([
 ]);
 
 function App() {
-  const breadcrumbs: { home: string; search: string; garden: Array<string>; entrypoint: Array<string>; } = {
-    home: 'Home',
-    search: '',
+  return <RouterProvider router={router} />;
+}
+
+function Root() {
+  const breadcrumbs: {
+    home: string;
+    search: string;
+    garden: Array<string>;
+    entrypoint: Array<string>;
+  } = {
+    home: "Home",
+    search: "",
     garden: [],
-    entrypoint: []
+    entrypoint: [],
+  };
+  return (
+    <GlobusAuthContextProvider>
+    <Routes>
+      <Route path="*" element={<RootLayout />}>
+        <Route index element={<HomePage />} />
+        {/*  We should eventually eliminate this next route unless there is explicit need for it- can just use '/' as 'home' */}
+        <Route path="home" element={<HomePage />} />
+        <Route path="terms" element={<TermsPage />} />
+        <Route path="search" element={<SearchPage bread={breadcrumbs} />} />
+        <Route
+          path="garden/:doi"
+          element={<GardenPage bread={breadcrumbs} />}
+        />
+        <Route
+          path="entrypoint/:doi"
+          element={<EntrypointPage bread={breadcrumbs} />}
+        />
+        <Route path="team" element={<TeamsPage />} />
+      </Route>
+    </Routes>
+    </GlobusAuthContextProvider>
+  );
+}
 
 // TODO: Extract this to a separate file, perhaps in a 'layouts' folder
 function RootLayout() {
