@@ -3,16 +3,18 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="mx-1 flex justify-between gap-4 border-b border-gray-200 py-1 text-xs sm:mx-3 sm:text-lg">
-      <div className="flex-shrink-0">
-        <Link to="/home">
-          <img
-            src="img/normalColorIcon_Garden.jpg"
-            alt="Garden AI Logo"
-            className="ml-2 flex w-24 object-contain sm:m-2 sm:w-28"
-          ></img>
-        </Link>
-      </div>
+    <nav className="flex justify-between gap-4 border-b border-gray-200 px-5 py-1 text-sm md:text-lg">
+      <Link to="/home" className="py-2">
+        <div className="relative w-28 pb-[27%]">
+          <div className="absolute inset-0">
+            <img
+              src="img/normalColorIcon_Garden.jpg"
+              alt="Garden AI Logo"
+              className=""
+            />
+          </div>
+        </div>
+      </Link>
       <div className="flex items-center gap-2 sm:mr-6 sm:gap-6">
         <Link to="/search" className="no-underline hover:underline">
           Search
