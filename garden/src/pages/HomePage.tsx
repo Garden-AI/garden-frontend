@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "@/components/GardenBox";
 import { searchGardenIndex } from "../globusHelpers";
@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { BarChart, Rocket, Share2Icon, Lightbulb, Search } from "lucide-react";
+import { Rocket, Share2Icon, Lightbulb, Search } from "lucide-react";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },
@@ -50,8 +50,8 @@ const HomePage = () => {
 
   return (
     <div className="font-display">
-      <div className="mx-auto grid items-center justify-around md:p-8 lg:grid-cols-12 lg:flex-row">
-        <div className="relative  mx-auto w-full max-w-xs lg:col-span-5 lg:max-w-xl">
+      <div className="mx-auto grid items-center justify-around gap-x-2 py-4 md:px-12 md:py-10 lg:grid-cols-12 lg:flex-row">
+        <div className="relative mx-auto w-full max-w-xs lg:col-span-6 lg:max-w-md">
           <div className="relative w-full pb-[100%]">
             <div className="absolute inset-0">
               <img
@@ -62,8 +62,8 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <div className="max-w-3xl px-8 py-12 lg:-order-1 lg:col-span-7">
-          <h1 className="mb-6 text-3xl font-semibold leading-relaxed lg:mb-32 lg:text-5xl">
+        <div className="max-w-3xl px-12 lg:-order-1 lg:col-span-6">
+          <h1 className="mb-6 text-3xl font-semibold lg:mb-24 lg:text-5xl">
             Build a garden where your model can thrive.
           </h1>
           <h2 className="text-xl lg:text-2xl">
@@ -73,16 +73,19 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="flex justify-center">
+      <div className="my-10 text-center">
         <Link
           to="/search"
-          className={cn("", buttonVariants({ variant: "default", size: "lg" }))}
+          className={cn(
+            buttonVariants({ variant: "default", size: "lg" }),
+            "rounded-lg",
+          )}
         >
           Search
         </Link>
       </div>
 
-      <Separator className="mt-12" />
+      <Separator />
       <div className="mx-auto grid max-w-7xl grid-cols-1 justify-around gap-x-12 gap-y-24 px-24 py-16 md:grid-cols-3 ">
         {icons.map((icon, index) => (
           <div
@@ -90,14 +93,14 @@ const HomePage = () => {
             className="flex h-48 flex-col items-center gap-y-12  text-center "
           >
             <div className="w-full">
-              <icon.icon size={120} className="mx-auto w-full text-primary" />
+              <icon.icon size={110} className="mx-auto w-full text-primary" />
             </div>
             <p className="text-center md:text-xl">{icon.text}</p>
           </div>
         ))}
       </div>
 
-      <div className="mx-auto max-w-7xl px-5 font-display text-black sm:px-12 md:px-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-12 md:px-20">
         {textSections.map((section, index) => (
           <>
             <Separator />
@@ -125,15 +128,15 @@ const HomePage = () => {
           reason you see fit.
         </p>
 
-        <ScrollArea className="w-full overflow-x-auto overflow-y-hidden rounded-md border p-1">
-          <div className="flex w-max space-x-4 overflow-y-hidden p-4 ">
+        <ScrollArea className="w-full">
+          <div className="flex space-x-4 p-4 ">
             {result.map((res, index) => (
               <div className="h-[300px] w-[300px]">
                 <GardenBox garden={res} />
               </div>
             ))}
           </div>
-          <ScrollBar orientation="horizontal" className="m-0.5" />
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
     </div>

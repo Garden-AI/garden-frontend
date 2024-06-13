@@ -1,42 +1,52 @@
-import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "./ui/card";
+import { useNavigate } from "react-router-dom";
+import { TagIcon } from "lucide-react";
 
 const GardenBox = ({ garden }: { garden: any }) => {
   const navigate = useNavigate();
+  const { title, description, doi, tags } = garden.entries[0].content;
+
+  const handleClick = () => {
+    navigate(`/garden/${encodeURIComponent(doi)}`);
+  };
+
   return (
     <Card
       className="h-full min-h-[250px] w-full cursor-pointer border-gray-200 shadow-sm transition hover:border-gray-300 hover:shadow-md"
-      onClick={() =>
-        navigate(`/garden/${garden.entries[0].content.doi.replace("/", "%2f")}`)
-      }
+      onClick={handleClick}
     >
-      <CardHeader>
-        <CardTitle className="text-ellipsis text-lg">
-          {garden.entries[0].content.title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className=" overflow-hidden">
-        <div className="overflow-hidden">
-          <p className="font-thin opacity-70 ">
-            {garden.entries[0].content.description}
-          </p>
-        </div>
-      </CardContent>
-
-      <CardFooter className="">
-        {/* <TagIcon /> */}
-        {garden.entries[0].content.tags && (
-          <div className="flex gap-4 text-sm text-gray-500">
-            <div>{garden.entries[0].content.tags.join(", ")}</div>
+      <div className="flex h-full flex-col">
+        <CardHeader className="">
+          <CardTitle className="text-ellipsis text-xl">{title}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-grow overflow-hidden">
+          <div className="relative h-[125px] overflow-hidden">
+            <p className="opacity-60">{description}</p>
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent"></div>
           </div>
-        )}
-      </CardFooter>
+        </CardContent>
+        <CardFooter className="mt-auto flex flex-wrap gap-1">
+          {tags && (
+            <>
+              <TagIcon className="h-4 w-4 text-gray-500" />
+              {tags.map((tag: string, index: number) => (
+                <span
+                  key={index}
+                  className="rounded-lg bg-primary p-1 px-2 text-xs  text-primary-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </>
+          )}
+        </CardFooter>
+      </div>
     </Card>
   );
 };
