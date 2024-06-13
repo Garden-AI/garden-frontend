@@ -1,7 +1,9 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "@/components/GardenBox";
 import { searchGardenIndex } from "../globusHelpers";
+
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -34,19 +36,7 @@ const textSections = [
 ];
 
 const HomePage = () => {
-  const [result, setResult] = useState<Array<any>>([]);
-
-  useEffect(() => {
-    async function Search() {
-      try {
-        const gmetaArray = await searchGardenIndex({ q: "*", limit: "6" });
-        setResult(gmetaArray);
-      } catch (error) {
-        setResult([]);
-      }
-    }
-    Search();
-  }, []);
+  const { data: gardens } = useSearchGardens("*", "6");
 
   return (
     <div className="font-display">
@@ -128,6 +118,7 @@ const HomePage = () => {
           reason you see fit.
         </p>
 
+
         <ScrollArea className="w-full">
           <div className="flex space-x-4 p-4 ">
             {result.map((res, index) => (
@@ -138,6 +129,7 @@ const HomePage = () => {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
+
       </div>
     </div>
   );

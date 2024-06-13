@@ -4,7 +4,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 async function deferRender() {
-  console.log(import.meta.env.VITE_APP_SHOULD_MOCK);
   if (import.meta.env.VITE_APP_SHOULD_MOCK !== "true") {
     return;
   }
