@@ -9,23 +9,20 @@ import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "../types";
 
-
-const GardenBox = ({ garden }: { garden: any }) => {
+const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();
 
-  const { title, description, doi, tags } = garden.entries[0].content;
+  const { title, description, doi, tags } = garden;
 
   const handleClick = () => {
     navigate(`/garden/${encodeURIComponent(doi)}`);
   };
-
 
   return (
     <Card
       className="h-full min-h-[250px] w-full cursor-pointer border-gray-200 shadow-sm transition hover:border-gray-300 hover:shadow-md"
       onClick={handleClick}
     >
-
       <div className="flex h-full flex-col">
         <CardHeader className="">
           <CardTitle className="text-ellipsis text-xl">{title}</CardTitle>
@@ -37,7 +34,7 @@ const GardenBox = ({ garden }: { garden: any }) => {
           </div>
         </CardContent>
         <CardFooter className="mt-auto flex flex-wrap gap-1">
-          {tags && (
+          {tags && tags.length > 0 && (
             <>
               <TagIcon className="h-4 w-4 text-gray-500" />
               {tags.map((tag: string, index: number) => (
@@ -53,7 +50,6 @@ const GardenBox = ({ garden }: { garden: any }) => {
         </CardFooter>
       </div>
     </Card>
-
   );
 };
 
