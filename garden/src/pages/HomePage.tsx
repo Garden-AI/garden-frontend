@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "@/components/GardenBox";
-import { searchGardenIndex } from "../globusHelpers";
+import { useSearchGardens } from "../api/search";
 
 
 import { cn } from "@/lib/utils";
@@ -121,7 +121,7 @@ const HomePage = () => {
 
         <ScrollArea className="w-full">
           <div className="flex space-x-4 p-4 ">
-            {result.map((res, index) => (
+            {gardens.map((res:any, index:any) => (
               <div className="h-[300px] w-[300px]">
                 <GardenBox garden={res} />
               </div>
