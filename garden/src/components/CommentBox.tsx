@@ -125,9 +125,9 @@ const CommentBox = ({ comment }: { comment: any }) => {
               }
               return false;
             })
-            .map((reply: any) => {
+            .map((reply: any, index: number) => {
               return (
-                <div key={reply.body} className="">
+                <div key={index} className="">
                   <p className="font-semibold">{reply.user}</p>
                   <p className="pb-2">{reply.body}</p>
                 </div>

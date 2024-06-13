@@ -1,21 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import AccordionTop from "../components/AccordionTop";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
-import { searchGardenIndex } from "../globusHelpers";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { NotebookViewer } from "../components/NotebookViewer";
 import { ExampleFunction } from "../components/ExampleFunction";
 import SyntaxHighlighter from "react-syntax-highlighter";
-// import OpenInButtons from "../components/OpenInButtons";
-// import CitePinButtons from "../components/CitePinButtons";
-// import EntrypointMetrics from "../components/EntrypointMetrics";
-// import DiscussionTabContent from "../components/DiscussionTabContent";
-// import DiscussionTab from "../components/DiscussionTab";
+import { useSearchGardenByDOI } from "../api/search";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { Entrypoint } from "../types";
 
 const EntrypointPage = ({ bread }: { bread: any }) => {
-  const { doi } = useParams();
+  const { doi } = useParams() as { doi: string };
   const navigate = useNavigate();
 
   const [show, setShow] = useState(false);
@@ -25,7 +22,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const [stepsOverflow, setStepsOverflow] = useState(false);
   const [pClass, setPClass] = useState("overflow-x-hidden whitespace-nowrap");
   const [buttonIndex, setButtonIndex] = useState(0);
-  const [result, setResult] = useState<any>(undefined);
+  const [entrypoint, setEntrypoint] = useState<Entrypoint>();
   const [gardenDOI, setGardenDOI] = useState("");
   const [showFoundry, setShowFoundry] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -35,7 +32,13 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const top = useRef<HTMLButtonElement>(null);
   const div = useRef<HTMLDivElement>(null);
 
-  //These two functions determine if overflow is happening so it can be handled
+  const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
+
+  useEffect(() => {
+    if (!garden?.entrypoints[0]) return;
+    setEntrypoint(garden.entrypoints[0]);
+  }, [garden]);
+
   useEffect(() => {
     if (widthRef.current) {
       const container = widthRef.current;
@@ -45,110 +48,9 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
     }
   }, []);
 
-  const checkStepOverflow = () => {
-    if (div.current) {
-      const contain = div.current;
-      if (
-        contain!.clientHeight < contain!.scrollHeight &&
-        stepsOverflow === false
-      ) {
-        setStepsOverflow(true);
-      }
-    }
-  };
+  if (isLoading) return <LoadingSpinner />;
 
-  const exampleFunctionText = (
-    gardenDOI: string,
-    entrypoint: {
-      test_functions: Array<string>;
-      doi: string;
-      short_name?: string;
-    },
-  ): string => {
-    const prefixText = `from garden_ai import GardenClient
-client = GardenClient()
-garden = client.get_published_garden("${gardenDOI}")
-\n`;
-
-    // Ideally we have a test function and we can display that.
-    if (entrypoint.test_functions.length > 0) {
-      let functionText = entrypoint.test_functions[0];
-      // The test function writer called it by its short name,
-      // but the consumer will call it by garden.short_name
-      if (entrypoint.short_name) {
-        functionText = functionText.replaceAll(
-          entrypoint.short_name,
-          `garden.${entrypoint.short_name}`,
-        );
-      }
-      const fullFunction = prefixText + functionText;
-
-      // Remove the @entrypoint_test decorator if it's in this snippet
-      const lines = fullFunction.split("\n");
-      const filteredLines = lines.filter(
-        (line) => !line.trim().startsWith("@entrypoint_test"),
-      );
-      return filteredLines.join("\n");
-    }
-    // If we don't have a test function,
-    // we can use a generic template that shows how to call the entrypoint.
-    let fallbackFunction = prefixText + `input = ['Data Here']\n`;
-    if (entrypoint.short_name) {
-      fallbackFunction += `return garden.${entrypoint.short_name}(input)`;
-    } else {
-      fallbackFunction += `my_entrypoint = next(e for e in garden.entrypoints if e.doi == ${entrypoint.doi})
-return my_entrypoint(input)`;
-    }
-
-    return fallbackFunction;
-  };
-
-  //API call to get the data based on the doi of the entrypoint
-  useEffect(() => {
-    async function Search() {
-      try {
-        const gmetaArray = await searchGardenIndex({ q: doi || "" });
-        const selectedGarden = gmetaArray[0].entries[0].content;
-        const selectedEntrypoint = selectedGarden.entrypoints.filter(
-          (pipe: any) => pipe.doi === doi,
-        );
-        console.log("Selected Entry Point: ", selectedEntrypoint);
-        setResult(selectedEntrypoint);
-        setGardenDOI(selectedGarden.doi);
-      } catch (error) {
-        setResult([]);
-        setGardenDOI("");
-        setGardenDOI("");
-      }
-    }
-    Search();
-  }, [doi]);
-
-  //Loading screen while the call waits to return
-  if (result === undefined) {
-    return (
-      <div className="flex h-[100vh] items-center justify-center">
-        <svg
-          className="mr-2 h-24 w-24 animate-spin fill-green text-gray-200"
-          viewBox="0 0 100 101"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-            fill="currentColor"
-          />
-          <path
-            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-            fill="currentFill"
-          />
-        </svg>
-      </div>
-    );
-  }
-
-  //The doi does not match up to a entrypoint, message appears
-  if (result.length === 0) {
+  if (isError || !garden || !garden.entrypoints[0]) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-green font-display">
         <div className="flex min-h-[50vh] w-[75vw] flex-col items-center rounded-xl border border-black bg-white sm:w-[50vw]">
@@ -168,9 +70,21 @@ return my_entrypoint(input)`;
       </div>
     );
   }
-  console.log(result);
+
+  const checkStepOverflow = () => {
+    if (div.current) {
+      const contain = div.current;
+      if (
+        contain!.clientHeight < contain!.scrollHeight &&
+        stepsOverflow === false
+      ) {
+        setStepsOverflow(true);
+      }
+    }
+  };
+
   const text = doi?.replace("/", "%2f");
-  bread.entrypoint = [result[0].title, `/entrypoint/${text}`];
+  bread.entrypoint = [garden.title, `/entrypoint/${text}`];
 
   const copy = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -179,7 +93,7 @@ return my_entrypoint(input)`;
 
   const copyCode = async () => {
     await navigator.clipboard.writeText(
-      exampleFunctionText(gardenDOI, result[0]),
+      exampleFunctionText(gardenDOI, entrypoint!),
     );
     showTooltip();
   };
@@ -231,6 +145,8 @@ return my_entrypoint(input)`;
     setShowFoundry(true);
   };
 
+  if (!entrypoint) return <LoadingSpinner />;
+
   return (
     <>
       <div className="flex h-full w-full flex-col gap-12 px-4 pb-2 pt-12 font-display sm:px-16 sm:pt-24 lg:px-36">
@@ -240,7 +156,7 @@ return my_entrypoint(input)`;
         <div className="flex flex-col gap-1">
           <div className="gap4 flex sm:gap-8">
             <h1 className="font-display text-2xl sm:text-3xl">
-              {result[0].title}
+              {garden.title}
             </h1>
             <div className="flex items-center gap-4">
               <button title="Copy link" onClick={copy}>
@@ -282,17 +198,16 @@ return my_entrypoint(input)`;
                 show={show}
                 close={closeModal}
                 copy={copy}
-                doi={result[0].doi}
+                doi={garden.doi}
                 showTooltip={showTooltip}
               />
-              Enpoinsx
             </div>
           </div>
           <div className="flex flex-wrap gap-1 text-sm text-gray-500">
-            <span>Version {result[0].version}</span>
+            <span>Version {garden.version}</span>
             <span>|</span>
-            <span>{result[0].year}</span>
-            {result[0].tags.length > 0 ? (
+            <span>{garden.year}</span>
+            {garden.tags.length > 0 ? (
               <>
                 <span>|</span>
                 <svg
@@ -314,15 +229,11 @@ return my_entrypoint(input)`;
                     d="M6 6h.008v.008H6V6z"
                   />
                 </svg>
+                <div>{entrypoint.tags.join(", ")}</div>
                 <div>
-                  {result[0].tags
-                    .map((t: any) => <span>{t}</span>)
-                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
-                </div>
-                <div>
-                  {result[0].tags
-                    .map((t: any) => <span>{t}</span>)
-                    .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+                  {garden.tags.map((t: any, index: number) => (
+                    <span key={index}>{t}</span>
+                  ))}
                 </div>
               </>
             ) : (
@@ -334,11 +245,10 @@ return my_entrypoint(input)`;
           <div className="mr-8 flex flex-wrap pt-4 text-base sm:text-lg">
             <p className="pr-2 font-semibold">Contributors:</p>
             <p className={pClass} ref={widthRef}>
-              {result[0].authors
-                .map((author: any) => {
-                  return <span>{author}</span>;
-                })
-                .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+              {garden.authors.map((author: any, index: number) => (
+                <span key={index}>{author}</span>
+              ))}
+
               {hasOverflow ? (
                 <button
                   className="whitespace-nowrap pl-2 text-blue hover:underline"
@@ -373,25 +283,25 @@ return my_entrypoint(input)`;
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="mr-2 h-5 w-5"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
                 />
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                 />
               </svg>
               At a glance
             </div>
           </div>
-          <p className="p-4">{result[0].description}</p>
+          <p className="p-4">{garden.description}</p>
         </div>
 
         <div className="flex w-full flex-col gap-8">
@@ -401,7 +311,7 @@ return my_entrypoint(input)`;
           <div className="justify-center pt-2 sm:flex">
             <div className="relative">
               <ExampleFunction
-                functionText={exampleFunctionText(gardenDOI, result[0])}
+                functionText={exampleFunctionText(gardenDOI, entrypoint)}
               />
               <button
                 title="Copy Code"
@@ -442,7 +352,7 @@ return my_entrypoint(input)`;
           </div>
         </div>
 
-        <AccordionTop entrypoint={result} />
+        <AccordionTop entrypoint={entrypoint} />
 
         <div className="pb-12">
           <div className="flex h-12 justify-evenly ">
@@ -500,9 +410,9 @@ return my_entrypoint(input)`;
                   ) : (
                     <></>
                   )}
-                  {result[0].steps.map((step: any, index: number) => {
+                  {entrypoint.steps.map((step: any, index: number) => {
                     return (
-                      <div className="px-4">
+                      <div className="px-4" key={index}>
                         {index > 0 ? (
                           <div className="flex justify-center">
                             <svg
@@ -553,16 +463,15 @@ return my_entrypoint(input)`;
                   ) : (
                     <></>
                   )}
-                  {checkStepOverflow()}
                   <div ref={bottom}></div>
                 </div>
                 <div className="border-gray col-span-full my-4 whitespace-pre-line break-words border border-2 p-8 sm:col-span-3 sm:my-0 lg:col-span-4">
                   <div></div>
                   <p className="text-md pb-6 pt-8 font-semibold lg:text-xl">
-                    {result[0].steps[buttonIndex].description}
+                    {entrypoint.steps[buttonIndex].description}
                   </p>
                   <SyntaxHighlighter language="python">
-                    {result[0].steps[buttonIndex].function_text}
+                    {entrypoint.steps[buttonIndex].function_text}
                   </SyntaxHighlighter>
                 </div>
               </div>
@@ -581,7 +490,7 @@ return my_entrypoint(input)`;
                   When you execute the entrypoint, it runs in a Python session
                   created by running every cell in this notebook once.
                 </p>
-                <NotebookViewer notebookURL={result[0].notebook_url} />
+                {<NotebookViewer notebookURL={entrypoint.notebook_url} />}
               </div>
             )}
             {active === "Datasets" && (
@@ -590,12 +499,13 @@ return my_entrypoint(input)`;
                   <h1 className="py-8 text-2xl underline">
                     Datasets used in this entrypoint
                   </h1>
-                  {result[0].datasets?.length > 0 ? (
+                  {entrypoint.datasets?.length > 0 ? (
                     <div className="grid grid-cols-1 gap-2 py-4 sm:gap-12 md:grid-cols-2 lg:px-24">
-                      {result[0].datasets.map((dataset: any) => (
+                      {entrypoint.datasets.map((dataset: any) => (
                         <DatasetBoxEntrypoint
                           dataset={dataset}
                           showFoundry={foundry}
+                          key={dataset.doi}
                         />
                       ))}
                     </div>
@@ -604,7 +514,7 @@ return my_entrypoint(input)`;
                       No datasets available for this entrypoint
                     </p>
                   )}
-                  {showFoundry === true ? (
+                  {showFoundry && (
                     <div>
                       <p className="mx-6 pb-4 text-base sm:mx-16 sm:text-xl">
                         *One or more of these datasets uses Foundry, here is how
@@ -645,8 +555,6 @@ return my_entrypoint(input)`;
                         to learn more.
                       </p>
                     </div>
-                  ) : (
-                    <p></p>
                   )}
                 </div>
               </div>
@@ -656,6 +564,48 @@ return my_entrypoint(input)`;
       </div>
     </>
   );
+};
+
+const exampleFunctionText = (
+  gardenDOI: string,
+  entrypoint: Entrypoint,
+): string => {
+  const prefixText = `from garden_ai import GardenClient
+client = GardenClient()
+garden = client.get_published_garden("${gardenDOI}")
+\n`;
+
+  // Ideally we have a test function and we can display that.
+  if (entrypoint.test_functions.length > 0) {
+    let functionText = entrypoint.test_functions[0];
+    // The test function writer called it by its short name,
+    // but the consumer will call it by garden.short_name
+    if (entrypoint.short_name) {
+      functionText = functionText.replaceAll(
+        entrypoint.short_name,
+        `garden.${entrypoint.short_name}`,
+      );
+    }
+    const fullFunction = prefixText + functionText;
+
+    // Remove the @entrypoint_test decorator if it's in this snippet
+    const lines = fullFunction.split("\n");
+    const filteredLines = lines.filter(
+      (line) => !line.trim().startsWith("@entrypoint_test"),
+    );
+    return filteredLines.join("\n");
+  }
+  // If we don't have a test function,
+  // we can use a generic template that shows how to call the entrypoint.
+  let fallbackFunction = prefixText + `input = ['Data Here']\n`;
+  if (entrypoint.short_name) {
+    fallbackFunction += `return garden.${entrypoint.short_name}(input)`;
+  } else {
+    fallbackFunction += `my_entrypoint = next(e for e in garden.entrypoints if e.doi == ${entrypoint.doi})
+return my_entrypoint(input)`;
+  }
+
+  return fallbackFunction;
 };
 
 export default EntrypointPage;

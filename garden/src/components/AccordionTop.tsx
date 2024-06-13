@@ -6,6 +6,7 @@ import {
 import { useState } from "react";
 import Modal from "../components/Modal";
 import closeModal from "../pages/EntrypointPage";
+import { Entrypoint } from "../types";
 /*import showTooltip from "../pages/EntrypointPage"; */
 
 // import ContainerImage from "./ContainerImage";
@@ -16,7 +17,7 @@ import closeModal from "../pages/EntrypointPage";
 
 // https://szhsin.github.io/react-accordion/ for the accordion tabs
 
-const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
+const AccordionTop = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [show] = useState(false);
   const providerValue = useAccordionProvider({
@@ -42,7 +43,6 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
   let associatedCount = 0;
   const increaseCount = () => {
     associatedCount++;
-    console.log(associatedCount);
   };
 
   return (
@@ -65,13 +65,13 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="currentColor"
                     className="mr-2 h-6 w-6"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13"
                     />
                   </svg>
@@ -117,11 +117,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
           }}
         >
           <div className="grid grid-cols-1 gap-x-12 gap-y-12 px-8 py-4 md:grid-cols-2 lg:gap-x-32 lg:px-16">
-            {entrypoint[0].papers ? (
-              entrypoint[0].papers.length > 0 ? (
+            {entrypoint.papers ? (
+              entrypoint.papers.length > 0 ? (
                 <>
                   {increaseCount()}
-                  {entrypoint[0].papers.map((paper: any) => {
+                  {entrypoint.papers.map((paper: any) => {
                     return (
                       <div className="border-1 flex flex-col justify-between rounded-xl border border-gray-300">
                         <div className="flex w-full items-center gap-4 px-2 pb-6 pt-2">
@@ -261,11 +261,11 @@ const AccordionTop = ({ entrypoint }: { entrypoint: any }) => {
               <></>
             )}
             {/* repo box */}
-            {entrypoint[0].repositories ? (
-              entrypoint[0].repositories.length > 0 ? (
+            {entrypoint.repositories ? (
+              entrypoint.repositories.length > 0 ? (
                 <>
                   {increaseCount()}
-                  {entrypoint[0].repositories.map((repo: any) => {
+                  {entrypoint.repositories.map((repo: any) => {
                     return (
                       <div className="border-1 flex flex-col justify-between rounded-xl border border-gray-300">
                         <div className="flex w-full items-center gap-4 px-2 pb-6 pt-2">
