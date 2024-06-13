@@ -10,7 +10,7 @@ import { TagIcon } from "lucide-react";
 import { Garden } from "../types";
 
 
-const GardenBox = ({ garden }: { garden: Garden }) => {
+const GardenBox = ({ garden }: { garden: any }) => {
   const navigate = useNavigate();
 
   const { title, description, doi, tags } = garden.entries[0].content;
