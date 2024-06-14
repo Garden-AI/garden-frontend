@@ -161,13 +161,13 @@ const GardenPage = ({ bread }: { bread: any }) => {
                 Copied to Clipboard
               </p>
             )}
-            <Modal
+            {/* <Modal
               show={show}
               close={closeModal}
               copy={copy}
               doi={garden.doi}
               showTooltip={showTooltip}
-            />
+            /> */}
           </div>
         </div>
 
