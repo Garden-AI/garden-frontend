@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useGlobusAuth } from "@/components/globus-auth-context/useGlobusAuth";
-import { Spinner } from "@chakra-ui/react";
+//import { Spinner } from "@chakra-ui/react";
 
 export default function Authenticate() {
   const auth = useGlobusAuth();
@@ -20,5 +20,5 @@ export default function Authenticate() {
     }
     attempt();
   }, [router, instance, instance?.handleCodeRedirect, auth.isAuthenticated]);
-  return <Spinner />;
+  //return <Spinner />;
 }
