@@ -141,4 +141,30 @@ const Modal = (props: {
   );
 };
 
-export default Modal;
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+function Modal2() {
+  return (
+    <Dialog>
+      <DialogTrigger></DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Dialog Title</DialogTitle>
+          <DialogDescription>Dialog Description</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <button>Cancel</button>
+          <button>Ok</button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+export default Modal2;

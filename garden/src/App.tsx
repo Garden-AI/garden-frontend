@@ -17,6 +17,8 @@ import Footer from "./components/Footer";
 import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
+import Error from "./pages/NotFoundPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,7 +70,7 @@ function Root() {
   };
   return (
     <Routes>
-      <Route path="*" element={<RootLayout />}>
+      <Route path="/" element={<RootLayout />}>
         <Route index element={<HomePage />} />
         {/*  We should eventually eliminate this next route unless there is explicit need for it- can just use '/' as 'home' */}
         <Route path="home" element={<HomePage />} />
@@ -83,6 +85,7 @@ function Root() {
           element={<EntrypointPage bread={breadcrumbs} />}
         />
         <Route path="team" element={<TeamsPage />} />
+        <Route element={<Error />} />
       </Route>
     </Routes>
   );
@@ -97,6 +100,7 @@ function RootLayout() {
       <Navbar />
       <Outlet />
       <Footer />
+      <Toaster />
     </>
   );
 }
