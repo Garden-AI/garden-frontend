@@ -45,15 +45,6 @@ const Navbar = (
         >
           Examples
         </a>
-        {isAuthenticated ? (
-          <button onClick={logOut} className="hover:underline">
-            Log Out
-          </button>
-        ) : (
-          <button onClick={logIn} className="hover:underline">
-            Log In
-          </button>
-        )}  
       </div>
     </nav>
   );
