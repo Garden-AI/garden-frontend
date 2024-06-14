@@ -7,43 +7,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: ./garden
+
+    env:
+      ENVIRONMENT: ${{ github.ref == 'refs/heads/staging' && 'staging' || 'production' }}
+
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
+
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Set .env file path
-        id: set_env_file
-        run: |
-          if [[ "${{ github.ref }}" == 'refs/heads/prod' ]]; then
-            echo "env_file=.env.production" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == 'refs/heads/staging' ]]; then
-            echo "env_file=.env.staging" >> $GITHUB_OUTPUT
-          fi
+
       - name: Install dependencies
-        run: npm install    
-      # https://create-react-app.dev/docs/adding-custom-environment-variables/
-      # .env.local takes precedent by default.
-      # But .env.production.local "beats" .env.local.
-      # So depending on what env we're in, set the staging or prod env file to .env.production.local
+        run: npm install
+
       - name: Generate build
         run: |
-          cp ${{ steps.set_env_file.outputs.env_file }} ./.env.production.local
-          npm run predeploy
+          npm run build:${{ env.ENVIRONMENT }}
+
       - name: Don't serve msw
         run: |
           npm run remove-mock-service-worker
+
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
           name: react-github-actions-build
           path: ./garden/build
-      
+
   prod-deploy:
     if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
@@ -54,7 +51,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: react-github-actions-build
-          path: build    
+          path: build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -72,7 +69,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: react-github-actions-build
-          path: build   
+          path: build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

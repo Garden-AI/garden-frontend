@@ -45,8 +45,8 @@ const CommentBox = ({ comment }: { comment: any }) => {
 
   return (
     <div>
-      <div className="mt-6 h-full w-full shadow-lg bg-gray-200">
-        <div className="flex flex-col gap-1 max-w-6 pl-4 pt-4 float-left">
+      <div className="mt-6 h-full w-full bg-gray-200 shadow-lg">
+        <div className="float-left flex max-w-6 flex-col gap-1 pl-4 pt-4">
           <button onClick={upVote}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@ const CommentBox = ({ comment }: { comment: any }) => {
               viewBox="0 0 24 24"
               strokeWidth={isUpvoted === true ? 3 : 1.5}
               stroke="currentColor"
-              className="w-6 h-6 m-0"
+              className="m-0 h-6 w-6"
             >
               <path
                 strokeLinecap="round"
@@ -71,7 +71,7 @@ const CommentBox = ({ comment }: { comment: any }) => {
               viewBox="0 0 24 24"
               strokeWidth={isDownvoted === true ? 3 : 1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
               <path
                 strokeLinecap="round"
@@ -81,15 +81,15 @@ const CommentBox = ({ comment }: { comment: any }) => {
             </svg>
           </button>
         </div>
-        <div className="flex flex-col gap-4 ml-16 pl-6 pt-2 bg-white h-fit relative">
-          <div className="pb-2 flex items-center gap-3">
-            <section className="border border-1 border-black w-max px-3 rounded-2xl">
+        <div className="relative ml-16 flex h-fit flex-col gap-4 bg-white pl-6 pt-2">
+          <div className="flex items-center gap-3 pb-2">
+            <section className="border-1 w-max rounded-2xl border border-black px-3">
               {comment.type}
             </section>
             <p className="text-gray-500">Posted by {comment.user}</p>
           </div>
           <div className="h-fit overflow-y-hidden pb-4">
-            <h1 className="font-semibold text-xl pb-0.5">{comment.title}</h1>
+            <h1 className="pb-0.5 text-xl font-semibold">{comment.title}</h1>
             <p>{comment.body}</p>
           </div>
 
@@ -104,7 +104,7 @@ const CommentBox = ({ comment }: { comment: any }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="h-6 w-6"
               >
                 <path
                   strokeLinecap="round"
@@ -117,7 +117,7 @@ const CommentBox = ({ comment }: { comment: any }) => {
           </div>
         </div>
 
-        <div className="ml-16 pl-6 pt-2 bg-white">
+        <div className="ml-16 bg-white pl-6 pt-2">
           {comment.replies
             .filter((reply: any, index: any) => {
               if (index < replies) {
@@ -125,9 +125,9 @@ const CommentBox = ({ comment }: { comment: any }) => {
               }
               return false;
             })
-            .map((reply: any) => {
+            .map((reply: any, index: number) => {
               return (
-                <div key={reply.body} className="">
+                <div key={index} className="">
                   <p className="font-semibold">{reply.user}</p>
                   <p className="pb-2">{reply.body}</p>
                 </div>

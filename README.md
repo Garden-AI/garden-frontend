@@ -1,11 +1,12 @@
 # garden-frontend
+
 Web UI for thegardens.ai
 
 # Branches and deployment
 
 - `staging` is the main branch in this repo. It is the one that you should make PRs against. Merges to `staging` trigger a deployment to our staging site, https://garden-ai.github.io/garden-frontend-staging/
-    - To get to the home page, include /#/home at the end of the url
-- `prod` is a branch used to deploy vetted code from the `staging` branch to production, https://thegardens.ai/. 
+  - To get to the home page, include /#/home at the end of the url
+- `prod` is a branch used to deploy vetted code from the `staging` branch to production, https://thegardens.ai/.
 
 The `staging` branch is the source of truth for development in this repo. `prod` only exists for deployment purposes. If you make a change to `prod` that isn't on `staging`, it will soon get blown away. If there are merge conflicts between `prod` and `staging`, we will force push the contents of `staging` to `prod` with `git push origin --force staging:prod`.
 
@@ -19,18 +20,14 @@ The `staging` branch is the source of truth for development in this repo. `prod`
 
 # Getting started locally
 
-After cloning, run `npm install` to pull in dependencies and then `npm start` to test changes locally with hot reloading. More detailed instructions on npm commands are below from Create React App scaffolding.
+After cloning, run `npm install` to pull in dependencies and then `npm start` to test changes locally with hot reloading.
 
 # Using msw mocks
 
-The `src/mocks` folder has configuration for `msw`, a library that mocks external API responses. 
+The `src/mocks` folder has configuration for `msw`, a library that mocks external API responses.
 This is useful to set up static garden/entrypoint responses to develop against no matter the state of the backend.
 
-To use this when developing locally, uncomment `REACT_APP_SHOULD_MOCK="true"` in `.env.development`.
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+To use this when developing locally, uncomment `VITE_APP_SHOULD_MOCK="true"` in `.env.development`.
 
 ## Available Scripts
 
@@ -68,9 +65,3 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
