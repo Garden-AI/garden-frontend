@@ -27,7 +27,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
       <div className="font-display">
         <Breadcrumb
           crumbs={[
-            { label: "Home", link: "/home" },
+            { label: "Home", link: "/" },
             { label: "Gardens", link: "/search" },
             {
               label: garden.title,

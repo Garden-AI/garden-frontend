@@ -12,7 +12,7 @@ const Breadcrumbs = ({ crumbs }: { crumbs: any }) => {
       <div>
         <div className="flex flex-wrap gap-2 text-xs sm:text-base">
           <button
-            onClick={() => navigate(`/home`)}
+            onClick={() => navigate(`/`)}
             className="text-gray-500 hover:text-black hover:underline"
           >
             {crumbs.home}

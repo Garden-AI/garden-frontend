@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <nav className="flex justify-between gap-4 border-b border-gray-200 px-5 py-1 text-sm md:text-lg">
-      <Link to="/home" className="py-2">
+      <Link to="/" className="py-2">
         <div className="relative w-28 pb-[27%]">
           <div className="absolute inset-0">
             <img

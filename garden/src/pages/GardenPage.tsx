@@ -8,6 +8,7 @@ import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { useSearchGardenByDOI, useSearchGardens } from "../api/search";
 import { Garden } from "../types";
 import LoadingSpinner from "../components/LoadingSpinner";
+import NotFoundPage from "./NotFoundPage";
 
 const GardenPage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
@@ -34,24 +35,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   }
   //If no garden is associated with the DOI in the URL, not found page comes up
   if (gardenIsError || !garden) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-green font-display">
-        <div className="flex min-h-[50vh] w-[75vw] flex-col items-center rounded-xl border border-black bg-white sm:w-[50vw]">
-          <h1 className=" px-4 py-12 text-center text-4xl font-semibold">
-            No Garden Found
-          </h1>
-          <p className="px-4 text-center">
-            The page you were looking for does not exist
-          </p>
-          <button
-            className="mt-16 rounded-lg border border-green bg-green px-4 py-3 text-white shadow-lg hover:border-black hover:shadow-xl"
-            onClick={() => navigate("/home")}
-          >
-            Back to Home
-          </button>
-        </div>
-      </div>
-    );
+    return <NotFoundPage />;
   }
 
   const text = doi?.replace("/", "%2f");

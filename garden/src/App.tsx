@@ -18,7 +18,7 @@ import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
-import Error from "./pages/NotFoundPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,8 +85,8 @@ function Root() {
           element={<EntrypointPage bread={breadcrumbs} />}
         />
         <Route path="team" element={<TeamsPage />} />
-        <Route element={<Error />} />
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
