@@ -54,7 +54,7 @@ const SearchPage = () => {
           placeholder="Search for a Garden..."
           onChange={handleInputChange}
           className={
-            "flex h-10 w-full rounded-3xl border px-4 py-2 pl-10 text-sm transition placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/40 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+            "flex h-10 w-full rounded-3xl border px-4 py-2 pl-10 text-sm transition placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/40 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
           }
         />
       </div>
