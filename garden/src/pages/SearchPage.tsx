@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { useSearchGardens } from "@/api/search";
 import { Garden } from "@/types";
@@ -8,7 +8,8 @@ import GardenBox from "@/components/GardenBox";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const SearchPage = () => {
+const SearchPage = ({ bread }: { bread: any }) => {
+  bread.search = "Search";
   const [query, setQuery] = useState("");
   const [gardens, setGardens] = useState<Garden[]>([]);
   const {
@@ -17,24 +18,20 @@ const SearchPage = () => {
     isError,
   } = useSearchGardens("*", "100");
 
+  const filteredGardens = useMemo(
+    () => searchGardens(gardenSearchResults || [], query),
+    [gardenSearchResults, query],
+  );
+
   useEffect(() => {
-    setGardens(prioritizeGardens(gardenSearchResults || []));
-  }, [gardenSearchResults]);
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    const filteredResults = gardenSearchResults?.filter((garden: Garden) => {
-      return garden.title
-        .toLowerCase()
-        .includes(event.target.value.toLowerCase());
-    });
-
-    setGardens(prioritizeGardens(filteredResults || []));
-  };
+    setGardens(prioritizeGardens(filteredGardens));
+  }, [filteredGardens]);
 
   if (isLoading) {
     return <LoadingSpinner />;
-  } else if (isError) {
+  }
+
+  if (isError) {
     return (
       <h3 className="mt-12 text-center text-xl opacity-60">
         Error loading gardens.
@@ -52,7 +49,8 @@ const SearchPage = () => {
         <Input
           type="text"
           placeholder="Search for a Garden..."
-          onChange={handleInputChange}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           className={
             "flex h-10 w-full rounded-3xl border px-4 py-2 pl-10 text-sm transition placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/40 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
           }
@@ -75,17 +73,24 @@ const SearchPage = () => {
 };
 
 function prioritizeGardens(gardens: Garden[]) {
-  const gardenMapping = gardens.map(
+  const TEST_GARDEN_REGEX = /test|tutorial|example|dummy|demo|toggle/i;
+
+  const isTestGarden = gardens.map(
     (garden) =>
-      RegExp(/test|tutorial|example|dummy|demo|toggle/i).test(
-        garden.title.toLowerCase(),
-      ) ||
+      RegExp(TEST_GARDEN_REGEX).test(garden.title.toLowerCase()) ||
       garden.entrypoints.some((entrypoint) =>
         entrypoint.tags.includes("tutorial"),
       ),
   );
-  const testGardens = gardens.filter((garden, index) => gardenMapping[index]);
-  const realGardens = gardens.filter((garden, index) => !gardenMapping[index]);
+  const testGardens = gardens.filter((_, index) => isTestGarden[index]);
+  const realGardens = gardens.filter((_, index) => !isTestGarden[index]);
   return [...realGardens, ...testGardens];
 }
+
+const searchGardens = (gardens: Garden[], searchTerm: string) => {
+  return gardens.filter(({ title }) =>
+    title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+};
+
 export default SearchPage;

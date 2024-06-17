@@ -73,7 +73,7 @@ function Root() {
         {/*  We should eventually eliminate this next route unless there is explicit need for it- can just use '/' as 'home' */}
         <Route path="home" element={<HomePage />} />
         <Route path="terms" element={<TermsPage />} />
-        <Route path="search" element={<SearchPage />} />
+        <Route path="search" element={<SearchPage bread={breadcrumbs} />} />
         <Route
           path="garden/:doi"
           element={<GardenPage bread={breadcrumbs} />}
