@@ -1,10 +1,15 @@
-import { useState, ChangeEvent, useEffect } from "react";
-import GardenBox from "../components/GardenBox";
-import { useSearchGardens } from "../api/search";
-import { Garden } from "../types";
-import LoadingSpinner from "../components/LoadingSpinner";
+import { useState, useEffect, useMemo } from "react";
+
+import { useSearchGardens } from "@/api/search";
+import { Garden } from "@/types";
+
+import LoadingSpinner from "@/components/LoadingSpinner";
+import GardenBox from "@/components/GardenBox";
+import { SearchIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const SearchPage = ({ bread }: { bread: any }) => {
+  bread.search = "Search";
   const [query, setQuery] = useState("");
   const [gardens, setGardens] = useState<Garden[]>([]);
   const {
@@ -13,81 +18,79 @@ const SearchPage = ({ bread }: { bread: any }) => {
     isError,
   } = useSearchGardens("*", "100");
 
-  bread.search = "Search";
+  const filteredGardens = useMemo(
+    () => searchGardens(gardenSearchResults || [], query),
+    [gardenSearchResults, query],
+  );
 
   useEffect(() => {
-    setGardens(prioritizeGardens(gardenSearchResults || []));
-  }, [gardenSearchResults]);
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    const filteredResults = gardenSearchResults?.filter((garden: Garden) => {
-      return garden.title
-        .toLowerCase()
-        .includes(event.target.value.toLowerCase());
-    });
-
-    setGardens(prioritizeGardens(filteredResults || []));
-  };
+    setGardens(prioritizeGardens(filteredGardens));
+  }, [filteredGardens]);
 
   if (isLoading) {
     return <LoadingSpinner />;
-  } else if (isError) {
-    return <p>Error loading gardens</p>;
+  }
+
+  if (isError) {
+    return (
+      <h3 className="mt-12 text-center text-xl opacity-60">
+        Error loading gardens.
+      </h3>
+    );
   }
 
   return (
-    <div className="px-16 pt-24 font-display">
-      <p className="-mb-20 -mt-20 text-3xl">Gardens</p>
-      <div className="border-gray mt-12 flex items-center justify-between rounded-3xl border px-4 md:mx-12 md:mx-36">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="h-6 w-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-          />
-        </svg>
-
-        <input
+    <div className="min-h-screen  px-6 pt-4 font-display md:px-20">
+      <h1 className="mb-4 text-3xl">Gardens</h1>
+      <div className="relative mb-8 h-10 w-full">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 transform">
+          <SearchIcon className="h-[18px] w-[18px] text-muted-foreground" />
+        </div>
+        <Input
           type="text"
           placeholder="Search for a Garden..."
-          className=" mx-2 w-full px-2 py-2 outline-none"
-          onInput={handleInputChange}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className={
+            "flex h-10 w-full rounded-3xl border px-4 py-2 pl-10 text-sm transition placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/40 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+          }
         />
-        {/* <button className="py-2 my-1 bg-green rounded-3xl text-white px-6">Search</button> */}
       </div>
-      <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3">
-        {gardens ? (
-          gardens.map((garden: Garden, index: number) => (
+
+      {gardens?.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {gardens.map((garden: Garden, index: number) => (
             <GardenBox garden={garden} key={index} />
-          ))
-        ) : (
-          <p className="text-center text-2xl text-gray-500 sm:col-start-1 sm:col-end-3 md:col-start-2 md:col-end-3">
-            No results found for "{query}"
-          </p>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <h3 className="mt-12 text-center text-xl opacity-60">
+          No results found for "{query}"
+        </h3>
+      )}
     </div>
   );
 };
 
 function prioritizeGardens(gardens: Garden[]) {
-  const gardenMapping = gardens.map(
+  const TEST_GARDEN_REGEX = /test|tutorial|example|dummy|demo|toggle/i;
+
+  const isTestGarden = gardens.map(
     (garden) =>
-      RegExp(/test|tutorial|example|dummy|demo|toggle/i).test(garden.title) ||
+      RegExp(TEST_GARDEN_REGEX).test(garden.title.toLowerCase()) ||
       garden.entrypoints.some((entrypoint) =>
         entrypoint.tags.includes("tutorial"),
       ),
   );
-  const testGardens = gardens.filter((garden, index) => gardenMapping[index]);
-  const realGardens = gardens.filter((garden, index) => !gardenMapping[index]);
+  const testGardens = gardens.filter((_, index) => isTestGarden[index]);
+  const realGardens = gardens.filter((_, index) => !isTestGarden[index]);
   return [...realGardens, ...testGardens];
 }
+
+const searchGardens = (gardens: Garden[], searchTerm: string) => {
+  return gardens.filter(({ title }) =>
+    title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+};
+
 export default SearchPage;
