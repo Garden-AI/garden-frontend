@@ -7,7 +7,6 @@ import {
 import { Entrypoint } from "../types";
 import { Paperclip } from "lucide-react";
 import CopyButton from "./CopyButton";
-import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 
 function AssociatedMaterials({ entrypoint }: { entrypoint: Entrypoint }) {

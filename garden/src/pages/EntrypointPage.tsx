@@ -48,13 +48,6 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
               icon={<LinkIcon />}
               className="border-none bg-transparent"
             />
-
-            {/* <WithTooltip hint={"Share"}>
-              <Button variant="link" onClick={() => console.log("modal")}>
-                <Share2 />
-              </Button>
-            </WithTooltip> */}
-            {/* <Modal /> */}
           </div>
         </header>
 
@@ -81,7 +74,6 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
         <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} />
         <Separator className="mb-12" />
         <AssociatedMaterials entrypoint={entrypoint} />
-
         <EntrypointTabs entrypoint={entrypoint} />
       </div>
     </div>

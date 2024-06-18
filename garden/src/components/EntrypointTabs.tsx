@@ -102,10 +102,6 @@ function DatasetsTab({ datasets }: { datasets: any[] }) {
               </div>
             </CardContent>
             <CardFooter className="flex justify-start ">
-              {/* <CopyButton
-                tooltipHint="Copy Citation"
-                content={dataset.citation}
-              /> */}
               <Button variant="default" size={"sm"} asChild className="text-xs">
                 <a href={dataset.url} target="_blank" rel="noopener noreferrer">
                   View Dataset
@@ -161,13 +157,32 @@ function DatasetsTab({ datasets }: { datasets: any[] }) {
 }
 
 function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
+  const mock = [
+    {
+      function_name: "Step 1",
+      description: "This is the first step",
+      function_text: "def step1():\n    pass",
+    },
+    {
+      function_name: "Step 2",
+      description: "This is the second step",
+      function_text: "def step2():\n    pass",
+    },
+    {
+      function_name: "Step 3",
+      description: "This is the third step",
+      function_text:
+        "def step3():\n    x = 1\n    if x == 1:\n        print('Hello World')\n    else:\n        pass",
+    },
+  ];
+  entrypoint.steps = mock;
   return (
     <Tabs
       defaultValue={"0"}
       className="grid grid-cols-4 gap-x-6 py-6"
       orientation="vertical"
     >
-      <TabsList className="col-span-1 flex h-full flex-col items-start space-y-1 rounded-md bg-transparent p-4">
+      <TabsList className="col-span-1 flex h-full flex-col items-start justify-start space-y-2 rounded-md bg-transparent p-4">
         {entrypoint.steps.map((step: any, index: number) => (
           <TabsTrigger
             key={index}
