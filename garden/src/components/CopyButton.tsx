@@ -17,7 +17,7 @@ export default function CopyButton({
 }) {
   if (hint === undefined) {
     return (
-      <CopyIconButton className={className}>
+      <CopyIconButton className={className} {...content}>
         <Copy />
       </CopyIconButton>
     );
@@ -31,7 +31,10 @@ export default function CopyButton({
         }}
         variant="outline"
         size="icon"
-        className="transition-colors duration-200 hover:bg-gray-100 hover:text-primary"
+        className={cn(
+          "h-8 w-8 p-1.5 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900",
+          className,
+        )}
       >
         {icon ? icon : <Copy />}
       </Button>
@@ -42,22 +45,21 @@ export default function CopyButton({
 const CopyIconButton = ({
   className,
   children,
+  content,
 }: {
   className?: string;
   children: any;
+  content: string;
 }) => {
   return (
     <Button
       onClick={() => {
-        navigator.clipboard.writeText("paper.citation");
+        navigator.clipboard.writeText(content);
         toast.success("Copied to clipboard!");
       }}
       variant="outline"
       size="icon"
-      className={cn(
-        "transition-colors duration-200 hover:bg-gray-100 hover:text-primary",
-        className,
-      )}
+      className={cn("h-8 w-8 p-1.5 transition-colors duration-200 ", className)}
     >
       {children}
     </Button>

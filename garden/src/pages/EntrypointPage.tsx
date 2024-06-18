@@ -28,7 +28,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
         <Breadcrumb
           crumbs={[
             { label: "Home", link: "/" },
-            { label: "Gardens", link: "/search" },
+            { label: "Search", link: "/search" },
             {
               label: garden.title,
               link: `/garden/${encodeURIComponent(`${garden.doi}`)}`,
@@ -46,7 +46,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
               hint="Copy Link"
               content={window.location.href}
               icon={<LinkIcon />}
-              className="border-none bg-transparent text-primary "
+              className="border-none bg-transparent"
             />
 
             {/* <WithTooltip hint={"Share"}>

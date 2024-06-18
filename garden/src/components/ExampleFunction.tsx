@@ -1,5 +1,6 @@
 import { IpynbRenderer } from "react-ipynb-renderer";
 import "../ipynbPreview.css";
+import CopyButton from "./CopyButton";
 
 type ExampleFunctionProps = {
   functionText: string;
@@ -10,8 +11,13 @@ export const ExampleFunction = ({ functionText }: ExampleFunctionProps) => {
   const lines = functionText.split("\n").map((line) => line + "\n");
   const notebookJson = makeMinimalNotebook(lines);
   return (
-    <div className="no-input-number px-4">
+    <div className="no-input-number relative px-4">
       <IpynbRenderer ipynb={notebookJson} />
+      <CopyButton
+        hint={"Copy Function Body"}
+        content={functionText}
+        className="absolute right-0 top-0 m-3 mr-16 "
+      />
     </div>
   );
 };

@@ -107,7 +107,9 @@ function DatasetsTab({ datasets }: { datasets: any[] }) {
                 content={dataset.citation}
               /> */}
               <Button variant="default" size={"sm"} asChild className="text-xs">
-                <Link to={dataset.url}>View Dataset</Link>
+                <a href={dataset.url} target="_blank" rel="noopener noreferrer">
+                  View Dataset
+                </a>
               </Button>
             </CardFooter>
           </Card>
@@ -160,13 +162,17 @@ function DatasetsTab({ datasets }: { datasets: any[] }) {
 
 function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
   return (
-    <Tabs defaultValue={"0"} className="grid grid-cols-12 gap-x-6 py-6">
-      <TabsList className="col-span-3 flex flex-col gap-y-2 rounded-md bg-gray-50 p-4">
+    <Tabs
+      defaultValue={"0"}
+      className="grid grid-cols-4 gap-x-6 py-6"
+      orientation="vertical"
+    >
+      <TabsList className="col-span-1 flex h-full flex-col items-start space-y-1 rounded-md bg-transparent p-4">
         {entrypoint.steps.map((step: any, index: number) => (
           <TabsTrigger
             key={index}
             value={index.toString()}
-            className="w-full rounded-md px-4 py-2 text-left text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900"
+            className="w-full border-2 border-transparent bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-400 shadow-sm transition-colors hover:border-gray-100 hover:bg-gray-50 hover:text-gray-600  focus:text-gray-800 data-[state=active]:border-gray-200 data-[state=active]:bg-white data-[state=active]:text-gray-700 data-[state=active]:shadow-sm"
           >
             {step.function_name}
           </TabsTrigger>
@@ -176,7 +182,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
       {entrypoint.steps.map((step: any, index: number) => (
         <TabsContent
           value={index.toString()}
-          className="col-span-9"
+          className="col-span-3"
           key={index}
         >
           <Card key={index} className="rounded-md bg-white shadow-md">

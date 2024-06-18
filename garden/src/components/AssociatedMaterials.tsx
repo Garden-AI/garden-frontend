@@ -31,15 +31,19 @@ function AssociatedMaterials({ entrypoint }: { entrypoint: Entrypoint }) {
         <AccordionContent className=" space-y-4">
           {entrypoint?.papers?.map((paper) => (
             <div key={paper.doi} className="rounded-md bg-white p-4 shadow-md">
-              <div className="mb-2 flex items-center justify-between">
+              <div className="mb-2 flex items-center justify-between gap-4">
                 <Link
                   to={`https://doi.org/${paper.doi}`}
-                  className="text-lg font-bold text-gray-800 transition duration-300 hover:text-primary"
+                  className="text-lg font-bold text-gray-800 transition-colors duration-300 hover:text-gray-600"
                 >
                   {paper.title}
                 </Link>
 
-                <CopyButton content={paper.citation} hint="Copy Citation" />
+                <CopyButton
+                  content={paper.citation}
+                  hint="Copy Citation"
+                  className=""
+                />
               </div>
               <div className="mb-2 text-sm text-gray-600">
                 <span className="font-medium">Authors:</span>{" "}

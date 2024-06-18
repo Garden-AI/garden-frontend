@@ -17,12 +17,6 @@ function EntrypointFunction({
           <ExampleFunction
             functionText={exampleFunctionText(gardenDOI, entrypoint)}
           />
-
-          <CopyButton
-            className="absolute right-0 top-1/2 "
-            hint="Copy Function Body"
-            content={exampleFunctionText(gardenDOI, entrypoint)}
-          />
         </div>
       </div>
       <div className="mt-0 flex justify-center pt-0">
