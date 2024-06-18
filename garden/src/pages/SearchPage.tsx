@@ -33,16 +33,16 @@ const SearchPage = ({ bread }: { bread: any }) => {
 
   if (isError) {
     return (
-      <h3 className="mt-12 text-center text-xl opacity-60">
+      <h3 className="mt-12 min-h-[400px] text-center text-xl opacity-60">
         Error loading gardens.
       </h3>
     );
   }
 
   return (
-    <div className="min-h-screen  px-6 pt-4 font-display md:px-20">
-      <h1 className="mb-4 text-3xl">Gardens</h1>
-      <div className="relative mb-8 h-10 w-full">
+    <div className="min-h-screen px-6 pt-4 font-display md:px-20">
+      <h1 className="my-6 text-3xl">Gardens</h1>
+      <div className="relative mb-16 h-10 w-full">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 transform">
           <SearchIcon className="h-[18px] w-[18px] text-muted-foreground" />
         </div>
