@@ -11,6 +11,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import EntrypointFunction from "@/components/EntrypointFunction";
 import CopyButton from "@/components/CopyButton";
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
+import ShareModal from "@/components/ShareModal";
 
 const EntrypointPage = ({ bread }: { bread: any }) => {
   const { doi } = useParams() as { doi: string };
@@ -18,12 +19,15 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
 
   if (isLoading) return <LoadingSpinner />;
-  if (isError || !garden || !garden.entrypoints[0]) return <NotFoundPage />;
 
-  const entrypoint = garden.entrypoints[0];
+  const entrypoint = garden?.entrypoints.find(
+    (entrypoint) => entrypoint.doi === doi,
+  );
+
+  if (isError || !garden || !entrypoint) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 md:px-10">
+    <div className="mx-auto max-w-7xl px-4 py-10 md:px-10">
       <div className="font-display">
         <Breadcrumb
           crumbs={[
@@ -37,10 +41,8 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
           ]}
         />
 
-        <header className="mb-4 flex items-start justify-between gap-x-2">
-          <h1 className="text-xl font-semibold md:text-3xl">
-            {entrypoint.title}
-          </h1>
+        <header className="mb-4 flex gap-x-2">
+          <h1 className="text-xl md:text-3xl">{entrypoint.title}</h1>
           <div className="hidden flex-col items-center md:flex md:flex-row">
             <CopyButton
               hint="Copy Link"
@@ -48,6 +50,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
               icon={<LinkIcon />}
               className="border-none bg-transparent"
             />
+            <ShareModal doi={doi} />
           </div>
         </header>
 
@@ -65,14 +68,13 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
         </div>
 
         <div className="mb-2 flex items-center gap-2 text-lg md:text-xl">
-          <h2>At a glance</h2>
           <Eye />
+          <h2>At a glance</h2>
         </div>
         <p className="mb-6">{garden.description}</p>
 
         <Separator className="mb-12" />
         <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} />
-        <Separator className="mb-12" />
         <AssociatedMaterials entrypoint={entrypoint} />
         <EntrypointTabs entrypoint={entrypoint} />
       </div>

@@ -37,13 +37,14 @@ export default function EntrypointTabs({
     },
   ];
   return (
-    <Tabs
-      defaultValue="steps"
-      className="min-h-[400px] w-full rounded-lg shadow-sm"
-    >
-      <TabsList className="grid w-full grid-cols-3 text-xl">
+    <Tabs defaultValue="steps" className="min-h-[400px] w-full">
+      <TabsList className="m-0 grid w-full grid-cols-3 rounded-none bg-transparent p-0 ">
         {tabs.map(({ name }) => (
-          <TabsTrigger key={name} value={name.toLowerCase()}>
+          <TabsTrigger
+            key={name}
+            value={name.toLowerCase()}
+            className="m-0 rounded-none border-b-4 border-transparent bg-gray-100 bg-gradient-to-b py-2 text-base text-black transition-none hover:border-primary hover:from-gray-100 hover:from-70% hover:to-primary data-[state=active]:border-green data-[state=active]:bg-primary/30 data-[state=active]:bg-none"
+          >
             {name}
           </TabsTrigger>
         ))}
@@ -157,37 +158,18 @@ function DatasetsTab({ datasets }: { datasets: any[] }) {
 }
 
 function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
-  const mock = [
-    {
-      function_name: "Step 1",
-      description: "This is the first step",
-      function_text: "def step1():\n    pass",
-    },
-    {
-      function_name: "Step 2",
-      description: "This is the second step",
-      function_text: "def step2():\n    pass",
-    },
-    {
-      function_name: "Step 3",
-      description: "This is the third step",
-      function_text:
-        "def step3():\n    x = 1\n    if x == 1:\n        print('Hello World')\n    else:\n        pass",
-    },
-  ];
-  entrypoint.steps = mock;
   return (
     <Tabs
       defaultValue={"0"}
       className="grid grid-cols-4 gap-x-6 py-6"
       orientation="vertical"
     >
-      <TabsList className="col-span-1 flex h-full flex-col items-start justify-start space-y-2 rounded-md bg-transparent p-4">
+      <TabsList className="col-span-1 flex h-full flex-col items-start justify-start space-y-4 rounded-md bg-transparent ">
         {entrypoint.steps.map((step: any, index: number) => (
           <TabsTrigger
             key={index}
             value={index.toString()}
-            className="w-full border-2 border-transparent bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-400 shadow-sm transition-colors hover:border-gray-100 hover:bg-gray-50 hover:text-gray-600  focus:text-gray-800 data-[state=active]:border-gray-200 data-[state=active]:bg-white data-[state=active]:text-gray-700 data-[state=active]:shadow-sm"
+            className="w-full rounded-none border-4 border-transparent bg-gray-100 py-4 text-center text-base font-medium text-black transition-colors hover:border-gray-100 hover:bg-gray-50 hover:text-gray-600  data-[state=active]:border-gray-400 data-[state=active]:bg-gray-100 "
           >
             {step.function_name}
           </TabsTrigger>
@@ -200,8 +182,8 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
           className="col-span-3"
           key={index}
         >
-          <Card key={index} className="rounded-md bg-white shadow-md">
-            <CardHeader className="rounded-t-md bg-gray-50 px-6 py-4">
+          <Card key={index} className=" rounded-none bg-white">
+            <CardHeader className=" px-6 py-4">
               <CardTitle className="text-xl font-bold text-gray-800">
                 {step.function_name}
               </CardTitle>

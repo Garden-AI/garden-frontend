@@ -16,7 +16,7 @@ export const ExampleFunction = ({ functionText }: ExampleFunctionProps) => {
       <CopyButton
         hint={"Copy Function Body"}
         content={functionText}
-        className="absolute right-0 top-0 m-3 mr-16 "
+        className="absolute right-0 top-0 m-3 mr-16 border-none bg-transparent"
       />
     </div>
   );

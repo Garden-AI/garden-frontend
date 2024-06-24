@@ -32,11 +32,11 @@ export default function CopyButton({
         variant="outline"
         size="icon"
         className={cn(
-          "h-8 w-8 p-1.5 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900",
+          "border-none text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900",
           className,
         )}
       >
-        {icon ? icon : <Copy />}
+        {icon ? icon : <Copy className="h-8 w-8 p-1.5" />}
       </Button>
     </WithTooltip>
   );
