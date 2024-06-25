@@ -17,7 +17,7 @@ const Modal = (props: {
   };
 
   return (
-    <div className="z-45 fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-70 font-display">
+    <div className="z-50 fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-70 font-display">
       <div className="min-h-[50vh] w-[75vw] bg-white sm:w-[50vw]">
         <button className="float-right mr-4 mt-2" onClick={() => props.close()}>
           <span className="px-4 py-4 text-lg font-bold">X</span>
@@ -96,20 +96,20 @@ const Modal = (props: {
           <div className="ml-4 mt-2 overflow-auto whitespace-nowrap border-2 border-solid border-gray-100 sm:ml-14 sm:w-[30vw]">
             <span className="px-4 text-sm">{window.location.href}</span>
           </div>
-          <button onClick={() => props.copy()}>
+          <button onClick={() => props.copy()} className="ml-2 mt-1">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="black"
-              className="mx-2 h-6 w-6 sm:ml-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-              />
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="gray"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
+                />
             </svg>
           </button>
         </div>
@@ -119,20 +119,20 @@ const Modal = (props: {
           <div className="ml-4 mt-2 overflow-auto whitespace-nowrap border-2 border-solid border-gray-100 sm:ml-14 sm:w-[30vw]">
             <span className="px-4 text-sm">{props.doi}</span>
           </div>
-          <button onClick={copyDOI}>
+          <button onClick={copyDOI} className="ml-2 mt-1">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="black"
-              className="mx-2 h-6 w-6 sm:ml-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-              />
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="gray"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
+                />
             </svg>
           </button>
         </div>

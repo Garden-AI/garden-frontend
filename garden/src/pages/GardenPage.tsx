@@ -65,6 +65,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
 
   const copyDOI = async () => {
     const DOItext: string = doi?.replace("/", "%2f") ?? "";
+    showTooltip();
 
     try {
       await navigator.clipboard.writeText(DOItext);

@@ -310,29 +310,31 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
           </h2>
           <div className="justify-center pt-2 sm:flex">
             <div className="relative">
-              <ExampleFunction
-                functionText={exampleFunctionText(gardenDOI, entrypoint)}
-              />
-              <button
-                title="Copy Code"
-                onClick={copyCode}
-                className="absolute right-0 top-0 mr-8 mt-6 flex items-center justify-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="gray"
-                  className="h-6 w-6"
+              <div className="relative">
+                <ExampleFunction
+                  functionText={exampleFunctionText(gardenDOI, entrypoint)}
+                />
+                <button
+                  title="Copy Code"
+                  onClick={copyCode}
+                  className="absolute right-0 top-0 mt-2 mr-2 flex items-center justify-center"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="gray"
+                    className="h-6 w-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div className="flex flex-col items-center justify-center">
               {/* <OpenInButtons/> */}
