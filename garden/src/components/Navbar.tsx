@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGlobusAuth } from "./globus-auth-context/useGlobusAuth";
+import { Separator } from "@/components/ui/separator";
 
 /*
 const Navbar = () => {
@@ -69,6 +70,13 @@ const Navbar = (
     logOut: () => void;
   }
 ) => {
+
+  const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
+
+  const toggleMenuDropdown = () => {
+    setOpenMenuDropdown(!openMenuDropdown);
+  };
+
   return (
     <nav className="flex justify-between gap-4 border-b border-gray-200 px-5 py-1 text-sm md:text-lg">
       <Link to="/home" className="py-2">
@@ -102,31 +110,51 @@ const Navbar = (
         >
           Examples
         </a>
-        {isAuthenticated ? (
-          <button 
-          className="bg-green-500 px-4 py-1 hover:bg-green-600"
-          onClick={logOut}>
-          <div className="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-            </svg>
-
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-3.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-            </svg>
-          </div>
-          </button>
-        ) : (
-          <button 
-          className="bg-green-500 px-4 py-1 rounded shadow-md hover:bg-green-600"
-          onClick={logIn}>
-            Log In
-          </button>
-        )}  
+        <div onClick={toggleMenuDropdown} className="relative transition-all duration-500 text-sm">
+          {isAuthenticated ? (
+            <div>
+              <button 
+              className="bg-green-500 px-4 py-1 hover:bg-green-600"
+              >
+              <div className="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              {openMenuDropdown ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+              )}
+              </div>
+              </button>
+              <div className={`absolute ${openMenuDropdown ? 'block' : 'hidden'} mt-5 bg-white rounded shadow-md justify-between py-5 right-0 z-50 `}>
+                  <div className='p-4 flex flex-col gap-4'>
+                    <p> @insertUsernameHere </p>
+                    <Separator />
+                    <div 
+                    className = "flex flex-row gap-2 hover:underline hover:text-green">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <Link to="/UserProfilePage"> Your Profile </Link> {/* add in actual link later once that branch is merged into staging*/}
+                    </div>
+                    <div 
+                    className = "flex flex-row gap-2 hover:underline hover:cursor-pointer hover:text-green"
+                    onClick={logOut}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                      <p> Log Out </p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          ) : (
+            <button 
+            className="bg-green-500 px-4 py-1 rounded shadow-md hover:bg-green-600"
+            onClick={logIn}>
+              Log In
+            </button>
+          )}  
+  
+        </div>
       </div>
     </nav>
   );
 };
-
 
 export default Navbar;
