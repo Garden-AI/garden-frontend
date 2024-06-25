@@ -145,7 +145,7 @@ const Navbar = (
             </div>
           ) : (
             <button 
-            className="bg-green-500 px-4 py-1 rounded shadow-md hover:bg-green-600"
+            className="bg-green-500 px-4 py-1 rounded shadow-md hover:bg-green-600 text-sm md:text-lg"
             onClick={logIn}>
               Log In
             </button>
