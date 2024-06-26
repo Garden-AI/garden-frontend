@@ -17,7 +17,13 @@ export default function CopyButton({
 }) {
   if (hint === undefined) {
     return (
-      <CopyIconButton className={className} {...content}>
+      <CopyIconButton
+        className={cn(
+          "border-none bg-transparent text-gray-700 transition-colors hover:bg-transparent hover:text-gray-500",
+          className,
+        )}
+        {...content}
+      >
         <Copy />
       </CopyIconButton>
     );
@@ -32,7 +38,7 @@ export default function CopyButton({
         variant="outline"
         size="icon"
         className={cn(
-          "border-none text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900",
+          "border-none bg-transparent text-gray-700 transition-colors hover:bg-transparent hover:text-gray-500",
           className,
         )}
       >

@@ -1,8 +1,14 @@
 import { Copy, Share2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import WithTooltip from "./WithTooltip";
-import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { useState } from "react";
+import CopyButton from "./CopyButton";
 
 const socialMediaItems = [
   {
@@ -38,13 +44,32 @@ const socialMediaItems = [
 ];
 
 const ShareModal = ({ doi }: { doi: string }) => {
+  const [isTooltipAllowed, setIsTooltipAllowed] = useState(true);
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" className="p-1 text-gray-700">
-          <Share2 className="h-8 w-8 p-1 " />
-        </Button>
-      </DialogTrigger>
+    <Dialog onOpenChange={() => setIsTooltipAllowed(false)}>
+      <TooltipProvider>
+        <Tooltip defaultOpen={false} delayDuration={40}>
+          <TooltipTrigger
+            asChild
+            onMouseEnter={() => setIsTooltipAllowed(true)}
+          >
+            <DialogTrigger asChild>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="border-none bg-transparent text-gray-600 hover:border-none hover:bg-transparent hover:text-gray-500"
+              >
+                <Share2 width={24} height={24} className="" />
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          {isTooltipAllowed && (
+            <TooltipContent>
+              <p>Share</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
       <DialogContent className="sm:max-w-[540px]">
         <h2 className="mb-4 text-2xl font-semibold">Share</h2>
         <div className="mb-8 flex justify-evenly">
@@ -80,21 +105,3 @@ const ShareModal = ({ doi }: { doi: string }) => {
 };
 
 export default ShareModal;
-
-const CopyButton = ({ content }: { content: any; className?: string }) => {
-  return (
-    <Button
-      onClick={() => {
-        navigator.clipboard.writeText(content);
-        toast.success("Copied to clipboard!");
-      }}
-      variant="outline"
-      size="icon"
-      className={
-        "border-none text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
-      }
-    >
-      <Copy className="h-8 w-8 p-1.5" />
-    </Button>
-  );
-};

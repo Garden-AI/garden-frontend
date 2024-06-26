@@ -34,7 +34,7 @@ function AssociatedMaterials({ entrypoint }: { entrypoint: Entrypoint }) {
                 <div key={paper.doi} className="rounded-md border bg-white p-6">
                   <div className="mb-4 flex items-center justify-between gap-4">
                     <div className="grid grid-cols-12 items-center gap-2">
-                      <BookOpen className="col-span-1 h-6 w-6 text-gray-600" />
+                      <BookOpen className="col-span-1 hidden h-6 w-6 text-gray-600 sm:block" />
 
                       <div className="col-span-11">
                         <Link
