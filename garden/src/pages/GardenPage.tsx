@@ -31,7 +31,7 @@ export default function GardenPage({ bread }: { bread: any }) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-8 py-16 font-display">
+    <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
@@ -135,9 +135,22 @@ function GardenAccordion({ garden }: { garden: Garden }) {
 }
 
 function EntrypointsTab({ garden }: { garden: Garden }) {
+  const entrypoints = garden.entrypoints;
+  if (!entrypoints || entrypoints.length === 0) {
+    return (
+      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
+        <h2 className="text-xl font-semibold text-gray-800">
+          No Entrypoints Found
+        </h2>
+        <p className="mt-2 text-gray-600">
+          There are no entrypoints linked to this resource.
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {garden.entrypoints.map((entrypoint: any) => (
+      {entrypoints.map((entrypoint: any) => (
         <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
       ))}
     </div>
@@ -148,7 +161,7 @@ function DatasetsTab({ garden }: { garden: Garden }) {
   const datasets = garden.entrypoints
     .map((e: Entrypoint) => e.datasets || [])
     .reduce((acc, val) => acc.concat(val), []);
-  console.log(garden);
+
   if (!datasets || datasets.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
