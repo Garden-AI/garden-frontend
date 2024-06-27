@@ -24,7 +24,6 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
   const entrypoint = garden?.entrypoints.find(
     (entrypoint) => entrypoint.doi === doi,
   );
-  console.log(entrypoint);
   if (isError || !garden || !entrypoint) return <NotFoundPage />;
 
   return (
