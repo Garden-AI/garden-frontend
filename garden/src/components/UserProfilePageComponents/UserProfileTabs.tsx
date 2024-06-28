@@ -34,7 +34,7 @@ const UserProfileTabs = () => {
     }, []);
 
     return (
-        <div className="flex h-full w-full flex-col font-display w-9/12 rounded-lg border border-gray-200 shadow-sm hover:shadow-md">
+        <div className="flex h-full w-full flex-col font-display w-9/12 rounded-b-lg border border-gray-200 shadow-sm hover:shadow-md">
             <div className="flex flex-col flex-grow pb-12">
                 <div className="flex h-12 justify-evenly">
                     <button

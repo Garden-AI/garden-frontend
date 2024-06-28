@@ -6,7 +6,7 @@ const UserProfileCard = () => {
     const [tooltipVisible, setTooltipVisible] = useState(false);
     const [profilePic, setProfilePic] = useState('/images/1.jpg'); // Initial profile picture path
 
-    const handleImageUpload = e => {
+    const handleImageUpload = (e: any) => {
         const [file] = e.target.files;
         if (file) {
             const reader = new FileReader();
@@ -73,7 +73,7 @@ return (
                                 backgroundPosition: 'center',
                             }}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-pencil stroke-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-pencil stroke-white">
                             <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
                             <path d="m15 5 4 4"/>
                             </svg>
@@ -90,8 +90,8 @@ return (
                 </div>
             </div>
                 <div className="mt-12 flex flex-col items-center">
-                    <h4 className="text-bluePrimary text-3xl font-bold mb-1 mt-2">Elsa Arendelle</h4>
-                    <p className="text-lightSecondary text-sm font-normal mb-2">@ElsaOfArendelle</p>
+                    <h4 className="text-bluePrimary text-3xl font-bold mb-1 mt-2">First Last</h4>
+                    <p className="text-lightSecondary text-sm font-normal mb-2">@UserName</p>
                 </div>
                 <div className="mt-4 mb-5 flex gap-2 md:!gap-4 flex flex-col text-gray-600">
                     <div className="text-sm mb-2">
