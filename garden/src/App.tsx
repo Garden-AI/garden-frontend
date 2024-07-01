@@ -15,6 +15,7 @@ import EntrypointPage from "./pages/EntrypointPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import TeamsPage from "./pages/TeamsPage";
+import MetadataEditing from "./pages/MetadataEditing";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -83,6 +84,7 @@ function Root() {
           element={<EntrypointPage bread={breadcrumbs} />}
         />
         <Route path="team" element={<TeamsPage />} />
+        <Route path="MetadataEditing" element={<MetadataEditing />} />
       </Route>
     </Routes>
   );

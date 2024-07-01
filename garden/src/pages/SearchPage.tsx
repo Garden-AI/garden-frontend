@@ -40,7 +40,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
   }
 
   return (
-    <div className="min-h-screen  px-6 pt-4 font-display md:px-20">
+    <div className="min-h-screen px-6 pt-4 font-display md:px-20">
       <h1 className="mb-4 text-3xl">Gardens</h1>
       <div className="relative mb-8 h-10 w-full">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 transform">

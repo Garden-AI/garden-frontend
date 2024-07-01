@@ -173,9 +173,19 @@ const GardenPage = ({ bread }: { bread: any }) => {
 
         {/* Garden Overview */}
         <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
-          <div>
-            <h2 className="font-semibold">Contributors</h2>
-            <p>{garden.authors.join(",")}</p>
+          <div className="flex flex-row justify-between w-full">
+            <div>
+              <h2 className="font-semibold">Contributors</h2>
+              <p>{garden.authors.join(",")}</p>
+            </div>
+            {/* add logic to only render if this garden was created by the user*/}
+            <button 
+                    /*onClick={}*/
+                    title="Edit Garden" 
+                    className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+            >
+              Edit Garden
+            </button>
           </div>
           <div>
             <h2 className="font-semibold">DOI</h2>
