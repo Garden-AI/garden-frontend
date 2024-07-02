@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 // import { useGlobusAuth } from "./globus-auth-context/useGlobusAuth";
 import { Separator } from "@/components/ui/separator";
+import { useGlobusAuth } from "./globus-auth-context/useGlobusAuth";
 
 /*
 const Navbar = () => {
@@ -69,6 +70,8 @@ const Navbar = ({
   logOut: () => void;
 }) => {
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
+  const auth = useGlobusAuth();
+  console.log(auth);
 
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);

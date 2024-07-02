@@ -19,6 +19,9 @@ import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import CreateGardenForm from "./components/form/CreateGardenForm";
+import axios from "./api/axios";
+import LoadingSpinner from "./components/LoadingSpinner";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const queryClient = new QueryClient({
@@ -26,6 +29,7 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       staleTime: 1000 * 60 * 20,
+      retry: 1,
     },
   },
 });
@@ -39,7 +43,7 @@ const queryClient = new QueryClient({
 const authManager = authorization.create({
   client: import.meta.env.VITE_GLOBUS_CLIENT_ID,
   redirect: import.meta.env.VITE_GLOBUS_REDIRECT_URI,
-  scopes: import.meta.env.VITE_GLOBUS_SEARCH_SCOPE,
+  scopes: import.meta.env.VITE_GLOBUS_SCOPES,
 });
 
 const router = createHashRouter([
@@ -110,6 +114,7 @@ function Root() {
         <Route path="home" element={<HomePage />} />
         <Route path="terms" element={<TermsPage />} />
         <Route path="search" element={<SearchPage bread={breadcrumbs} />} />
+        <Route path="garden/create" element={<CreateGardenForm />} />
         <Route
           path="garden/:doi"
           element={<GardenPage bread={breadcrumbs} />}
@@ -119,6 +124,7 @@ function Root() {
           element={<EntrypointPage bread={breadcrumbs} />}
         />
         <Route path="team" element={<TeamsPage />} />
+        <Route path="auth" element={<LoadingSpinner />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -1,4 +1,4 @@
-import { Garden, Notebook } from "../types";
+import { Notebook } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 const getNotebook = async (url: string): Promise<Notebook> => {
