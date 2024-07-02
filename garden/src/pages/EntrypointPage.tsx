@@ -14,7 +14,7 @@ import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import ShareModal from "@/components/ShareModal";
 import { Entrypoint, Garden } from "@/types";
 
-const EntrypointPage = ({ bread }: { bread: any }) => {
+const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
 
   const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
