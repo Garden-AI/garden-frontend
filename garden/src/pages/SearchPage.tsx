@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 
-import { useSearchGardens } from "@/api/search";
+import { useSearchGardens } from "@/api";
 import { Garden } from "@/types";
 
 import LoadingSpinner from "@/components/LoadingSpinner";

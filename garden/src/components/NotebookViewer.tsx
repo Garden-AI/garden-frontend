@@ -1,6 +1,6 @@
 import Markdown from "marked-react";
 import SyntaxHighlighter from "./SyntaxHighlighter";
-import { useGetNotebook } from "@/api/notebook";
+import { useGetNotebook } from "@/api";
 
 interface Cell {
   cell_type: string;

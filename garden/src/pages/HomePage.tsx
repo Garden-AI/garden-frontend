@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "@/components/GardenBox";
-import { useSearchGardens } from "../api/search";
+import { useSearchGardens } from "@/api";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
