@@ -1,17 +1,7 @@
 import Markdown from "marked-react";
 import SyntaxHighlighter from "./SyntaxHighlighter";
-import { useGetNotebook } from "@/api/notebook";
+import { useGetNotebook } from "@/api";
 
-interface Cell {
-  cell_type: string;
-  execution_count: number;
-  metadata: any;
-  outputs: Array<any>;
-  source: Array<any>;
-}
-interface Notebook {
-  cells: Array<Cell>;
-}
 export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {
   if (!notebookURL) {
     return (
