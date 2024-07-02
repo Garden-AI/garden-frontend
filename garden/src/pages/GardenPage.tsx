@@ -36,7 +36,6 @@ export default function GardenPage({ bread }: { bread: any }) {
     isError: relatedGardensIsError,
   } = useSearchGardens("*", "6", doi!);
 
-  console.log(garden);
   if (gardenIsLoading) {
     return <LoadingSpinner />;
   }
