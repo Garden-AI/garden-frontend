@@ -82,13 +82,7 @@ function Root() {
     async function getToken() {
       await authManager.handleCodeRedirect();
       setAuthenticated(authManager.authenticated);
-      // set the token in the axios instance
-      console.log(authManager.tokens.auth?.access_token);
-      if (authManager.tokens.auth?.access_token) {
-        const tokens = authManager.tokens.auth as any;
-        axios.defaults.headers.common["Authorization"] =
-          `Bearer ${tokens.other_tokens[0].access_token}`;
-      }
+      console.log(authManager.tokens);
     }
     getToken();
   }, []);
