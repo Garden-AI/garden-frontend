@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { GlobusAuthorizationManagerProvider } from "./components/globus-auth-context/Provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 async function enableMocking() {
-  console.log(Boolean(import.meta.env.VITE_APP_SHOULD_MOCK));
   if (
     import.meta.env.MODE !== "development" ||
     import.meta.env.VITE_APP_SHOULD_MOCK == "false"
@@ -14,10 +14,18 @@ async function enableMocking() {
 
   const { worker } = await import("./mocks/browser");
 
-  // `worker.start()` returns a Promise that resolves
-  // once the Service Worker is up and ready to intercept requests.
   return worker.start();
 }
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 20,
+      retry: 1,
+    },
+  },
+});
 
 enableMocking().then(() => {
   const root = ReactDOM.createRoot(
@@ -30,7 +38,9 @@ enableMocking().then(() => {
         redirect={import.meta.env.VITE_GLOBUS_REDIRECT_URI}
         scopes={import.meta.env.VITE_GLOBUS_SCOPES}
       >
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
       </GlobusAuthorizationManagerProvider>
     </React.StrictMode>,
   );
