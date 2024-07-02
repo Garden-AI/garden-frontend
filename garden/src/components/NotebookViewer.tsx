@@ -1,6 +1,6 @@
 import { IpynbRenderer } from "react-ipynb-renderer";
 import "../ipynbPreview.css";
-import { useGetNotebook } from "../api/notebook";
+import { useGetNotebook } from "@/api";
 
 export const NotebookViewer = ({ notebookURL }: { notebookURL?: string }) => {
   if (!notebookURL) {

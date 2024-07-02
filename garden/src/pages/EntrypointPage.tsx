@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import { useSearchGardenByDOI } from "@/api/search";
+import { useSearchGardenByDOI } from "@/api";
 
 import EntrypointTabs from "@/components/EntrypointTabs";
 import AssociatedMaterials from "@/components/AssociatedMaterials";

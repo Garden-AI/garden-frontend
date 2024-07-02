@@ -4,7 +4,7 @@ import EntrypointBox from "../components/EntrypointBox";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Breadcrumbs from "../components/Breadcrumbs";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
-import { useSearchGardenByDOI, useSearchGardens } from "../api/search";
+import { useGetGarden, useSearchGardenByDOI, useSearchGardens } from "@/api";
 import { Garden } from "../types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NotFoundPage from "./NotFoundPage";
@@ -21,17 +21,26 @@ const GardenPage = ({ bread }: { bread: any }) => {
   const [datasets, setDatasets] = useState<Array<Object>>([]);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
+  // const {
+  //   data: garden,
+  //   isLoading: gardenIsLoading,
+  //   isError: gardenIsError,
+  // } = useSearchGardenByDOI(doi!);
+
+  // Once database is available, this will be used to get the datasets
   const {
     data: garden,
     isLoading: gardenIsLoading,
     isError: gardenIsError,
-  } = useSearchGardenByDOI(doi!);
+  } = useGetGarden(doi!);
+
   const {
     data: relatedGardens,
     isLoading: relatedGardensIsLoading,
     isError: relatedGardensIsError,
   } = useSearchGardens("*", "6", doi!);
 
+  console.log(garden);
   if (gardenIsLoading) {
     return <LoadingSpinner />;
   }
@@ -130,7 +139,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
         <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
           <div>
             <h2 className="font-semibold">Contributors</h2>
-            <p>{garden.authors.join(",")}</p>
+            <p>{garden.authors?.join(",")}</p>
           </div>
           <div>
             <h2 className="font-semibold">DOI</h2>
@@ -196,14 +205,14 @@ const GardenPage = ({ bread }: { bread: any }) => {
           <div className="pt-8">
             {active === "" && (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {garden.entrypoints.map((entrypoint: any) => (
+                {garden.entrypoints?.map((entrypoint: any) => (
                   <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
                 ))}
               </div>
             )}
             {active === "Entrypoints" && (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {garden.entrypoints.map((entrypoint: any) => (
+                {garden.entrypoints?.map((entrypoint: any) => (
                   <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
                 ))}
               </div>

@@ -8,6 +8,9 @@ export const reducer = (
 ): GlobusAuthState => {
   switch (action.type) {
     case "AUTHENTICATED":
+      console.log(action.payload);
+      console.log(action);
+
       return {
         ...state,
         isAuthenticated: action.payload,
