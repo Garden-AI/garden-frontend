@@ -23,7 +23,20 @@ export default function GardenPage({ bread }: { bread: any }) {
   const { doi } = useParams();
   const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
 
-  if (isLoading) {
+  // Once database is available, this will be used to get the datasets
+  const {
+    data: garden,
+    isLoading: gardenIsLoading,
+    isError: gardenIsError,
+  } = useGetGarden(doi!);
+
+  const {
+    data: relatedGardens,
+    isLoading: relatedGardensIsLoading,
+    isError: relatedGardensIsError,
+  } = useSearchGardens("*", "6", doi!);
+
+  if (gardenIsLoading) {
     return <LoadingSpinner />;
   }
   if (isError || !garden) {

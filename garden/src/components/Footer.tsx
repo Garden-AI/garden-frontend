@@ -13,7 +13,7 @@ const Footer = () => {
       {/* Bottom section/credits */}
       <div className="m-10 font-display text-black md:mx-20 md:my-10 md:flex md:columns-2">
         <div className="flex flex-col">
-          <Link to="/home" className="hover:opacity-75">
+          <Link to="/" className="hover:opacity-75">
             <img
               src="img/normalColorIcon_Garden.jpg"
               alt="Garden AI Logo"

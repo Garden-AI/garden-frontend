@@ -80,7 +80,7 @@ export default function CreateGardenForm() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4">
+    <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-center text-3xl">Create a Garden</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
