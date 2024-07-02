@@ -7,7 +7,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import { NotebookViewer } from "../components/NotebookViewer";
 import { ExampleFunction } from "../components/ExampleFunction";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { useSearchGardenByDOI } from "../api/search";
+import { useSearchGardenByDOI } from "@/api";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Entrypoint } from "../types";
 

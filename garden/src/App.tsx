@@ -18,12 +18,17 @@ import Footer from "./components/Footer";
 import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
+import CreateGardenForm from "./components/form/CreateGardenForm";
+import axios from "./api/axios";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       staleTime: 1000 * 60 * 20,
+      retry: 1,
     },
   },
 });
@@ -68,35 +73,51 @@ function Root() {
     entrypoint: [],
   };
 
-  const [isAuthenticated, setAuthenticated] = useState(authManager.authenticated);
+  const [isAuthenticated, setAuthenticated] = useState(
+    authManager.authenticated,
+  );
 
-    useEffect(() => {
-        async function getToken() {
-            await authManager.handleCodeRedirect();
-            setAuthenticated(authManager.authenticated);
-            console.log(authManager.tokens);
-        }
-        getToken();
-    }, []);
-
-    function handleLogin() {
-      authManager.login();
+  useEffect(() => {
+    async function getToken() {
+      await authManager.handleCodeRedirect();
+      setAuthenticated(authManager.authenticated);
+      // set the token in the axios instance
+      console.log(authManager.tokens.auth?.access_token);
+      if (authManager.tokens.auth?.access_token)
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${authManager.tokens.auth.access_token}`;
     }
+    getToken();
+  }, []);
 
-    function handleLogOut() {
-        setAuthenticated(false);
-        authManager.revoke();
-        window.location.replace("/");
-    }
+  function handleLogin() {
+    authManager.login();
+  }
+
+  function handleLogOut() {
+    setAuthenticated(false);
+    authManager.revoke();
+    window.location.replace("/");
+  }
 
   return (
     <Routes>
-      <Route path="*" element={<RootLayout isAuthenticated={isAuthenticated} logIn={handleLogin} logOut={handleLogOut} />}>
+      <Route
+        path="*"
+        element={
+          <RootLayout
+            isAuthenticated={isAuthenticated}
+            logIn={handleLogin}
+            logOut={handleLogOut}
+          />
+        }
+      >
         <Route index element={<HomePage />} />
         {/*  We should eventually eliminate this next route unless there is explicit need for it- can just use '/' as 'home' */}
         <Route path="home" element={<HomePage />} />
         <Route path="terms" element={<TermsPage />} />
         <Route path="search" element={<SearchPage bread={breadcrumbs} />} />
+        <Route path="garden/create" element={<CreateGardenForm />} />
         <Route
           path="garden/:doi"
           element={<GardenPage bread={breadcrumbs} />}
@@ -106,23 +127,22 @@ function Root() {
           element={<EntrypointPage bread={breadcrumbs} />}
         />
         <Route path="team" element={<TeamsPage />} />
+        <Route path="auth" element={<LoadingSpinner />} />
       </Route>
     </Routes>
   );
 }
 
 // TODO: Extract this to a separate file, perhaps in a 'layouts' folder
-function RootLayout(
-  {
-    isAuthenticated,
-    logIn,
-    logOut,
-  }: {
-    isAuthenticated: boolean;
-    logIn: () => void;
-    logOut: () => void;
-  }
-) {
+function RootLayout({
+  isAuthenticated,
+  logIn,
+  logOut,
+}: {
+  isAuthenticated: boolean;
+  logIn: () => void;
+  logOut: () => void;
+}) {
   useGoogleAnalytics();
   return (
     <>
@@ -130,6 +150,7 @@ function RootLayout(
       <Navbar isAuthenticated={isAuthenticated} logIn={logIn} logOut={logOut} />
       <Outlet />
       <Footer />
+      <Toaster />
     </>
   );
 }
