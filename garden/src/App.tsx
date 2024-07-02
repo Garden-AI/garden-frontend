@@ -6,6 +6,7 @@ import {
   createHashRouter,
   Outlet,
 } from "react-router-dom";
+import { useEffect, useState } from "react";
 import GardenPage from "./pages/GardenPage";
 import TermsPage from "./pages/TermsPage";
 import ScrollToTop from "./components/ScrollToTop";
@@ -35,7 +36,7 @@ const queryClient = new QueryClient({
   That lets us use the Globus SDK to make search calls.
 */
 
-authorization.create({
+const authManager = authorization.create({
   client: import.meta.env.VITE_GLOBUS_CLIENT_ID,
   redirect: import.meta.env.VITE_GLOBUS_REDIRECT_URI,
   scopes: import.meta.env.VITE_GLOBUS_SEARCH_SCOPE,
@@ -68,9 +69,42 @@ function Root() {
     garden: [],
     entrypoint: [],
   };
+
+  const [isAuthenticated, setAuthenticated] = useState(
+    authManager.authenticated,
+  );
+
+  useEffect(() => {
+    async function getToken() {
+      await authManager.handleCodeRedirect();
+      setAuthenticated(authManager.authenticated);
+      console.log(authManager.tokens);
+    }
+    getToken();
+  }, []);
+
+  function handleLogin() {
+    authManager.login();
+  }
+
+  function handleLogOut() {
+    setAuthenticated(false);
+    authManager.revoke();
+    window.location.replace("/");
+  }
+
   return (
     <Routes>
-      <Route path="/" element={<RootLayout />}>
+      <Route
+        path="*"
+        element={
+          <RootLayout
+            isAuthenticated={isAuthenticated}
+            logIn={handleLogin}
+            logOut={handleLogOut}
+          />
+        }
+      >
         <Route index element={<HomePage />} />
         {/*  We should eventually eliminate this next route unless there is explicit need for it- can just use '/' as 'home' */}
         <Route path="home" element={<HomePage />} />
@@ -92,12 +126,20 @@ function Root() {
 }
 
 // TODO: Extract this to a separate file, perhaps in a 'layouts' folder
-function RootLayout() {
+function RootLayout({
+  isAuthenticated,
+  logIn,
+  logOut,
+}: {
+  isAuthenticated: boolean;
+  logIn: () => void;
+  logOut: () => void;
+}) {
   useGoogleAnalytics();
   return (
     <>
       <ScrollToTop />
-      <Navbar />
+      <Navbar isAuthenticated={isAuthenticated} logIn={logIn} logOut={logOut} />
       <Outlet />
       <Footer />
       <Toaster />
