@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
-import Modal from "../components/Modal";
 import RelatedGardenBox from "../components/RelatedGardenBox";
 import Breadcrumbs from "../components/Breadcrumbs";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import { useSearchGardenByDOI, useSearchGardens } from "../api/search";
 import { Garden } from "../types";
 import LoadingSpinner from "../components/LoadingSpinner";
+import NotFoundPage from "./NotFoundPage";
+import ShareModal from "@/components/ShareModal";
+import CopyButton from "@/components/CopyButton";
+import { LinkIcon } from "lucide-react";
 
 const GardenPage = ({ bread }: { bread: any }) => {
   const { doi } = useParams();
@@ -34,24 +37,7 @@ const GardenPage = ({ bread }: { bread: any }) => {
   }
   //If no garden is associated with the DOI in the URL, not found page comes up
   if (gardenIsError || !garden) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-green font-display">
-        <div className="flex min-h-[50vh] w-[75vw] flex-col items-center rounded-xl border border-black bg-white sm:w-[50vw]">
-          <h1 className=" px-4 py-12 text-center text-4xl font-semibold">
-            No Garden Found
-          </h1>
-          <p className="px-4 text-center">
-            The page you were looking for does not exist
-          </p>
-          <button
-            className="mt-16 rounded-lg border border-green bg-green px-4 py-3 text-white shadow-lg hover:border-black hover:shadow-xl"
-            onClick={() => navigate("/home")}
-          >
-            Back to Home
-          </button>
-        </div>
-      </div>
-    );
+    return <NotFoundPage />;
   }
 
   const text = doi?.replace("/", "%2f");
@@ -123,51 +109,20 @@ const GardenPage = ({ bread }: { bread: any }) => {
         {/* Garden Header */}
         <div className="flex gap-4 sm:gap-8">
           <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
-          <div className="flex items-center gap-3">
-            <button title="Copy link" onClick={copy}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-5 w-5 text-gray-700 hover:cursor-pointer hover:text-gray-500 sm:h-6 sm:w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
-                />
-              </svg>
-            </button>
-            <button title="Share" onClick={showModal}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-5 w-5 text-gray-700 hover:cursor-pointer hover:text-gray-500 sm:h-6 sm:w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                />
-              </svg>
-            </button>
+          <div className="flex items-center gap-1">
+            <CopyButton
+              hint="Copy Link"
+              content={window.location.href}
+              icon={<LinkIcon />}
+              className="border-none bg-transparent"
+            />
+
             {tooltipVisible && (
               <p className="fixed right-[35vw] top-[10vh] z-50 min-w-[10vw] rounded-lg bg-green p-2 text-center text-white sm:right-[45vw]">
                 Copied to Clipboard
               </p>
             )}
-            <Modal
-              show={show}
-              close={closeModal}
-              copy={copy}
-              doi={garden.doi}
-              showTooltip={showTooltip}
-            />
+            <ShareModal doi={garden.doi} />
           </div>
         </div>
 
