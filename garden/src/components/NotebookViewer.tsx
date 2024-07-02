@@ -1,6 +1,6 @@
 import Markdown from "marked-react";
-import { useEffect, useState } from "react";
 import SyntaxHighlighter from "./SyntaxHighlighter";
+import { useGetNotebook } from "@/api/notebook";
 
 interface Cell {
   cell_type: string;
@@ -13,25 +13,21 @@ interface Notebook {
   cells: Array<Cell>;
 }
 export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {
-  const [notebook, setNotebook] = useState<Notebook>();
-  const [loadingError, setLoadingError] = useState<boolean>(false);
+  if (!notebookURL) {
+    return (
+      <p className="pb-16 pt-8 text-center text-xl">
+        No notebook for this entrypoint.
+      </p>
+    );
+  }
 
-  useEffect(() => {
-    const fetchNotebook = async () => {
-      try {
-        const response = await fetch(notebookURL);
-        const json = await response.json();
-        setNotebook(json);
-      } catch (error) {
-        console.error("Error fetching notebook:", error);
-        setLoadingError(true);
-      }
-    };
+  const { data: notebook, isLoading, isError } = useGetNotebook(notebookURL);
 
-    fetchNotebook();
-  }, [notebookURL]);
-
-  if (loadingError) {
+  if (isLoading) {
+    return (
+      <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>
+    );
+  } else if (isError || !notebook) {
     return (
       <p className="pb-16 pt-8 text-center text-xl">Could not load notebook.</p>
     );
@@ -39,23 +35,22 @@ export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {
     return (
       <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>
     );
-  } else {
-    return (
-      <div className="prose prose-sm mx-auto mt-20 lg:prose-base 2xl:prose-xl">
-        {notebook.cells
-          .slice(2, notebook.cells.length)
-          .map(
-            (cell, index) =>
-              cell.source.length > 0 &&
-              (cell.cell_type === "code" ? (
-                <SyntaxHighlighter key={index}>
-                  {cell.source.join("")}
-                </SyntaxHighlighter>
-              ) : (
-                <Markdown key={index}>{cell.source.join("")}</Markdown>
-              )),
-          )}
-      </div>
-    );
   }
+  return (
+    <div className="prose prose-sm mx-auto mt-20 lg:prose-base 2xl:prose-xl">
+      {notebook.cells
+        .slice(2, notebook.cells.length)
+        .map(
+          (cell, index) =>
+            cell.source.length > 0 &&
+            (cell.cell_type === "code" ? (
+              <SyntaxHighlighter key={index}>
+                {cell.source.join("")}
+              </SyntaxHighlighter>
+            ) : (
+              <Markdown key={index}>{cell.source.join("")}</Markdown>
+            )),
+        )}
+    </div>
+  );
 };

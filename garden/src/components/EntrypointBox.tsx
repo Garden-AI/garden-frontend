@@ -44,9 +44,7 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
             />
           </svg>
           <div>
-            {entrypoint.tags
-              .map((t: any) => <span key={t}>{t}</span>)
-              .reduce((prev: any, curr: any) => [prev, ", ", curr])}
+            <span>{entrypoint.tags.join(", ")}</span>
           </div>
         </div>
       ) : (
