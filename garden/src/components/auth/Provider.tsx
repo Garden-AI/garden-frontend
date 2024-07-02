@@ -53,7 +53,6 @@ export const GlobusAuthorizationManagerProvider = ({
     }: {
       isAuthenticated: boolean;
     }) => {
-      console.log("Handling Authenticated");
       dispatch({ type: "AUTHENTICATED", payload: isAuthenticated });
     };
     instance.events.authenticated.addListener(handleAuthenticated);
