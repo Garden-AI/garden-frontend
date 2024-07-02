@@ -9,6 +9,8 @@ const Navbar = () => {
   const auth = useGlobusAuth();
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
+  const auth = useGlobusAuth();
+  console.log(auth);
 
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
