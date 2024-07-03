@@ -1,7 +1,7 @@
-import { Notebook } from "@/types";
+// import { Notebook } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";
 
-const getNotebook = async (url: string): Promise<Notebook> => {
+const getNotebook = async (url: string): Promise<any> => {
   try {
     const response = await fetch(url);
     return await response.json();
@@ -12,7 +12,7 @@ const getNotebook = async (url: string): Promise<Notebook> => {
 };
 
 export const useGetNotebook = (url: string) => {
-  return useQuery<Notebook, Error>({
+  return useQuery<any, Error>({
     queryKey: ["notebook", url.split("/").pop()],
     queryFn: () => getNotebook(url),
   });

@@ -19,7 +19,7 @@ import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
 import { useGetGarden } from "@/api";
 
-export default function GardenPage({ bread }: { bread: any }) {
+export default function GardenPage() {
   const { doi } = useParams();
 
   // Once database is available, this will be used to get the datasets

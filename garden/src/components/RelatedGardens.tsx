@@ -1,4 +1,4 @@
-import { Garden } from "@/types";
+import { Garden } from "@/api/types";
 import { RocketIcon } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
 import RelatedGardenBox from "./RelatedGardenBox";
