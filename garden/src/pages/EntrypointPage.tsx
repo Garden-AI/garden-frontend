@@ -31,7 +31,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
-          { label: "Search", link: "/search" },
+          { label: "Gardens", link: "/search" },
           {
             label: garden.title,
             link: `/garden/${encodeURIComponent(`${garden.doi}`)}`,
