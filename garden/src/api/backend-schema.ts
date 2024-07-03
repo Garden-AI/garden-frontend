@@ -108,7 +108,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/entrypoint": {
+  "/entrypoints": {
     parameters: {
       query?: never;
       header?: never;
@@ -118,14 +118,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Add Entrypoint */
-    post: operations["add_entrypoint_entrypoint_post"];
+    post: operations["add_entrypoint_entrypoints_post"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/entrypoint/{doi}": {
+  "/entrypoints/{doi}": {
     parameters: {
       query?: never;
       header?: never;
@@ -133,17 +133,18 @@ export interface paths {
       cookie?: never;
     };
     /** Get Entrypoint By Doi */
-    get: operations["get_entrypoint_by_doi_entrypoint__doi__get"];
-    put?: never;
+    get: operations["get_entrypoint_by_doi_entrypoints__doi__get"];
+    /** Create Or Replace Entrypoint */
+    put: operations["create_or_replace_entrypoint_entrypoints__doi__put"];
     post?: never;
     /** Delete Entrypoint */
-    delete: operations["delete_entrypoint_entrypoint__doi__delete"];
+    delete: operations["delete_entrypoint_entrypoints__doi__delete"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/garden": {
+  "/gardens": {
     parameters: {
       query?: never;
       header?: never;
@@ -153,14 +154,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Add Garden */
-    post: operations["add_garden_garden_post"];
+    post: operations["add_garden_gardens_post"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/garden/{doi}": {
+  "/gardens/{doi}": {
     parameters: {
       query?: never;
       header?: never;
@@ -168,11 +169,12 @@ export interface paths {
       cookie?: never;
     };
     /** Get Garden By Doi */
-    get: operations["get_garden_by_doi_garden__doi__get"];
-    put?: never;
+    get: operations["get_garden_by_doi_gardens__doi__get"];
+    /** Create Or Replace Garden */
+    put: operations["create_or_replace_garden_gardens__doi__put"];
     post?: never;
     /** Delete Garden */
-    delete: operations["delete_garden_garden__doi__delete"];
+    delete: operations["delete_garden_gardens__doi__delete"];
     options?: never;
     head?: never;
     patch?: never;
@@ -580,53 +582,6 @@ export interface components {
       /** Owner Identity Id */
       owner_identity_id?: string | null;
     };
-    /** EntrypointMetadata */
-    EntrypointMetadata: {
-      /** Doi */
-      doi: string;
-      /** Doi Is Draft */
-      doi_is_draft: boolean;
-      /** Title */
-      title: string;
-      /** Description */
-      description: string | null;
-      /** Year */
-      year: string;
-      /**
-       * Func Uuid
-       * Format: uuid
-       */
-      func_uuid: string;
-      /**
-       * Container Uuid
-       * Format: uuid
-       */
-      container_uuid: string;
-      /** Base Image Uri */
-      base_image_uri: string;
-      /** Full Image Uri */
-      full_image_uri: string;
-      /** Notebook Url */
-      notebook_url: string;
-      /** Short Name */
-      short_name: string;
-      /** Function Text */
-      function_text: string;
-      /** Authors */
-      authors?: string[];
-      /** Tags */
-      tags?: string[];
-      /** Test Functions */
-      test_functions?: string[];
-      /** Models */
-      models?: components["schemas"]["_ModelMetadata-Output"][];
-      /** Repositories */
-      repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
-      /** Papers */
-      papers?: components["schemas"]["_PaperMetadata"][];
-      /** Datasets */
-      datasets?: components["schemas"]["_DatasetMetadata-Output"][];
-    };
     /** EntrypointMetadataResponse */
     EntrypointMetadataResponse: {
       /** Doi */
@@ -789,7 +744,7 @@ export interface components {
       /** Id */
       id: number;
       /** Entrypoints */
-      entrypoints?: components["schemas"]["EntrypointMetadata"][];
+      entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
     };
     /** GeoLocation */
     GeoLocation: {
@@ -1647,7 +1602,7 @@ export interface operations {
       };
     };
   };
-  add_entrypoint_entrypoint_post: {
+  add_entrypoint_entrypoints_post: {
     parameters: {
       query?: never;
       header?: never;
@@ -1680,7 +1635,7 @@ export interface operations {
       };
     };
   };
-  get_entrypoint_by_doi_entrypoint__doi__get: {
+  get_entrypoint_by_doi_entrypoints__doi__get: {
     parameters: {
       query?: never;
       header?: never;
@@ -1711,7 +1666,42 @@ export interface operations {
       };
     };
   };
-  delete_entrypoint_entrypoint__doi__delete: {
+  create_or_replace_entrypoint_entrypoints__doi__put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        doi: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EntrypointCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EntrypointMetadataResponse"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  delete_entrypoint_entrypoints__doi__delete: {
     parameters: {
       query?: never;
       header?: never;
@@ -1742,7 +1732,7 @@ export interface operations {
       };
     };
   };
-  add_garden_garden_post: {
+  add_garden_gardens_post: {
     parameters: {
       query?: never;
       header?: never;
@@ -1775,7 +1765,7 @@ export interface operations {
       };
     };
   };
-  get_garden_by_doi_garden__doi__get: {
+  get_garden_by_doi_gardens__doi__get: {
     parameters: {
       query?: never;
       header?: never;
@@ -1806,7 +1796,42 @@ export interface operations {
       };
     };
   };
-  delete_garden_garden__doi__delete: {
+  create_or_replace_garden_gardens__doi__put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        doi: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GardenCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GardenMetadataResponse"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  delete_garden_gardens__doi__delete: {
     parameters: {
       query?: never;
       header?: never;

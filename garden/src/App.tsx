@@ -19,6 +19,7 @@ import LoginPage from "./pages/LoginPage";
 
 /* Components */
 import CreateGardenForm from "./components/form/CreateGardenForm";
+import CreateEntrypointForm from "./components/form/CreateEntrypointForm";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
@@ -55,7 +56,6 @@ function Root() {
     async function getToken() {
       await auth.handleCodeRedirect();
       const tokens = auth.tokens.auth as any;
-      console.log(tokens);
       if (tokens) {
         localStorage.setItem(
           "accessToken",
@@ -70,17 +70,29 @@ function Root() {
     <Routes>
       <Route element={<RootLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="terms" element={<TermsPage />} />
         <Route path="search" element={<SearchPage bread={breadcrumbs} />} />
-        <Route element={<PrivateRoutes />}>
-          <Route path="garden/create" element={<CreateGardenForm />} />
+
+        {/* Garden Routes */}
+        <Route path="garden">
+          <Route element={<PrivateRoutes />}>
+            <Route path="create" element={<CreateGardenForm />} />
+            <Route path=":doi/edit" element={<CreateGardenForm />} />
+          </Route>
+          <Route path=":doi" element={<GardenPage bread={breadcrumbs} />} />
         </Route>
-        <Route
-          path="garden/:doi"
-          element={<GardenPage bread={breadcrumbs} />}
-        />
-        <Route path="entrypoint/:doi" element={<EntrypointPage />} />
+
+        {/* Entrypoint Routes */}
+        <Route path="entrypoint">
+          <Route element={<PrivateRoutes />}>
+            <Route path="create" element={<CreateEntrypointForm />} />
+            <Route path=":doi/edit" element={<CreateEntrypointForm />} />
+          </Route>
+          <Route path=":doi" element={<EntrypointPage />} />
+        </Route>
+
+        {/* Misc Routes */}
         <Route path="team" element={<TeamsPage />} />
+        <Route path="terms" element={<TermsPage />} />
         <Route path="auth" element={<LoadingSpinner />} />
         <Route path="login" element={<LoginPage />} />
       </Route>
