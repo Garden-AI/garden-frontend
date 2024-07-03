@@ -90,13 +90,13 @@ const HomePage = () => {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-12 md:px-20">
         {textSections.map((section, index) => (
-          <>
+          <div key={index}>
             <Separator />
             <div key={index} className="my-12">
               <h1 className="mb-6 text-3xl font-semibold">{section.header}</h1>
               <p className="mb-1">{section.text}</p>
             </div>
-          </>
+          </div>
         ))}
       </div>
       <Separator />
@@ -119,7 +119,7 @@ const HomePage = () => {
         <ScrollArea className="w-full">
           <div className="flex space-x-4 p-4 ">
             {gardens?.map((res: any, index: any) => (
-              <div className="h-[300px] w-[300px]">
+              <div className="h-[300px] w-[300px]" key={index}>
                 <GardenBox garden={res} />
               </div>
             ))}
