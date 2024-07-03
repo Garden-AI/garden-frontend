@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Garden } from "../types";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSearchGardenByDOI, useSearchGardens } from "../api/search";
+import EntrypointBox from "../components/EntrypointBox";
+import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 
 const MetadataEditing = () => {
     const initialMetadata = {
@@ -12,12 +14,19 @@ const MetadataEditing = () => {
         entrypoints: '',
         datasets: '',
     };
+    // get rid of the below states and use context to share them with GardenPage!!!!!!
+    // or share from parent component (?)
+    const [datasets, setDatasets] = useState<Array<Object>>([]);
+    const [showFoundry, setShowFoundry] = useState(false);
     const [metadata, setMetadata] = useState(initialMetadata);
-    const { doi } = useParams();
+    const { doi } = useParams() as { doi: string };
     const navigate = useNavigate();
 
-    const { data: garden, isLoading, isError } = useSearchGardenByDOI("*");
+    const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
 
+    const foundry = () => {
+        setShowFoundry(true);
+    };
 
     useEffect(() => {
         if (garden) {
@@ -46,7 +55,7 @@ const MetadataEditing = () => {
                     <input
                         type="text"
                         name="contributors"
-                        value={metadata.contributors}
+                        value={garden?.contributors}
                         onChange={handleInputChange}
                         placeholder="Contributors"
                         className="border border-gray-300 rounded px-2 py-1 w-full"
@@ -57,7 +66,7 @@ const MetadataEditing = () => {
                     <input
                         type="text"
                         name="doi"
-                        value={metadata.doi}
+                        value={garden?.doi}
                         onChange={handleInputChange}
                         placeholder="DOI"
                         className="border border-gray-300 rounded px-2 py-1 w-full"
@@ -77,26 +86,31 @@ const MetadataEditing = () => {
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
                 <div className="space-y-2">
                     <p className="text-gray-600">Entrypoints</p>
-                    <input
-                        type="text"
-                        name="entrypoints"
-                        value={metadata.entrypoints}
-                        onChange={handleInputChange}
-                        placeholder="Entrypoints"
-                        className="border border-gray-300 rounded px-2 py-1 w-full"
-                    />
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {garden?.entrypoints.map((entrypoint: any) => (
+                        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint}/>
+                        ))}
+                    </div>
+                    
                 </div>
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
                 <div className="space-y-2">
                     <p className="text-gray-600">Datasets</p>
-                    <input
-                        type="text"
-                        name="datasets"
-                        value={metadata.datasets}
-                        onChange={handleInputChange}
-                        placeholder="Datasets"
-                        className="border border-gray-300 rounded px-2 py-1 w-full"
-                    />
+                    <div className="grid grid-cols-1 gap-2 pb-4 sm:gap-12 md:grid-cols-2 lg:px-24">
+                        {datasets.length > 0 ? (
+                        datasets.map((dataset, index: number) => (
+                            <DatasetBoxEntrypoint
+                            dataset={dataset}
+                            showFoundry={foundry}
+                            key={index}
+                            />
+                        ))
+                        ) : (
+                            <p className="col-span-2 pb-16 pt-8 text-center text-base sm:text-xl">
+                                No datasets available for this garden
+                            </p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
