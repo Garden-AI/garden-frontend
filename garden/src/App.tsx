@@ -78,7 +78,7 @@ function Root() {
             <Route path="create" element={<CreateGardenForm />} />
             <Route path=":doi/edit" element={<CreateGardenForm />} />
           </Route>
-          <Route path=":doi" element={<GardenPage bread={breadcrumbs} />} />
+          <Route path=":doi" element={<GardenPage />} />
         </Route>
 
         {/* Entrypoint Routes */}

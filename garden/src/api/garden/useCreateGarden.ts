@@ -1,7 +1,7 @@
-import { Garden } from "@/types";
+import { Garden } from "@/api/types";
 import axios from "../axios";
 import { useMutation } from "@tanstack/react-query";
-import { GardenCreateRequest } from "../types";
+import { GardenCreateRequest } from "@/api/types";
 
 const createGarden = async (garden: GardenCreateRequest) => {
   console.log("Attempting to create garden", garden);

@@ -1,7 +1,7 @@
-import { Entrypoint } from "@/types";
+import { Entrypoint } from "@/api/types";
 import axios from "../axios";
 import { useMutation } from "@tanstack/react-query";
-import { EntrypointCreateRequest } from "../types";
+import { EntrypointCreateRequest } from "@/api/types";
 
 const createEntrypoint = async (entrypoint: EntrypointCreateRequest) => {
   console.log("Attempting to create entrypoint", entrypoint);

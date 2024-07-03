@@ -1,4 +1,4 @@
-import { Entrypoint } from "../types";
+import { Entrypoint } from "@/api/types";
 import axios from "../axios";
 import { useQuery } from "@tanstack/react-query";
 
