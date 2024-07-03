@@ -5,7 +5,7 @@ import { useUpdateGarden } from "./garden/useUpdateGarden";
 // import {useDeleteGarden} from "./garden/useDeleteGarden";
 
 /* Entrypoint */
-// import { useCreateEntrypoint } from "./entrypoint/useCreateEntrypoint";
+import { useCreateEntrypoint } from "./entrypoint/useCreateEntrypoint";
 import { useGetEntrypoint } from "./entrypoint/useGetEntrypoint";
 // import { useUpdateEntrypoint } from "./entrypoint/useUpdateEntrypoint";
 // import { useDeleteEntrypoint } from "./entrypoint/useDeleteEntrypoint";
@@ -28,7 +28,7 @@ export {
   useGetGarden,
   useUpdateGarden,
   //   useDeleteGarden,
-  //   useCreateEntrypoint,
+  useCreateEntrypoint,
   useGetEntrypoint,
   //   useUpdateEntrypoint,
   //   useDeleteEntrypoint,
