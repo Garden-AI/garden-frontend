@@ -2,6 +2,7 @@ import type { paths, components } from "./backend-schema";
 
 type Garden = components["schemas"]["_PublishedGarden"];
 type GardenCreateRequest = components["schemas"]["GardenCreateRequest"];
+type GardenCreateResponse = components["schemas"]["GardenMetadataResponse"];
 
 type Entrypoint = components["schemas"]["_RegisteredEntrypoint"];
 type EntrypointCreateRequest = components["schemas"]["EntrypointCreateRequest"];
@@ -11,6 +12,7 @@ type EntrypointCreateRequest = components["schemas"]["EntrypointCreateRequest"];
 export type {
   Garden,
   GardenCreateRequest,
+  GardenCreateResponse,
   Entrypoint,
   EntrypointCreateRequest,
 };

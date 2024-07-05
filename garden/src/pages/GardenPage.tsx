@@ -23,7 +23,7 @@ export default function GardenPage() {
   const { doi } = useParams();
 
   // Once database is available, this will be used to get the datasets
-  const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
+  const { data: garden, isLoading, isError } = useGetGarden(doi!);
 
   if (isLoading) {
     return <LoadingSpinner />;

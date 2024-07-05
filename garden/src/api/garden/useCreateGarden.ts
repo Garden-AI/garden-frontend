@@ -1,17 +1,17 @@
-import { Garden } from "@/api/types";
+import { GardenCreateResponse } from "@/api/types";
 import axios from "../axios";
 import { useMutation } from "@tanstack/react-query";
 import { GardenCreateRequest } from "@/api/types";
+import { AxiosResponse } from "axios";
 
-const createGarden = async (garden: GardenCreateRequest) => {
-  console.log("Attempting to create garden", garden);
-  throw new Error("Not implemented");
-  return;
+const createGarden = async (
+  garden: GardenCreateRequest,
+): Promise<AxiosResponse<GardenCreateResponse, any>> => {
   try {
-    const response = await axios.post(`/garden`, garden);
-    return response.data;
+    const response = await axios.post(`/gardens`, garden);
+    return response;
   } catch (error) {
-    throw new Error("Error fetching garden by DOI");
+    throw new Error("Error creating Garden");
   }
 };
 

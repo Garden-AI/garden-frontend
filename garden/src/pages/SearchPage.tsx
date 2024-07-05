@@ -8,8 +8,7 @@ import GardenBox from "@/components/GardenBox";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const SearchPage = ({ bread }: { bread: any }) => {
-  bread.search = "Search";
+const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [gardens, setGardens] = useState<Garden[]>([]);
   const {

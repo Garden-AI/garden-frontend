@@ -16,7 +16,7 @@ export default function RelatedGardens({ doi }: { doi: string }) {
   }
 
   if (isError || !gardens) {
-    return;
+    return null;
   }
 
   return (

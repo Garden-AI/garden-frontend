@@ -3,6 +3,7 @@ import {
   Route,
   RouterProvider,
   createHashRouter,
+  useLocation,
 } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -24,7 +25,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
 /* Lib */
-import auth from "./lib/auth";
+import { useGlobusAuth } from "./components/auth/useGlobusAuth";
 
 export default function App() {
   return (
@@ -40,37 +41,19 @@ export default function App() {
 }
 
 function Root() {
-  const breadcrumbs: {
-    home: string;
-    search: string;
-    garden: Array<string>;
-    entrypoint: Array<string>;
-  } = {
-    home: "Home",
-    search: "",
-    garden: [],
-    entrypoint: [],
-  };
-
+  const auth = useGlobusAuth();
   useEffect(() => {
     async function getToken() {
-      await auth.handleCodeRedirect();
-      const tokens = auth.tokens.auth as any;
-      if (tokens) {
-        localStorage.setItem(
-          "accessToken",
-          tokens.other_tokens[0]?.access_token,
-        );
-      }
+      await auth.authorization?.handleCodeRedirect();
     }
     getToken();
-  }, []);
+  }, [auth]);
 
   return (
     <Routes>
       <Route element={<RootLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="search" element={<SearchPage bread={breadcrumbs} />} />
+        <Route path="search" element={<SearchPage />} />
 
         {/* Garden Routes */}
         <Route path="garden">

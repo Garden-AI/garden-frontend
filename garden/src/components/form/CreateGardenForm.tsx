@@ -1,7 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useBlocker, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { ZodSchema, z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
+import { GardenCreateRequest } from "@/api/types";
+import { useCreateGarden } from "@/api";
+
+// Components
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,38 +20,87 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { GardenCreateRequest } from "@/api/types";
-import { useCreateGarden, useGreetings } from "@/api";
-import { useNavigate } from "react-router-dom";
-import { Textarea } from "../ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
-const formSchema = z.object({
-  title: z.string(),
-  authors: z.array(z.string()).optional(),
-  contributors: z.array(z.string()).optional(),
-  doi: z.string(),
+const tagOptions: Option[] = [
+  { value: "materials-science", label: "Materials Science" },
+  { value: "biology", label: "Biology" },
+];
+
+const gardenCreateRequestSchema = z.object({
+  title: z
+    .string()
+    .min(10, { message: "Title must be at least 10 characters" })
+    .max(100, { message: "Title must not exceed 100 characters" }),
+  authors: z
+    .array(z.string().min(1, { message: "Please add at least one author." }))
+    .optional(),
+  contributors: z
+    .array(
+      z.string().min(1, { message: "Please add at least one contributor." }),
+    )
+    .optional(),
+  doi: z.string().regex(/^10\.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i, {
+    message: "Invalid DOI format",
+  }),
   doi_is_draft: z.boolean().nullable().optional(),
-  description: z.string(),
+  description: z
+    .string()
+    .max(1000, { message: "Description must not exceed 1000 characters" }),
   publisher: z.string(),
-  year: z.string().optional(),
+  year: z
+    .string()
+    .regex(/^\d{4}$/, { message: "Invalid year" })
+    .optional(),
   language: z.string(),
   tags: z.array(z.string()).optional(),
-  version: z.string(),
+  version: z.string().regex(/^\d+\.\d+(\.\d+)?$/, {
+    message: "Version must be in the format x.y or x.y.z",
+  }),
   entrypoint_aliases: z.record(z.string()).optional(),
   entrypoint_ids: z.array(z.string()).optional(),
-  owner_identity_id: z.string().optional(),
-}) satisfies ZodSchema<GardenCreateRequest>;
+  owner_identity_id: z.string().length(32).optional(),
+}) satisfies z.ZodType<GardenCreateRequest>;
+
+const optionSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+  disable: z.boolean().optional(),
+  group: z.string().optional(),
+});
+
+const formSchema = gardenCreateRequestSchema.extend({
+  tags: z.array(optionSchema).optional(),
+  authors: z.array(optionSchema).optional(),
+  contributors: z.array(optionSchema).optional(),
+});
+
+type FormSchemaType = z.infer<typeof formSchema>;
 
 export default function CreateGardenForm() {
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      currentLocation.pathname !== nextLocation.pathname &&
+      Object.keys(form.formState.touchedFields).length > 0,
+  );
+  const isBlocked = blocker.state === "blocked";
+
   const navigate = useNavigate();
   const createGarden = useCreateGarden();
-  // const { data } = useGreetings();
-  // console.log(data);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
+    mode: "onTouched",
     defaultValues: {
       title: "",
       authors: [],
@@ -56,29 +113,34 @@ export default function CreateGardenForm() {
       language: "en",
       tags: [],
       version: "1.0.0",
-      entrypoint_aliases: {},
-      entrypoint_ids: [],
-      owner_identity_id: "",
+      owner_identity_id: "123e4567e89b12d3a456426614174000",
     },
   });
 
   function onSaveAsDraft() {
-    return onSubmit({ ...form.getValues(), doi_is_draft: true });
+    form.setValue("doi_is_draft", true);
+    form.handleSubmit(onSubmit)();
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    createGarden.mutate(values);
+  const transformFormData = (data: FormSchemaType): GardenCreateRequest => ({
+    ...data,
+    tags: data.tags?.map((tag) => tag.label),
+    authors: data.authors?.map((author) => author.label),
+    contributors: data.contributors?.map((contributor) => contributor.label),
+  });
 
-    // if successful redirect to the new garden
-    if (createGarden.isSuccess) {
-      // redirect to the new
+  async function onSubmit(values: FormSchemaType) {
+    const transformedValues = transformFormData(values);
+    console.log("transformedValues", transformedValues);
+    return;
+    try {
+      const result = await createGarden.mutateAsync(transformedValues);
       toast.success("Garden created successfully!");
-      navigate(`/garden/${createGarden.data.doi}`);
-    } else {
+      navigate(`/garden/${encodeURIComponent(result.data.doi)}`);
+    } catch (error) {
       toast.warning("Error creating garden. Please fix errors.");
     }
   }
-
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-center text-3xl">Create a Garden</h1>
@@ -105,7 +167,7 @@ export default function CreateGardenForm() {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Garden Name</FormLabel>
+                <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell us about your garden"
@@ -132,6 +194,45 @@ export default function CreateGardenForm() {
                 <FormDescription>
                   A unique identifier for your Garden.
                 </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="authors"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Authors</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    {...field}
+                    placeholder="Add authors"
+                    creatable
+                  />
+                </FormControl>
+                <FormDescription>
+                  Authors involved in this garden.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="contributors"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contributors</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    {...field}
+                    placeholder="Add contributors"
+                    creatable
+                  />
+                </FormControl>
+                <FormDescription>Contributors to this work.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -186,7 +287,12 @@ export default function CreateGardenForm() {
               <FormItem>
                 <FormLabel>Tags</FormLabel>
                 <FormControl>
-                  <Input placeholder="tag1, tag2" {...field} />
+                  <MultipleSelector
+                    {...field}
+                    placeholder="Add tags to your garden"
+                    creatable
+                    defaultOptions={tagOptions}
+                  />
                 </FormControl>
                 <FormDescription>
                   Tags to help categorize your Garden.
@@ -201,6 +307,45 @@ export default function CreateGardenForm() {
             Save as Draft
           </Button>
         </form>
+        {
+          <AlertDialog
+            open={isBlocked}
+            onOpenChange={(isOpen) => {
+              if (!isOpen && blocker.state === "blocked") {
+                blocker.reset();
+              }
+            }}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {/* Unsaved progress message */}
+                  Are you sure?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  You have unsaved changes that will be lost if you leave this
+                  page.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  onClick={() => {
+                    if (blocker.state === "blocked") blocker.reset();
+                  }}
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    if (blocker.state === "blocked") blocker.proceed();
+                  }}
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        }
       </Form>
     </div>
   );

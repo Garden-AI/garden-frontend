@@ -3,19 +3,22 @@ import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, User } from "lucide-react";
-import authManager from "@/lib/auth";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
 
+  if (!auth.authorization) {
+    return null;
+  }
+
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
   };
 
   function handleLogOut() {
-    authManager.revoke();
+    auth.authorization?.revoke();
     window.location.replace("/");
   }
 

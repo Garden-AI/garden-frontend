@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const getGarden = async (doi: string): Promise<Garden> => {
   try {
-    const response = await axios.get(`/garden/${doi}`);
+    const response = await axios.get(`/gardens/${doi}`);
     return response.data;
   } catch (error) {
     throw new Error("Error fetching garden by DOI");
