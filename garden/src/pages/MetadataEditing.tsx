@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Garden } from "../types";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSearchGardenByDOI, useSearchGardens } from "../api/search";
 import EntrypointBox from "../components/EntrypointBox";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
@@ -18,9 +18,9 @@ const MetadataEditing = () => {
     // or share from parent component (?)
     const [datasets, setDatasets] = useState<Array<Object>>([]);
     const [showFoundry, setShowFoundry] = useState(false);
+    
     const [metadata, setMetadata] = useState(initialMetadata);
-    const { doi } = useParams() as { doi: string };
-    const navigate = useNavigate();
+    const { doi } = useParams() as { doi: string }; // extract doi from url
 
     const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
 
@@ -41,7 +41,7 @@ const MetadataEditing = () => {
         }
     }, [garden]);
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const { name, value } = e.target;
         setMetadata({ ...metadata, [name]: value });
     };

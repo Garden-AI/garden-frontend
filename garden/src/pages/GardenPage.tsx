@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
-import Modal from "../components/Modal";
-import RelatedGardenBox from "../components/RelatedGardenBox";
-import Breadcrumbs from "../components/Breadcrumbs";
-import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
-import { useSearchGardenByDOI, useSearchGardens } from "../api/search";
-import { Garden } from "../types";
+import Breadcrumb from "../components/Breadcrumb";
+import { useSearchGardenByDOI } from "../api/search";
+import { Entrypoint, Garden } from "../types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { LinkIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,13 +23,7 @@ import { cn } from "@/lib/utils";
 
 export default function GardenPage({ bread }: { bread: any }) {
   const { doi } = useParams();
-  const navigate = useNavigate();
-  const [active, setActive] = useState("");
-  const [show, setShow] = useState(false);
-  const [showFoundry, setShowFoundry] = useState(false);
-  const [datasets, setDatasets] = useState<Array<Object>>([]);
-  // const { datasets, setDatasets} = useGardenContext();
-  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -79,16 +69,16 @@ function GardenBody({ garden }: { garden: Garden }) {
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex flex-row justify-between w-full">
-        <div>
+        <div className="mb-4">
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors.join(",")}</p>
         </div>
         {/* add logic to only render if this garden was created by the user*/}
         <Link
-          to={`/garden/${garden.doi}/MetadataEditing`}
+          to={`/metadataEditing`}
           className={cn(
             buttonVariants({ variant: "default", size: "lg" }),
-            "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
+            "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
           )}
         >
           Edit Garden
