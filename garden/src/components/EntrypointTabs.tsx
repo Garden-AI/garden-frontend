@@ -10,7 +10,7 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { NotebookViewer } from "./NotebookViewer";
 
 export default function EntrypointTabs({
@@ -192,9 +192,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
               </CardDescription>
             </CardHeader>
             <CardContent className="px-6 py-4">
-              <SyntaxHighlighter language="python">
-                {step.function_text}
-              </SyntaxHighlighter>
+              <SyntaxHighlighter>{step.function_text}</SyntaxHighlighter>
             </CardContent>
           </Card>
         </TabsContent>

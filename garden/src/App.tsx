@@ -18,6 +18,8 @@ import Footer from "./components/Footer";
 import TeamsPage from "./pages/TeamsPage";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,30 +70,41 @@ function Root() {
     entrypoint: [],
   };
 
-  const [isAuthenticated, setAuthenticated] = useState(authManager.authenticated);
+  const [isAuthenticated, setAuthenticated] = useState(
+    authManager.authenticated,
+  );
 
-    useEffect(() => {
-        async function getToken() {
-            await authManager.handleCodeRedirect();
-            setAuthenticated(authManager.authenticated);
-            console.log(authManager.tokens);
-        }
-        getToken();
-    }, []);
-
-    function handleLogin() {
-      authManager.login();
+  useEffect(() => {
+    async function getToken() {
+      await authManager.handleCodeRedirect();
+      setAuthenticated(authManager.authenticated);
+      console.log(authManager.tokens);
     }
+    getToken();
+  }, []);
 
-    function handleLogOut() {
-        setAuthenticated(false);
-        authManager.revoke();
-        window.location.replace("/");
-    }
+  function handleLogin() {
+    authManager.login();
+  }
+
+  function handleLogOut() {
+    setAuthenticated(false);
+    authManager.revoke();
+    window.location.replace("/");
+  }
 
   return (
     <Routes>
-      <Route path="*" element={<RootLayout isAuthenticated={isAuthenticated} logIn={handleLogin} logOut={handleLogOut} />}>
+      <Route
+        path="*"
+        element={
+          <RootLayout
+            isAuthenticated={isAuthenticated}
+            logIn={handleLogin}
+            logOut={handleLogOut}
+          />
+        }
+      >
         <Route index element={<HomePage />} />
         {/*  We should eventually eliminate this next route unless there is explicit need for it- can just use '/' as 'home' */}
         <Route path="home" element={<HomePage />} />
@@ -107,22 +120,21 @@ function Root() {
         />
         <Route path="team" element={<TeamsPage />} />
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
 
 // TODO: Extract this to a separate file, perhaps in a 'layouts' folder
-function RootLayout(
-  {
-    isAuthenticated,
-    logIn,
-    logOut,
-  }: {
-    isAuthenticated: boolean;
-    logIn: () => void;
-    logOut: () => void;
-  }
-) {
+function RootLayout({
+  isAuthenticated,
+  logIn,
+  logOut,
+}: {
+  isAuthenticated: boolean;
+  logIn: () => void;
+  logOut: () => void;
+}) {
   useGoogleAnalytics();
   return (
     <>
@@ -130,6 +142,7 @@ function RootLayout(
       <Navbar isAuthenticated={isAuthenticated} logIn={logIn} logOut={logOut} />
       <Outlet />
       <Footer />
+      <Toaster />
     </>
   );
 }
