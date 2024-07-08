@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import UserProfileInfo from "@/components/UserProfilePageComponents/UserProfileInfo";
+import MyGardens from "@/components/UserProfilePageComponents/MyGardens";
 
 const UserProfileTabs = () => {
     const [active, setActive] = useState("");
@@ -34,7 +35,7 @@ const UserProfileTabs = () => {
     }, []);
 
     return (
-        <div className="flex h-full w-full flex-col font-display w-9/12 rounded-b-lg border border-gray-200 shadow-sm hover:shadow-md">
+        <div className="flex h-full w-full flex-col font-display w-9/12 rounded-b-lg border border-gray-200 shadow-sm hover:shadow-md ">
             <div className="flex flex-col flex-grow pb-12">
                 <div className="flex h-12 justify-evenly">
                     <button
@@ -57,16 +58,15 @@ const UserProfileTabs = () => {
                     </button>
                 </div>
             </div>
-            <div className="flex-grow pt-4 sm:pt-8 overflow-auto">
+            <div className="flex-grow pt-4 sm:pt-8 overflow-auto h-96">
                 {active === "" && (
                     <div className="flex justify-center w-full">
                         <UserProfileInfo />
                     </div>
                 )}
                 {active === "My Gardens" && (
-                    <div className="px-6">
-                        <p>My Gardens Section</p>
-                        
+                    <div className="px-6 relative">
+                        <MyGardens />
                     </div>
                 )}
                 {active === "Saved Gardens" && (

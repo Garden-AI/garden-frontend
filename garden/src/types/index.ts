@@ -11,6 +11,11 @@ type Garden = {
   version: string;
   entrypoints: Entrypoint[];
 };
+type Repository = {
+  repo_name: string;
+  url: string;
+  contributors: string[];
+};
 
 type Entrypoint = {
   authors: string[];
@@ -25,7 +30,7 @@ type Entrypoint = {
   models: string[];
   notebook_url?: string;
   papers: Paper[];
-  repositories: string[];
+  repositories: Repository[];
   short_name: string;
   steps: Step[];
   tags: string[];
