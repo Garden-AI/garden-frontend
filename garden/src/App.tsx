@@ -3,7 +3,6 @@ import {
   Route,
   RouterProvider,
   createHashRouter,
-  useLocation,
 } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -20,7 +19,6 @@ import LoginPage from "./pages/LoginPage";
 
 /* Components */
 import CreateGardenForm from "./components/form/CreateGardenForm";
-import CreateEntrypointForm from "./components/form/CreateEntrypointForm";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
@@ -66,10 +64,6 @@ function Root() {
 
         {/* Entrypoint Routes */}
         <Route path="entrypoint">
-          <Route element={<PrivateRoutes />}>
-            <Route path="create" element={<CreateEntrypointForm />} />
-            <Route path=":doi/edit" element={<CreateEntrypointForm />} />
-          </Route>
           <Route path=":doi" element={<EntrypointPage />} />
         </Route>
 

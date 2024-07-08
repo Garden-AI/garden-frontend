@@ -7,7 +7,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(
-      `{import.meta.env.VITE_GLOBUS_CLIENT_ID}:0948a6b0-a622-4078-b0a4-bfd6d77d65cf`,
+      `${import.meta.env.VITE_GLOBUS_CLIENT_ID}:0948a6b0-a622-4078-b0a4-bfd6d77d65cf`,
     );
     if (token) {
       config.headers["Authorization"] =

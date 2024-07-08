@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { GardenCreateRequest } from "@/api/types";
-import { useCreateGarden } from "@/api";
+import { useCreateGarden, useMintDOI } from "@/api";
 
 // Components
 import { Input } from "@/components/ui/input";
@@ -20,17 +20,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 import { toast } from "sonner";
+import { UnsavedChangesDialog } from "./UnsavedChangesDialog";
+import { useState } from "react";
 
 const tagOptions: Option[] = [
   { value: "materials-science", label: "Materials Science" },
@@ -50,10 +43,8 @@ const gardenCreateRequestSchema = z.object({
       z.string().min(1, { message: "Please add at least one contributor." }),
     )
     .optional(),
-  doi: z.string().regex(/^10\.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i, {
-    message: "Invalid DOI format",
-  }),
-  doi_is_draft: z.boolean().nullable().optional(),
+  doi: z.string(),
+  doi_is_draft: z.boolean(),
   description: z
     .string()
     .max(1000, { message: "Description must not exceed 1000 characters" }),
@@ -88,15 +79,10 @@ const formSchema = gardenCreateRequestSchema.extend({
 type FormSchemaType = z.infer<typeof formSchema>;
 
 export default function CreateGardenForm() {
-  const blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      currentLocation.pathname !== nextLocation.pathname &&
-      Object.keys(form.formState.touchedFields).length > 0,
-  );
-  const isBlocked = blocker.state === "blocked";
-
   const navigate = useNavigate();
   const createGarden = useCreateGarden();
+  const mintDOI = useMintDOI();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
@@ -106,7 +92,7 @@ export default function CreateGardenForm() {
       authors: [],
       contributors: [],
       doi: "",
-      doi_is_draft: false,
+      doi_is_draft: true,
       description: "",
       publisher: "",
       year: "2024",
@@ -117,10 +103,12 @@ export default function CreateGardenForm() {
     },
   });
 
-  function onSaveAsDraft() {
-    form.setValue("doi_is_draft", true);
-    form.handleSubmit(onSubmit)();
-  }
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      !isSubmitting &&
+      currentLocation.pathname !== nextLocation.pathname &&
+      Object.keys(form.formState.touchedFields).length > 0,
+  );
 
   const transformFormData = (data: FormSchemaType): GardenCreateRequest => ({
     ...data,
@@ -129,18 +117,22 @@ export default function CreateGardenForm() {
     contributors: data.contributors?.map((contributor) => contributor.label),
   });
 
-  async function onSubmit(values: FormSchemaType) {
-    const transformedValues = transformFormData(values);
-    console.log("transformedValues", transformedValues);
-    return;
+  const onSubmit = async (values: FormSchemaType) => {
+    setIsSubmitting(true);
     try {
+      const { doi } = await mintDOI.mutateAsync();
+      const transformedValues = {
+        ...transformFormData(values),
+        doi,
+      };
       const result = await createGarden.mutateAsync(transformedValues);
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(result.data.doi)}`);
     } catch (error) {
       toast.warning("Error creating garden. Please fix errors.");
+      setIsSubmitting(false);
     }
-  }
+  };
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-center text-3xl">Create a Garden</h1>
@@ -177,22 +169,6 @@ export default function CreateGardenForm() {
                 </FormControl>
                 <FormDescription>
                   A short description of your Garden.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="doi"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>DOI</FormLabel>
-                <FormControl>
-                  <Input placeholder="10.1234/abcd" {...field} />
-                </FormControl>
-                <FormDescription>
-                  A unique identifier for your Garden.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -302,51 +278,10 @@ export default function CreateGardenForm() {
             )}
           />
 
-          <Button type="submit">Submit</Button>
-          <Button type="button" variant="secondary" onClick={onSaveAsDraft}>
-            Save as Draft
-          </Button>
+          <Button type="submit">Save as Draft</Button>
         </form>
-        {
-          <AlertDialog
-            open={isBlocked}
-            onOpenChange={(isOpen) => {
-              if (!isOpen && blocker.state === "blocked") {
-                blocker.reset();
-              }
-            }}
-          >
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  {/* Unsaved progress message */}
-                  Are you sure?
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  You have unsaved changes that will be lost if you leave this
-                  page.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel
-                  onClick={() => {
-                    if (blocker.state === "blocked") blocker.reset();
-                  }}
-                >
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => {
-                    if (blocker.state === "blocked") blocker.proceed();
-                  }}
-                >
-                  Continue
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        }
       </Form>
+      <UnsavedChangesDialog blocker={blocker} />
     </div>
   );
 }
