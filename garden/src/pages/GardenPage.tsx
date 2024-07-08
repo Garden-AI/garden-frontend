@@ -20,6 +20,7 @@ import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export default function GardenPage({ bread }: { bread: any }) {
   const { doi } = useParams();
@@ -66,6 +67,13 @@ function GardenHeader({ garden }: { garden: Garden }) {
 }
 
 function GardenBody({ garden }: { garden: Garden }) {
+
+  const navigate = useNavigate();
+
+  const handleEditGardenClick = () => {
+    navigate(`/garden/${garden.doi}/metadataEditing`);
+  };
+  
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex flex-row justify-between w-full">
@@ -74,15 +82,15 @@ function GardenBody({ garden }: { garden: Garden }) {
           <p>{garden.authors.join(",")}</p>
         </div>
         {/* add logic to only render if this garden was created by the user*/}
-        <Link
-          to={`/metadataEditing`}
+        <button
+          onClick={handleEditGardenClick}
           className={cn(
             buttonVariants({ variant: "default", size: "lg" }),
             "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
           )}
         >
           Edit Garden
-        </Link>
+        </button>
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>

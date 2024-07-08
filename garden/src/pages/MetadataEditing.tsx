@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Garden } from "../types";
 import { useParams } from "react-router-dom";
 import { useSearchGardenByDOI, useSearchGardens } from "../api/search";
 import EntrypointBox from "../components/EntrypointBox";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
+import Breadcrumb from "../components/Breadcrumb";
+import LoadingSpinner from "../components/LoadingSpinner";
+import NotFoundPage from "./NotFoundPage";
 
-const MetadataEditing = () => {
+const MetadataEditing = ({ bread }: { bread: any }) => {
     const initialMetadata = {
         id: null,
         contributors: '',
@@ -18,11 +20,18 @@ const MetadataEditing = () => {
     // or share from parent component (?)
     const [datasets, setDatasets] = useState<Array<Object>>([]);
     const [showFoundry, setShowFoundry] = useState(false);
-    
+
     const [metadata, setMetadata] = useState(initialMetadata);
     const { doi } = useParams() as { doi: string }; // extract doi from url
 
     const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
+
+    if (isLoading) {
+        return <LoadingSpinner />;
+      }
+      if (isError || !garden) {
+        return <NotFoundPage />;
+      }
 
     const foundry = () => {
         setShowFoundry(true);
@@ -47,7 +56,15 @@ const MetadataEditing = () => {
     };
 
     return (
+        
         <div className="font-display flex flex-col gap-5 m-20">
+            <Breadcrumb
+                crumbs={[
+                { label: "Home", link: "/" },
+                { label: "Gardens", link: "/search" },
+                { label: garden.title, link: `/garden/${garden.doi}` },
+                ]}
+            />
             <h1 className="text-2xl sm:text-3xl">Edit {garden?.title}</h1>
             <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
                 <div className="space-y-2">
