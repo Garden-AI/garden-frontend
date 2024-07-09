@@ -18,7 +18,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 
 /* Components */
-import CreateGardenForm from "./components/form/CreateGardenForm";
+import CreateGardenForm from "./components/form/CreateGarden/CreateGardenForm";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 

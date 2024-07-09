@@ -74,7 +74,7 @@ const HomePage = () => {
       </div>
 
       <Separator />
-      <div className="mx-auto grid max-w-7xl grid-cols-1 justify-around gap-x-12 gap-y-24 px-24 py-16 md:grid-cols-3 ">
+      <div className="mx-auto grid  grid-cols-1 justify-around gap-x-12 gap-y-24 px-24 py-16 md:grid-cols-3 ">
         {icons.map((icon, index) => (
           <div
             key={index}
@@ -88,7 +88,7 @@ const HomePage = () => {
         ))}
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-12 md:px-20">
+      <div className="mx-auto  px-4 sm:px-12 md:px-20">
         {textSections.map((section, index) => (
           <div key={index}>
             <Separator />

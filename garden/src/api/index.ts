@@ -1,12 +1,13 @@
 /* Garden */
-import { useCreateGarden } from "./garden/useCreateGarden";
-import { useGetGarden } from "./garden/useGetGarden";
-import { useUpdateGarden } from "./garden/useUpdateGarden";
+import { useCreateGarden } from "./gardens/useCreateGarden";
+import { useGetGarden } from "./gardens/useGetGarden";
+import { useUpdateGarden } from "./gardens/useUpdateGarden";
 // import {useDeleteGarden} from "./garden/useDeleteGarden";
 
 /* Entrypoint */
-import { useCreateEntrypoint } from "./entrypoint/useCreateEntrypoint";
-import { useGetEntrypoint } from "./entrypoint/useGetEntrypoint";
+import { useCreateEntrypoint } from "./entrypoints/useCreateEntrypoint";
+import { useGetEntrypoint } from "./entrypoints/useGetEntrypoint";
+import { useGetEntrypoints } from "./entrypoints/useGetEntrypoints";
 // import { useUpdateEntrypoint } from "./entrypoint/useUpdateEntrypoint";
 // import { useDeleteEntrypoint } from "./entrypoint/useDeleteEntrypoint";
 
@@ -31,6 +32,7 @@ export {
   //   useDeleteGarden,
   useCreateEntrypoint,
   useGetEntrypoint,
+  useGetEntrypoints,
   //   useUpdateEntrypoint,
   //   useDeleteEntrypoint,
   //   useCreateNotebook,
