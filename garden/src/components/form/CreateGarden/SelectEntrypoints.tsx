@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { UseFormReturn, useFieldArray } from "react-hook-form";
-import { z } from "zod";
-import { useGetEntrypoints } from "@/api";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -11,141 +11,127 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Plus, Minus, GripVertical } from "lucide-react";
-import WithTooltip from "@/components/WithTooltip";
-
 import { FormSchemaType, EntrypointListItem } from "./FormSchema";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { ExternalLink } from "lucide-react";
 
 const initialEntrypoints: EntrypointListItem[] = [
-  { doi: "1", title: "Home", description: "Main page" },
-  { doi: "2", title: "About", description: "About us page" },
-  { doi: "3", title: "Contact", description: "Contact page" },
+  {
+    doi: "10.26311/3p8f-se33",
+    title: "Bandgap model",
+    description:
+      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
+  },
+  {
+    doi: "10.26311/mk1a-ve41",
+    title:
+      "Lithium solid state electrolyte conductivity model. Lithium solid state electrolyte conductivity model",
+    description:
+      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
+  },
+  {
+    doi: "10.26311/17nn-hj98",
+    title: "Metallic glass Rc model (LLM data)",
+    description:
+      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
+  },
 ];
 
 interface SelectEntrypointsProps {
   form: UseFormReturn<FormSchemaType>;
 }
 
-function SortableItem({
-  doi,
-  title,
-  description,
-  onRemove,
-}: EntrypointListItem & { onRemove: () => void }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: doi });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <TableRow ref={setNodeRef} style={style}>
-      <TableCell className="w-1/12">
-        <GripVertical className="outline-none" {...attributes} {...listeners} />
-      </TableCell>
-      <TableCell className="w-1/3 truncate">{title}</TableCell>
-      <TableCell className="w-1/3 truncate">{description}</TableCell>
-      <TableCell className="w-1/12">
-        <WithTooltip hint="Remove entrypoint">
-          <Button variant="ghost" size="sm" onClick={onRemove}>
-            <Minus className="h-4 w-4 text-xs" />
-          </Button>
-        </WithTooltip>
-      </TableCell>
-    </TableRow>
-  );
-}
-
 export const SelectEntrypoints: React.FC<SelectEntrypointsProps> = ({
   form,
 }) => {
-  const { data: availableEntrypoints } = useGetEntrypoints({
-    userId: "1234",
-    gardenId: "5678",
-  });
-
-  const { fields, append, remove, move } = useFieldArray({
+  const { fields, replace } = useFieldArray({
     control: form.control,
     name: "entrypoint_ids",
   });
 
-  const [availableEntrypointList, setAvailableEntrypointList] =
-    useState<EntrypointListItem[]>(initialEntrypoints);
+  const [selectedEntrypoints, setSelectedEntrypoints] = useState<string[]>(
+    fields.map((field) => field.doi),
+  );
 
-  useEffect(() => {
-    const entrypoints = availableEntrypoints || initialEntrypoints;
-    const selectedIds = new Set((fields || []).map((f) => f.doi));
-    setAvailableEntrypointList(
-      entrypoints.filter((ep) => !selectedIds.has(ep.doi)),
-    );
-  }, [availableEntrypoints, fields]);
+  const handleEntrypointToggle = (doi: string) => {
+    setSelectedEntrypoints((prev) => {
+      const newSelection = prev.includes(doi)
+        ? prev.filter((id) => id !== doi)
+        : [...prev, doi];
 
-  const handleAddEntrypoint = (entrypoint: EntrypointListItem) => {
-    append(entrypoint);
-  };
+      const newFields = initialEntrypoints.filter((ep) =>
+        newSelection.includes(ep.doi),
+      );
+      replace(newFields);
 
-  const handleRemoveEntrypoint = (index: number) => {
-    remove(index);
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = fields?.findIndex((f) => f.doi === active.id) ?? -1;
-      const newIndex = fields?.findIndex((f) => f.doi === over.id) ?? -1;
-      if (oldIndex !== -1 && newIndex !== -1) {
-        move(oldIndex, newIndex);
-      }
-    }
+      return newSelection;
+    });
   };
 
   return (
-    <div>
-      <div className="mb-12">
-        <h2 className="mb-6 text-xl font-bold">Available Entrypoints</h2>
-        <div className={`mb-4 min-h-[250px] overflow-x-hidden border`}>
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <h2 className="mb-2 text-2xl font-bold">Entrypoints</h2>
+        <p className="text-sm text-gray-700">
+          Your garden is comprised of one or more{" "}
+          <span className="italic">Entrypoints</span>. An Entrypoint is a Python
+          function that serves as an access point to a saved notebook session
+          and can be executed remotely via any Garden it's published to.
+        </p>
+        <p className="text-sm text-gray-700">
+          Select the Entrypoints you want to include in your Garden. You can add
+          or remove Entrypoints at any time.
+        </p>
+
+        <p className="text-sm text-gray-700"></p>
+      </div>
+
+      <div>
+        <h3 className="mb-4 text-xl font-bold">Available Entrypoints</h3>
+        <div className="mb-4 min-h-[250px] overflow-x-auto border">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-1/3">Name</TableHead>
-                <TableHead className="w-1/2">Description</TableHead>
                 <TableHead className="w-1/12"></TableHead>
+                <TableHead className="w-1/4">Name</TableHead>
+                <TableHead className="w-1/2">Description</TableHead>
+                <TableHead className="w-1/6"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {availableEntrypointList.length === 0 ? (
+              {initialEntrypoints.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-gray-500">
                     No entrypoints available
                   </TableCell>
                 </TableRow>
               ) : (
-                availableEntrypointList.map((ep) => (
-                  <TableRow key={ep.doi} className="h-16">
-                    <TableCell className="w-1/3 truncate">{ep.title}</TableCell>
-                    <TableCell className="w-1/2 truncate">
+                initialEntrypoints.map((ep) => (
+                  <TableRow key={ep.doi} className="">
+                    <TableCell className="w-1/12 text-center">
+                      <Checkbox
+                        checked={selectedEntrypoints.includes(ep.doi)}
+                        onCheckedChange={() => handleEntrypointToggle(ep.doi)}
+                      />
+                    </TableCell>
+                    <TableCell className="w-1/4  truncate whitespace-normal break-words">
+                      {ep.title}
+                    </TableCell>
+                    <TableCell className="w-1/2 truncate whitespace-normal break-words">
                       {ep.description}
                     </TableCell>
-                    <TableCell className="w-1/12">
-                      <WithTooltip hint="Add entrypoint">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleAddEntrypoint(ep)}
-                        >
-                          <Plus className="h-4 w-4" />
+                    <TableCell className="w-1/6 text-center">
+                      <Link
+                        to={`/entrypoint/${encodeURIComponent(ep.doi)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button variant="outline" size="sm" type="button">
+                          View
+                          <ExternalLink size={14} className="mb-0.5 ml-1" />
                         </Button>
-                      </WithTooltip>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))
@@ -155,51 +141,24 @@ export const SelectEntrypoints: React.FC<SelectEntrypointsProps> = ({
         </div>
       </div>
 
-      <div className="">
-        <h2 className="mb-4 text-xl font-bold">Selected Entrypoints</h2>
-        <div className="mb-4 min-h-[250px] overflow-auto border">
-          <DndContext
-            onDragEnd={handleDragEnd}
-            collisionDetection={closestCenter}
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/12"></TableHead>
-                  <TableHead className="w-1/3">Name</TableHead>
-                  <TableHead className="w-1/3">Description</TableHead>
-                  <TableHead className="w-1/12"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <SortableContext
-                items={fields?.map((f) => f.doi) ?? []}
-                strategy={verticalListSortingStrategy}
-              >
-                <TableBody>
-                  {!fields || fields.length === 0 ? (
-                    <TableRow>
-                      <TableCell
-                        colSpan={5}
-                        className="text-center text-gray-500"
-                      >
-                        No entrypoints selected
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    fields.map((field, index) => (
-                      <SortableItem
-                        key={field.doi}
-                        {...field}
-                        onRemove={() => handleRemoveEntrypoint(index)}
-                      />
-                    ))
-                  )}
-                </TableBody>
-              </SortableContext>
-            </Table>
-          </DndContext>
-        </div>
-      </div>
+      <p className="text-sm text-gray-500">
+        Not seeing the Entrypoint you're looking for? You can create a new one
+        by following{" "}
+        <Dialog>
+          <DialogTrigger className="text-primary transition hover:text-primary/80">
+            {" "}
+            these instructions.
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle className="text-2xl font-medium">
+              Create a new Entrypoint
+            </DialogTitle>
+            <p className="text-sm text-gray-700">
+              Create a new Entrypoint to add to your Garden.
+            </p>
+          </DialogContent>
+        </Dialog>
+      </p>
     </div>
   );
 };

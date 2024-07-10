@@ -17,14 +17,14 @@ import ShareModal from "@/components/ShareModal";
 import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
-import { useGetGarden } from "@/api";
+import { useGetGarden, useSearchGardenByDOI } from "@/api";
 
 export default function GardenPage() {
   const { doi } = useParams();
 
   // Once database is available, this will be used to get the datasets
   const { data: garden, isLoading, isError } = useGetGarden(doi!);
-
+  // const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -70,7 +70,7 @@ function GardenBody({ garden }: { garden: Garden }) {
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="mb-4">
         <h2 className="font-semibold">Contributors</h2>
-        <p>{garden.authors?.join(",")}</p>
+        <p>{garden.authors?.join(", ")}</p>
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>

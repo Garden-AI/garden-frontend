@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
-import { ChevronDown, ChevronUp, LogOut, User } from "lucide-react";
+import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
@@ -76,6 +76,11 @@ const Navbar = () => {
                   <div className="flex flex-row gap-2 hover:text-green hover:underline">
                     <User />
                     <Link to="/UserProfilePage"> Your Profile </Link>{" "}
+                    {/* add in actual link later once that branch is merged into staging*/}
+                  </div>
+                  <div className="flex flex-row gap-2 hover:text-green hover:underline">
+                    <Plus />
+                    <Link to="/garden/create">Create a Garden</Link>{" "}
                     {/* add in actual link later once that branch is merged into staging*/}
                   </div>
                   <div
