@@ -35,10 +35,10 @@ const MyGardens = () => {
 
 
     return (
-        <div>
+        <div className="">
             <div className="flex justify-end mb-4">
                 <button className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mb-6">
-                    <span>Create New Garden</span>
+                    <span className="text-black">Create New Garden</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-plus">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M8 12h8" />

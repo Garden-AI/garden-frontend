@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
+import PfpSelectionModal from './PfpSelectionModal';
 
 const UserProfileCard = () => {
     const [show, setShow] = useState(false);
     const [tooltipVisible, setTooltipVisible] = useState(false);
-    const [profilePic, setProfilePic] = useState('/images/1.jpg'); // Initial profile picture path
-
-    const handleImageUpload = (e: any) => {
-        const [file] = e.target.files;
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setProfilePic(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    const [profileIcon, setProfileIcon] = useState(null);
+    const [showIconSelector, setShowIconSelector] = useState(false);
 
     const copy = async () => {
         await navigator.clipboard.writeText(window.location.href);
@@ -34,61 +25,36 @@ const UserProfileCard = () => {
     const showModal = () => {
         setShow(true);
     };
-    
+
     const closeModal = () => {
         setShow(false);
     };
-    
+
+    const handleIconClick = () => {
+        setShowIconSelector(true);
+    };
+
+    const closeIconSelector = () => {
+        setShowIconSelector(false);
+    };
 
     const defaultProfileIcon = (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="72"
-            height="72"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-gray-400"
-        >
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
     );
 
-
-return (
-    <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:shadow-md w-3/12'>
-        <div className="dark:bg-navy-800 shadow-shadow-500 shadow-3xl rounded-primary relative mx-auto flex h-full w-full max-w-[550px] flex-col items-center bg-white bg-cover bg-clip-border p-[16px] dark:shadow-none">
-            <div className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover">
-                <div className="relative h-[170px] w-[170px] overflow-hidden">
-                    <label htmlFor="profilePicUpload" className="cursor-pointer block relative h-full w-full">
+    return (
+        <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:shadow-md w-3/12'>
+            <div className="dark:bg-navy-800 shadow-shadow-500 shadow-3xl rounded-primary relative mx-auto flex h-full w-full max-w-[550px] flex-col items-center bg-white bg-cover bg-clip-border p-[16px] dark:shadow-none">
+                <div className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover">
+                    <div className="relative h-[170px] w-[170px] overflow-hidden">
                         <div
-                            className="h-full w-full flex items-center justify-center bg-gray-200 rounded-full"
-                            style={{
-                                backgroundImage: `url(${profilePic || ''})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                            }}
+                            className="cursor-pointer block relative h-full w-full flex items-center justify-center bg-green rounded-full"
+                            onClick={handleIconClick}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-pencil stroke-white">
-                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
-                            <path d="m15 5 4 4"/>
-                            </svg>
-                            {!profilePic && defaultProfileIcon}
+                            {profileIcon || defaultProfileIcon}
                         </div>
-                        <input
-                            type="file"
-                            id="profilePicUpload"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={handleImageUpload}
-                        />
-                    </label>
+                    </div>
                 </div>
-            </div>
                 <div className="mt-12 flex flex-col items-center">
                     <h4 className="text-bluePrimary text-3xl font-bold mb-1 mt-2">First Last</h4>
                     <p className="text-lightSecondary text-sm font-normal mb-2">@UserName</p>
@@ -126,11 +92,18 @@ return (
                     </svg>
                 </button>
                 <Modal               
-                show={show}
-                close={closeModal}
-                copy={copy}
-                doi={"replace with user profile page DOI"}
-                showTooltip={showTooltip} />
+                    show={show}
+                    close={closeModal}
+                    copy={copy}
+                    doi={"replace with user profile page DOI"}
+                    showTooltip={showTooltip}
+                />
+                {showIconSelector && (
+                    <PfpSelectionModal
+                        setSelectedIcon={setProfileIcon}
+                        closeModal={closeIconSelector}
+                    />
+                )}
             </div>
         </div>
     );

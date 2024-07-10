@@ -18,13 +18,13 @@ const UserProfileInfo = () => {
         setEdit(true);
     };
 
-    const handleSave = (e) => {
+    const handleSave = (e: any) => {
         e.preventDefault();
         //saveInfo();
         setEdit(false);
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const { name, value } = e.target;
         setInfo({ ...info, [name]: value });
     };
@@ -71,7 +71,7 @@ const UserProfileInfo = () => {
     */
 
     return (
-      <div className="pr-20 pl-20 pb-20 w-full top-0">
+      <div className="pr-20 pl-20 pb-20 w-full mt-6">
           <div className="grid grid-cols-2 gap-8">
               <div className = "space-y-2 ">
                   <p className="text-gray-600">First Name</p>
