@@ -107,7 +107,7 @@ function Root() {
         >
           <Route
             path="metadataEditing"
-            element={<MetadataEditing bread={breadcrumbs} />}
+            element={<MetadataEditing/>}
           />
         </Route>
         <Route

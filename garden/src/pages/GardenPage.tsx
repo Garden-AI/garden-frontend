@@ -71,7 +71,7 @@ function GardenBody({ garden }: { garden: Garden }) {
   const navigate = useNavigate();
 
   const handleEditGardenClick = () => {
-    navigate(`/garden/${garden.doi}/metadataEditing`);
+    navigate(`/garden/${garden.doi}/metadataEditing`); // 
   };
   
   return (
@@ -91,6 +91,7 @@ function GardenBody({ garden }: { garden: Garden }) {
         >
           Edit Garden
         </button>
+        
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>
