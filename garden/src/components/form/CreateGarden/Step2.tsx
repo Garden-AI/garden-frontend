@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { UseFormReturn, useFieldArray } from "react-hook-form";
+import { useState } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,8 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FormSchemaType, EntrypointListItem } from "./FormSchema";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { EntrypointListItem } from "./FormSchema";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { ExternalLink } from "lucide-react";
 
@@ -38,13 +43,8 @@ const initialEntrypoints: EntrypointListItem[] = [
   },
 ];
 
-interface SelectEntrypointsProps {
-  form: UseFormReturn<FormSchemaType>;
-}
-
-export const SelectEntrypoints: React.FC<SelectEntrypointsProps> = ({
-  form,
-}) => {
+export const Step2 = () => {
+  const form = useFormContext();
   const { fields, replace } = useFieldArray({
     control: form.control,
     name: "entrypoint_ids",
@@ -153,14 +153,13 @@ export const SelectEntrypoints: React.FC<SelectEntrypointsProps> = ({
             <DialogTitle className="text-2xl font-medium">
               Create a new Entrypoint
             </DialogTitle>
-            <p className="text-sm text-gray-700">
+
+            <DialogDescription className="text-sm text-gray-700">
               Create a new Entrypoint to add to your Garden.
-            </p>
+            </DialogDescription>
           </DialogContent>
         </Dialog>
       </p>
     </div>
   );
 };
-
-export default SelectEntrypoints;

@@ -1,5 +1,4 @@
-import { FormSchemaType } from "./FormSchema";
-import { GardenCreateRequest } from "./RequestSchema";
+import { FormSchemaType, GardenCreateRequest } from "./FormSchema";
 
 export function transformFormToRequest(
   formData: FormSchemaType,

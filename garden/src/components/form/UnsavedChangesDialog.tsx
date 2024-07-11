@@ -21,6 +21,7 @@ export const UnsavedChangesDialog: React.FC<UnsavedChangesDialogProps> = ({
     <AlertDialog
       open={blocker.state === "blocked"}
       onOpenChange={(isOpen) => {
+        console.log("isOpen", isOpen);
         if (!isOpen && blocker.state === "blocked") {
           blocker.reset();
         }
@@ -34,12 +35,8 @@ export const UnsavedChangesDialog: React.FC<UnsavedChangesDialogProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => blocker.reset && blocker.reset()}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => blocker.proceed && blocker.proceed()}
-          >
+          <AlertDialogCancel onClick={blocker.reset}>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={blocker.proceed}>
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

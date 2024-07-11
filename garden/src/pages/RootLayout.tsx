@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
 
 export default function RootLayout() {
-  useGoogleAnalytics();
+  if (import.meta.env.MODE !== "development") useGoogleAnalytics();
   return (
     <>
       <ScrollToTop />

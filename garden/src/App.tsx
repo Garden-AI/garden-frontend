@@ -18,7 +18,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 
 /* Components */
-import CreateGardenForm from "./components/form/CreateGarden/CreateGardenForm";
+import CreateGardenPage from "./components/form/CreateGarden/CreateGardenPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
@@ -56,8 +56,8 @@ function Root() {
         {/* Garden Routes */}
         <Route path="garden">
           <Route element={<PrivateRoutes />}>
-            <Route path="create" element={<CreateGardenForm />} />
-            <Route path=":doi/edit" element={<CreateGardenForm />} />
+            <Route path="create" element={<CreateGardenPage />} />
+            <Route path=":doi/edit" element={<CreateGardenPage />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>

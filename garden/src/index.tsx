@@ -42,6 +42,7 @@ enableMocking().then(() => {
           <App />
         </QueryClientProvider>
       </GlobusAuthorizationManagerProvider>
+      ,
     </React.StrictMode>,
   );
 });
