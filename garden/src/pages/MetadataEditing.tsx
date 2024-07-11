@@ -48,7 +48,7 @@ const MetadataEditing = () => {
             });
         }
     }, [garden]);
-
+    
     const handleInputChange = (e: any) => {
         const { name, value } = e.target;
         setMetadata({ ...metadata, [name]: value });

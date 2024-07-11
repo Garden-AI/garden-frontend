@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Outlet } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
 import { useSearchGardenByDOI } from "../api/search";
@@ -71,7 +71,7 @@ function GardenBody({ garden }: { garden: Garden }) {
   const navigate = useNavigate();
 
   const handleEditGardenClick = () => {
-    navigate(`/garden/${garden.doi}/metadataEditing`); // 
+    navigate(`metadataEditing`); // 
   };
   
   return (
