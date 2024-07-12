@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Garden } from "../types";
+import { Garden } from "@/api/types";
 // import RelatedGardenMetrics from "./RelatedGardenMetrics";
 
 const RelatedGardenBox = ({ garden }: { garden: Garden }) => {

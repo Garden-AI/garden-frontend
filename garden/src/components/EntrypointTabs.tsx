@@ -1,4 +1,4 @@
-import { Entrypoint } from "@/types";
+import { Entrypoint } from "@/api/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import {
   Card,
@@ -10,7 +10,7 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { NotebookViewer } from "./NotebookViewer";
 
 export default function EntrypointTabs({
@@ -58,7 +58,7 @@ export default function EntrypointTabs({
   );
 }
 
-function DatasetsTab({ datasets }: { datasets: any[] }) {
+function DatasetsTab({ datasets }: { datasets: any }) {
   if (!datasets || datasets.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
@@ -112,7 +112,7 @@ function DatasetsTab({ datasets }: { datasets: any[] }) {
           </Card>
         ))}
       </div>
-      {datasets.some((dataset) =>
+      {datasets.some((dataset: any) =>
         dataset.url.toString().includes("foundry"),
       ) && (
         <div>
@@ -165,7 +165,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
       orientation="vertical"
     >
       <TabsList className="col-span-1 flex h-full flex-col items-start justify-start space-y-4 rounded-md bg-transparent ">
-        {entrypoint.steps.map((step: any, index: number) => (
+        {entrypoint.steps?.map((step: any, index: number) => (
           <TabsTrigger
             key={index}
             value={index.toString()}
@@ -176,7 +176,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
         ))}
       </TabsList>
 
-      {entrypoint.steps.map((step: any, index: number) => (
+      {entrypoint.steps?.map((step: any, index: number) => (
         <TabsContent
           value={index.toString()}
           className="col-span-3"
@@ -192,9 +192,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
               </CardDescription>
             </CardHeader>
             <CardContent className="px-6 py-4">
-              <SyntaxHighlighter language="python">
-                {step.function_text}
-              </SyntaxHighlighter>
+              <SyntaxHighlighter>{step.function_text}</SyntaxHighlighter>
             </CardContent>
           </Card>
         </TabsContent>
@@ -203,7 +201,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
   );
 }
 
-function NotebookTab({ notebookURL }: { notebookURL?: string }) {
+function NotebookTab({ notebookURL }: { notebookURL?: string | null }) {
   if (!notebookURL) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">

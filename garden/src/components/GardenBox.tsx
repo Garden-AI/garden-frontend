@@ -7,8 +7,8 @@ import {
 } from "./ui/card";
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
-import { Garden } from "../types";
-import React, {useState} from "react";
+import { Garden } from "@/api/types";
+import React, { useState } from "react";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();
@@ -42,19 +42,19 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
             <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent"></div>
           </div>
         </CardContent>
-        <CardFooter className="mt-auto flex flex-wrap gap-1 relative">
+        <CardFooter className="relative mt-auto flex flex-wrap gap-1">
           {tags && tags.length > 0 && (
-            <>
+            <div>
               <TagIcon className="h-4 w-4 text-gray-500" />
-              {tags.map((tag: string, index: number) => (
+              {tags.map((value: any, index: number) => (
                 <span
                   key={index}
                   className="rounded-lg bg-primary p-1 px-2 text-xs  text-primary-foreground"
                 >
-                  {tag}
+                  {value}
                 </span>
               ))}
-            </>
+            </div>
           )}
           {/**only render if logged in, add that logic later*/}
           <svg
@@ -68,7 +68,7 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
             strokeLinecap="round"
             strokeLinejoin="round"
             className={`lucide lucide-bookmark absolute bottom-6 right-6 cursor-pointer ${
-              (isSaved) ? 'stroke-green fill-green' : 'stroke-black'
+              isSaved ? "fill-green stroke-green" : "stroke-black"
             }`}
             onClick={handleSaveClick}
           >

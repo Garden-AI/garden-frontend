@@ -1,23 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { GlobusAuthorizationManagerProvider } from "./components/globus-auth-context/Provider";
-import { useGlobusAuth } from "@/components/globus-auth-context/useGlobusAuth";
+import { GlobusAuthorizationManagerProvider } from "./components/auth/Provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-async function deferRender() {
-  if (import.meta.env.VITE_APP_SHOULD_MOCK !== "true") {
+async function enableMocking() {
+  if (
+    import.meta.env.MODE !== "development" ||
+    import.meta.env.VITE_APP_SHOULD_MOCK == "false"
+  ) {
     return;
   }
 
   const { worker } = await import("./mocks/browser");
 
-  // `worker.start()` returns a Promise that resolves
-  // once the Service Worker is up and ready to intercept requests.
   return worker.start();
 }
 
-deferRender().then(() => {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 20,
+      retry: 1,
+    },
+  },
+});
+
+enableMocking().then(() => {
   const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement,
   );
@@ -26,14 +36,13 @@ deferRender().then(() => {
       <GlobusAuthorizationManagerProvider
         client={import.meta.env.VITE_GLOBUS_CLIENT_ID}
         redirect={import.meta.env.VITE_GLOBUS_REDIRECT_URI}
-        scopes={import.meta.env.VITE_GLOBUS_SEARCH_SCOPE}
+        scopes={import.meta.env.VITE_GLOBUS_GARDEN_SCOPE}
       >
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
       </GlobusAuthorizationManagerProvider>
+      ,
     </React.StrictMode>,
   );
-  // If you want to start measuring performance in your app, pass a function
-  // to log results (for example: reportWebVitals(console.log))
-  // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-  reportWebVitals();
 });
