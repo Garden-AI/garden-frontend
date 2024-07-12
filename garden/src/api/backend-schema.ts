@@ -4,1882 +4,1866 @@
  */
 
 export interface paths {
-  "/greet": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/greet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Greet Authed User */
+        get: operations["greet_authed_user_greet_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Greet Authed User */
-    get: operations["greet_authed_user_greet_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/doi": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/doi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Datacite */
+        put: operations["update_datacite_doi_put"];
+        /** Mint Draft Doi */
+        post: operations["mint_draft_doi_doi_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /** Update Datacite */
-    put: operations["update_datacite_doi_put"];
-    /** Mint Draft Doi */
-    post: operations["mint_draft_doi_doi_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/docker-push-token": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/docker-push-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Push Session */
+        get: operations["get_push_session_docker_push_token_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Push Session */
-    get: operations["get_push_session_docker_push_token_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/notebook": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/notebook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload Notebook */
+        post: operations["upload_notebook_notebook_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Upload Notebook */
-    post: operations["upload_notebook_notebook_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/garden-search-record": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/garden-search-record": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Search Record */
+        post: operations["publish_search_record_garden_search_record_post"];
+        /** Delete Search Record */
+        delete: operations["delete_search_record_garden_search_record_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Publish Search Record */
-    post: operations["publish_search_record_garden_search_record_post"];
-    /** Delete Search Record */
-    delete: operations["delete_search_record_garden_search_record_delete"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hello-database": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/hello-database": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Hello Postgres */
+        get: operations["hello_postgres_hello_database_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Hello Postgres */
-    get: operations["hello_postgres_hello_database_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/entrypoints": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/entrypoints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add Entrypoint */
+        post: operations["add_entrypoint_entrypoints_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Add Entrypoint */
-    post: operations["add_entrypoint_entrypoints_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/entrypoints/{doi}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/entrypoints/{doi}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Entrypoint By Doi */
+        get: operations["get_entrypoint_by_doi_entrypoints__doi__get"];
+        /** Create Or Replace Entrypoint */
+        put: operations["create_or_replace_entrypoint_entrypoints__doi__put"];
+        post?: never;
+        /** Delete Entrypoint */
+        delete: operations["delete_entrypoint_entrypoints__doi__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Entrypoint By Doi */
-    get: operations["get_entrypoint_by_doi_entrypoints__doi__get"];
-    /** Create Or Replace Entrypoint */
-    put: operations["create_or_replace_entrypoint_entrypoints__doi__put"];
-    post?: never;
-    /** Delete Entrypoint */
-    delete: operations["delete_entrypoint_entrypoints__doi__delete"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/gardens": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/gardens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add Garden */
+        post: operations["add_garden_gardens_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Add Garden */
-    post: operations["add_garden_gardens_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/gardens/{doi}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/gardens/{doi}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Garden By Doi */
+        get: operations["get_garden_by_doi_gardens__doi__get"];
+        /** Create Or Replace Garden */
+        put: operations["create_or_replace_garden_gardens__doi__put"];
+        post?: never;
+        /** Delete Garden */
+        delete: operations["delete_garden_gardens__doi__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Garden By Doi */
-    get: operations["get_garden_by_doi_gardens__doi__get"];
-    /** Create Or Replace Garden */
-    put: operations["create_or_replace_garden_gardens__doi__put"];
-    post?: never;
-    /** Delete Garden */
-    delete: operations["delete_garden_gardens__doi__delete"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User Info
+         * @description Return the user profile info for the current authed user.
+         */
+        get: operations["get_user_info_users_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update User Info
+         * @description Update the user profile info for the current authed user.
+         */
+        patch: operations["update_user_info_users_patch"];
+        trace?: never;
     };
-    /** Greet World */
-    get: operations["greet_world__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Greet World */
+        get: operations["greet_world__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** AffiliationItem */
-    AffiliationItem: {
-      /** Affiliationidentifier */
-      affiliationIdentifier?: string | null;
-      /** Affiliationidentifierscheme */
-      affiliationIdentifierScheme?: string | null;
-      /** Name */
-      name?: string | null;
-      /** Schemeuri */
-      schemeUri?: string | null;
-    };
-    /** AlternateIdentifier */
-    AlternateIdentifier: {
-      /** Alternateidentifiertype */
-      alternateIdentifierType?: string | null;
-      /** Alternateidentifier */
-      alternateIdentifier?: string | null;
-    };
-    /** Citations */
-    Citations: {
-      data?: components["schemas"]["DoiDataArray"] | null;
-    };
-    /** CitationsOverTimeItem */
-    CitationsOverTimeItem: {
-      /** Yearmonth */
-      yearMonth?: string | null;
-      /** Total */
-      total?: number | null;
-    };
-    /** Client1 */
-    Client1: {
-      data?: components["schemas"]["DoiDataObject"] | null;
-    };
-    /** Container */
-    Container: {
-      /** Type */
-      type?: string | null;
-      /** Identifier */
-      identifier?: string | null;
-      /** Identifiertype */
-      identifierType?: string | null;
-      /** Title */
-      title?: string | null;
-      /** Volume */
-      volume?: string | null;
-      /** Issue */
-      issue?: string | null;
-      /** Firstpage */
-      firstPage?: string | null;
-      /** Lastpage */
-      lastPage?: string | null;
-    };
-    /** Contributor */
-    Contributor: {
-      nameType?: components["schemas"]["NameType"] | null;
-      /** Nameidentifiers */
-      nameIdentifiers?: components["schemas"]["NameIdentifier"][] | null;
-      /** Name */
-      name?: string | null;
-      /** Givenname */
-      givenName?: string | null;
-      /** Familyname */
-      familyName?: string | null;
-      /** Affiliation */
-      affiliation?: components["schemas"]["AffiliationItem"][] | null;
-      contributorType?: components["schemas"]["ContributorType"] | null;
-      /** Lang */
-      lang?: string | null;
-    };
-    /** Contributor1 */
-    Contributor1: {
-      /** Name */
-      name?: string | null;
-      /** Givenname */
-      givenName?: string | null;
-      /** Familyname */
-      familyName?: string | null;
-      nameType?: components["schemas"]["NameType"] | null;
-      contributorType?: components["schemas"]["ContributorType"] | null;
-    };
-    /**
-     * ContributorType
-     * @enum {string}
-     */
-    ContributorType:
-      | "ContactPerson"
-      | "DataCollector"
-      | "DataCurator"
-      | "DataManager"
-      | "Distributor"
-      | "Editor"
-      | "HostingInstitution"
-      | "Producer"
-      | "ProjectLeader"
-      | "ProjectManager"
-      | "ProjectMember"
-      | "RegistrationAgency"
-      | "RegistrationAuthority"
-      | "RelatedPerson"
-      | "Researcher"
-      | "ResearchGroup"
-      | "RightsHolder"
-      | "Sponsor"
-      | "Supervisor"
-      | "WorkPackageLeader"
-      | "Other";
-    /** Creator */
-    Creator: {
-      nameType?: components["schemas"]["NameType"] | null;
-      /** Nameidentifiers */
-      nameIdentifiers?: components["schemas"]["NameIdentifier"][] | null;
-      /** Name */
-      name?: string | null;
-      /** Givenname */
-      givenName?: string | null;
-      /** Familyname */
-      familyName?: string | null;
-      /** Affiliation */
-      affiliation?: components["schemas"]["AffiliationItem"][] | null;
-      /** Lang */
-      lang?: string | null;
-    };
-    /** Creator1 */
-    Creator1: {
-      /** Name */
-      name?: string | null;
-      /** Givenname */
-      givenName?: string | null;
-      /** Familyname */
-      familyName?: string | null;
-      nameType?: components["schemas"]["NameType"] | null;
-    };
-    /** Date */
-    Date: {
-      /** Date */
-      date?: string | null;
-      dateType?: components["schemas"]["DateType"] | null;
-      /** Dateinformation */
-      dateInformation?: string | null;
-    };
-    /**
-     * DateType
-     * @enum {string}
-     */
-    DateType:
-      | "Accepted"
-      | "Available"
-      | "Copyrighted"
-      | "Collected"
-      | "Created"
-      | "Issued"
-      | "Submitted"
-      | "Updated"
-      | "Valid"
-      | "Withdrawn"
-      | "Other";
-    /** DeleteSearchRecordRequest */
-    DeleteSearchRecordRequest: {
-      /** Doi */
-      doi: string;
-    };
-    /** Description */
-    Description: {
-      /** Description */
-      description?: string | null;
-      descriptionType?: components["schemas"]["DescriptionType"] | null;
-      /** Lang */
-      lang?: string | null;
-    };
-    /**
-     * DescriptionType
-     * @enum {string}
-     */
-    DescriptionType:
-      | "Abstract"
-      | "Methods"
-      | "SeriesInformation"
-      | "TableOfContents"
-      | "TechnicalInfo"
-      | "Other";
-    /** Doi */
-    Doi: {
-      data: components["schemas"]["DoiData"];
-    };
-    /** DoiAttributes */
-    DoiAttributes: {
-      /** Created */
-      created?: string | null;
-      /** Registered */
-      registered?: string | null;
-      /** Updated */
-      updated?: string | null;
-      /** Url */
-      url?: string | null;
-      /** Contenturl */
-      contentUrl?: string[] | null;
-      /** Metadataversion */
-      metadataVersion?: number | null;
-      /** Schemaversion */
-      schemaVersion?: string | null;
-      /** Source */
-      source?: string | null;
-      /** Isactive */
-      isActive?: boolean | null;
-      /** State */
-      state?: string | null;
-      /** Reason */
-      reason?: string | null;
-      /** Creators */
-      creators?: components["schemas"]["Creator"][] | null;
-      /** Titles */
-      titles?: components["schemas"]["Title"][] | null;
-      /** Publisher */
-      publisher?: components["schemas"]["Publisher"] | string | null;
-      container?: components["schemas"]["Container"] | null;
-      /** Publicationyear */
-      publicationYear?: number | null;
-      /** Subjects */
-      subjects?: components["schemas"]["Subject"][] | null;
-      /** Contributors */
-      contributors?: components["schemas"]["Contributor"][] | null;
-      /** Dates */
-      dates?: components["schemas"]["Date"][] | null;
-      /** Language */
-      language?: string | null;
-      types?: components["schemas"]["Types"] | null;
-      /** Relatedidentifiers */
-      relatedIdentifiers?: components["schemas"]["RelatedIdentifier"][] | null;
-      /** Relateditems */
-      relatedItems?: components["schemas"]["RelatedItem"][] | null;
-      /** Sizes */
-      sizes?: string[] | null;
-      /** Formats */
-      formats?: string[] | null;
-      /** Version */
-      version?: string | null;
-      /** Rightslist */
-      rightsList?: components["schemas"]["RightsListItem"][] | null;
-      /** Descriptions */
-      descriptions?: components["schemas"]["Description"][] | null;
-      /** Geolocations */
-      geoLocations?: components["schemas"]["GeoLocation"][] | null;
-      /** Fundingreferences */
-      fundingReferences?: components["schemas"]["FundingReference"][] | null;
-      /** Doi */
-      doi?: string | null;
-      /** @description Can be set to trigger a DOI state change. */
-      event?: components["schemas"]["Event"] | null;
-      /** Prefix */
-      prefix?: string | null;
-      /** Suffix */
-      suffix?: string | null;
-      /** Identifiers */
-      identifiers?: components["schemas"]["Identifier"][] | null;
-      /** Alternateidentifiers */
-      alternateIdentifiers?:
-        | components["schemas"]["AlternateIdentifier"][]
-        | null;
-      /** Xml */
-      xml?: string | null;
-      /** Viewcount */
-      viewCount?: number | null;
-      /** Viewsovertime */
-      viewsOverTime?: components["schemas"]["ViewsOverTimeItem"][] | null;
-      /** Downloadcount */
-      downloadCount?: number | null;
-      /** Downloadsovertime */
-      downloadsOverTime?:
-        | components["schemas"]["DownloadsOverTimeItem"][]
-        | null;
-      /** Referencecount */
-      referenceCount?: number | null;
-      /** Citationcount */
-      citationCount?: number | null;
-      /** Citationsovertime */
-      citationsOverTime?:
-        | components["schemas"]["CitationsOverTimeItem"][]
-        | null;
-      /** Partcount */
-      partCount?: number | null;
-      /** Partofcount */
-      partOfCount?: number | null;
-      /** Versioncount */
-      versionCount?: number | null;
-      /** Versionofcount */
-      versionOfCount?: number | null;
-      /** @description Data describing the landing page, used by link checking. */
-      landingPage?: components["schemas"]["LandingPage"] | null;
-    };
-    /** DoiData */
-    DoiData: {
-      /** Id */
-      id?: string | null;
-      type: components["schemas"]["Type"];
-      attributes: components["schemas"]["DoiAttributes"];
-      relationships?: components["schemas"]["Relationships"] | null;
-    };
-    /** DoiDataArray */
-    DoiDataArray: components["schemas"]["DoiDataObject"][];
-    /** DoiDataObject */
-    DoiDataObject: {
-      /** Id */
-      id?: string | null;
-      /** Type */
-      type?: string | null;
-    };
-    /** DownloadsOverTimeItem */
-    DownloadsOverTimeItem: {
-      /** Yearmonth */
-      yearMonth?: string | null;
-      /** Total */
-      total?: number | null;
-    };
-    /** ECRPushCredentials */
-    ECRPushCredentials: {
-      /** Accesskeyid */
-      AccessKeyId: string;
-      /** Secretaccesskey */
-      SecretAccessKey: string;
-      /** Sessiontoken */
-      SessionToken: string;
-      /** Ecrrepo */
-      ECRRepo: string;
-      /**
-       * Regionname
-       * @default us-east-1
-       */
-      RegionName: string;
-    };
-    /** EntrypointCreateRequest */
-    EntrypointCreateRequest: {
-      /** Doi */
-      doi: string;
-      /** Doi Is Draft */
-      doi_is_draft: boolean;
-      /** Title */
-      title: string;
-      /** Description */
-      description: string | null;
-      /** Year */
-      year: string;
-      /**
-       * Func Uuid
-       * Format: uuid
-       */
-      func_uuid: string;
-      /**
-       * Container Uuid
-       * Format: uuid
-       */
-      container_uuid: string;
-      /** Base Image Uri */
-      base_image_uri: string;
-      /** Full Image Uri */
-      full_image_uri: string;
-      /**
-       * Notebook Url
-       * Format: uri
-       */
-      notebook_url: string;
-      /** Short Name */
-      short_name: string;
-      /** Function Text */
-      function_text: string;
-      /** Authors */
-      authors?: string[];
-      /** Tags */
-      tags?: string[];
-      /** Test Functions */
-      test_functions?: string[];
-      /** Models */
-      models?: components["schemas"]["src__api__schemas__entrypoint___ModelMetadata"][];
-      /** Repositories */
-      repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
-      /** Papers */
-      papers?: components["schemas"]["_PaperMetadata"][];
-      /** Datasets */
-      datasets?: components["schemas"]["_DatasetMetadata-Input"][];
-      /** Owner Identity Id */
-      owner_identity_id?: string | null;
-    };
-    /** EntrypointMetadataResponse */
-    EntrypointMetadataResponse: {
-      /** Doi */
-      doi: string;
-      /** Doi Is Draft */
-      doi_is_draft: boolean;
-      /** Title */
-      title: string;
-      /** Description */
-      description: string | null;
-      /** Year */
-      year: string;
-      /**
-       * Func Uuid
-       * Format: uuid
-       */
-      func_uuid: string;
-      /**
-       * Container Uuid
-       * Format: uuid
-       */
-      container_uuid: string;
-      /** Base Image Uri */
-      base_image_uri: string;
-      /** Full Image Uri */
-      full_image_uri: string;
-      /** Notebook Url */
-      notebook_url: string;
-      /** Short Name */
-      short_name: string;
-      /** Function Text */
-      function_text: string;
-      /** Authors */
-      authors?: string[];
-      /** Tags */
-      tags?: string[];
-      /** Test Functions */
-      test_functions?: string[];
-      /** Models */
-      models?: components["schemas"]["_ModelMetadata-Output"][];
-      /** Repositories */
-      repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
-      /** Papers */
-      papers?: components["schemas"]["_PaperMetadata"][];
-      /** Datasets */
-      datasets?: components["schemas"]["_DatasetMetadata-Output"][];
-      /** Id */
-      id: number;
-    };
-    /**
-     * Event
-     * @enum {string}
-     */
-    Event: "publish" | "register" | "hide";
-    /**
-     * FunderIdentifierType
-     * @enum {string}
-     */
-    FunderIdentifierType:
-      | "Crossref Funder ID"
-      | "GRID"
-      | "ISNI"
-      | "ROR"
-      | "Other";
-    /** FundingReference */
-    FundingReference: {
-      /** Fundername */
-      funderName?: string | null;
-      /** Funderidentifier */
-      funderIdentifier?: string | null;
-      funderIdentifierType?:
-        | components["schemas"]["FunderIdentifierType"]
-        | null;
-      /** Awardnumber */
-      awardNumber?: string | null;
-      /** Awarduri */
-      awardUri?: string | null;
-      /** Awardtitle */
-      awardTitle?: string | null;
-    };
-    /** GardenCreateRequest */
-    GardenCreateRequest: {
-      /** Title */
-      title: string;
-      /** Authors */
-      authors?: string[];
-      /** Contributors */
-      contributors?: string[];
-      /** Doi */
-      doi: string;
-      /** Doi Is Draft */
-      doi_is_draft?: boolean | null;
-      /** Description */
-      description: string | null;
-      /**
-       * Publisher
-       * @default Garden-AI
-       */
-      publisher: string;
-      /** Year */
-      year?: string;
-      /**
-       * Language
-       * @default en
-       */
-      language: string;
-      /** Tags */
-      tags?: string[];
-      /**
-       * Version
-       * @default 0.0.1
-       */
-      version: string;
-      /** Entrypoint Aliases */
-      entrypoint_aliases?: {
-        [key: string]: string | undefined;
-      };
-      /** Entrypoint Ids */
-      entrypoint_ids?: string[];
-      /** Owner Identity Id */
-      owner_identity_id?: string | null;
-    };
-    /** GardenMetadataResponse */
-    GardenMetadataResponse: {
-      /** Title */
-      title: string;
-      /** Authors */
-      authors?: string[];
-      /** Contributors */
-      contributors?: string[];
-      /** Doi */
-      doi: string;
-      /** Doi Is Draft */
-      doi_is_draft?: boolean | null;
-      /** Description */
-      description: string | null;
-      /**
-       * Publisher
-       * @default Garden-AI
-       */
-      publisher: string;
-      /** Year */
-      year?: string;
-      /**
-       * Language
-       * @default en
-       */
-      language: string;
-      /** Tags */
-      tags?: string[];
-      /**
-       * Version
-       * @default 0.0.1
-       */
-      version: string;
-      /** Entrypoint Aliases */
-      entrypoint_aliases?: {
-        [key: string]: string | undefined;
-      };
-      /** Id */
-      id: number;
-      /** Entrypoints */
-      entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
-    };
-    /** GeoLocation */
-    GeoLocation: {
-      geoLocationPoint?: components["schemas"]["GeoLocationPoint"] | null;
-      geoLocationBox?: components["schemas"]["GeoLocationBox"] | null;
-      /** Geolocationplace */
-      geoLocationPlace?: string | null;
-    };
-    /** GeoLocationBox */
-    GeoLocationBox: {
-      /** Westboundlongitude */
-      westBoundLongitude?: string | null;
-      /** Eastboundlongitude */
-      eastBoundLongitude?: string | null;
-      /** Southboundlatitude */
-      southBoundLatitude?: string | null;
-      /** Northboundlatitude */
-      northBoundLatitude?: string | null;
-    };
-    /** GeoLocationPoint */
-    GeoLocationPoint: {
-      /** Pointlongitude */
-      pointLongitude?: string | null;
-      /** Pointlatitude */
-      pointLatitude?: string | null;
-    };
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components["schemas"]["ValidationError"][];
-    };
-    /** Identifier */
-    Identifier: {
-      /** Identifier */
-      identifier?: string | null;
-      /** Identifiertype */
-      identifierType?: string | null;
-    };
-    /** LandingPage */
-    LandingPage: {
-      /** Checked */
-      checked?: string | null;
-      /** Url */
-      url?: string | null;
-      /** Contenttype */
-      contentType?: string | null;
-      /** Error */
-      error?: string | null;
-      /** Redirectcount */
-      redirectCount?: number | null;
-      /** Redirecturls */
-      redirectUrls?: string[] | null;
-      /** Downloadlatency */
-      downloadLatency?: number | null;
-      /** Hasschemaorg */
-      hasSchemaOrg?: boolean | null;
-      /** Schemaorgid */
-      schemaOrgid?: string | null;
-      /** Dcidentifier */
-      dcIdentifier?: string | null;
-      /** Citationdoi */
-      citationDoi?: string | null;
-      /** Bodyhaspid */
-      bodyhasPid?: boolean | null;
-    };
-    /** Media */
-    Media: {
-      data?: components["schemas"]["DoiDataObject"] | null;
-    };
-    /** NameIdentifier */
-    NameIdentifier: {
-      /** Nameidentifier */
-      nameIdentifier?: string | null;
-      /** Nameidentifierscheme */
-      nameIdentifierScheme?: string | null;
-      /** Schemeuri */
-      schemeUri?: string | null;
-    };
-    /**
-     * NameType
-     * @enum {string}
-     */
-    NameType: "Personal" | "Organizational";
-    /**
-     * NumberType
-     * @enum {string}
-     */
-    NumberType: "Article" | "Chapter" | "Report" | "Other";
-    /** PartOf */
-    PartOf: {
-      data?: components["schemas"]["DoiDataArray"] | null;
-    };
-    /** Parts */
-    Parts: {
-      data?: components["schemas"]["DoiDataArray"] | null;
-    };
-    /** Provider */
-    Provider: {
-      data?: components["schemas"]["DoiDataObject"] | null;
-    };
-    /** Publisher */
-    Publisher: {
-      /** Name */
-      name?: string | null;
-      /** Publisheridentifier */
-      publisherIdentifier?: string | null;
-      /** Publisheridentifierscheme */
-      publisherIdentifierScheme?: string | null;
-      /** Schemeuri */
-      schemeUri?: string | null;
-      /** Lang */
-      lang?: string | null;
-    };
-    /** References */
-    References: {
-      data?: components["schemas"]["DoiDataArray"] | null;
-    };
-    /** RelatedIdentifier */
-    RelatedIdentifier: {
-      /** Relatedidentifier */
-      relatedIdentifier?: string | null;
-      relatedIdentifierType?:
-        | components["schemas"]["RelatedIdentifierType"]
-        | null;
-      relationType?: components["schemas"]["RelationType"] | null;
-      resourceTypeGeneral?: components["schemas"]["ResourceTypeGeneral"] | null;
-      /** Relatedmetadatascheme */
-      relatedMetadataScheme?: string | null;
-      /** Schemeuri */
-      schemeUri?: string | null;
-      /** Schemetype */
-      schemeType?: string | null;
-    };
-    /**
-     * RelatedIdentifierType
-     * @enum {string}
-     */
-    RelatedIdentifierType:
-      | "ARK"
-      | "arXiv"
-      | "bibcode"
-      | "DOI"
-      | "EAN13"
-      | "EISSN"
-      | "Handle"
-      | "IGSN"
-      | "ISBN"
-      | "ISSN"
-      | "ISTC"
-      | "LISSN"
-      | "LSID"
-      | "PMID"
-      | "PURL"
-      | "UPC"
-      | "URL"
-      | "URN"
-      | "w3id";
-    /** RelatedItem */
-    RelatedItem: {
-      relatedItemType?: components["schemas"]["ResourceTypeGeneral"] | null;
-      relationType?: components["schemas"]["RelationType"] | null;
-      relatedItemIdentifier?:
-        | components["schemas"]["RelatedItemIdentifier"]
-        | null;
-      /** Creators */
-      creators?: components["schemas"]["Creator1"][] | null;
-      /** Titles */
-      titles?: components["schemas"]["Title1"][] | null;
-      /** Volume */
-      volume?: string | null;
-      /** Issue */
-      issue?: string | null;
-      /** Number */
-      number?: string | null;
-      numberType?: components["schemas"]["NumberType"] | null;
-      /** Firstpage */
-      firstPage?: string | null;
-      /** Lastpage */
-      lastPage?: string | null;
-      /** Publisher */
-      publisher?: string | null;
-      /** Publicationyear */
-      publicationYear?: string | null;
-      /** Edition */
-      edition?: string | null;
-      /** Contributors */
-      contributors?: components["schemas"]["Contributor1"][] | null;
-    };
-    /** RelatedItemIdentifier */
-    RelatedItemIdentifier: {
-      /** Relateditemidentifier */
-      relatedItemIdentifier?: string | null;
-      relatedItemIdentifierType?:
-        | components["schemas"]["RelatedIdentifierType"]
-        | null;
-      /** Relatedmetadatascheme */
-      relatedMetadataScheme?: string | null;
-      /** Schemeuri */
-      schemeURI?: string | null;
-      /** Schemetype */
-      schemeType?: string | null;
-    };
-    /**
-     * RelationType
-     * @enum {string}
-     */
-    RelationType:
-      | "IsCitedBy"
-      | "Cites"
-      | "IsSupplementTo"
-      | "IsSupplementedBy"
-      | "IsContinuedBy"
-      | "Continues"
-      | "IsDescribedBy"
-      | "Describes"
-      | "HasMetadata"
-      | "IsMetadataFor"
-      | "HasVersion"
-      | "IsVersionOf"
-      | "IsNewVersionOf"
-      | "IsPreviousVersionOf"
-      | "IsPartOf"
-      | "HasPart"
-      | "IsPublishedIn"
-      | "IsReferencedBy"
-      | "References"
-      | "IsDocumentedBy"
-      | "Documents"
-      | "IsCompiledBy"
-      | "Compiles"
-      | "IsVariantFormOf"
-      | "IsOriginalFormOf"
-      | "IsIdenticalTo"
-      | "IsReviewedBy"
-      | "Reviews"
-      | "IsDerivedFrom"
-      | "IsSourceOf"
-      | "IsRequiredBy"
-      | "Requires"
-      | "IsObsoletedBy"
-      | "Obsoletes"
-      | "IsCollectedBy"
-      | "Collects";
-    /** Relationships */
-    Relationships: {
-      client?: components["schemas"]["Client1"] | null;
-      provider?: components["schemas"]["Provider"] | null;
-      media?: components["schemas"]["Media"] | null;
-      references?: components["schemas"]["References"] | null;
-      citations?: components["schemas"]["Citations"] | null;
-      parts?: components["schemas"]["Parts"] | null;
-      partOf?: components["schemas"]["PartOf"] | null;
-      versions?: components["schemas"]["Versions"] | null;
-      versionOf?: components["schemas"]["VersionOf"] | null;
-    };
-    /**
-     * ResourceTypeGeneral
-     * @enum {string}
-     */
-    ResourceTypeGeneral:
-      | "Audiovisual"
-      | "Book"
-      | "BookChapter"
-      | "Collection"
-      | "ComputationalNotebook"
-      | "ConferencePaper"
-      | "ConferenceProceeding"
-      | "DataPaper"
-      | "Dataset"
-      | "Dissertation"
-      | "Event"
-      | "Image"
-      | "Instrument"
-      | "InteractiveResource"
-      | "Journal"
-      | "JournalArticle"
-      | "Model"
-      | "OutputManagementPlan"
-      | "PeerReview"
-      | "PhysicalObject"
-      | "Preprint"
-      | "Report"
-      | "Service"
-      | "Software"
-      | "Sound"
-      | "Standard"
-      | "StudyRegistration"
-      | "Text"
-      | "Workflow"
-      | "Other";
-    /** RightsListItem */
-    RightsListItem: {
-      /** Rights */
-      rights?: string | null;
-      /** Rightsuri */
-      rightsUri?: string | null;
-      /** Schemeuri */
-      schemeUri?: string | null;
-      /** Rightsidentifier */
-      rightsIdentifier?: string | null;
-      /** Rightsidentifierscheme */
-      rightsIdentifierScheme?: string | null;
-      /** Lang */
-      lang?: string | null;
-    };
-    /** Subject */
-    Subject: {
-      /** Subject */
-      subject?: string | null;
-      /** Subjectscheme */
-      subjectScheme?: string | null;
-      /** Schemeuri */
-      schemeUri?: string | null;
-      /** Valueuri */
-      valueUri?: string | null;
-      /** Lang */
-      lang?: string | null;
-      /** Classificationcode */
-      classificationCode?: string | null;
-    };
-    /** Title */
-    Title: {
-      /** Title */
-      title?: string | null;
-      titleType?: components["schemas"]["TitleType"] | null;
-      /** Lang */
-      lang?: string | null;
-    };
-    /** Title1 */
-    Title1: {
-      /** Title */
-      title?: string | null;
-      titleType?: components["schemas"]["TitleType"] | null;
-    };
-    /**
-     * TitleType
-     * @enum {string}
-     */
-    TitleType: "AlternativeTitle" | "Subtitle" | "TranslatedTitle" | "Other";
-    /**
-     * Type
-     * @constant
-     * @enum {string}
-     */
-    Type: "dois";
-    /** Types */
-    Types: {
-      resourceTypeGeneral?: components["schemas"]["ResourceTypeGeneral"] | null;
-      /** Resourcetype */
-      resourceType?: string | null;
-      /** Schemaorg */
-      schemaOrg?: string | null;
-      /** Bibtex */
-      bibtex?: string | null;
-      /** Citeproc */
-      citeproc?: string | null;
-      /** Ris */
-      ris?: string | null;
-    };
-    /** UploadNotebookRequest */
-    UploadNotebookRequest: {
-      /** Notebook Name */
-      notebook_name: string;
-      /** Notebook Json */
-      notebook_json: string;
-      /**
-       * Folder
-       * Format: email
-       */
-      folder: string;
-    };
-    /** UploadNotebookResponse */
-    UploadNotebookResponse: {
-      /**
-       * Notebook Url
-       * Format: uri
-       */
-      notebook_url: string;
-    };
-    /** ValidationError */
-    ValidationError: {
-      /** Location */
-      loc: (string | number)[];
-      /** Message */
-      msg: string;
-      /** Error Type */
-      type: string;
-    };
-    /** VersionOf */
-    VersionOf: {
-      data?: components["schemas"]["DoiDataArray"] | null;
-    };
-    /** Versions */
-    Versions: {
-      data?: components["schemas"]["DoiDataArray"] | null;
-    };
-    /** ViewsOverTimeItem */
-    ViewsOverTimeItem: {
-      /** Yearmonth */
-      yearMonth?: string | null;
-      /** Total */
-      total?: number | null;
-    };
-    /** _DatasetConnection */
-    _DatasetConnection: {
-      /** Title */
-      title: string;
-      /** Doi */
-      doi?: string | null;
-      /** Url */
-      url: string;
-      /** Data Type */
-      data_type?: string | null;
-      /** Repository */
-      repository: string;
-    };
-    /** _DatasetMetadata */
-    "_DatasetMetadata-Input": {
-      /** Title */
-      title: string;
-      /** Doi */
-      doi: string | null;
-      /**
-       * Url
-       * Format: uri
-       */
-      url: string;
-      /** Data Type */
-      data_type: string | null;
-      /** Repository */
-      repository: string;
-    };
-    /** _DatasetMetadata */
-    "_DatasetMetadata-Output": {
-      /** Title */
-      title: string;
-      /** Doi */
-      doi: string | null;
-      /** Url */
-      url: string;
-      /** Data Type */
-      data_type: string | null;
-      /** Repository */
-      repository: string;
-    };
-    /** _ModelMetadata */
-    "_ModelMetadata-Output": {
-      /** Model Identifier */
-      model_identifier: string;
-      /** Model Repository */
-      model_repository: string;
-      /** Model Version */
-      model_version: string | null;
-    };
-    /** _Paper */
-    _Paper: {
-      /** Title */
-      title: string;
-      /** Authors */
-      authors?: string[];
-      /** Doi */
-      doi?: string | null;
-      /** Citation */
-      citation?: string | null;
-    };
-    /** _PaperMetadata */
-    _PaperMetadata: {
-      /** Title */
-      title: string;
-      /** Authors */
-      authors?: string[];
-      /** Doi */
-      doi: string | null;
-      /** Citation */
-      citation: string | null;
-    };
-    /** _PublishedGarden */
-    _PublishedGarden: {
-      /** Title */
-      title: string;
-      /** Authors */
-      authors: string[];
-      /** Contributors */
-      contributors?: unknown[];
-      /** Doi */
-      doi: string;
-      /** Description */
-      description?: string | null;
-      /**
-       * Publisher
-       * @default Garden-AI
-       */
-      publisher: string;
-      /** Year */
-      year?: string;
-      /**
-       * Language
-       * @default en
-       */
-      language: string;
-      /** Tags */
-      tags?: unknown[];
-      /**
-       * Version
-       * @default 0.0.1
-       */
-      version: string;
-      /** Entrypoints */
-      entrypoints: components["schemas"]["_RegisteredEntrypoint"][];
-      /** Entrypoint Aliases */
-      entrypoint_aliases?: {
-        [key: string]: string | undefined;
-      };
-    };
-    /** _RegisteredEntrypoint */
-    _RegisteredEntrypoint: {
-      /** Doi */
-      doi: string;
-      /** Title */
-      title: string;
-      /** Authors */
-      authors: string[];
-      /** Short Name */
-      short_name?: string | null;
-      /** Description */
-      description?: string | null;
-      /** Year */
-      year?: string;
-      /** Tags */
-      tags?: string[];
-      /** Models */
-      models?: components["schemas"]["src__api__schemas__search___garden_sdk_schema___ModelMetadata"][];
-      /** Repositories */
-      repositories?: components["schemas"]["_Repository"][];
-      /** Papers */
-      papers?: components["schemas"]["_Paper"][];
-      /** Datasets */
-      datasets?: components["schemas"]["_DatasetConnection"][];
-      /**
-       * Doi Is Draft
-       * @default true
-       */
-      doi_is_draft: boolean;
-      /**
-       * Func Uuid
-       * Format: uuid
-       */
-      func_uuid: string;
-      /**
-       * Container Uuid
-       * Format: uuid
-       */
-      container_uuid: string;
-      /** Base Image Uri */
-      base_image_uri?: string | null;
-      /** Full Image Uri */
-      full_image_uri?: string | null;
-      /** Notebook Url */
-      notebook_url?: string | null;
-      /** Steps */
-      steps?: components["schemas"]["_Step"][];
-      /** Test Functions */
-      test_functions?: string[];
-    };
-    /** _Repository */
-    _Repository: {
-      /** Repo Name */
-      repo_name: string;
-      /** Url */
-      url: string;
-      /** Contributors */
-      contributors?: string[];
-    };
-    /** _RepositoryMetadata */
-    "_RepositoryMetadata-Input": {
-      /** Repo Name */
-      repo_name: string;
-      /**
-       * Url
-       * Format: uri
-       */
-      url: string;
-      /** Contributors */
-      contributors?: string[];
-    };
-    /** _RepositoryMetadata */
-    "_RepositoryMetadata-Output": {
-      /** Repo Name */
-      repo_name: string;
-      /** Url */
-      url: string;
-      /** Contributors */
-      contributors?: string[];
-    };
-    /** _Step */
-    _Step: {
-      /** Function Name */
-      function_name: string;
-      /** Function Text */
-      function_text: string;
-      /** Description */
-      description?: string | null;
-    };
-    /** _ModelMetadata */
-    src__api__schemas__entrypoint___ModelMetadata: {
-      /** Model Identifier */
-      model_identifier: string;
-      /** Model Repository */
-      model_repository: string;
-      /** Model Version */
-      model_version: string | null;
-    };
-    /** _ModelMetadata */
-    src__api__schemas__search___garden_sdk_schema___ModelMetadata: {
-      /** Model Identifier */
-      model_identifier: string;
-      /** Model Repository */
-      model_repository: string;
-      /** Model Version */
-      model_version?: string | null;
-      /** Datasets */
-      datasets?: components["schemas"]["_DatasetConnection"][];
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    schemas: {
+        /** AffiliationItem */
+        AffiliationItem: {
+            /** Affiliationidentifier */
+            affiliationIdentifier?: string | null;
+            /** Affiliationidentifierscheme */
+            affiliationIdentifierScheme?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Schemeuri */
+            schemeUri?: string | null;
+        };
+        /** AlternateIdentifier */
+        AlternateIdentifier: {
+            /** Alternateidentifiertype */
+            alternateIdentifierType?: string | null;
+            /** Alternateidentifier */
+            alternateIdentifier?: string | null;
+        };
+        /** Citations */
+        Citations: {
+            data?: components["schemas"]["DoiDataArray"] | null;
+        };
+        /** CitationsOverTimeItem */
+        CitationsOverTimeItem: {
+            /** Yearmonth */
+            yearMonth?: string | null;
+            /** Total */
+            total?: number | null;
+        };
+        /** Client1 */
+        Client1: {
+            data?: components["schemas"]["DoiDataObject"] | null;
+        };
+        /** Container */
+        Container: {
+            /** Type */
+            type?: string | null;
+            /** Identifier */
+            identifier?: string | null;
+            /** Identifiertype */
+            identifierType?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Volume */
+            volume?: string | null;
+            /** Issue */
+            issue?: string | null;
+            /** Firstpage */
+            firstPage?: string | null;
+            /** Lastpage */
+            lastPage?: string | null;
+        };
+        /** Contributor */
+        Contributor: {
+            nameType?: components["schemas"]["NameType"] | null;
+            /** Nameidentifiers */
+            nameIdentifiers?: components["schemas"]["NameIdentifier"][] | null;
+            /** Name */
+            name?: string | null;
+            /** Givenname */
+            givenName?: string | null;
+            /** Familyname */
+            familyName?: string | null;
+            /** Affiliation */
+            affiliation?: components["schemas"]["AffiliationItem"][] | null;
+            contributorType?: components["schemas"]["ContributorType"] | null;
+            /** Lang */
+            lang?: string | null;
+        };
+        /** Contributor1 */
+        Contributor1: {
+            /** Name */
+            name?: string | null;
+            /** Givenname */
+            givenName?: string | null;
+            /** Familyname */
+            familyName?: string | null;
+            nameType?: components["schemas"]["NameType"] | null;
+            contributorType?: components["schemas"]["ContributorType"] | null;
+        };
+        /**
+         * ContributorType
+         * @enum {string}
+         */
+        ContributorType: "ContactPerson" | "DataCollector" | "DataCurator" | "DataManager" | "Distributor" | "Editor" | "HostingInstitution" | "Producer" | "ProjectLeader" | "ProjectManager" | "ProjectMember" | "RegistrationAgency" | "RegistrationAuthority" | "RelatedPerson" | "Researcher" | "ResearchGroup" | "RightsHolder" | "Sponsor" | "Supervisor" | "WorkPackageLeader" | "Other";
+        /** Creator */
+        Creator: {
+            nameType?: components["schemas"]["NameType"] | null;
+            /** Nameidentifiers */
+            nameIdentifiers?: components["schemas"]["NameIdentifier"][] | null;
+            /** Name */
+            name?: string | null;
+            /** Givenname */
+            givenName?: string | null;
+            /** Familyname */
+            familyName?: string | null;
+            /** Affiliation */
+            affiliation?: components["schemas"]["AffiliationItem"][] | null;
+            /** Lang */
+            lang?: string | null;
+        };
+        /** Creator1 */
+        Creator1: {
+            /** Name */
+            name?: string | null;
+            /** Givenname */
+            givenName?: string | null;
+            /** Familyname */
+            familyName?: string | null;
+            nameType?: components["schemas"]["NameType"] | null;
+        };
+        /** Date */
+        Date: {
+            /** Date */
+            date?: string | null;
+            dateType?: components["schemas"]["DateType"] | null;
+            /** Dateinformation */
+            dateInformation?: string | null;
+        };
+        /**
+         * DateType
+         * @enum {string}
+         */
+        DateType: "Accepted" | "Available" | "Copyrighted" | "Collected" | "Created" | "Issued" | "Submitted" | "Updated" | "Valid" | "Withdrawn" | "Other";
+        /** DeleteSearchRecordRequest */
+        DeleteSearchRecordRequest: {
+            /** Doi */
+            doi: string;
+        };
+        /** Description */
+        Description: {
+            /** Description */
+            description?: string | null;
+            descriptionType?: components["schemas"]["DescriptionType"] | null;
+            /** Lang */
+            lang?: string | null;
+        };
+        /**
+         * DescriptionType
+         * @enum {string}
+         */
+        DescriptionType: "Abstract" | "Methods" | "SeriesInformation" | "TableOfContents" | "TechnicalInfo" | "Other";
+        /** Doi */
+        Doi: {
+            data: components["schemas"]["DoiData"];
+        };
+        /** DoiAttributes */
+        DoiAttributes: {
+            /** Created */
+            created?: string | null;
+            /** Registered */
+            registered?: string | null;
+            /** Updated */
+            updated?: string | null;
+            /** Url */
+            url?: string | null;
+            /** Contenturl */
+            contentUrl?: string[] | null;
+            /** Metadataversion */
+            metadataVersion?: number | null;
+            /** Schemaversion */
+            schemaVersion?: string | null;
+            /** Source */
+            source?: string | null;
+            /** Isactive */
+            isActive?: boolean | null;
+            /** State */
+            state?: string | null;
+            /** Reason */
+            reason?: string | null;
+            /** Creators */
+            creators?: components["schemas"]["Creator"][] | null;
+            /** Titles */
+            titles?: components["schemas"]["Title"][] | null;
+            /** Publisher */
+            publisher?: components["schemas"]["Publisher"] | string | null;
+            container?: components["schemas"]["Container"] | null;
+            /** Publicationyear */
+            publicationYear?: number | null;
+            /** Subjects */
+            subjects?: components["schemas"]["Subject"][] | null;
+            /** Contributors */
+            contributors?: components["schemas"]["Contributor"][] | null;
+            /** Dates */
+            dates?: components["schemas"]["Date"][] | null;
+            /** Language */
+            language?: string | null;
+            types?: components["schemas"]["Types"] | null;
+            /** Relatedidentifiers */
+            relatedIdentifiers?: components["schemas"]["RelatedIdentifier"][] | null;
+            /** Relateditems */
+            relatedItems?: components["schemas"]["RelatedItem"][] | null;
+            /** Sizes */
+            sizes?: string[] | null;
+            /** Formats */
+            formats?: string[] | null;
+            /** Version */
+            version?: string | null;
+            /** Rightslist */
+            rightsList?: components["schemas"]["RightsListItem"][] | null;
+            /** Descriptions */
+            descriptions?: components["schemas"]["Description"][] | null;
+            /** Geolocations */
+            geoLocations?: components["schemas"]["GeoLocation"][] | null;
+            /** Fundingreferences */
+            fundingReferences?: components["schemas"]["FundingReference"][] | null;
+            /** Doi */
+            doi?: string | null;
+            /** @description Can be set to trigger a DOI state change. */
+            event?: components["schemas"]["Event"] | null;
+            /** Prefix */
+            prefix?: string | null;
+            /** Suffix */
+            suffix?: string | null;
+            /** Identifiers */
+            identifiers?: components["schemas"]["Identifier"][] | null;
+            /** Alternateidentifiers */
+            alternateIdentifiers?: components["schemas"]["AlternateIdentifier"][] | null;
+            /** Xml */
+            xml?: string | null;
+            /** Viewcount */
+            viewCount?: number | null;
+            /** Viewsovertime */
+            viewsOverTime?: components["schemas"]["ViewsOverTimeItem"][] | null;
+            /** Downloadcount */
+            downloadCount?: number | null;
+            /** Downloadsovertime */
+            downloadsOverTime?: components["schemas"]["DownloadsOverTimeItem"][] | null;
+            /** Referencecount */
+            referenceCount?: number | null;
+            /** Citationcount */
+            citationCount?: number | null;
+            /** Citationsovertime */
+            citationsOverTime?: components["schemas"]["CitationsOverTimeItem"][] | null;
+            /** Partcount */
+            partCount?: number | null;
+            /** Partofcount */
+            partOfCount?: number | null;
+            /** Versioncount */
+            versionCount?: number | null;
+            /** Versionofcount */
+            versionOfCount?: number | null;
+            /** @description Data describing the landing page, used by link checking. */
+            landingPage?: components["schemas"]["LandingPage"] | null;
+        };
+        /** DoiData */
+        DoiData: {
+            /** Id */
+            id?: string | null;
+            type: components["schemas"]["Type"];
+            attributes: components["schemas"]["DoiAttributes"];
+            relationships?: components["schemas"]["Relationships"] | null;
+        };
+        /** DoiDataArray */
+        DoiDataArray: components["schemas"]["DoiDataObject"][];
+        /** DoiDataObject */
+        DoiDataObject: {
+            /** Id */
+            id?: string | null;
+            /** Type */
+            type?: string | null;
+        };
+        /** DownloadsOverTimeItem */
+        DownloadsOverTimeItem: {
+            /** Yearmonth */
+            yearMonth?: string | null;
+            /** Total */
+            total?: number | null;
+        };
+        /** ECRPushCredentials */
+        ECRPushCredentials: {
+            /** Accesskeyid */
+            AccessKeyId: string;
+            /** Secretaccesskey */
+            SecretAccessKey: string;
+            /** Sessiontoken */
+            SessionToken: string;
+            /** Ecrrepo */
+            ECRRepo: string;
+            /**
+             * Regionname
+             * @default us-east-1
+             */
+            RegionName: string;
+        };
+        /** EntrypointCreateRequest */
+        EntrypointCreateRequest: {
+            /** Doi */
+            doi: string;
+            /** Doi Is Draft */
+            doi_is_draft: boolean;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Year */
+            year: string;
+            /**
+             * Func Uuid
+             * Format: uuid
+             */
+            func_uuid: string;
+            /**
+             * Container Uuid
+             * Format: uuid
+             */
+            container_uuid: string;
+            /** Base Image Uri */
+            base_image_uri: string;
+            /** Full Image Uri */
+            full_image_uri: string;
+            /**
+             * Notebook Url
+             * Format: uri
+             */
+            notebook_url: string;
+            /** Short Name */
+            short_name: string;
+            /** Function Text */
+            function_text: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["src__api__schemas__entrypoint___ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata-Input"][];
+            /** Owner Identity Id */
+            owner_identity_id?: string | null;
+        };
+        /** EntrypointMetadataResponse */
+        EntrypointMetadataResponse: {
+            /** Doi */
+            doi: string;
+            /** Doi Is Draft */
+            doi_is_draft: boolean;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Year */
+            year: string;
+            /**
+             * Func Uuid
+             * Format: uuid
+             */
+            func_uuid: string;
+            /**
+             * Container Uuid
+             * Format: uuid
+             */
+            container_uuid: string;
+            /** Base Image Uri */
+            base_image_uri: string;
+            /** Full Image Uri */
+            full_image_uri: string;
+            /** Notebook Url */
+            notebook_url: string;
+            /** Short Name */
+            short_name: string;
+            /** Function Text */
+            function_text: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["_ModelMetadata-Output"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata-Output"][];
+            /** Id */
+            id: number;
+        };
+        /**
+         * Event
+         * @enum {string}
+         */
+        Event: "publish" | "register" | "hide";
+        /**
+         * FunderIdentifierType
+         * @enum {string}
+         */
+        FunderIdentifierType: "Crossref Funder ID" | "GRID" | "ISNI" | "ROR" | "Other";
+        /** FundingReference */
+        FundingReference: {
+            /** Fundername */
+            funderName?: string | null;
+            /** Funderidentifier */
+            funderIdentifier?: string | null;
+            funderIdentifierType?: components["schemas"]["FunderIdentifierType"] | null;
+            /** Awardnumber */
+            awardNumber?: string | null;
+            /** Awarduri */
+            awardUri?: string | null;
+            /** Awardtitle */
+            awardTitle?: string | null;
+        };
+        /** GardenCreateRequest */
+        GardenCreateRequest: {
+            /** Title */
+            title: string;
+            /** Authors */
+            authors?: string[];
+            /** Contributors */
+            contributors?: string[];
+            /** Doi */
+            doi: string;
+            /** Doi Is Draft */
+            doi_is_draft?: boolean | null;
+            /** Description */
+            description: string | null;
+            /**
+             * Publisher
+             * @default Garden-AI
+             */
+            publisher: string;
+            /** Year */
+            year?: string;
+            /**
+             * Language
+             * @default en
+             */
+            language: string;
+            /** Tags */
+            tags?: string[];
+            /**
+             * Version
+             * @default 0.0.1
+             */
+            version: string;
+            /** Entrypoint Aliases */
+            entrypoint_aliases?: {
+                [key: string]: string | undefined;
+            };
+            /** Entrypoint Ids */
+            entrypoint_ids?: string[];
+            /** Owner Identity Id */
+            owner_identity_id?: string | null;
+        };
+        /** GardenMetadataResponse */
+        GardenMetadataResponse: {
+            /** Title */
+            title: string;
+            /** Authors */
+            authors?: string[];
+            /** Contributors */
+            contributors?: string[];
+            /** Doi */
+            doi: string;
+            /** Doi Is Draft */
+            doi_is_draft?: boolean | null;
+            /** Description */
+            description: string | null;
+            /**
+             * Publisher
+             * @default Garden-AI
+             */
+            publisher: string;
+            /** Year */
+            year?: string;
+            /**
+             * Language
+             * @default en
+             */
+            language: string;
+            /** Tags */
+            tags?: string[];
+            /**
+             * Version
+             * @default 0.0.1
+             */
+            version: string;
+            /** Entrypoint Aliases */
+            entrypoint_aliases?: {
+                [key: string]: string | undefined;
+            };
+            /** Id */
+            id: number;
+            /** Entrypoints */
+            entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
+        };
+        /** GeoLocation */
+        GeoLocation: {
+            geoLocationPoint?: components["schemas"]["GeoLocationPoint"] | null;
+            geoLocationBox?: components["schemas"]["GeoLocationBox"] | null;
+            /** Geolocationplace */
+            geoLocationPlace?: string | null;
+        };
+        /** GeoLocationBox */
+        GeoLocationBox: {
+            /** Westboundlongitude */
+            westBoundLongitude?: string | null;
+            /** Eastboundlongitude */
+            eastBoundLongitude?: string | null;
+            /** Southboundlatitude */
+            southBoundLatitude?: string | null;
+            /** Northboundlatitude */
+            northBoundLatitude?: string | null;
+        };
+        /** GeoLocationPoint */
+        GeoLocationPoint: {
+            /** Pointlongitude */
+            pointLongitude?: string | null;
+            /** Pointlatitude */
+            pointLatitude?: string | null;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** Identifier */
+        Identifier: {
+            /** Identifier */
+            identifier?: string | null;
+            /** Identifiertype */
+            identifierType?: string | null;
+        };
+        /** LandingPage */
+        LandingPage: {
+            /** Checked */
+            checked?: string | null;
+            /** Url */
+            url?: string | null;
+            /** Contenttype */
+            contentType?: string | null;
+            /** Error */
+            error?: string | null;
+            /** Redirectcount */
+            redirectCount?: number | null;
+            /** Redirecturls */
+            redirectUrls?: string[] | null;
+            /** Downloadlatency */
+            downloadLatency?: number | null;
+            /** Hasschemaorg */
+            hasSchemaOrg?: boolean | null;
+            /** Schemaorgid */
+            schemaOrgid?: string | null;
+            /** Dcidentifier */
+            dcIdentifier?: string | null;
+            /** Citationdoi */
+            citationDoi?: string | null;
+            /** Bodyhaspid */
+            bodyhasPid?: boolean | null;
+        };
+        /** Media */
+        Media: {
+            data?: components["schemas"]["DoiDataObject"] | null;
+        };
+        /** NameIdentifier */
+        NameIdentifier: {
+            /** Nameidentifier */
+            nameIdentifier?: string | null;
+            /** Nameidentifierscheme */
+            nameIdentifierScheme?: string | null;
+            /** Schemeuri */
+            schemeUri?: string | null;
+        };
+        /**
+         * NameType
+         * @enum {string}
+         */
+        NameType: "Personal" | "Organizational";
+        /**
+         * NumberType
+         * @enum {string}
+         */
+        NumberType: "Article" | "Chapter" | "Report" | "Other";
+        /** PartOf */
+        PartOf: {
+            data?: components["schemas"]["DoiDataArray"] | null;
+        };
+        /** Parts */
+        Parts: {
+            data?: components["schemas"]["DoiDataArray"] | null;
+        };
+        /** Provider */
+        Provider: {
+            data?: components["schemas"]["DoiDataObject"] | null;
+        };
+        /** Publisher */
+        Publisher: {
+            /** Name */
+            name?: string | null;
+            /** Publisheridentifier */
+            publisherIdentifier?: string | null;
+            /** Publisheridentifierscheme */
+            publisherIdentifierScheme?: string | null;
+            /** Schemeuri */
+            schemeUri?: string | null;
+            /** Lang */
+            lang?: string | null;
+        };
+        /** References */
+        References: {
+            data?: components["schemas"]["DoiDataArray"] | null;
+        };
+        /** RelatedIdentifier */
+        RelatedIdentifier: {
+            /** Relatedidentifier */
+            relatedIdentifier?: string | null;
+            relatedIdentifierType?: components["schemas"]["RelatedIdentifierType"] | null;
+            relationType?: components["schemas"]["RelationType"] | null;
+            resourceTypeGeneral?: components["schemas"]["ResourceTypeGeneral"] | null;
+            /** Relatedmetadatascheme */
+            relatedMetadataScheme?: string | null;
+            /** Schemeuri */
+            schemeUri?: string | null;
+            /** Schemetype */
+            schemeType?: string | null;
+        };
+        /**
+         * RelatedIdentifierType
+         * @enum {string}
+         */
+        RelatedIdentifierType: "ARK" | "arXiv" | "bibcode" | "DOI" | "EAN13" | "EISSN" | "Handle" | "IGSN" | "ISBN" | "ISSN" | "ISTC" | "LISSN" | "LSID" | "PMID" | "PURL" | "UPC" | "URL" | "URN" | "w3id";
+        /** RelatedItem */
+        RelatedItem: {
+            relatedItemType?: components["schemas"]["ResourceTypeGeneral"] | null;
+            relationType?: components["schemas"]["RelationType"] | null;
+            relatedItemIdentifier?: components["schemas"]["RelatedItemIdentifier"] | null;
+            /** Creators */
+            creators?: components["schemas"]["Creator1"][] | null;
+            /** Titles */
+            titles?: components["schemas"]["Title1"][] | null;
+            /** Volume */
+            volume?: string | null;
+            /** Issue */
+            issue?: string | null;
+            /** Number */
+            number?: string | null;
+            numberType?: components["schemas"]["NumberType"] | null;
+            /** Firstpage */
+            firstPage?: string | null;
+            /** Lastpage */
+            lastPage?: string | null;
+            /** Publisher */
+            publisher?: string | null;
+            /** Publicationyear */
+            publicationYear?: string | null;
+            /** Edition */
+            edition?: string | null;
+            /** Contributors */
+            contributors?: components["schemas"]["Contributor1"][] | null;
+        };
+        /** RelatedItemIdentifier */
+        RelatedItemIdentifier: {
+            /** Relateditemidentifier */
+            relatedItemIdentifier?: string | null;
+            relatedItemIdentifierType?: components["schemas"]["RelatedIdentifierType"] | null;
+            /** Relatedmetadatascheme */
+            relatedMetadataScheme?: string | null;
+            /** Schemeuri */
+            schemeURI?: string | null;
+            /** Schemetype */
+            schemeType?: string | null;
+        };
+        /**
+         * RelationType
+         * @enum {string}
+         */
+        RelationType: "IsCitedBy" | "Cites" | "IsSupplementTo" | "IsSupplementedBy" | "IsContinuedBy" | "Continues" | "IsDescribedBy" | "Describes" | "HasMetadata" | "IsMetadataFor" | "HasVersion" | "IsVersionOf" | "IsNewVersionOf" | "IsPreviousVersionOf" | "IsPartOf" | "HasPart" | "IsPublishedIn" | "IsReferencedBy" | "References" | "IsDocumentedBy" | "Documents" | "IsCompiledBy" | "Compiles" | "IsVariantFormOf" | "IsOriginalFormOf" | "IsIdenticalTo" | "IsReviewedBy" | "Reviews" | "IsDerivedFrom" | "IsSourceOf" | "IsRequiredBy" | "Requires" | "IsObsoletedBy" | "Obsoletes" | "IsCollectedBy" | "Collects";
+        /** Relationships */
+        Relationships: {
+            client?: components["schemas"]["Client1"] | null;
+            provider?: components["schemas"]["Provider"] | null;
+            media?: components["schemas"]["Media"] | null;
+            references?: components["schemas"]["References"] | null;
+            citations?: components["schemas"]["Citations"] | null;
+            parts?: components["schemas"]["Parts"] | null;
+            partOf?: components["schemas"]["PartOf"] | null;
+            versions?: components["schemas"]["Versions"] | null;
+            versionOf?: components["schemas"]["VersionOf"] | null;
+        };
+        /**
+         * ResourceTypeGeneral
+         * @enum {string}
+         */
+        ResourceTypeGeneral: "Audiovisual" | "Book" | "BookChapter" | "Collection" | "ComputationalNotebook" | "ConferencePaper" | "ConferenceProceeding" | "DataPaper" | "Dataset" | "Dissertation" | "Event" | "Image" | "Instrument" | "InteractiveResource" | "Journal" | "JournalArticle" | "Model" | "OutputManagementPlan" | "PeerReview" | "PhysicalObject" | "Preprint" | "Report" | "Service" | "Software" | "Sound" | "Standard" | "StudyRegistration" | "Text" | "Workflow" | "Other";
+        /** RightsListItem */
+        RightsListItem: {
+            /** Rights */
+            rights?: string | null;
+            /** Rightsuri */
+            rightsUri?: string | null;
+            /** Schemeuri */
+            schemeUri?: string | null;
+            /** Rightsidentifier */
+            rightsIdentifier?: string | null;
+            /** Rightsidentifierscheme */
+            rightsIdentifierScheme?: string | null;
+            /** Lang */
+            lang?: string | null;
+        };
+        /** Subject */
+        Subject: {
+            /** Subject */
+            subject?: string | null;
+            /** Subjectscheme */
+            subjectScheme?: string | null;
+            /** Schemeuri */
+            schemeUri?: string | null;
+            /** Valueuri */
+            valueUri?: string | null;
+            /** Lang */
+            lang?: string | null;
+            /** Classificationcode */
+            classificationCode?: string | null;
+        };
+        /** Title */
+        Title: {
+            /** Title */
+            title?: string | null;
+            titleType?: components["schemas"]["TitleType"] | null;
+            /** Lang */
+            lang?: string | null;
+        };
+        /** Title1 */
+        Title1: {
+            /** Title */
+            title?: string | null;
+            titleType?: components["schemas"]["TitleType"] | null;
+        };
+        /**
+         * TitleType
+         * @enum {string}
+         */
+        TitleType: "AlternativeTitle" | "Subtitle" | "TranslatedTitle" | "Other";
+        /**
+         * Type
+         * @constant
+         * @enum {string}
+         */
+        Type: "dois";
+        /** Types */
+        Types: {
+            resourceTypeGeneral?: components["schemas"]["ResourceTypeGeneral"] | null;
+            /** Resourcetype */
+            resourceType?: string | null;
+            /** Schemaorg */
+            schemaOrg?: string | null;
+            /** Bibtex */
+            bibtex?: string | null;
+            /** Citeproc */
+            citeproc?: string | null;
+            /** Ris */
+            ris?: string | null;
+        };
+        /** UploadNotebookRequest */
+        UploadNotebookRequest: {
+            /** Notebook Name */
+            notebook_name: string;
+            /** Notebook Json */
+            notebook_json: string;
+            /**
+             * Folder
+             * Format: email
+             */
+            folder: string;
+        };
+        /** UploadNotebookResponse */
+        UploadNotebookResponse: {
+            /**
+             * Notebook Url
+             * Format: uri
+             */
+            notebook_url: string;
+        };
+        /** UserMetadataResponse */
+        UserMetadataResponse: {
+            /** Username */
+            username?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email?: string | null;
+            /** Phone Number */
+            phone_number?: string | null;
+            /** Affiliations */
+            affiliations?: string[] | null;
+            /** Skills */
+            skills?: string[] | null;
+            /** Domains */
+            domains?: string[] | null;
+            /** Profile Pic Id */
+            profile_pic_id?: number | null;
+            /**
+             * Identity Id
+             * Format: uuid
+             */
+            identity_id: string;
+            /** Saved Garden Dois */
+            saved_garden_dois?: string[];
+        };
+        /** UserUpdateRequest */
+        UserUpdateRequest: {
+            /** Username */
+            username?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email?: string | null;
+            /** Phone Number */
+            phone_number?: string | null;
+            /** Affiliations */
+            affiliations?: string[] | null;
+            /** Skills */
+            skills?: string[] | null;
+            /** Domains */
+            domains?: string[] | null;
+            /** Profile Pic Id */
+            profile_pic_id?: number | null;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
+        /** VersionOf */
+        VersionOf: {
+            data?: components["schemas"]["DoiDataArray"] | null;
+        };
+        /** Versions */
+        Versions: {
+            data?: components["schemas"]["DoiDataArray"] | null;
+        };
+        /** ViewsOverTimeItem */
+        ViewsOverTimeItem: {
+            /** Yearmonth */
+            yearMonth?: string | null;
+            /** Total */
+            total?: number | null;
+        };
+        /** _DatasetConnection */
+        _DatasetConnection: {
+            /** Title */
+            title: string;
+            /** Doi */
+            doi?: string | null;
+            /** Url */
+            url: string;
+            /** Data Type */
+            data_type?: string | null;
+            /** Repository */
+            repository: string;
+        };
+        /** _DatasetMetadata */
+        "_DatasetMetadata-Input": {
+            /** Title */
+            title: string;
+            /** Doi */
+            doi: string | null;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+            /** Data Type */
+            data_type: string | null;
+            /** Repository */
+            repository: string;
+        };
+        /** _DatasetMetadata */
+        "_DatasetMetadata-Output": {
+            /** Title */
+            title: string;
+            /** Doi */
+            doi: string | null;
+            /** Url */
+            url: string;
+            /** Data Type */
+            data_type: string | null;
+            /** Repository */
+            repository: string;
+        };
+        /** _ModelMetadata */
+        "_ModelMetadata-Output": {
+            /** Model Identifier */
+            model_identifier: string;
+            /** Model Repository */
+            model_repository: string;
+            /** Model Version */
+            model_version: string | null;
+        };
+        /** _Paper */
+        _Paper: {
+            /** Title */
+            title: string;
+            /** Authors */
+            authors?: string[];
+            /** Doi */
+            doi?: string | null;
+            /** Citation */
+            citation?: string | null;
+        };
+        /** _PaperMetadata */
+        _PaperMetadata: {
+            /** Title */
+            title: string;
+            /** Authors */
+            authors?: string[];
+            /** Doi */
+            doi: string | null;
+            /** Citation */
+            citation: string | null;
+        };
+        /** _PublishedGarden */
+        _PublishedGarden: {
+            /** Title */
+            title: string;
+            /** Authors */
+            authors: string[];
+            /** Contributors */
+            contributors?: unknown[];
+            /** Doi */
+            doi: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Publisher
+             * @default Garden-AI
+             */
+            publisher: string;
+            /** Year */
+            year?: string;
+            /**
+             * Language
+             * @default en
+             */
+            language: string;
+            /** Tags */
+            tags?: unknown[];
+            /**
+             * Version
+             * @default 0.0.1
+             */
+            version: string;
+            /** Entrypoints */
+            entrypoints: components["schemas"]["_RegisteredEntrypoint"][];
+            /** Entrypoint Aliases */
+            entrypoint_aliases?: {
+                [key: string]: string | undefined;
+            };
+        };
+        /** _RegisteredEntrypoint */
+        _RegisteredEntrypoint: {
+            /** Doi */
+            doi: string;
+            /** Title */
+            title: string;
+            /** Authors */
+            authors: string[];
+            /** Short Name */
+            short_name?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Year */
+            year?: string;
+            /** Tags */
+            tags?: string[];
+            /** Models */
+            models?: components["schemas"]["src__api__schemas__search___garden_sdk_schema___ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_Repository"][];
+            /** Papers */
+            papers?: components["schemas"]["_Paper"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetConnection"][];
+            /**
+             * Doi Is Draft
+             * @default true
+             */
+            doi_is_draft: boolean;
+            /**
+             * Func Uuid
+             * Format: uuid
+             */
+            func_uuid: string;
+            /**
+             * Container Uuid
+             * Format: uuid
+             */
+            container_uuid: string;
+            /** Base Image Uri */
+            base_image_uri?: string | null;
+            /** Full Image Uri */
+            full_image_uri?: string | null;
+            /** Notebook Url */
+            notebook_url?: string | null;
+            /** Steps */
+            steps?: components["schemas"]["_Step"][];
+            /** Test Functions */
+            test_functions?: string[];
+        };
+        /** _Repository */
+        _Repository: {
+            /** Repo Name */
+            repo_name: string;
+            /** Url */
+            url: string;
+            /** Contributors */
+            contributors?: string[];
+        };
+        /** _RepositoryMetadata */
+        "_RepositoryMetadata-Input": {
+            /** Repo Name */
+            repo_name: string;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+            /** Contributors */
+            contributors?: string[];
+        };
+        /** _RepositoryMetadata */
+        "_RepositoryMetadata-Output": {
+            /** Repo Name */
+            repo_name: string;
+            /** Url */
+            url: string;
+            /** Contributors */
+            contributors?: string[];
+        };
+        /** _Step */
+        _Step: {
+            /** Function Name */
+            function_name: string;
+            /** Function Text */
+            function_text: string;
+            /** Description */
+            description?: string | null;
+        };
+        /** _ModelMetadata */
+        src__api__schemas__entrypoint___ModelMetadata: {
+            /** Model Identifier */
+            model_identifier: string;
+            /** Model Repository */
+            model_repository: string;
+            /** Model Version */
+            model_version: string | null;
+        };
+        /** _ModelMetadata */
+        src__api__schemas__search___garden_sdk_schema___ModelMetadata: {
+            /** Model Identifier */
+            model_identifier: string;
+            /** Model Repository */
+            model_repository: string;
+            /** Model Version */
+            model_version?: string | null;
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetConnection"][];
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  greet_authed_user_greet_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    greet_authed_user_greet_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    update_datacite_doi_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Doi"];
+            };
         };
-      };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-  };
-  update_datacite_doi_put: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    mint_draft_doi_doi_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Doi"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["Doi"];
-      };
+    get_push_session_docker_push_token_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ECRPushCredentials"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    upload_notebook_notebook_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadNotebookRequest"];
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadNotebookResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  mint_draft_doi_doi_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    publish_search_record_garden_search_record_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["_PublishedGarden"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["Doi"];
-      };
+    delete_search_record_garden_search_record_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteSearchRecordRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    hello_postgres_hello_database_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  get_push_session_docker_push_token_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    add_entrypoint_entrypoints_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntrypointCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntrypointMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    get_entrypoint_by_doi_entrypoints__doi__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ECRPushCredentials"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntrypointMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
     };
-  };
-  upload_notebook_notebook_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    create_or_replace_entrypoint_entrypoints__doi__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntrypointCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntrypointMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UploadNotebookRequest"];
-      };
+    delete_entrypoint_entrypoints__doi__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    add_garden_gardens_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["UploadNotebookResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenCreateRequest"];
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  publish_search_record_garden_search_record_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_garden_by_doi_gardens__doi__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["_PublishedGarden"];
-      };
+    create_or_replace_garden_gardens__doi__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    delete_garden_gardens__doi__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  delete_search_record_garden_search_record_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_user_info_users_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserMetadataResponse"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DeleteSearchRecordRequest"];
-      };
+    update_user_info_users_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    greet_world__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  hello_postgres_hello_database_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  add_entrypoint_entrypoints_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["EntrypointCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EntrypointMetadataResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_entrypoint_by_doi_entrypoints__doi__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        doi: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EntrypointMetadataResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  create_or_replace_entrypoint_entrypoints__doi__put: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        doi: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["EntrypointCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EntrypointMetadataResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  delete_entrypoint_entrypoints__doi__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        doi: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  add_garden_gardens_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GardenCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GardenMetadataResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_garden_by_doi_gardens__doi__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        doi: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GardenMetadataResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  create_or_replace_garden_gardens__doi__put: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        doi: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GardenCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GardenMetadataResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  delete_garden_gardens__doi__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        doi: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  greet_world__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
 }

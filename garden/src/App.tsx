@@ -39,14 +39,6 @@ export default function App() {
 }
 
 function Root() {
-  const auth = useGlobusAuth();
-  useEffect(() => {
-    async function getToken() {
-      await auth.authorization?.handleCodeRedirect();
-    }
-    getToken();
-  }, [auth]);
-
   return (
     <Routes>
       <Route element={<RootLayout />}>

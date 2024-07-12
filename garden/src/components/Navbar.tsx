@@ -9,10 +9,6 @@ const Navbar = () => {
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
 
-  if (!auth.authorization) {
-    return null;
-  }
-
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
   };

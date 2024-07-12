@@ -4,7 +4,7 @@ import { z } from "zod";
 export const gardenCreateRequestSchema = z.object({
   title: z
     .string()
-    .nonempty({ message: "Title is required" })
+    .min(1, { message: "Title is required" })
     .min(8, { message: "Title must be at least 8 characters" })
     .max(100, { message: "Title must not exceed 100 characters" }),
 
@@ -25,6 +25,9 @@ export const gardenCreateRequestSchema = z.object({
   version: z.string().regex(/^\d+\.\d+(\.\d+)?$/, {
     message: "Version must be in the format x.y or x.y.z",
   }),
+  authors: z.array(z.string()),
+  contributors: z.array(z.string()).optional(),
+
   entrypoint_ids: z.array(z.string()).optional(),
   entrypoint_aliases: z.record(z.string()).optional(),
   owner_identity_id: z.string().length(32).optional(),
@@ -50,7 +53,7 @@ export const formSchema = gardenCreateRequestSchema
       .array(optionSchema)
       .min(1, { message: "Please add at least one author." }),
     contributors: z.array(optionSchema).optional(),
-    entrypoint_ids: z.array(entrypointListItemSchema).nullable().optional(),
+    entrypointIds: z.array(entrypointListItemSchema).nullable().optional(),
   })
   .omit({
     owner_identity_id: true,

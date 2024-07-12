@@ -12,9 +12,8 @@ export function transformFormToRequest(
     contributors: formData.contributors?.map(
       (contributor) => contributor.label,
     ),
-    entrypoint_ids: formData.entrypoint_ids?.map(
-      (entrypoint) => entrypoint.doi,
-    ),
+
+    entrypoint_ids: formData.entrypointIds?.map((entrypoint) => entrypoint.doi),
     doi,
     owner_identity_id: ownerId,
   };

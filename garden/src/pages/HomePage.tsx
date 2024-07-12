@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Rocket, Share2Icon, Lightbulb, Search } from "lucide-react";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },
@@ -34,6 +35,14 @@ const textSections = [
 ];
 
 const HomePage = () => {
+  const auth = useGlobusAuth();
+  useEffect(() => {
+    async function getToken() {
+      await auth.authorization?.handleCodeRedirect();
+    }
+    getToken();
+  }, [auth]);
+
   const { data: gardens } = useSearchGardens("*", "6");
 
   return (
