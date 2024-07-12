@@ -103,7 +103,7 @@ const Navbar = () => {
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        class="lucide lucide-sprout"
+                        className="lucide lucide-sprout"
                       >
                         <path d="M7 20h10" />
                         <path d="M10 20c5.5-2.5.8-6.4 3-10" />

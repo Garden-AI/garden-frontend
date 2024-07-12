@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Garden } from "../../types";
+import { Garden } from "@/api/types";
 import GardenBox from "@/components/GardenBox";
 import { useSearchGardens } from "@/api";
 import { Link } from "react-router-dom";
