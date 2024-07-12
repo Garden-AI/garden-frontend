@@ -104,15 +104,9 @@ function Root() {
         <Route
           path="garden/:doi"
           element={<GardenPage bread={breadcrumbs} />}
-        >
-          {/*
-          <Route
-            path="metadataEditing"
-            element={<MetadataEditing/>}
-          />
-          */}
-        </Route>
+        />
         <Route path="garden/:doi/metadataEditing" element={<MetadataEditing />} />
+        {/*<Route path="garden/:doi/metadataEditing/entrypointEditing" element={<entrypoint editing component />} /> */}
         <Route
           path="entrypoint/:doi"
           element={<EntrypointPage bread={breadcrumbs} />}

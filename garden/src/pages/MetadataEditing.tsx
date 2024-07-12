@@ -5,6 +5,8 @@ import EntrypointBox from "../components/EntrypointBox";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NotFoundPage from "./NotFoundPage";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const MetadataEditing = () => {
     const initialMetadata = {
@@ -57,7 +59,7 @@ const MetadataEditing = () => {
     return (
         
         <div className="font-display flex flex-col gap-5 m-20">
-            <h1 className="text-2xl sm:text-3xl">Edit {garden?.title}</h1>
+            <h1 className="text-2xl sm:text-3xl">Edit '{garden?.title}'</h1>
             <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
                 <div className="space-y-2">
                     <p className="text-gray-600">Contributors</p>
@@ -67,17 +69,6 @@ const MetadataEditing = () => {
                         value={garden?.contributors}
                         onChange={handleInputChange}
                         placeholder="Contributors"
-                        className="border border-gray-300 rounded px-2 py-1 w-full"
-                    />
-                </div>
-                <div className="space-y-2">
-                    <p className="text-gray-600">DOI</p>
-                    <input
-                        type="text"
-                        name="doi"
-                        value={garden?.doi}
-                        onChange={handleInputChange}
-                        placeholder="DOI"
                         className="border border-gray-300 rounded px-2 py-1 w-full"
                     />
                 </div>
@@ -97,7 +88,7 @@ const MetadataEditing = () => {
                     <p className="text-gray-600">Entrypoints</p>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {garden?.entrypoints.map((entrypoint: any) => (
-                        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint}/>
+                        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={true} />
                         ))}
                     </div>
                     
@@ -120,6 +111,12 @@ const MetadataEditing = () => {
                             </p>
                         )}
                     </div>
+                </div>
+                <div className="flex justify-end">
+                <button className={cn(
+                    buttonVariants({ variant: "default", size: "lg" }),
+                    "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+                )}>Save Edits</button>
                 </div>
             </div>
         </div>

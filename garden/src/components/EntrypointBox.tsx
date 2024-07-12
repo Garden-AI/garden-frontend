@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
+const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: boolean }) => {
   const navigate = useNavigate();
   const text = entrypoint.doi.replace("/", "%2f");
 
@@ -49,6 +50,17 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
         </div>
       ) : (
         <></>
+      )}
+      {isEditing && (
+        <Link
+        to="entrypointEditing"
+        className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mb-4 mt-4 justify-center"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        >
+        edit
+        </Link>
       )}
     </div>
   );
