@@ -1,4 +1,4 @@
-import { IpynbRenderer } from "react-ipynb-renderer";
+// import { IpynbRenderer } from "react-ipynb-renderer";
 import "../ipynbPreview.css";
 import { useGetNotebook } from "../api/notebook";
 
@@ -23,7 +23,7 @@ export const NotebookViewer = ({ notebookURL }: { notebookURL?: string }) => {
   } else {
     return (
       <div className="overflow-x-auto">
-        <IpynbRenderer ipynb={notebook} />
+        
       </div>
     );
   }
