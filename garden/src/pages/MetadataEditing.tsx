@@ -5,25 +5,38 @@ import EntrypointBox from "../components/EntrypointBox";
 import DatasetBoxEntrypoint from "../components/DatasetBoxEntrypoint";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NotFoundPage from "./NotFoundPage";
+import { useUpdateGarden } from "../api/editgarden";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const MetadataEditing = () => {
-    const initialMetadata = {
-        id: null,
-        contributors: '',
-        doi: '',
-        description: '',
-        entrypoints: '',
-        datasets: '',
-    };
     // get rid of the below states and use context to share them with GardenPage!!!!!!
     // or share from parent component (?)
     const [datasets, setDatasets] = useState<Array<Object>>([]);
     const [showFoundry, setShowFoundry] = useState(false);
 
-    const [metadata, setMetadata] = useState(initialMetadata);
     const { doi } = useParams() as { doi: string }; // extract doi from url
 
     const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
+    const { mutate: updateGarden } = useUpdateGarden();
+
+    const initialMetadata = {
+        title: "",
+        authors: [],
+        // id: null,
+        contributors: [],
+        description: "",
+        entrypoints: [],
+        datasets: [],
+    };
+    
+    const [metadata, setMetadata] = useState(initialMetadata);
+
+    const handleSave = (updatedGardenData: any) => {
+        console.log("Updating garden with data:", updatedGardenData); 
+        updateGarden({ doi, garden: updatedGardenData });
+    };
 
     if (isLoading) {
         return <LoadingSpinner />;
@@ -39,12 +52,13 @@ const MetadataEditing = () => {
     useEffect(() => {
         if (garden) {
             setMetadata({
-                id: null,
-                contributors: '',
-                doi: garden.doi || '',
-                description: '',
-                entrypoints: '',
-                datasets: '',
+                title: "",
+                authors: [],
+                // id: null,
+                contributors: [],
+                description: "",
+                entrypoints: [],
+                datasets: [],
             });
         }
     }, [garden]);
@@ -55,8 +69,16 @@ const MetadataEditing = () => {
     };
 
     return (
-        
         <div className="font-display flex flex-col gap-5 m-20">
+            <Breadcrumb
+            crumbs={[
+                { label: "Home", link: "/" },
+                { label: "Gardens", link: "/search" },
+                { label: garden.title,
+                link: `/garden/${encodeURIComponent(`${garden.doi}`)}`, },
+                { label: "Edit Garden" },
+            ]}
+            />
             <h1 className="text-2xl sm:text-3xl">Edit {garden?.title}</h1>
             <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
                 <div className="space-y-2">
@@ -64,9 +86,9 @@ const MetadataEditing = () => {
                     <input
                         type="text"
                         name="contributors"
-                        value={garden?.contributors}
+                        value={metadata?.contributors}
                         onChange={handleInputChange}
-                        placeholder="Contributors"
+                        placeholder='contributors'
                         className="border border-gray-300 rounded px-2 py-1 w-full"
                     />
                 </div>
@@ -75,7 +97,7 @@ const MetadataEditing = () => {
                     <input
                         type="text"
                         name="description"
-                        value={garden?.description}
+                        value={metadata?.description}
                         onChange={handleInputChange}
                         placeholder="Description"
                         className="border border-gray-300 rounded px-2 py-1 w-full"
@@ -110,6 +132,17 @@ const MetadataEditing = () => {
                         )}
                     </div>
                 </div>
+                <div className="flex justify-end">
+              <button
+                className={cn(
+                  buttonVariants({ variant: "default", size: "lg" }),
+                  "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+                )}
+                onClick={() => handleSave(metadata)}
+              >
+                Save Edits
+              </button>
+            </div>
             </div>
         </div>
     );

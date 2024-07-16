@@ -19,6 +19,7 @@ import TeamsPage from "./pages/TeamsPage";
 import MetadataEditing from "./pages/MetadataEditing";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { Toaster } from "sonner";
 
 const queryClient = new QueryClient({
