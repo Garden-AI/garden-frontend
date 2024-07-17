@@ -82,9 +82,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Publish Search Record */
+        /**
+         * Publish Search Record
+         * @deprecated
+         */
         post: operations["publish_search_record_garden_search_record_post"];
-        /** Delete Search Record */
+        /**
+         * Delete Search Record
+         * @deprecated
+         */
         delete: operations["delete_search_record_garden_search_record_delete"];
         options?: never;
         head?: never;
@@ -115,7 +121,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get Entrypoints
+         * @description Fetch multiple entrypoints according to query parameters.
+         */
+        get: operations["get_entrypoints_entrypoints_get"];
         put?: never;
         /** Add Entrypoint */
         post: operations["add_entrypoint_entrypoints_post"];
@@ -151,7 +161,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Search Gardens
+         * @description Fetch multiple gardens according to query parameters
+         */
+        get: operations["search_gardens_gardens_get"];
         put?: never;
         /** Add Garden */
         post: operations["add_garden_gardens_post"];
@@ -612,6 +626,11 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata-Output"][];
+            /**
+             * Owner Identity Id
+             * Format: uuid
+             */
+            owner_identity_id: string;
             /** Id */
             id: number;
         };
@@ -718,6 +737,11 @@ export interface components {
             entrypoint_aliases?: {
                 [key: string]: string | undefined;
             };
+            /**
+             * Owner Identity Id
+             * Format: uuid
+             */
+            owner_identity_id: string;
             /** Id */
             id: number;
             /** Entrypoints */
@@ -1533,6 +1557,43 @@ export interface operations {
             };
         };
     };
+    get_entrypoints_entrypoints_get: {
+        parameters: {
+            query?: {
+                doi?: string[] | null;
+                tags?: string[] | null;
+                authors?: string[] | null;
+                owner_uuid?: string | null;
+                draft?: boolean | null;
+                year?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntrypointMetadataResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     add_entrypoint_entrypoints_post: {
         parameters: {
             query?: never;
@@ -1650,6 +1711,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_gardens_gardens_get: {
+        parameters: {
+            query?: {
+                doi?: string[] | null;
+                draft?: boolean | null;
+                owner_uuid?: string | null;
+                authors?: string[] | null;
+                contributors?: string[] | null;
+                tags?: string[] | null;
+                year?: string | null;
+                limit?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"][];
                 };
             };
             /** @description Validation Error */

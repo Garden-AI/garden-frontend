@@ -18,14 +18,15 @@ import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
 import { useGetGarden, useSearchGardenByDOI } from "@/api";
+// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
 export default function GardenPage() {
   const { doi } = useParams();
 
   // Once database is available, this will be used to get the datasets
-  // const { data: garden, isLoading, isError } = useGetGarden(doi!);
+  const { data: garden, isLoading, isError } = useGetGarden(doi!);
 
-  const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
+  // const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -52,15 +53,16 @@ export default function GardenPage() {
 
 function GardenHeader({ garden }: { garden: Garden }) {
   return (
-    <div className="my-8 flex gap-2 sm:gap-4">
-      <h1 className="mb-4 text-2xl sm:text-3xl">{garden.title}</h1>
-      <div className="flex">
+    <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
+      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
           content={window.location.href}
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
+        {/* <GardenDropdownOptions garden={garden} /> */}
       </div>
     </div>
   );

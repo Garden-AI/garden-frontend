@@ -24,7 +24,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     setGardens(prioritizeGardens(filteredGardens));
-  }, [filteredGardens]);
+  }, [filteredGardens, gardenSearchResults]);
 
   if (isLoading) {
     return <LoadingSpinner />;

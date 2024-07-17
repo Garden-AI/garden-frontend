@@ -25,7 +25,7 @@ export const useSearchGardens = (
   relatedDOI?: string,
 ) => {
   return useQuery<Garden[], Error>({
-    queryKey: [query, limit, relatedDOI],
+    queryKey: ["search", query, limit, relatedDOI],
     queryFn: async () => {
       {
         const gardens = searchGardens(query, limit);

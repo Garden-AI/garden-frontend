@@ -24,8 +24,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { ExternalLink, RefreshCcwIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@radix-ui/react-dialog";
 import {
+  Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
@@ -35,8 +35,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FormNavigation } from "./FormNavigation";
 import { tagOptions, initialEntrypoints } from "./constants";
 import WithTooltip from "@/components/WithTooltip";
-import { useGetEntrypoints } from "@/api";
+import { useGetEntrypoint, useGetEntrypoints } from "@/api";
 import { cn } from "@/lib/utils";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 const Step1 = () => {
   const form = useFormContext() as UseFormReturn<GardenCreateFormData>;
@@ -123,6 +124,7 @@ const Step1 = () => {
   );
 };
 const Step2 = () => {
+  const auth = useGlobusAuth();
   const form = useFormContext();
   const { fields, replace } = useFieldArray({
     control: form.control,
@@ -133,9 +135,9 @@ const Step2 = () => {
     data: availableEntrypoints,
     isFetching,
     refetch,
-  } = useGetEntrypoints({
-    userId: "me",
-    gardenId: "me",
+  } = useGetEntrypoint({
+    owner_uuid: "76024960-c68b-4fec-8cb8-b65b096f18da",
+    // auth?.authorization?.user?.sub,
   });
 
   const [selectedEntrypoints, setSelectedEntrypoints] = useState<string[]>(

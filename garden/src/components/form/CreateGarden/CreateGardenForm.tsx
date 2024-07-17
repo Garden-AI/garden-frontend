@@ -14,9 +14,9 @@ import { GardenCreateRequest } from "@/api/types";
 
 export const CreateGardenForm: React.FC = () => {
   const navigate = useNavigate();
-  const mintDOI = useMintDOI();
   const auth = useGlobusAuth();
-  const createGarden = useCreateGarden();
+  const { mutateAsync: mintDOI } = useMintDOI();
+  const { mutateAsync: createGarden } = useCreateGarden();
 
   const form = useForm<GardenCreateFormData>({
     resolver: zodResolver(formSchema),
@@ -48,14 +48,15 @@ export const CreateGardenForm: React.FC = () => {
         throw new Error("User not authenticated");
       }
 
-      const { doi } = await mintDOI.mutateAsync();
+      const { doi } = await mintDOI();
       const requestData: GardenCreateRequest = transformFormToRequest(
         values,
         doi,
         ownerId,
       );
 
-      await createGarden.mutateAsync(requestData);
+      await createGarden(requestData);
+
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(doi)}`);
     } catch (error) {
@@ -80,7 +81,7 @@ const LoadingOverlay = () => {
 
   return (
     isSubmitting && (
-      <div className="fixed bottom-0 left-0 right-0 top-0 z-50 flex items-center justify-center bg-black/70">
+      <div className="no-doc-scroll fixed bottom-0 left-0 right-0 top-0 z-50 flex items-center justify-center bg-black/70">
         <LoadingSpinner />
       </div>
     )
