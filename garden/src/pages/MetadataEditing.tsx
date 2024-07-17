@@ -24,14 +24,20 @@ const MetadataEditing = () => {
     const initialMetadata = {
         title: "",
         authors: [],
-        // id: null,
         contributors: [],
         description: "",
         entrypoints: [],
-        datasets: [],
+        // datasets: []
     };
-    
-    const [metadata, setMetadata] = useState(initialMetadata);
+
+    const [metadata, setMetadata] = useState({
+        title: "",
+        authors: [],
+        contributors: [],
+        description: "",
+        entrypoints: [],
+        // datasets: []
+    });
 
     const handleSave = (updatedGardenData: any) => {
         console.log("Updating garden with data:", updatedGardenData); 
@@ -52,16 +58,15 @@ const MetadataEditing = () => {
     useEffect(() => {
         if (garden) {
             setMetadata({
-                title: "",
-                authors: [],
-                // id: null,
-                contributors: [],
-                description: "",
-                entrypoints: [],
-                datasets: [],
+                title: garden.title || "",
+                contributors: garden.contributors || [],
+                description: garden.description || "",
+                entrypoints: garden.entrypoints || [],
+                // datasets: garden.datasets || []
             });
         }
     }, [garden]);
+
     
     const handleInputChange = (e: any) => {
         const { name, value } = e.target;
@@ -79,8 +84,19 @@ const MetadataEditing = () => {
                 { label: "Edit Garden" },
             ]}
             />
-            <h1 className="text-2xl sm:text-3xl">Edit {garden?.title}</h1>
+            <h1 className="text-2xl sm:text-3xl">Edit '{garden?.title}'</h1>
             <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
+                <div className="space-y-2">
+                    <p className="text-gray-600">Title</p>
+                    <input
+                        type="text"
+                        name="title"
+                        value={metadata?.title}
+                        onChange={handleInputChange}
+                        placeholder='Title'
+                        className="border border-gray-300 rounded px-2 py-1 w-full"
+                    />
+                </div>
                 <div className="space-y-2">
                     <p className="text-gray-600">Contributors</p>
                     <input
@@ -88,7 +104,7 @@ const MetadataEditing = () => {
                         name="contributors"
                         value={metadata?.contributors}
                         onChange={handleInputChange}
-                        placeholder='contributors'
+                        placeholder='Contributors'
                         className="border border-gray-300 rounded px-2 py-1 w-full"
                     />
                 </div>
