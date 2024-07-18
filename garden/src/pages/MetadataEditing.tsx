@@ -9,6 +9,8 @@ import { useUpdateGarden } from "../api/editgarden";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Breadcrumb from "@/components/Breadcrumb";
+import { useGlobusAuth } from "@/components/globus-auth-context/useGlobusAuth";
+import { toast } from "sonner";
 
 const MetadataEditing = () => {
     // get rid of the below states and use context to share them with GardenPage!!!!!!
@@ -20,6 +22,7 @@ const MetadataEditing = () => {
 
     const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
     const { mutate: updateGarden } = useUpdateGarden();
+    const auth = useGlobusAuth();
 
     const initialMetadata = {
         title: "",
@@ -40,6 +43,11 @@ const MetadataEditing = () => {
     });
 
     const handleSave = (updatedGardenData: any) => {
+        if (!auth?.authorization?.user?.sub) {
+            toast.error("You must be authenticated to save changes.");
+            return;
+        }
+    
         console.log("Updating garden with data:", updatedGardenData); 
         updateGarden({ doi, garden: updatedGardenData });
     };
@@ -155,6 +163,8 @@ const MetadataEditing = () => {
                   "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
                 )}
                 onClick={() => handleSave(metadata)}
+                disabled={!auth?.authorization?.user?.sub}
+                
               >
                 Save Edits
               </button>
