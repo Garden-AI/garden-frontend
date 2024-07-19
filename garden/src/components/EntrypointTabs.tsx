@@ -1,4 +1,4 @@
-import { Entrypoint } from "@/types";
+import { Entrypoint } from "@/api/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import {
   Card,
@@ -20,8 +20,10 @@ export default function EntrypointTabs({
 }) {
   const tabs = [
     {
-      name: "Steps",
-      content: (entrypoint: Entrypoint) => <StepsTab entrypoint={entrypoint} />,
+      name: "Entrypoint",
+      content: (entrypoint: Entrypoint) => (
+        <FunctionTab entrypoint={entrypoint} />
+      ),
     },
     {
       name: "Notebook",
@@ -37,7 +39,7 @@ export default function EntrypointTabs({
     },
   ];
   return (
-    <Tabs defaultValue="steps" className="min-h-[400px] w-full">
+    <Tabs defaultValue="entrypoint" className="min-h-[400px] w-full">
       <TabsList className="m-0 grid w-full grid-cols-3 rounded-none bg-transparent p-0 ">
         {tabs.map(({ name }) => (
           <TabsTrigger
@@ -50,7 +52,7 @@ export default function EntrypointTabs({
         ))}
       </TabsList>
       {tabs.map(({ name, content }) => (
-        <TabsContent key={name} value={name.toLowerCase()} className="p-2">
+        <TabsContent key={name} value={name.toLowerCase()} className="p-4">
           {content(entrypoint)}
         </TabsContent>
       ))}
@@ -58,7 +60,7 @@ export default function EntrypointTabs({
   );
 }
 
-function DatasetsTab({ datasets }: { datasets: any[] }) {
+function DatasetsTab({ datasets }: { datasets?: any[] }) {
   if (!datasets || datasets.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
@@ -157,47 +159,21 @@ function DatasetsTab({ datasets }: { datasets: any[] }) {
   );
 }
 
-function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
+function FunctionTab({ entrypoint }: { entrypoint: Entrypoint }) {
   return (
-    <Tabs
-      defaultValue={"0"}
-      className="grid grid-cols-4 gap-x-6 py-6"
-      orientation="vertical"
-    >
-      <TabsList className="col-span-1 flex h-full flex-col items-start justify-start space-y-4 rounded-md bg-transparent ">
-        {entrypoint.steps.map((step: any, index: number) => (
-          <TabsTrigger
-            key={index}
-            value={index.toString()}
-            className="w-full rounded-none border-4 border-transparent bg-gray-100 py-4 text-center text-base font-medium text-black transition-colors hover:border-gray-100 hover:bg-gray-50 hover:text-gray-600  data-[state=active]:border-gray-400 data-[state=active]:bg-gray-100 "
-          >
-            {step.function_name}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-
-      {entrypoint.steps.map((step: any, index: number) => (
-        <TabsContent
-          value={index.toString()}
-          className="col-span-3"
-          key={index}
-        >
-          <Card key={index} className=" rounded-none bg-white">
-            <CardHeader className=" px-6 py-4">
-              <CardTitle className="text-xl font-bold text-gray-800">
-                {step.function_name}
-              </CardTitle>
-              <CardDescription className="mt-1 text-gray-600">
-                {step.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-6 py-4">
-              <SyntaxHighlighter>{step.function_text}</SyntaxHighlighter>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      ))}
-    </Tabs>
+    <Card className=" rounded-none bg-white p-4">
+      <CardHeader className=" px-6 py-4">
+        <CardTitle className="text-xl font-bold text-gray-800">
+          {entrypoint.short_name}
+        </CardTitle>
+        <CardDescription className="mt-1 text-gray-600">
+          {entrypoint.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="px-6 py-4">
+        <SyntaxHighlighter>{entrypoint.function_text}</SyntaxHighlighter>
+      </CardContent>
+    </Card>
   );
 }
 

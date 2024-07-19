@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 import { useSearchGardens } from "@/api/search";
-import { Garden } from "@/types";
+import { Garden } from "@/api/types";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import GardenBox from "@/components/GardenBox";
@@ -78,8 +78,8 @@ function prioritizeGardens(gardens: Garden[]) {
   const isTestGarden = gardens.map(
     (garden) =>
       RegExp(TEST_GARDEN_REGEX).test(garden.title.toLowerCase()) ||
-      garden.entrypoints.some((entrypoint) =>
-        entrypoint.tags.includes("tutorial"),
+      garden.entrypoints?.some((entrypoint) =>
+        entrypoint.tags?.includes("tutorial"),
       ),
   );
   const testGardens = gardens.filter((_, index) => isTestGarden[index]);

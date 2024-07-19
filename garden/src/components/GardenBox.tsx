@@ -7,7 +7,7 @@ import {
 } from "./ui/card";
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
-import { Garden } from "../types";
+import { Garden } from "@/api/types";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();

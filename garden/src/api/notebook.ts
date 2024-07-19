@@ -1,5 +1,15 @@
-import { Garden, Notebook } from "../types";
 import { useQuery } from "@tanstack/react-query";
+
+interface Cell {
+  cell_type: string;
+  execution_count: number;
+  metadata: any;
+  outputs: Array<any>;
+  source: Array<any>;
+}
+interface Notebook {
+  cells: Array<Cell>;
+}
 
 const getNotebook = async (url: string): Promise<Notebook> => {
   try {

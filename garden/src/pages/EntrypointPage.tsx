@@ -12,7 +12,7 @@ import EntrypointFunction from "@/components/EntrypointFunction";
 import CopyButton from "@/components/CopyButton";
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import ShareModal from "@/components/ShareModal";
-import { Entrypoint, Garden } from "@/types";
+import { Entrypoint, Garden } from "@/api/types";
 
 const EntrypointPage = ({ bread }: { bread: any }) => {
   const { doi } = useParams() as { doi: string };
@@ -21,7 +21,7 @@ const EntrypointPage = ({ bread }: { bread: any }) => {
 
   if (isLoading) return <LoadingSpinner />;
 
-  const entrypoint = garden?.entrypoints.find(
+  const entrypoint = garden?.entrypoints?.find(
     (entrypoint) => entrypoint.doi === doi,
   );
   if (isError || !garden || !entrypoint) return <NotFoundPage />;
@@ -85,12 +85,12 @@ function EntrypointBody({
           Version {garden.version} | {garden.year} |
         </span>
         <TagIcon className="h-4 w-4" />
-        <span>{entrypoint.tags.join(", ")}</span>
+        <span>{entrypoint.tags?.join(", ")}</span>
       </div>
 
       <div className="mb-6 flex items-center space-x-2 text-base md:text-lg ">
         <span className="font-semibold">Contributors:</span>
-        <span>{garden.authors.join(", ")}</span>
+        <span>{garden.authors?.join(", ")}</span>
       </div>
 
       <div className="mb-2 flex items-center gap-2 text-lg md:text-xl">
