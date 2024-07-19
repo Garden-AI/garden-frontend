@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import { useSearchGardenByDOI } from "@/api";
+import { useGetEntrypoint, useSearchGardenByDOI } from "@/api";
 
 import EntrypointTabs from "@/components/EntrypointTabs";
 import AssociatedMaterials from "@/components/AssociatedMaterials";
@@ -17,18 +17,20 @@ import { Entrypoint, Garden } from "@/api/types";
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
 
-  const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
+  const { data, isError, isPending } = useGetEntrypoint({
+    doi: "10.26311/3p8f-se33",
+    limit: 1,
+  });
 
-  if (isLoading) return <LoadingSpinner />;
+  const entrypoint = data?.[0];
 
-  const entrypoint = garden?.entrypoints?.find(
-    (entrypoint) => entrypoint.doi === doi,
-  );
-  if (isError || !garden || !entrypoint) return <NotFoundPage />;
+  if (isPending) return <LoadingSpinner />;
+
+  if (isError || !entrypoint) return <NotFoundPage />;
 
   return (
     <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
-      <Breadcrumb
+      {/* <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
           { label: "Gardens", link: "/search" },
@@ -38,10 +40,10 @@ const EntrypointPage = () => {
           },
           { label: entrypoint.title },
         ]}
-      />
+      /> */}
       <EntrypointHeader entrypoint={entrypoint} doi={doi} />
-      <EntrypointBody garden={garden} entrypoint={entrypoint} />
-      <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} />
+      {/* <EntrypointBody garden={garden} entrypoint={entrypoint} />
+      <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} /> */}
       <AssociatedMaterials entrypoint={entrypoint} />
       <EntrypointTabs entrypoint={entrypoint} />
     </div>

@@ -1,5 +1,5 @@
 import { Garden } from "@/api/types";
-import axios from "../axios";
+import axios from "@/api/axios";
 import { useQuery } from "@tanstack/react-query";
 
 const getGarden = async (doi: string): Promise<Garden> => {

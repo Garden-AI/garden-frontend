@@ -274,6 +274,94 @@ const Step2 = () => {
             <DialogDescription className="text-sm text-gray-700">
               Create a new Entrypoint to add to your Garden.
             </DialogDescription>
+
+            <div className="mx-auto w-[800px] px-4 py-8">
+              <h1 className="mb-6 text-3xl font-bold">
+                Creating and Publishing an Entrypoint
+              </h1>
+
+              <div className="space-y-8">
+                <section>
+                  <h2 className="mb-4 text-2xl font-semibold">
+                    Step 1: Start a Notebook
+                  </h2>
+                  <div className="rounded-lg bg-gray-100 p-4">
+                    <pre>
+                      <code className="text-sm">
+                        garden-ai notebook start tutorial_notebook.ipynb
+                        --base-image=3.10-sklearn --tutorial
+                      </code>
+                    </pre>
+                  </div>
+                  <p className="mt-2">
+                    This command starts a Jupyter notebook in an isolated Docker
+                    environment.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="mb-4 text-2xl font-semibold">
+                    Step 2: Write the Entrypoint Function
+                  </h2>
+                  <div className="rounded-lg bg-white p-6 shadow-md">
+                    <p className="mb-4">
+                      In the notebook, define your entrypoint function. This
+                      function will run on the remote server when someone
+                      invokes your model.
+                    </p>
+                    <div className="rounded-lg bg-gray-100 p-4">
+                      <pre>
+                        <code className="text-sm">
+                          def classify_irises(sepal_length, sepal_width,
+                          petal_length, petal_width): # Your model logic here
+                          return predicted_class
+                        </code>
+                      </pre>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h2 className="mb-4 text-2xl font-semibold">
+                    Step 3: Publish the Entrypoint
+                  </h2>
+                  <div className="rounded-lg bg-white p-6 shadow-md">
+                    <p className="mb-4">
+                      Use the following command to publish your entrypoint:
+                    </p>
+                    <div className="rounded-lg bg-gray-100 p-4">
+                      <pre>
+                        <code className="text-sm">
+                          garden-ai notebook publish tutorial_notebook.ipynb
+                          --base-image="3.10-sklearn"
+                        </code>
+                      </pre>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h2 className="mb-4 text-2xl font-semibold">
+                    Step 4: Test Your Published Model
+                  </h2>
+                  <p className="mb-4">
+                    To test your published model, you can use a separate
+                    notebook or follow the steps in a Google Colab notebook.
+                  </p>
+                  <button className="bg-blue-500 hover:bg-blue-600 rounded px-4 py-2 font-bold text-white">
+                    Continue in Google Colab
+                  </button>
+                </section>
+              </div>
+
+              <div className="bg-green-100 mt-8 rounded-lg p-4">
+                <h3 className="mb-2 text-lg font-semibold">Success!</h3>
+                <p>
+                  You've now created your first garden, written an entrypoint
+                  function, published it, and executed the model remotely.
+                </p>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </p>
