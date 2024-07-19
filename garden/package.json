@@ -51,7 +51,8 @@
     "deploy-staging": "gh-pages -d build -r https://github.com/Garden-AI/garden-frontend-staging",
     "deploy-prod": "gh-pages -d build",
     "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
-    "test": "vitest"
+    "test": "vitest",
+    "refresh-types": "curl -s https://api-dev.thegardens.ai/openapi.json | npx openapi-typescript -o ./src/api/backend-schema.ts"
   },
   "eslintConfig": {
     "extends": [

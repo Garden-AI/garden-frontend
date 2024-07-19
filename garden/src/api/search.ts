@@ -1,5 +1,5 @@
 import { search } from "@globus/sdk/cjs";
-import { Garden } from "../types";
+import { Garden } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";
 
 const searchGardenByDOI = async (doi: string): Promise<Garden> => {

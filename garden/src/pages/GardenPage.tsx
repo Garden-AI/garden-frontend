@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
 import { useSearchGardenByDOI } from "../api/search";
-import { Entrypoint, Garden } from "../types";
+import { Entrypoint, Garden } from "@/api/types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { LinkIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -68,7 +68,7 @@ function GardenBody({ garden }: { garden: Garden }) {
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="mb-4">
         <h2 className="font-semibold">Contributors</h2>
-        <p>{garden.authors.join(",")}</p>
+        <p>{garden.authors?.join(",")}</p>
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>
@@ -159,7 +159,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
 
 function DatasetsTab({ garden }: { garden: Garden }) {
   const datasets = garden.entrypoints
-    .map((e: Entrypoint) => e.datasets || [])
+    ?.map((e: Entrypoint) => e.datasets || [])
     .reduce((acc, val) => acc.concat(val), []);
 
   if (!datasets || datasets.length === 0) {
