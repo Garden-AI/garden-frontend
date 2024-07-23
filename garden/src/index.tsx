@@ -26,7 +26,7 @@ deferRender().then(() => {
       <GlobusAuthorizationManagerProvider
         client={import.meta.env.VITE_GLOBUS_CLIENT_ID}
         redirect={import.meta.env.VITE_GLOBUS_REDIRECT_URI}
-        scopes={import.meta.env.VITE_GLOBUS_SEARCH_SCOPE}
+        scopes={import.meta.env.VITE_GLOBUS_GARDEN_SCOPE}
       >
         <App />
       </GlobusAuthorizationManagerProvider>

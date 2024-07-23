@@ -21,15 +21,30 @@ import RelatedGardens from "@/components/RelatedGardens";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import {useGetUserInfo} from "../api/getUserInfo";
+import { useGetUserGardens} from "../api/getUserGardens";
 
 export default function GardenPage({ bread }: { bread: any }) {
   const { doi } = useParams();
-  const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
+  const { data: garden, isLoading: fetchGardensLoading, isError: fetchGardensError } = useSearchGardenByDOI(doi!);
+  // const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
+  const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens();
+  
+  const canEditGarden = (() => {
+    if (!garden || !userGardens) return false;
+    
+    for (const userGarden of userGardens) {
+      if (userGarden.doi === garden.doi) {
+        return true;
+      }
+    }
+    return false;
+  })();  
 
-  if (isLoading) {
+  if (fetchGardensLoading || userGardensLoading ) {
     return <LoadingSpinner />;
   }
-  if (isError || !garden) {
+  if (fetchGardensError || userGardensError || !garden) {
     return <NotFoundPage />;
   }
 
@@ -43,7 +58,7 @@ export default function GardenPage({ bread }: { bread: any }) {
         ]}
       />
       <GardenHeader garden={garden} />
-      <GardenBody garden={garden} />
+      <GardenBody garden={garden} canEditGarden={canEditGarden} />
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
@@ -66,7 +81,7 @@ function GardenHeader({ garden }: { garden: Garden }) {
   );
 }
 
-function GardenBody({ garden }: { garden: Garden }) {
+function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: boolean }) {
 
   const navigate = useNavigate();
 
@@ -81,17 +96,17 @@ function GardenBody({ garden }: { garden: Garden }) {
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors.join(",")}</p>
         </div>
-        {/* add logic to only render if this garden was created by the user*/}
-        <button
-          onClick={handleEditGardenClick}
-          className={cn(
-            buttonVariants({ variant: "default", size: "lg" }),
-            "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
-          )}
-        >
-          Edit Garden
-        </button>
-        
+        {canEditGarden && (
+          <button
+            onClick={handleEditGardenClick}
+            className={cn(
+              buttonVariants({ variant: "default", size: "lg" }),
+              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+            )}
+          >
+            Edit Garden
+          </button>
+        )}
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>

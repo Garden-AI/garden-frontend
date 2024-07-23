@@ -24,21 +24,29 @@ const MetadataEditing = () => {
     const { mutate: updateGarden } = useUpdateGarden();
     const auth = useGlobusAuth();
 
+    interface GardenUpdateRequest{
+        title: string;
+        authors: string[];
+        contributors: string[];
+        description: string | null;
+        entrypoint_ids: string[];
+    }
+
     const initialMetadata = {
         title: "",
-        authors: [],
+        authors: garden?.authors,
         contributors: [],
         description: "",
-        entrypoints: [],
+        entrypoint_ids: [],
         // datasets: []
     };
 
-    const [metadata, setMetadata] = useState({
+    const [metadata, setMetadata] = useState<GardenUpdateRequest>({
         title: "",
         authors: [],
         contributors: [],
         description: "",
-        entrypoints: [],
+        entrypoint_ids: [],
         // datasets: []
     });
 
@@ -47,9 +55,13 @@ const MetadataEditing = () => {
             toast.error("You must be authenticated to save changes.");
             return;
         }
+        const dataToSend = {
+            ...updatedGardenData,
+            doi: doi,
+        };
     
-        console.log("Updating garden with data:", updatedGardenData); 
-        updateGarden({ doi, garden: updatedGardenData });
+        console.log("Updating garden with data:", dataToSend);
+        updateGarden({ doi, garden: dataToSend });    
     };
 
     if (isLoading) {
@@ -67,9 +79,10 @@ const MetadataEditing = () => {
         if (garden) {
             setMetadata({
                 title: garden.title || "",
-                contributors: garden.contributors || [],
-                description: garden.description || "",
-                entrypoints: garden.entrypoints || [],
+                contributors: garden?.contributors || [],
+                authors: garden?.authors || [],
+                description: garden?.description || "",
+                entrypoint_ids: [],
                 // datasets: garden.datasets || []
             });
         }
@@ -78,11 +91,16 @@ const MetadataEditing = () => {
     
     const handleInputChange = (e: any) => {
         const { name, value } = e.target;
-        setMetadata({ ...metadata, [name]: value });
-    };
+        if (name === 'contributors') {
+          setMetadata({ ...metadata, [name]: value.split(',').map(item => item.trim()) });
+        } else {
+          setMetadata({ ...metadata, [name]: value });
+        }
+      };
+            
 
     return (
-        <div className="font-display flex flex-col gap-5 m-20">
+        <div className="font-display flex flex-col gap-5 m-8 py-8">
             <Breadcrumb
             crumbs={[
                 { label: "Home", link: "/" },
@@ -116,6 +134,19 @@ const MetadataEditing = () => {
                         className="border border-gray-300 rounded px-2 py-1 w-full"
                     />
                 </div>
+                {/*
+                <div className="space-y-2">
+                    <p className="text-gray-600">Authors</p>
+                    <input
+                        type="text"
+                        name="Authors"
+                        value={garden?.authors}
+                        onChange={handleInputChange}
+                        placeholder='Authors'
+                        className="border border-gray-300 rounded px-2 py-1 w-full"
+                    />
+                </div>
+                */}
                 <div className="space-y-2">
                     <p className="text-gray-600">Description</p>
                     <input
