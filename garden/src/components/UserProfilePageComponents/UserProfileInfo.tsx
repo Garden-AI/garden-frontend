@@ -82,7 +82,7 @@ const UserProfileInfo = () => {
                           value={info.firstname}
                           onChange={handleInputChange}
                           placeholder="First Name"
-                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                          className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                       />
                   ) : (
                       <p>{info.firstname}</p>
@@ -97,7 +97,7 @@ const UserProfileInfo = () => {
                           value={info.lastname}
                           onChange={handleInputChange}
                           placeholder="Last Name"
-                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                          className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                       />
                   ) : (
                       <p>{info.lastname}</p>
@@ -112,7 +112,7 @@ const UserProfileInfo = () => {
                           value={info.phone}
                           onChange={handleInputChange}
                           placeholder="Phone Number"
-                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                          className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                       />
                   ) : (
                       <p>{info.phone}</p>
@@ -127,7 +127,7 @@ const UserProfileInfo = () => {
                           value={info.email}
                           onChange={handleInputChange}
                           placeholder="Email Address"
-                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                          className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                       />
                   ) : (
                       <p>{info.email}</p>
@@ -142,7 +142,7 @@ const UserProfileInfo = () => {
                           value={info.affiliations}
                           onChange={handleInputChange}
                           placeholder="Institutions/Affiliations"
-                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                          className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                       />
                   ) : (
                       <p>{info.affiliations}</p>
@@ -157,7 +157,7 @@ const UserProfileInfo = () => {
                           value={info.skills}
                           onChange={handleInputChange}
                           placeholder="Skills"
-                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                          className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                       />
                   ) : (
                       <p>{info.skills}</p>
@@ -172,7 +172,7 @@ const UserProfileInfo = () => {
                           value={info.domains}
                           onChange={handleInputChange}
                           placeholder="Domain(s)"
-                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                          className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                       />
                   ) : (
                       <p>{info.domains}</p>
