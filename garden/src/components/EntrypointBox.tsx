@@ -1,7 +1,8 @@
+import { Entrypoint } from "@/api/types";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
+const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   const navigate = useNavigate();
   const text = entrypoint.doi.replace("/", "%2f");
 
@@ -12,23 +13,13 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
     >
       <div className="flex flex-col gap-2">
         <h2 className="text-xl">{entrypoint.title}</h2>
-        {entrypoint.steps && (
-          <p className="text-gray-500">
-            {entrypoint.steps?.length}{" "}
-            {entrypoint.steps?.length < 2 ? (
-              <span>step</span>
-            ) : (
-              <span>steps</span>
-            )}
-          </p>
-        )}
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
             {entrypoint.description}
           </p>
         </div>
       </div>
-      {entrypoint.tags?.length > 0 ? (
+      {entrypoint.tags && entrypoint.tags.length > 0 ? (
         <div className="flex gap-2 text-black">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +41,7 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
             />
           </svg>
           <div>
-            <span>{entrypoint.tags.join(", ")}</span>
+            <span>{entrypoint.tags?.join(", ")}</span>
           </div>
         </div>
       ) : (
