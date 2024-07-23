@@ -39,7 +39,7 @@ export default function EntrypointTabs({
   return (
     <Tabs defaultValue="steps" className="min-h-[400px] w-full">
       <TabsList className="m-0 grid w-full grid-cols-3 rounded-none bg-transparent p-0 ">
-        {tabs.map(({ name }) => (
+        {tabs?.map(({ name }) => (
           <TabsTrigger
             key={name}
             value={name.toLowerCase()}
@@ -49,7 +49,7 @@ export default function EntrypointTabs({
           </TabsTrigger>
         ))}
       </TabsList>
-      {tabs.map(({ name, content }) => (
+      {tabs?.map(({ name, content }) => (
         <TabsContent key={name} value={name.toLowerCase()} className="p-2">
           {content(entrypoint)}
         </TabsContent>
@@ -165,7 +165,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
       orientation="vertical"
     >
       <TabsList className="col-span-1 flex h-full flex-col items-start justify-start space-y-4 rounded-md bg-transparent ">
-        {entrypoint.steps.map((step: any, index: number) => (
+        {entrypoint.steps?.map((step: any, index: number) => (
           <TabsTrigger
             key={index}
             value={index.toString()}
@@ -176,7 +176,7 @@ function StepsTab({ entrypoint }: { entrypoint: Entrypoint }) {
         ))}
       </TabsList>
 
-      {entrypoint.steps.map((step: any, index: number) => (
+      {entrypoint.steps?.map((step: any, index: number) => (
         <TabsContent
           value={index.toString()}
           className="col-span-3"

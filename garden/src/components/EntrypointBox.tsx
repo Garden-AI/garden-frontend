@@ -1,9 +1,16 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
+const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: boolean }) => {
   const navigate = useNavigate();
-  const text = entrypoint.doi.replace("/", "%2f");
+  const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
+
+  // Early return if entrypoint is undefined
+  if (!entrypoint) {
+    return null;
+  }
+
+  const stepsLength = entrypoint.steps?.length ?? 0;
 
   return (
     <div
@@ -11,24 +18,18 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
       onClick={() => navigate(`/entrypoint/${text}`)}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl">{entrypoint.title}</h2>
-        {entrypoint.steps && (
-          <p className="text-gray-500">
-            {entrypoint.steps?.length}{" "}
-            {entrypoint.steps?.length < 2 ? (
-              <span>step</span>
-            ) : (
-              <span>steps</span>
-            )}
-          </p>
-        )}
+        <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
+        <p className="text-gray-500">
+          {stepsLength}{" "}
+          {stepsLength === 1 ? <span>step</span> : <span>steps</span>}
+        </p>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
-            {entrypoint.description}
+            {entrypoint.description || "No description available"}
           </p>
         </div>
       </div>
-      {entrypoint.tags?.length > 0 ? (
+      {entrypoint.tags && entrypoint.tags.length > 0 ? (
         <div className="flex gap-2 text-black">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -53,8 +54,17 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: any }) => {
             <span>{entrypoint.tags.join(", ")}</span>
           </div>
         </div>
-      ) : (
-        <></>
+      ) : null}
+      {isEditing && (
+        <Link
+          to="entrypointEditing"
+          className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mb-4 mt-4 justify-center"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          edit
+        </Link>
       )}
     </div>
   );
