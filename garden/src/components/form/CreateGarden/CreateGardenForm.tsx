@@ -12,7 +12,7 @@ import { UnsavedChangesDialog } from "../UnsavedChangesDialog";
 import { FormFields } from "./FormFields";
 import { GardenCreateRequest } from "@/api/types";
 
-export const CreateGardenForm: React.FC = () => {
+export const CreateGardenForm = () => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
   const { mutateAsync: mintDOI } = useMintDOI();
@@ -47,18 +47,18 @@ export const CreateGardenForm: React.FC = () => {
       if (!ownerId) {
         throw new Error("User not authenticated");
       }
-
       const { doi } = await mintDOI();
+      console.log(values);
+
       const requestData: GardenCreateRequest = transformFormToRequest(
         values,
         doi,
         ownerId,
       );
 
-      await createGarden(requestData);
-
+      const res = await createGarden(requestData);
       toast.success("Garden created successfully!");
-      navigate(`/garden/${encodeURIComponent(doi)}`);
+      navigate(`/garden/${encodeURIComponent(requestData.doi)}`);
     } catch (error) {
       toast.warning("Error creating garden. Please fix errors.");
     }

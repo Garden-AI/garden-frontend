@@ -1,4 +1,4 @@
-import SyntaxHighlighter from "./SyntaxHighlighter";
+import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
 type ExampleFunctionProps = {
   functionText: string;

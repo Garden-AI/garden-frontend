@@ -1,5 +1,5 @@
 import Markdown from "marked-react";
-import SyntaxHighlighter from "./SyntaxHighlighter";
+import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { useGetNotebook } from "@/api";
 
 export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {

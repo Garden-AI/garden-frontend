@@ -1,28 +1,35 @@
-import { Entrypoint } from "@/api/types";
-import axios from "../axios";
-import { useMutation } from "@tanstack/react-query";
-import { EntrypointCreateRequest } from "@/api/types";
+import axios from "@/api/axios";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 
-const mintDOI = async () => {
+interface MintDOIResponse {
+  doi: string;
+}
+interface MintDOIRequest {
+  data: {
+    type: string;
+    attributes: {};
+  };
+}
+
+const mintDOI = async (): Promise<MintDOIResponse> => {
   try {
-    const response = await axios.post(`/doi`, {
+    const request: MintDOIRequest = {
       data: { type: "dois", attributes: {} },
-    });
+    };
+    const response = await axios.post<MintDOIResponse>(`/doi`, request);
     return response.data;
   } catch (error) {
     throw new Error("Error minting DOI");
   }
 };
 
-export const useMintDOI = () => {
-  return useMutation({
+export const useMintDOI = (): UseMutationResult<
+  MintDOIResponse,
+  Error,
+  void,
+  unknown
+> => {
+  return useMutation<MintDOIResponse, Error, void, unknown>({
     mutationFn: mintDOI,
-    onError: (error, variables, context) => {
-      // console.log("onError", error, variables, context);
-    },
-    onSuccess: (data, variables, context) => {
-      // The mutation was successful!
-      // Use the context to do something with the data
-    },
   });
 };

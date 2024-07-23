@@ -18,32 +18,32 @@ const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
 
   const { data, isError, isPending } = useGetEntrypoint({
-    doi: "10.26311/3p8f-se33",
+    doi,
     limit: 1,
   });
+  const { data: garden } = useSearchGardenByDOI(doi);
 
-  const entrypoint = data?.[0];
+  if (!data) return <LoadingSpinner />;
+  const entrypoint = data[0] || null;
 
   if (isPending) return <LoadingSpinner />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 
+  if (!garden) return <NotFoundPage />;
+
   return (
     <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
-      {/* <Breadcrumb
+      <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
-          { label: "Gardens", link: "/search" },
-          {
-            label: garden.title,
-            link: `/garden/${encodeURIComponent(`${garden.doi}`)}`,
-          },
+          { label: "Entrypoints" },
           { label: entrypoint.title },
         ]}
-      /> */}
+      />
       <EntrypointHeader entrypoint={entrypoint} doi={doi} />
-      {/* <EntrypointBody garden={garden} entrypoint={entrypoint} />
-      <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} /> */}
+      <EntrypointBody garden={garden} entrypoint={entrypoint} />
+      <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} />
       <AssociatedMaterials entrypoint={entrypoint} />
       <EntrypointTabs entrypoint={entrypoint} />
     </div>

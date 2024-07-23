@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { UseFormReturn, useFieldArray, useFormContext } from "react-hook-form";
 import { GardenCreateFormData } from "./schemas";
 import { Textarea } from "@/components/ui/textarea";
-import MultipleSelector from "@/components/ui/multiple-select";
+import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { useState } from "react";
 import {
   Table,
@@ -38,9 +38,13 @@ import WithTooltip from "@/components/WithTooltip";
 import { useGetEntrypoint, useGetEntrypoints } from "@/api";
 import { cn } from "@/lib/utils";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import SyntaxHighlighter from "@/components/SyntaxHighlighter";
+import CopyButton from "@/components/CopyButton";
 
 const Step1 = () => {
   const form = useFormContext() as UseFormReturn<GardenCreateFormData>;
+  const [tags, setTags] = useState<string[]>([]);
+
   return (
     <div className="space-y-8">
       <div className="space-y-2">
@@ -107,9 +111,8 @@ const Step1 = () => {
                 maxSelected={5}
                 hidePlaceholderWhenSelected
                 inputProps={{ maxLength: 32 }}
-                onChange={(tags) => {
-                  return tags.map((tag) => tag.value);
-                }}
+                onChange={field.onChange}
+                value={field.value}
               />
             </FormControl>
             <FormDescription>
@@ -136,8 +139,7 @@ const Step2 = () => {
     isFetching,
     refetch,
   } = useGetEntrypoint({
-    owner_uuid: "76024960-c68b-4fec-8cb8-b65b096f18da",
-    // auth?.authorization?.user?.sub,
+    owner_uuid: auth?.authorization?.user?.sub,
   });
 
   const [selectedEntrypoints, setSelectedEntrypoints] = useState<string[]>(
@@ -258,113 +260,156 @@ const Step2 = () => {
         </div>
       </div>
 
-      <p className="text-sm text-gray-500">
-        Not seeing the Entrypoint you're looking for? You can create a new one
-        by following{" "}
-        <Dialog>
-          <DialogTrigger className="text-primary transition hover:text-primary/80">
-            {" "}
-            these instructions.
-          </DialogTrigger>
-          <DialogContent>
-            <DialogTitle className="text-2xl font-medium">
-              Create a new Entrypoint
-            </DialogTitle>
+      <EntrypointCreateInstructions />
+    </div>
+  );
+};
 
-            <DialogDescription className="text-sm text-gray-700">
-              Create a new Entrypoint to add to your Garden.
-            </DialogDescription>
+const EntrypointCreateInstructions = () => {
+  const form = useFormContext();
 
-            <div className="mx-auto w-[800px] px-4 py-8">
-              <h1 className="mb-6 text-3xl font-bold">
-                Creating and Publishing an Entrypoint
-              </h1>
+  return (
+    <div className="text-sm text-gray-500">
+      Not seeing the Entrypoint you're looking for? You can create a new one by
+      following{" "}
+      <Dialog>
+        <DialogTrigger className="text-primary transition hover:text-primary/80">
+          {" "}
+          these instructions.
+        </DialogTrigger>
+        <DialogContent className="max-h-[90vh] overflow-x-auto overflow-y-scroll p-12 font-display xl:max-w-screen-xl">
+          <DialogTitle className="text-3xl font-bold">
+            Creating a new Entrypoint
+          </DialogTitle>
 
-              <div className="space-y-8">
-                <section>
-                  <h2 className="mb-4 text-2xl font-semibold">
-                    Step 1: Start a Notebook
-                  </h2>
-                  <div className="rounded-lg bg-gray-100 p-4">
-                    <pre>
-                      <code className="text-sm">
-                        garden-ai notebook start tutorial_notebook.ipynb
-                        --base-image=3.10-sklearn --tutorial
-                      </code>
-                    </pre>
-                  </div>
-                  <p className="mt-2">
-                    This command starts a Jupyter notebook in an isolated Docker
-                    environment.
-                  </p>
-                </section>
+          <DialogDescription className="mb-6 text-base text-gray-700">
+            Entrypoints are Python functions that serve as an access point to a
+            saved notebook session and can be executed remotely via any Garden
+            it's published to. To add an entrypoint, first ensure you have the
+            <a href="https://garden.ai/docs/cli" className="text-primary">
+              {" "}
+              Garden CLI
+            </a>{" "}
+            installed on your machine, and you are logged in. You can run
+            <code className="rounded bg-gray-100 p-1">garden-ai whoami</code> to
+            check if you are logged in.
+          </DialogDescription>
 
-                <section>
-                  <h2 className="mb-4 text-2xl font-semibold">
-                    Step 2: Write the Entrypoint Function
-                  </h2>
-                  <div className="rounded-lg bg-white p-6 shadow-md">
-                    <p className="mb-4">
-                      In the notebook, define your entrypoint function. This
-                      function will run on the remote server when someone
-                      invokes your model.
-                    </p>
-                    <div className="rounded-lg bg-gray-100 p-4">
-                      <pre>
-                        <code className="text-sm">
-                          def classify_irises(sepal_length, sepal_width,
-                          petal_length, petal_width): # Your model logic here
-                          return predicted_class
-                        </code>
-                      </pre>
-                    </div>
-                  </div>
-                </section>
-
-                <section>
-                  <h2 className="mb-4 text-2xl font-semibold">
-                    Step 3: Publish the Entrypoint
-                  </h2>
-                  <div className="rounded-lg bg-white p-6 shadow-md">
-                    <p className="mb-4">
-                      Use the following command to publish your entrypoint:
-                    </p>
-                    <div className="rounded-lg bg-gray-100 p-4">
-                      <pre>
-                        <code className="text-sm">
-                          garden-ai notebook publish tutorial_notebook.ipynb
-                          --base-image="3.10-sklearn"
-                        </code>
-                      </pre>
-                    </div>
-                  </div>
-                </section>
-
-                <section>
-                  <h2 className="mb-4 text-2xl font-semibold">
-                    Step 4: Test Your Published Model
-                  </h2>
-                  <p className="mb-4">
-                    To test your published model, you can use a separate
-                    notebook or follow the steps in a Google Colab notebook.
-                  </p>
-                  <button className="bg-blue-500 hover:bg-blue-600 rounded px-4 py-2 font-bold text-white">
-                    Continue in Google Colab
-                  </button>
-                </section>
+          <div className="space-y-12">
+            <div>
+              <h2 className="mb-4 text-xl font-semibold">Start a Notebook</h2>
+              <div className="rounded-lg bg-gray-100 p-4">
+                <pre>
+                  <code className="">
+                    garden-ai notebook start {"<PATH TO YOUR NOTEBOOK>"}{" "}
+                    --base-image={"<BASE IMAGE>"}
+                  </code>
+                </pre>
               </div>
-
-              <div className="bg-green-100 mt-8 rounded-lg p-4">
-                <h3 className="mb-2 text-lg font-semibold">Success!</h3>
-                <p>
-                  You've now created your first garden, written an entrypoint
-                  function, published it, and executed the model remotely.
+              <div className="">
+                <p className="mt-2">
+                  This command starts a Jupyter notebook in an isolated Docker
+                  environment.
+                </p>
+                <p className="mt-2">
+                  The <code>--base-image</code> flag specifies the base image to
+                  use for the notebook- you can run{" "}
+                  <code className="rounded bg-gray-100 p-1">
+                    garden-ai notebook list-premade-images
+                  </code>{" "}
+                  to see the available base images.
                 </p>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      </p>
+
+            <div>
+              <h2 className="mb-4 text-xl font-semibold">
+                Write your Entrypoint Function
+              </h2>
+              <p className="mb-2">
+                In the notebook, define one or more entrypoint functions. This
+                function will run on the remote server when someone invokes your
+                model.
+              </p>
+
+              <p className="mb-4">
+                To specify an entrypoint function, use the garden-entrypoint
+                decorator:
+              </p>
+              <SyntaxHighlighter>
+                {`from garden_ai import EntrypointMetadata, garden_entrypoint 
+
+@garden_entrypoint(
+    metadata=EntrypointMetadata(
+        title="My Entrypoint",
+        description="This is an example entrypoint",
+        tags=["example", "entrypoint"],
+        authors=["Shane", "Leek"],
+    )
+)
+def my_entrypoint_function():
+  # Your code here
+  return`}
+              </SyntaxHighlighter>
+
+              <p className="mt-2 text-sm text-gray-500">
+                For more information on the garden-entrypoint decorator,
+                including more information about the EntrypointMetadata fields,
+                check out the{" "}
+                <a
+                  href="https://garden-ai.readthedocs.io/en/latest/Entrypoints/#garden_ai.EntrypointMetadata"
+                  className="text-primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Entrypoint Metadata API Reference
+                </a>
+                .
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-4 text-xl font-semibold">
+                Publish your Entrypoint
+              </h2>
+              <div className="">
+                <p className="mb-4">
+                  Use the following command to publish your notebook and
+                  associated entrypoints:
+                </p>
+                <div className="rounded-lg bg-gray-100 p-4">
+                  <pre>
+                    <code className="text-sm">
+                      garden-ai notebook publish {"<PATH TO YOUR NOTEBOOK>"}
+                    </code>
+                  </pre>
+                </div>
+              </div>
+            </div>
+            <div className="mb-8">
+              <h3 className="mb-2 text-xl font-semibold">Success!</h3>
+              <p className="mb-2">
+                You can now add your new Entrypoint to your Garden by selecting
+                it from the list of available Entrypoints.
+              </p>
+
+              <p className="mb-4">
+                For a more comprehensive guide on creating and managing
+                Entrypoints, see the{" "}
+                <a
+                  href="https://garden-ai.readthedocs.io/en/latest/user_guide/tutorial/"
+                  className="text-primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  online tutorial
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -488,7 +533,7 @@ const getFieldsForStep = (step: number) => {
     case 1:
       return ["title", "description", "tags"];
     case 2:
-      return ["entrypointIds"];
+      return ["entrypoint_ids"];
     case 3:
       return ["authors", "contributors"];
     case 4:

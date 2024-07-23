@@ -14,9 +14,8 @@ export function transformFormToRequest(
     ),
     tags: formData.tags.map((tag) => tag.label),
     entrypoint_ids: formData.entrypoint_ids.map((entrypoint) => entrypoint.doi),
-    doi,
     owner_identity_id: ownerId,
-
+    doi,
     publisher: "Gardens-AI",
   };
 }
