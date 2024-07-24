@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GardenBox from "@/components/GardenBox";
-import { useSearchGardens } from "../api/search";
+import { useSearchGardens } from "@/api";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Rocket, Share2Icon, Lightbulb, Search } from "lucide-react";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },
@@ -34,6 +35,14 @@ const textSections = [
 ];
 
 const HomePage = () => {
+  const auth = useGlobusAuth();
+  useEffect(() => {
+    async function getToken() {
+      await auth.authorization?.handleCodeRedirect();
+    }
+    getToken();
+  }, [auth]);
+
   const { data: gardens } = useSearchGardens("*", "6");
 
   return (
@@ -74,7 +83,7 @@ const HomePage = () => {
       </div>
 
       <Separator />
-      <div className="mx-auto grid max-w-7xl grid-cols-1 justify-around gap-x-12 gap-y-24 px-24 py-16 md:grid-cols-3 ">
+      <div className="mx-auto grid  grid-cols-1 justify-around gap-x-12 gap-y-24 px-24 py-16 md:grid-cols-3 ">
         {icons.map((icon, index) => (
           <div
             key={index}
@@ -88,7 +97,7 @@ const HomePage = () => {
         ))}
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-12 md:px-20">
+      <div className="mx-auto  px-4 sm:px-12 md:px-20">
         {textSections.map((section, index) => (
           <div key={index}>
             <Separator />

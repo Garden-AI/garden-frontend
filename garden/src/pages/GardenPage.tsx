@@ -1,7 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
-import { useSearchGardenByDOI } from "../api/search";
 import { Entrypoint, Garden } from "@/api/types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { LinkIcon } from "lucide-react";
@@ -18,11 +17,16 @@ import ShareModal from "@/components/ShareModal";
 import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
+import { useGetGarden, useSearchGardenByDOI } from "@/api";
+// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
-export default function GardenPage({ bread }: { bread: any }) {
+export default function GardenPage() {
   const { doi } = useParams();
-  const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
 
+  // Once database is available, this will be used to get the datasets
+  const { data: garden, isLoading, isError } = useGetGarden(doi!);
+
+  // const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -49,15 +53,16 @@ export default function GardenPage({ bread }: { bread: any }) {
 
 function GardenHeader({ garden }: { garden: Garden }) {
   return (
-    <div className="my-8 flex gap-2 sm:gap-4">
-      <h1 className="mb-4 text-2xl sm:text-3xl">{garden.title}</h1>
-      <div className="flex">
+    <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
+      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
           content={window.location.href}
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
+        {/* <GardenDropdownOptions garden={garden} /> */}
       </div>
     </div>
   );
@@ -68,7 +73,7 @@ function GardenBody({ garden }: { garden: Garden }) {
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="mb-4">
         <h2 className="font-semibold">Contributors</h2>
-        <p>{garden.authors?.join(",")}</p>
+        <p>{garden.authors?.join(", ")}</p>
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>

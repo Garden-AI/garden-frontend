@@ -1,6 +1,12 @@
 import { Copy, Share2 } from "lucide-react";
 import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 import {
   Tooltip,
   TooltipContent,
@@ -57,7 +63,7 @@ const ShareModal = ({ doi }: { doi: string }) => {
               <Button
                 size="icon"
                 variant="ghost"
-                className="border-none bg-transparent text-gray-600 hover:border-none hover:bg-transparent hover:text-gray-500"
+                className="border-none bg-transparent text-gray-700 hover:border-none hover:bg-transparent hover:text-gray-500"
               >
                 <Share2 width={24} height={24} className="" />
               </Button>
@@ -71,7 +77,10 @@ const ShareModal = ({ doi }: { doi: string }) => {
         </Tooltip>
       </TooltipProvider>
       <DialogContent className="sm:max-w-[540px]">
-        <h2 className="mb-4 text-2xl font-semibold">Share</h2>
+        <DialogTitle>Share</DialogTitle>
+        <DialogDescription className="mb-4">
+          Share this garden with others
+        </DialogDescription>
         <div className="mb-8 flex justify-evenly">
           {socialMediaItems.map((item, index) => (
             <a

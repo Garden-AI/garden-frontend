@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 
-import { useSearchGardens } from "@/api/search";
+import { useSearchGardens } from "@/api";
 import { Garden } from "@/api/types";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -8,8 +8,7 @@ import GardenBox from "@/components/GardenBox";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const SearchPage = ({ bread }: { bread: any }) => {
-  bread.search = "Search";
+const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [gardens, setGardens] = useState<Garden[]>([]);
   const {
@@ -25,7 +24,7 @@ const SearchPage = ({ bread }: { bread: any }) => {
 
   useEffect(() => {
     setGardens(prioritizeGardens(filteredGardens));
-  }, [filteredGardens]);
+  }, [filteredGardens, gardenSearchResults]);
 
   if (isLoading) {
     return <LoadingSpinner />;

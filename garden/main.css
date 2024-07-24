@@ -65,3 +65,7 @@
     --ring: 142.4 71.8% 29.2%;
   }
 }
+
+:root:has(.no-doc-scroll) {
+  overflow: hidden;
+}

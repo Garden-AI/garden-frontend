@@ -35,17 +35,17 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
         </CardContent>
         <CardFooter className="mt-auto flex flex-wrap gap-1">
           {tags && tags.length > 0 && (
-            <>
-              <TagIcon className="h-4 w-4 text-gray-500" />
-              {tags.map((tag: string, index: number) => (
+            <div>
+              <TagIcon className="mr-2 inline h-5 w-5 text-gray-500" />
+              {tags.map((value: any, index: number) => (
                 <span
                   key={index}
-                  className="rounded-lg bg-primary p-1 px-2 text-xs  text-primary-foreground"
+                  className="mx-0.5 rounded-lg bg-primary p-1 px-2  text-xs text-primary-foreground"
                 >
-                  {tag}
+                  {value}
                 </span>
               ))}
-            </>
+            </div>
           )}
         </CardFooter>
       </div>

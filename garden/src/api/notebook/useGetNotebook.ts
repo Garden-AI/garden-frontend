@@ -1,5 +1,5 @@
+// import { Notebook } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";
-
 interface Cell {
   cell_type: string;
   execution_count: number;
