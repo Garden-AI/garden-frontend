@@ -94,7 +94,7 @@ function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: 
       <div className="flex flex-row justify-between w-full">
         <div className="mb-4">
           <h2 className="font-semibold">Contributors</h2>
-          <p>{garden.authors.join(",")}</p>
+          <p>{garden.authors.join(", ")}</p>
         </div>
         {canEditGarden && (
           <button
