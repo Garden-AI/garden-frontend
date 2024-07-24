@@ -1,48 +1,129 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGetUserInfo } from "../../api/getUserInfo";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import NotFoundPage from "../../pages/NotFoundPage";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useGlobusAuth } from "@/components/globus-auth-context/useGlobusAuth";
+import { toast } from "sonner";
+import { useUpdateUserInfo } from '../../api/updateUserInfo';
+import MultipleSelector from "@/components/ui/multiple-select";
 
 const UserProfileInfo = () => {
-    const initialInfoState = {
-        id: null,
-        name: '',
-        email: '',
-        phone: '',
-        affiliations: '',
-        domains: '',
-        skills: ''
-    }
-    const [info, setInfo] = useState(initialInfoState);
     const [edit, setEdit] = useState(false);
-    const { data: currUserInfo, isLoading, isError } = useGetUserInfo();
+    const { data: currUserInfo, isLoading: fetchingUserInfoLoading, isError: fetchingUserInfoError } = useGetUserInfo();
     const auth = useGlobusAuth();
+    const { mutate: updateUser } = useUpdateUserInfo();
+
+    interface userUpdateRequest {
+        username?: string;
+        name?: string;
+        email?: string;
+        phone?: string;
+        affiliations?: string[];
+        skills?: string[];
+        domains?: string[];
+        pfp_id?: number;
+    }
+
+    const [userInfo, setUserInfo] = useState<userUpdateRequest>({
+        username: "",
+        name: "",
+        email: "",
+        phone: "",
+        affiliations: [],
+        skills: [],
+        domains: [],
+        pfp_id: undefined,
+    });
+
+    useEffect(() => {
+        if (currUserInfo) {
+            setUserInfo({
+                username: currUserInfo.username ?? "",
+                name: currUserInfo.name ?? "",
+                email: currUserInfo.email ?? "",
+                phone: currUserInfo.phone_number ?? "",
+                affiliations: currUserInfo.affiliations ?? [],
+                skills: currUserInfo.skills ?? [],
+                domains: currUserInfo.domains ?? [],
+                pfp_id: currUserInfo.profile_pic_id ? Number(currUserInfo.profile_pic_id) : undefined,
+            });
+        }
+    }, [currUserInfo]);
+
+    const handleSave = () => {
+        if (!auth?.authorization?.user?.sub) {
+            toast.error("You must be authenticated to save changes.");
+            return;
+        } 
+        const dataToSend: userUpdateRequest = {
+            username: userInfo.username,
+            name: userInfo.name,
+            email: userInfo.email,
+            phone: userInfo.phone,
+            affiliations: userInfo.affiliations,
+            skills: userInfo.skills,
+            domains: userInfo.domains,
+            pfp_id: userInfo.pfp_id ? Number(userInfo.pfp_id) : undefined,
+        };
+        
+        console.log("Updating user info with data:", dataToSend);
+        updateUser(dataToSend, {
+            onSuccess: (updatedData: any) => {
+                setUserInfo({
+                    username: updatedData.username ?? "",
+                    name: updatedData.name ?? "",
+                    email: updatedData.email ?? "",
+                    phone: updatedData.phone_number ?? "",
+                    affiliations: updatedData.affiliations ?? [],
+                    skills: updatedData.skills ?? [],
+                    domains: updatedData.domains ?? [],
+                    pfp_id: updatedData.profile_pic_id ? Number(updatedData.profile_pic_id) : undefined,
+                });
+                setEdit(false);
+            }
+        });
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name === 'affiliations' || name === 'skills' || name === 'domains') {
+            setUserInfo({ ...userInfo, [name]: value.split(',').map(item => item.trim()) });
+        } else {
+            setUserInfo({ ...userInfo, [name]: value });
+        }
+    };
 
     const handleEdit = () => {
-        setEdit(true);
-    };
+        setEdit(!edit);
+    }
 
-    const handleSave = (e: any) => {
-        e.preventDefault();
-        //saveInfo();
-        setEdit(false);
-    };
-
-    const handleInputChange = (e: any) => {
-        const { name, value } = e.target;
-        setInfo({ ...info, [name]: value });
-    };
-
-
-    if (isLoading) {
+    if (fetchingUserInfoLoading) {
         return <LoadingSpinner />;
     }
-    if (isError) {
+    if (fetchingUserInfoError) {
         return <NotFoundPage />;
     }
+
+    const renderTags = (items: any, title: any) => (
+        <div className="space-y-2">
+            <p className="text-gray-600 flex items-center">
+                {title}
+            </p>
+            <div className="flex flex-wrap gap-2">
+                {items && items.length > 0 ? (
+                    items.map((item: any, index: any) => (
+                        <span key={index} className="rounded-lg bg-primary p-1 px-2 text-xs text-primary-foreground">
+                            {item}
+                        </span>
+                    ))
+                ) : (
+                    <p className="text-sm text-gray-500 italic">No {title.toLowerCase()} listed yet.</p>
+                )}
+            </div>
+        </div>
+    );
 
     return (
         <div className="pr-20 pl-20 pb-20 w-full">
@@ -53,7 +134,7 @@ const UserProfileInfo = () => {
                         <input
                             type="text"
                             name="name"
-                            value={currUserInfo?.name ?? ''}
+                            value={userInfo.name ?? ''}
                             onChange={handleInputChange}
                             placeholder="Full Name"
                             className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
@@ -68,7 +149,7 @@ const UserProfileInfo = () => {
                         <input
                             type="text"
                             name="phone"
-                            value={currUserInfo?.phone_number ?? ''}
+                            value={userInfo.phone ?? ''}
                             onChange={handleInputChange}
                             placeholder="Phone Number"
                             className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
@@ -83,7 +164,7 @@ const UserProfileInfo = () => {
                         <input
                             type="email"
                             name="email"
-                            value={currUserInfo?.email ?? ''}
+                            value={userInfo.email ?? ''}
                             onChange={handleInputChange}
                             placeholder="Email"
                             className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
@@ -93,48 +174,51 @@ const UserProfileInfo = () => {
                     )}
                 </div>
                 <div className = "space-y-2 ">
-                    <p className="text-gray-600">Institutions/Affiliations</p>
                     {edit ? (
-                        <input
-                            type="text"
-                            name="affiliations"
-                            value={currUserInfo?.affiliations ?? []}
-                            onChange={handleInputChange}
-                            placeholder="Affiliations"
-                            className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
+                        <MultipleSelector
+                            placeholder="Edit institutions/affiliations"
+                            creatable
+                            value={userInfo.affiliations?.map(affiliation => ({ label: affiliation, value: affiliation }))}
+                            onChange={(newValue: any) => setUserInfo({
+                            ...userInfo,
+                            affiliations: newValue.map((item: any) => item.value)
+                            })}
+                            className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2 bg-white"
                         />
                     ) : (
-                        <p>{currUserInfo?.affiliations ?? 'No affiliations listed yet.'}</p>
+                        <>{renderTags(currUserInfo?.affiliations, "Institutions/Affiliations")}</>
                     )}
                 </div>
                 <div className = "space-y-2 ">
-                    <p className="text-gray-600">Skills (separated with commas)</p>
                     {edit ? (
-                        <input
-                            type="text"
-                            name="skills"
-                            value={currUserInfo?.skills ?? []}
-                            onChange={handleInputChange}
-                            placeholder="Skills"
-                            className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
+                        <MultipleSelector
+                            placeholder="Edit skills"
+                            creatable
+                            value={userInfo.skills?.map(skill => ({ label: skill, value: skill }))}
+                            onChange={(newValue: any) => setUserInfo({
+                            ...userInfo,
+                            skills: newValue.map((item: any) => item.value)
+                            })}
+                            className="bg-white"
                         />
                     ) : (
-                        <p>{currUserInfo?.skills ?? 'No skills listed yet.'}</p>
+                        <>{renderTags(currUserInfo?.skills, "Skills")}</>
                     )}
                 </div>
                 <div className = "space-y-2 ">
-                    <p className="text-gray-600">Domain(s) (separated with commas)</p>
                     {edit ? (
-                        <input
-                                type="text"
-                                name="domains"
-                                value={currUserInfo?.domains ?? []}
-                                onChange={handleInputChange}
-                                placeholder="Domains"
-                                className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
-                            />
+                        <MultipleSelector
+                            placeholder="Edit Contributors"
+                            creatable
+                            value={userInfo.domains?.map(domain => ({ label: domain, value: domain }))}
+                            onChange={(newValue: any) => setUserInfo({
+                            ...userInfo,
+                            domains: newValue.map((item: any) => item.value)
+                            })}
+                            className="bg-white"
+                        />
                     ) : (
-                        <p>{currUserInfo?.domains ?? 'No domains listed yet.'}</p>
+                        <>{renderTags(currUserInfo?.domains, "Domains")}</>
                     )}
                 </div>
             </div>

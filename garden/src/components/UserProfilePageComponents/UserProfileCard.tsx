@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import UserProfileShareModal from '../UserProfileShareModal';
 import PfpSelectionModal from './PfpSelectionModal';
 import { useGetUserInfo } from "../../api/getUserInfo";
+import renderTags from "./UserProfileInfo";
 
 const UserProfileCard = () => {
     const [show, setShow] = useState(false);
@@ -63,23 +64,19 @@ const UserProfileCard = () => {
                 </div>
                 <div className="mt-4 mb-5 flex gap-2 md:!gap-4 flex flex-col text-gray-600">
                     <div className="text-sm mb-2">
-                        <p className="text-bluePrimary mb-1">{currUserInfo?.affiliations ?? 'No affiliations listed yet.'}</p>
-                        <p className="text-lightSecondary font-normal">{currUserInfo?.domains ?? 'No domains listed yet.'}</p>
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
                     <div className="flex flex-row items-center justify-center w-full mb-2 mt-1">
-                        <p className="text-sky-500 text-2xl font-bold">9</p>
-                        <div className="flex-grow"></div>
-                        <p className="text-lightSecondary text-base font-normal">Gardens Created</p>
-                    </div>
+                    <p className="text-sky-500 text-2xl font-bold">9</p>
+                    <p className="text-lightSecondary text-base font-normal ml-2">Gardens Created</p>
+                </div>
+                <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
+                <div className="flex flex-row items-center justify-center w-full mb-2 mt-1">
+                    <p className="text-orange text-2xl font-bold">13</p>
+                    <p className="text-lightSecondary text-base font-normal ml-2">Gardens Saved</p>
+                </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
-                    <div className="flex flex-row items-center justify-center w-full mb-2 mt-1">
-                        <p className="text-orange text-2xl font-bold">13</p>
-                        <div className="flex-grow"></div>
-                        <p className="text-lightSecondary text-base font-normal">Gardens Saved</p>
-                    </div>
-                    <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
-                    <div className="flex flex-col items-center gap-4 text-base mb-6">
+                    <div className="flex flex-row items-center gap-4 text-base mb-6">
                         <p className="text-lightSecondary font-normal">Skills</p>
                         <p>{currUserInfo?.skills ?? 'No skills listed yet.'}</p>
                     </div>

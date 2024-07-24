@@ -106,7 +106,7 @@ const MetadataEditing = () => {
                         placeholder="Edit Contributors"
                         creatable
                         value={metadata.contributors.map(contributor => ({ label: contributor, value: contributor }))}
-                        onChange={(newValue) => setMetadata({
+                        onChange={(newValue: any) => setMetadata({
                         ...metadata,
                         contributors: newValue.map(item => item.value)
                         })}
@@ -119,7 +119,7 @@ const MetadataEditing = () => {
                         placeholder="Edit Authors"
                         creatable
                         value={metadata.authors.map(author => ({ label: author, value: author }))}
-                        onChange={(newValue) => setMetadata({
+                        onChange={(newValue: any) => setMetadata({
                         ...metadata,
                         authors: newValue.map(item => item.value)
                         })}
@@ -155,7 +155,6 @@ const MetadataEditing = () => {
                 )}
                 onClick={() => handleSave(metadata)}
                 disabled={!auth?.authorization?.user?.sub}
-                
               >
                 Save Edits
               </button>
