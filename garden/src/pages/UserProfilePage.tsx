@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import UserProfileTabs from "../components/UserProfilePageComponents/UserProfileTabs";
 import UserProfileCard from "../components/UserProfilePageComponents/UserProfileCard";
-// import Breadcrumbs from "../components/Breadcrumbs";
 
 const UserProfilePage = () => {
 

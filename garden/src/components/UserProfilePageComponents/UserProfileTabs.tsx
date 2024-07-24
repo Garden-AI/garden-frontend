@@ -7,20 +7,7 @@ const UserProfileTabs = () => {
     const [isOverflowing, setIsOverflowing] = useState(false);
 
     const widthRef = useRef<HTMLParagraphElement>(null);
-    const bottom = useRef<HTMLDivElement>(null);
-    const top = useRef<HTMLButtonElement>(null);
     const div = useRef<HTMLDivElement>(null);
-
-    const scrollToBottom = () => {
-        div.current?.scrollTo({
-            top: div.current.scrollHeight,
-            behavior: "smooth",
-        });
-    };
-
-    const scrollToTop = () => {
-        div.current?.scrollTo({ top: 0, behavior: "smooth" });
-    };
 
     useEffect(() => {
         if (widthRef.current) {
@@ -32,7 +19,7 @@ const UserProfileTabs = () => {
     }, []);
 
     return (
-        <div className="flex h-full w-full flex-col font-display w-9/12 rounded-b-lg border border-gray-200 shadow-sm hover:shadow-md ">
+        <div className="flex h-4/5 w-full flex-col font-display w-9/12 rounded-b-lg border border-gray-200 shadow-sm hover:shadow-md">
             <div className="flex flex-col flex-grow">
                 <div className="flex h-12 justify-evenly">
                     <button
