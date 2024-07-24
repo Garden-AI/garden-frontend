@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Garden } from "../../types";
 import GardenBox from "@/components/GardenBox";
-import { useSearchGardens } from "../../api/search";
+import { useSearchGardens } from "../../api/search/useSearchGardens";
 import { Link } from 'react-router-dom';
 
 
@@ -15,6 +15,7 @@ const MyGardens = () => {
     "10.23677%2F0330-gx38", "10.23677%2Faxpa-gc57", "10.26311%2Fep98-br79", "10.23677%2Fygn0-ry88", "10.23677%2Fxcme-kt70"]); // manually added dois for testing
     const { data: allGardens, isLoading, isError } = useSearchGardens("*", "100");
 
+    /*
     useEffect(() => {
         if (allGardens) {
             console.log("Fetched gardens:", allGardens);
@@ -23,9 +24,6 @@ const MyGardens = () => {
             const decodedDois = dois.map(doi => decodeURIComponent(doi));
             console.log("Decoded DOIs:", decodedDois);
 
-            // need to filter so that only the gardens created by the current user are displayed; might not filter depending on how the backend tables are structured
-            // if there is a separate field in the user table for my gardens that has a list of dois of gardens that the user created, then I can directly access that field
-            // and render just those gardens
             const filteredGardens = allGardens.filter((garden: Garden) =>
                 decodedDois.includes(garden.doi)
             );
@@ -33,7 +31,7 @@ const MyGardens = () => {
             setGardens(filteredGardens);
         }
     }, [allGardens, dois]);
-
+    */
 
     return (
         <div className="">

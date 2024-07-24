@@ -156,7 +156,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {entrypoints.map((entrypoint: any) => (
-        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
+        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={false}/>
       ))}
     </div>
   );

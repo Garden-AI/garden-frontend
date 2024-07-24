@@ -4,10 +4,11 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import NotFoundPage from "../../pages/NotFoundPage";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useGlobusAuth } from "@/components/globus-auth-context/useGlobusAuth";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import { useUpdateUserInfo } from '../../api/updateUserInfo';
 import MultipleSelector from "@/components/ui/multiple-select";
+import RenderTags from "../ui/renderTags";
 
 const UserProfileInfo = () => {
     const [edit, setEdit] = useState(false);
@@ -106,25 +107,6 @@ const UserProfileInfo = () => {
         return <NotFoundPage />;
     }
 
-    const renderTags = (items: any, title: any) => (
-        <div className="space-y-2">
-            <p className="text-gray-600 flex items-center">
-                {title}
-            </p>
-            <div className="flex flex-wrap gap-2">
-                {items && items.length > 0 ? (
-                    items.map((item: any, index: any) => (
-                        <span key={index} className="rounded-lg bg-primary p-1 px-2 text-xs text-primary-foreground">
-                            {item}
-                        </span>
-                    ))
-                ) : (
-                    <p className="text-sm text-gray-500 italic">No {title.toLowerCase()} listed yet.</p>
-                )}
-            </div>
-        </div>
-    );
-
     return (
         <div className="pr-20 pl-20 pb-20 w-full">
             <div className="grid grid-cols-2 gap-8">
@@ -186,7 +168,7 @@ const UserProfileInfo = () => {
                             className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2 bg-white"
                         />
                     ) : (
-                        <>{renderTags(currUserInfo?.affiliations, "Institutions/Affiliations")}</>
+                        <RenderTags items={userInfo?.affiliations ?? []} title="Affiliations" />
                     )}
                 </div>
                 <div className = "space-y-2 ">
@@ -202,7 +184,7 @@ const UserProfileInfo = () => {
                             className="bg-white"
                         />
                     ) : (
-                        <>{renderTags(currUserInfo?.skills, "Skills")}</>
+                        <RenderTags items={userInfo?.skills ?? []} title="Skills" />
                     )}
                 </div>
                 <div className = "space-y-2 ">
@@ -218,7 +200,7 @@ const UserProfileInfo = () => {
                             className="bg-white"
                         />
                     ) : (
-                        <>{renderTags(currUserInfo?.domains, "Domains")}</>
+                        <RenderTags items={userInfo?.domains ?? []} title="Domains" />
                     )}
                 </div>
             </div>

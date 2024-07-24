@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import UserProfileShareModal from '../UserProfileShareModal';
 import PfpSelectionModal from './PfpSelectionModal';
 import { useGetUserInfo } from "../../api/getUserInfo";
-import renderTags from "./UserProfileInfo";
+import RenderTags from "../ui/renderTags";
 
 const UserProfileCard = () => {
     const [show, setShow] = useState(false);
@@ -46,10 +46,10 @@ const UserProfileCard = () => {
     );
 
     return (
-        <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:shadow-md w-3/12'>
-            <div className="dark:bg-navy-800 shadow-shadow-500 shadow-3xl rounded-primary relative mx-auto flex h-full w-full max-w-[550px] flex-col items-center bg-white bg-cover bg-clip-border p-[16px] dark:shadow-none">
-                <div className="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover">
-                    <div className="relative h-[170px] w-[170px] overflow-hidden">
+        <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md w-4/12'>
+            <div className="dark:bg-navy-800 shadow-shadow-500 shadow-3xl rounded-primary relative mx-auto flex h-full w-full max-w-[550px] flex-col items-center bg-white bg-cover bg-clip-border p-4 dark:shadow-none">
+                <div className="mt-8 flex flex-col items-center px-2">
+                    <div className="relative h-[150px] w-[150px] overflow-hidden">
                         <div
                             className="cursor-pointer block relative h-full w-full flex items-center justify-center bg-green rounded-full"
                             onClick={handleIconClick}
@@ -58,33 +58,33 @@ const UserProfileCard = () => {
                         </div>
                     </div>
                 </div>
-                <div className="mt-12 flex flex-col items-center">
-                    <h4 className="text-bluePrimary text-3xl font-bold mb-1 mt-2">{currUserInfo?.name ?? 'No Name'}</h4>
-                    <p className="text-lightSecondary text-sm font-normal mb-2">{currUserInfo?.email}</p>
+                <div className="mt-6 flex flex-col items-center space-y-1">
+                    <h4 className="text-bluePrimary text-3xl mb-1 mt-1">{currUserInfo?.name ?? 'No Name'}</h4>
+                    <p className="text-lightSecondary font-normal mb-1">{currUserInfo?.email}</p>
+                    <p className="text-gray-400 font-style: italic">{currUserInfo?.affiliations?.join(", ")}</p>
+                    <p className="text-gray-400 font-style: italic">{currUserInfo?.domains?.join(", ")}</p>
                 </div>
-                <div className="mt-4 mb-5 flex gap-2 md:!gap-4 flex flex-col text-gray-600">
-                    <div className="text-sm mb-2">
+                <div className="mt-6 mb-4 flex flex-col text-gray-600">
+                    <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
+                    <div className="flex flex-row items-center justify-center w-full mt-4 mb-4">
+                        <p className="text-sky-500 text-xl font-bold">9</p>
+                        <p className="text-lightSecondary text-base font-normal ml-2">Gardens Created</p>
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
-                    <div className="flex flex-row items-center justify-center w-full mb-2 mt-1">
-                    <p className="text-sky-500 text-2xl font-bold">9</p>
-                    <p className="text-lightSecondary text-base font-normal ml-2">Gardens Created</p>
-                </div>
-                <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
-                <div className="flex flex-row items-center justify-center w-full mb-2 mt-1">
-                    <p className="text-orange text-2xl font-bold">13</p>
-                    <p className="text-lightSecondary text-base font-normal ml-2">Gardens Saved</p>
-                </div>
+                    <div className="flex flex-row items-center justify-center w-full mt-4 mb-4">
+                        <p className="text-orange text-xl font-bold">13</p>
+                        <p className="text-lightSecondary text-base font-normal ml-2">Gardens Saved</p>
+                    </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
-                    <div className="flex flex-row items-center gap-4 text-base mb-6">
-                        <p className="text-lightSecondary font-normal">Skills</p>
-                        <p>{currUserInfo?.skills ?? 'No skills listed yet.'}</p>
+                    <div className="flex flex-col items-center gap-2 text-base mb-8">
+                        <p className="text-lightSecondary font-normal mt-4">Skills</p>
+                        <RenderTags items={currUserInfo?.skills ?? []} title="" />
                     </div>
                 </div>
                 <button 
                     onClick={showModal}
                     title="Share" 
-                    className="absolute bottom-2 right-4 flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+                    className="absolute bottom-2 right-2 flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
                 >
                     Share Profile
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-4 w-4">
