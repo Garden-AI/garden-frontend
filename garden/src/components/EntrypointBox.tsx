@@ -1,3 +1,4 @@
+import { Entrypoint } from "@/api/types";
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -51,7 +52,7 @@ const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: 
             />
           </svg>
           <div>
-            <span>{entrypoint.tags.join(", ")}</span>
+            <span>{entrypoint.tags?.join(", ")}</span>
           </div>
         </div>
       ) : null}

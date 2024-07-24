@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useGlobusAuth } from "@/components/globus-auth-context/useGlobusAuth";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import LoadingSpinner from "./LoadingSpinner";
 
 const PrivateRoutes = () => {

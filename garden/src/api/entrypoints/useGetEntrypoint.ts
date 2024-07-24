@@ -1,19 +1,35 @@
 import { Entrypoint } from "@/api/types";
 import axios from "../axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-const getEntrypoint = async (doi: string): Promise<Entrypoint> => {
+interface EntrypointParams {
+  doi?: string;
+  tags?: string;
+  authors?: string;
+  owner_uuid?: string;
+  draft?: string;
+  year?: string;
+  limit?: number;
+}
+
+const getEntrypoint = async (
+  params: EntrypointParams,
+): Promise<Entrypoint[]> => {
   try {
-    const response = await axios.get(`/garden/${doi}`);
+    const response = await axios.get("/entrypoints", { params });
     return response.data;
   } catch (error) {
-    throw new Error("Error fetching entrypoint by DOI");
+    throw new Error("Error fetching entrypoint");
   }
 };
 
-export const useGetEntrypoint = (doi: string) => {
-  return useQuery<Entrypoint, Error>({
-    queryKey: ["entrypoint", doi],
-    queryFn: () => getEntrypoint(doi),
+export const useGetEntrypoint = (
+  params: EntrypointParams,
+  options?: UseQueryOptions<Entrypoint[], Error>,
+) => {
+  return useQuery<Entrypoint[], Error>({
+    queryKey: ["entrypoint", params],
+    queryFn: () => getEntrypoint(params),
+    ...options,
   });
 };

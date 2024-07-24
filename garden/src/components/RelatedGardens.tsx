@@ -1,8 +1,8 @@
-import { Garden } from "@/types";
+import { Garden } from "@/api/types";
 import { RocketIcon } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
 import RelatedGardenBox from "./RelatedGardenBox";
-import { useSearchGardens } from "@/api/search";
+import { useSearchGardens } from "@/api";
 
 export default function RelatedGardens({ doi }: { doi: string }) {
   const {
@@ -16,7 +16,7 @@ export default function RelatedGardens({ doi }: { doi: string }) {
   }
 
   if (isError || !gardens) {
-    return null; 
+    return null;
   }
 
   return (

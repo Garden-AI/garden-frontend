@@ -1,8 +1,7 @@
 import { useParams, Link, Outlet } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
-import { useSearchGardenByDOI } from "../api/search";
-import { Entrypoint, Garden } from "../types";
+import { Entrypoint, Garden } from "@/api/types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { LinkIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,8 +22,10 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import {useGetUserInfo} from "../api/getUserInfo";
 import { useGetUserGardens} from "../api/getUserGardens";
+import { useGetGarden, useSearchGardenByDOI } from "@/api";
+// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
-export default function GardenPage({ bread }: { bread: any }) {
+export default function GardenPage() {
   const { doi } = useParams();
   const { data: garden, isLoading: fetchGardensLoading, isError: fetchGardensError } = useSearchGardenByDOI(doi!);
   // const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
@@ -67,15 +68,16 @@ export default function GardenPage({ bread }: { bread: any }) {
 
 function GardenHeader({ garden }: { garden: Garden }) {
   return (
-    <div className="my-8 flex gap-2 sm:gap-4">
-      <h1 className="mb-4 text-2xl sm:text-3xl">{garden.title}</h1>
-      <div className="flex">
+    <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
+      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
           content={window.location.href}
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
+        {/* <GardenDropdownOptions garden={garden} /> */}
       </div>
     </div>
   );
@@ -94,7 +96,7 @@ function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: 
       <div className="flex flex-row justify-between w-full">
         <div className="mb-4">
           <h2 className="font-semibold">Contributors</h2>
-          <p>{garden.authors.join(", ")}</p>
+          <p>{garden.authors?.join(", ")}</p>
         </div>
         {canEditGarden && (
           <button
@@ -197,7 +199,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
 
 function DatasetsTab({ garden }: { garden: Garden }) {
   const datasets = garden.entrypoints
-    .map((e: Entrypoint) => e.datasets || [])
+    ?.map((e: Entrypoint) => e.datasets || [])
     .reduce((acc, val) => acc.concat(val), []);
 
   if (!datasets || datasets.length === 0) {

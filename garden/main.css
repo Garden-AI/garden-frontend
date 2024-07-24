@@ -66,11 +66,6 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+:root:has(.no-doc-scroll) {
+  overflow: hidden;
 }

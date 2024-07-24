@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
-import { useGlobusAuth } from "./globus-auth-context/useGlobusAuth";
+import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
 
 const Navbar = () => {
