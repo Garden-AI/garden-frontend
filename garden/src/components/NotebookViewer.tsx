@@ -1,8 +1,8 @@
-import { IpynbRenderer } from "react-ipynb-renderer";
-import "../ipynbPreview.css";
-import { useGetNotebook } from "../api/notebook";
+import Markdown from "marked-react";
+import SyntaxHighlighter from "@/components/SyntaxHighlighter";
+import { useGetNotebook } from "@/api";
 
-export const NotebookViewer = ({ notebookURL }: { notebookURL?: string }) => {
+export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {
   if (!notebookURL) {
     return (
       <p className="pb-16 pt-8 text-center text-xl">
@@ -10,6 +10,7 @@ export const NotebookViewer = ({ notebookURL }: { notebookURL?: string }) => {
       </p>
     );
   }
+
   const { data: notebook, isLoading, isError } = useGetNotebook(notebookURL);
 
   if (isLoading) {
@@ -18,13 +19,28 @@ export const NotebookViewer = ({ notebookURL }: { notebookURL?: string }) => {
     );
   } else if (isError || !notebook) {
     return (
-      <p className="pb-16 pt-8 text-center text-xl">Could not load notebook</p>
+      <p className="pb-16 pt-8 text-center text-xl">Could not load notebook.</p>
     );
-  } else {
+  } else if (!notebook) {
     return (
-      <div className="overflow-x-auto">
-        <IpynbRenderer ipynb={notebook} />
-      </div>
+      <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>
     );
   }
+  return (
+    <div className="prose prose-sm mx-auto mt-20 lg:prose-base 2xl:prose-xl">
+      {notebook.cells
+        .slice(2, notebook.cells.length)
+        .map(
+          (cell, index) =>
+            cell.source.length > 0 &&
+            (cell.cell_type === "code" ? (
+              <SyntaxHighlighter key={index}>
+                {cell.source.join("")}
+              </SyntaxHighlighter>
+            ) : (
+              <Markdown key={index}>{cell.source.join("")}</Markdown>
+            )),
+        )}
+    </div>
+  );
 };

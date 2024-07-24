@@ -1,4 +1,4 @@
-import { Entrypoint } from "@/types";
+import { Entrypoint } from "@/api/types";
 import { ExampleFunction } from "./ExampleFunction";
 import CopyButton from "./CopyButton";
 
@@ -45,7 +45,7 @@ garden = client.get_published_garden("${gardenDOI}")
 \n`;
 
   // Ideally we have a test function and we can display that.
-  if (entrypoint.test_functions.length > 0) {
+  if (entrypoint.test_functions && entrypoint.test_functions.length > 0) {
     let functionText = entrypoint.test_functions[0];
     // The test function writer called it by its short name,
     // but the consumer will call it by garden.short_name

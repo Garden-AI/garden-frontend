@@ -5,10 +5,16 @@
   "type": "module",
   "private": true,
   "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
+    "@dnd-kit/sortable": "^8.0.0",
     "@globus/sdk": "3.4.0",
     "@globus/types": "^0.0.7",
+    "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-alert-dialog": "^1.1.1",
+    "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-scroll-area": "^1.0.5",
     "@radix-ui/react-separator": "^1.0.3",
@@ -27,21 +33,24 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "framer-motion": "^11.3.2",
     "lucide-react": "^0.394.0",
+    "marked-react": "^2.0.0",
     "next": "^14.2.4",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-ga4": "^2.1.0",
-    "react-ipynb-renderer": "^2.2.1",
+    "react-hook-form": "^7.52.0",
     "react-router-dom": "^6.23.1",
     "react-syntax-highlighter": "^15.5.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "vite": "^5.2.12",
+    "vite": "^5.3.3",
     "vite-tsconfig-paths": "^4.3.2",
-    "web-vitals": "^4.0.1"
+    "web-vitals": "^4.0.1",
+    "zod": "^3.23.8"
   },
   "scripts": {
     "start": "vite",
@@ -53,7 +62,8 @@
     "deploy-staging": "gh-pages -d build -r https://github.com/Garden-AI/garden-frontend-staging",
     "deploy-prod": "gh-pages -d build",
     "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
-    "test": "vitest"
+    "test": "vitest",
+    "refresh-types": "curl -s https://api-dev.thegardens.ai/openapi.json | npx openapi-typescript -o ./src/api/backend-schema.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -74,17 +84,21 @@
     ]
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "@tanstack/eslint-plugin-query": "^5.43.1",
     "@types/node": "^20.14.2",
     "@types/react-syntax-highlighter": "^15.5.13",
     "autoprefixer": "^10.4.19",
     "husky": "^9.0.11",
+    "jsdom": "^24.1.0",
     "lint-staged": "^15.2.5",
-    "msw": "^2.3.0",
+    "msw": "^2.3.1",
+    "openapi-typescript": "^7.0.0",
     "postcss": "^8.4.38",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.2",
     "vitest": "^1.6.0"
   },
   "msw": {
