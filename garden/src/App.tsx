@@ -13,9 +13,13 @@ import TermsPage from "./pages/TermsPage";
 import SearchPage from "./pages/SearchPage";
 import HomePage from "./pages/HomePage";
 import EntrypointPage from "./pages/EntrypointPage";
-import TeamsPage from "./pages/TeamsPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import TeamsPage from "./pages/TeamsPage";import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
+import MetadataEditing from "./pages/MetadataEditing";
+import useGoogleAnalytics from "./services/analytics";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { Toaster } from "sonner";
 
 /* Components */
 import CreateGardenPage from "./components/form/CreateGarden/CreateGardenPage";
@@ -50,6 +54,7 @@ function Root() {
           <Route element={<PrivateRoutes />}>
             <Route path="create" element={<CreateGardenPage />} />
             <Route path=":doi/edit" element={<CreateGardenPage />} />
+            <Route path=":doi/metadataEditing" element={<MetadataEditing />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>

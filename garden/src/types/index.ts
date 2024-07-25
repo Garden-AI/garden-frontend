@@ -73,6 +73,19 @@ type Notebook = {
   nbformat_minor: number;
 };
 
+type User = {
+  username: string | null;
+  name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  affiliations: string[] | null;
+  skills: string[] | null;
+  domains: string[] | null;
+  profile_pic_id: number | null;
+  identity_id: string; 
+  saved_garden_dois: string[];
+};
+
 // export types
 
-export type { Garden, Entrypoint, Paper, Step, Notebook };
+export type { Garden, Entrypoint, Paper, Step, Notebook, User };

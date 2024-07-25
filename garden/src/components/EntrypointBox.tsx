@@ -1,10 +1,17 @@
 import { Entrypoint } from "@/api/types";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
+const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: boolean }) => {
   const navigate = useNavigate();
-  const text = entrypoint.doi.replace("/", "%2f");
+  const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
+
+  // Early return if entrypoint is undefined
+  if (!entrypoint) {
+    return null;
+  }
+
+  const stepsLength = entrypoint.steps?.length ?? 0;
 
   return (
     <div
@@ -12,10 +19,14 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
       onClick={() => navigate(`/entrypoint/${text}`)}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl">{entrypoint.title}</h2>
+        <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
+        <p className="text-gray-500">
+          {stepsLength}{" "}
+          {stepsLength === 1 ? <span>step</span> : <span>steps</span>}
+        </p>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
-            {entrypoint.description}
+            {entrypoint.description || "No description available"}
           </p>
         </div>
       </div>
@@ -44,8 +55,17 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
             <span>{entrypoint.tags?.join(", ")}</span>
           </div>
         </div>
-      ) : (
-        <></>
+      ) : null}
+      {isEditing && (
+        <Link
+          to="entrypointEditing"
+          className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mb-4 mt-4 justify-center"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          edit
+        </Link>
       )}
     </div>
   );

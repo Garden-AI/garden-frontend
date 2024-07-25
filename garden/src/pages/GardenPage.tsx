@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Outlet } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
 import { Entrypoint, Garden } from "@/api/types";
@@ -17,20 +17,35 @@ import ShareModal from "@/components/ShareModal";
 import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import {useGetUserInfo} from "../api/getUserInfo";
+import { useGetUserGardens} from "../api/getUserGardens";
 import { useGetGarden, useSearchGardenByDOI } from "@/api";
 // import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
 export default function GardenPage() {
   const { doi } = useParams();
+  const { data: garden, isLoading: fetchGardensLoading, isError: fetchGardensError } = useSearchGardenByDOI(doi!);
+  // const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
+  const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens();
+  
+  const canEditGarden = (() => {
+    if (!garden || !userGardens) return false;
+    
+    for (const userGarden of userGardens) {
+      if (userGarden.doi === garden.doi) {
+        return true;
+      }
+    }
+    return false;
+  })();  
 
-  // Once database is available, this will be used to get the datasets
-  const { data: garden, isLoading, isError } = useGetGarden(doi!);
-
-  // const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
-  if (isLoading) {
+  if (fetchGardensLoading || userGardensLoading ) {
     return <LoadingSpinner />;
   }
-  if (isError || !garden) {
+  if (fetchGardensError || userGardensError || !garden) {
     return <NotFoundPage />;
   }
 
@@ -44,7 +59,7 @@ export default function GardenPage() {
         ]}
       />
       <GardenHeader garden={garden} />
-      <GardenBody garden={garden} />
+      <GardenBody garden={garden} canEditGarden={canEditGarden} />
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
@@ -68,12 +83,32 @@ function GardenHeader({ garden }: { garden: Garden }) {
   );
 }
 
-function GardenBody({ garden }: { garden: Garden }) {
+function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: boolean }) {
+
+  const navigate = useNavigate();
+
+  const handleEditGardenClick = () => {
+    navigate(`metadataEditing`); // 
+  };
+  
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
-      <div className="mb-4">
-        <h2 className="font-semibold">Contributors</h2>
-        <p>{garden.authors?.join(", ")}</p>
+      <div className="flex flex-row justify-between w-full">
+        <div className="mb-4">
+          <h2 className="font-semibold">Contributors</h2>
+          <p>{garden.authors?.join(", ")}</p>
+        </div>
+        {canEditGarden && (
+          <button
+            onClick={handleEditGardenClick}
+            className={cn(
+              buttonVariants({ variant: "default", size: "lg" }),
+              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+            )}
+          >
+            Edit Garden
+          </button>
+        )}
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>
@@ -156,7 +191,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {entrypoints.map((entrypoint: any) => (
-        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
+        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={false}/>
       ))}
     </div>
   );
