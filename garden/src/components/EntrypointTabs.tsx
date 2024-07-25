@@ -41,7 +41,7 @@ export default function EntrypointTabs({
   return (
     <Tabs defaultValue="entrypoint" className="min-h-[400px] w-full">
       <TabsList className="m-0 grid w-full grid-cols-3 rounded-none bg-transparent p-0 ">
-        {tabs.map(({ name }) => (
+        {tabs?.map(({ name }) => (
           <TabsTrigger
             key={name}
             value={name.toLowerCase()}

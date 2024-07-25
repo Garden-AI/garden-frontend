@@ -207,16 +207,28 @@ const UserProfileInfo = () => {
             <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50 my-10 mx-auto w-full" />
             <div className="flex justify-end">
                 {edit ? (
-                    <button
-                        className={cn(
-                        buttonVariants({ variant: "default", size: "lg" }),
-                        "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
-                        )}
-                        onClick={handleSave}
-                        disabled={!auth?.authorization?.user?.sub}
-                    >
-                        Save Edits
-                    </button>
+                    <div className="flex flex-row">
+                        <button
+                            className={cn(
+                            buttonVariants({ variant: "default", size: "lg" }),
+                            "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mr-2"
+                            )}
+                            onClick={handleEdit}
+                            disabled={!auth?.authorization?.user?.sub}
+                        >
+                        Cancel
+                        </button>
+                        <button
+                            className={cn(
+                            buttonVariants({ variant: "default", size: "lg" }),
+                            "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+                            )}
+                            onClick={handleSave}
+                            disabled={!auth?.authorization?.user?.sub}
+                        >
+                            Save Edits
+                        </button>
+                </div>
                 ) : (
                     <button onClick={handleEdit} className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm">Edit Profile</button>
                 )}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useSearchGardenByDOI } from "../api/search";
+import { useSearchGardenByDOI } from "../api/search/useSearchGardenByDOI";
 import EntrypointBox from "../components/EntrypointBox";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NotFoundPage from "./NotFoundPage";
@@ -8,7 +8,7 @@ import { useUpdateGarden } from "../api/editgarden";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Breadcrumb from "@/components/Breadcrumb";
-import { useGlobusAuth } from "@/components/globus-auth-context/useGlobusAuth";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/ui/multiple-select";
 
@@ -18,7 +18,6 @@ const MetadataEditing = () => {
     const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
     const { mutate: updateGarden } = useUpdateGarden();
     const auth = useGlobusAuth();
-    
 
     interface GardenUpdateRequest{
         title: string;
@@ -106,7 +105,7 @@ const MetadataEditing = () => {
                         placeholder="Edit Contributors"
                         creatable
                         value={metadata.contributors.map(contributor => ({ label: contributor, value: contributor }))}
-                        onChange={(newValue: any) => setMetadata({
+                        onChange={(newValue) => setMetadata({
                         ...metadata,
                         contributors: newValue.map(item => item.value)
                         })}
@@ -119,7 +118,7 @@ const MetadataEditing = () => {
                         placeholder="Edit Authors"
                         creatable
                         value={metadata.authors.map(author => ({ label: author, value: author }))}
-                        onChange={(newValue: any) => setMetadata({
+                        onChange={(newValue) => setMetadata({
                         ...metadata,
                         authors: newValue.map(item => item.value)
                         })}
@@ -141,7 +140,7 @@ const MetadataEditing = () => {
                 <div className="space-y-2">
                     <p className="text-gray-600">Entrypoints</p>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {garden?.entrypoints.map((entrypoint: any) => (
+                        {garden?.entrypoints?.map((entrypoint: any) => (
                         <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={true}/>
                         ))}
                     </div>
@@ -155,6 +154,7 @@ const MetadataEditing = () => {
                 )}
                 onClick={() => handleSave(metadata)}
                 disabled={!auth?.authorization?.user?.sub}
+                
               >
                 Save Edits
               </button>

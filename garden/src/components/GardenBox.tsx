@@ -8,6 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "@/api/types";
+import { useState } from "react";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();

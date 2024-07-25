@@ -9,7 +9,7 @@ const UserProfileCard = () => {
     const [tooltipVisible, setTooltipVisible] = useState(false);
     const [profileIcon, setProfileIcon] = useState(null);
     const [showIconSelector, setShowIconSelector] = useState(false);
-    const { data: currUserInfo, isLoading, isError } = useGetUserInfo();
+    const { data: currUserInfo, isLoading: getUserInfoLoading, isError:getUserInfoError } = useGetUserInfo();
 
     const copy = async () => {
         await navigator.clipboard.writeText(window.location.href);
@@ -61,8 +61,8 @@ const UserProfileCard = () => {
                 <div className="mt-6 flex flex-col items-center space-y-1">
                     <h4 className="text-bluePrimary text-3xl mb-1 mt-1">{currUserInfo?.name ?? 'No Name'}</h4>
                     <p className="text-lightSecondary font-normal mb-1">{currUserInfo?.email}</p>
-                    <p className="text-gray-400 font-style: italic">{currUserInfo?.affiliations?.join(", ")}</p>
-                    <p className="text-gray-400 font-style: italic">{currUserInfo?.domains?.join(", ")}</p>
+                    <p className="text-gray-400 text-sm font-style: italic">{currUserInfo?.affiliations?.join(", ")}</p>
+                    <p className="text-gray-400 text-sm font-style: italic">{currUserInfo?.domains?.join(", ")}</p>
                 </div>
                 <div className="mt-6 mb-4 flex flex-col text-gray-600">
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
