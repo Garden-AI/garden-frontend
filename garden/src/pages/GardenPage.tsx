@@ -36,7 +36,8 @@ export default function GardenPage() {
     
     for (const userGarden of userGardens) {
       if (userGarden.doi === garden.doi) {
-        return true;
+        // return true when adding edit button back in
+        return false;
       }
     }
     return false;
