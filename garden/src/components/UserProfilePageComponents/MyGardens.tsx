@@ -50,13 +50,10 @@ const MyGardens = () => {
             <div className="mb-6">
                 {userGardens && userGardens.length > 0 ? (
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {userGardens.map((garden: Garden) => (
-                            <GardenBox
-                            key={garden.id} // Ensure each item has a unique key
-                            garden={garden}
-                        />
-                        ))}
-                    </div>
+                    {userGardens.map((garden: Garden, index: number) => (
+                        <GardenBox garden={garden} key={index} />
+                    ))}
+                </div>
                 ) : (
                     <h3 className="mt-12 text-center text-xl opacity-60">No gardens created</h3>
                 )}

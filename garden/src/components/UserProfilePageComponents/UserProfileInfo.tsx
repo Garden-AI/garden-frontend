@@ -129,23 +129,17 @@ const UserProfileInfo = () => {
                 <div className="space-y-2">
                     <p className="text-gray-600">Phone Number</p>
                     {edit ? (
-                        <div className="relative">
+                            <div className="relative">
                             <InputMask
                                 mask="+9 999 999 9999"
                                 value={userInfo.phone ?? ''}
                                 onChange={handleInputChange}
                                 maskChar=""
+                                name="phone"
+                                type="text"
+                                placeholder="+x xxx xxx xxxx"
                                 className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
-                            >
-                                {(inputProps: any) => (
-                                    <input
-                                        {...inputProps}
-                                        type="text"
-                                        name="phone"
-                                        placeholder="+1 234 567 8901"
-                                    />
-                                )}
-                            </InputMask>
+                            />
                             <div className="absolute top-0 right-0 mt-1 mr-2 text-gray-500 text-xs">
                                 Format: +(country code) xxx-xxx-xxxx
                             </div>
