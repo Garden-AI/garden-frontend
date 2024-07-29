@@ -31,7 +31,17 @@ export default function GardenPage() {
   const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
   const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens(user?.identity_id);
   
-  const canEditGarden = !!garden && !!userGardens && userGardens.some(userGarden => userGarden.doi === garden.doi); 
+  const canEditGarden = (() => {
+    if (!garden || !userGardens) return false;
+    
+    for (const userGarden of userGardens) {
+      if (userGarden.doi === garden.doi) {
+        // return true when adding edit button back in
+        return false;
+      }
+    }
+    return false;
+  })();  
 
   if (fetchGardensLoading || userGardensLoading ) {
     return <LoadingSpinner />;
