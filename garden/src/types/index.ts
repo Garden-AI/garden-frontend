@@ -10,6 +10,8 @@ type Garden = {
   tags: string[];
   version: string;
   entrypoints: Entrypoint[];
+  owner_identity_id: string; // Added this property
+  id: number; // Added this property
 };
 type Repository = {
   repo_name: string;

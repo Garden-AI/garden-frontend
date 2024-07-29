@@ -40,7 +40,7 @@ export const useUpdateUserInfo = () => {
         onSuccess: (data: User) => {
             console.log("User info updated successfully!", data);
             queryClient.setQueryData(['userInfo'], data);
-            queryClient.invalidateQueries(['userInfo']);
+            queryClient.invalidateQueries({ queryKey: ['userInfo'] });
         },
         });
   };
