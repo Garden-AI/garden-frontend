@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Atom } from 'lucide-react';
 import { X } from 'lucide-react';
+import { useGetUserGardens} from "../../api/getUserGardens";
+import { useUpdateUserInfo } from '../../api/updateUserInfo';
+import { useGetUserInfo } from "../../api/getUserInfo";
 
-const icons = [
+export const icons = [
     {
         label: "materials science",
         id: 1,
@@ -125,14 +128,46 @@ const icons = [
   },
 ];
 
-const PfpSelectionModal = ({ setSelectedIcon, closeModal }) => {
+interface PfpSelectionModalProps {
+  setSelectedIcon: (icon: JSX.Element | null) => void;
+  closeModal: () => void;
+}
+
+const PfpSelectionModal: React.FC<PfpSelectionModalProps> = ({ setSelectedIcon, closeModal }) => {
+
+  const { data: currUserInfo, isLoading: getUserInfoLoading, isError:getUserInfoError } = useGetUserInfo();
+
+  const { mutate: updatePfp_id } = useUpdateUserInfo();
+
+  interface pfp_id_updateRequest {
+    profile_pic_id: number;
+  }
+
+  const [curr_pfp_id, set_new_pfp_id] = useState<pfp_id_updateRequest>({
+    profile_pic_id: currUserInfo?.profile_pic_id ? Number(currUserInfo.profile_pic_id) : 0,
+  });  
+
+  const handlePfpClick = (iconId: number) => {
+    const dataToSend: pfp_id_updateRequest = {
+      profile_pic_id: iconId,
+    }
+    updatePfp_id(dataToSend, {
+      onSuccess: (updatedData: any) => {
+          set_new_pfp_id({
+            profile_pic_id: updatedData.profile_pic_id ? Number(updatedData.profile_pic_id) : 0,
+          });
+      }
+    });
+    console.log("updated pfp_id with new svg: ", dataToSend);
+  }
+
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
             <div className="p-4 rounded-lg w-1/3 bg-white h-96 overflow-auto relative">
               <div className="flex flex-row w-full">
                 <h2 className="ml-4 text-gray-500 text-xl mb-4">Select an Icon</h2>
                   <X 
-                  className="mr-2 text-gray-500 hover: cursor-pointer absolute top-4 right-4"
+                  className="mr-2 text-gray-P500 hover: cursor-pointer absolute top-4 right-4"
                   onClick={() => {
                     closeModal();
                   }}/>
@@ -142,8 +177,9 @@ const PfpSelectionModal = ({ setSelectedIcon, closeModal }) => {
                         <button
                             key={icon.id}
                             onClick={() => {
-                                setSelectedIcon(icon.svg);
-                                closeModal();
+                              setSelectedIcon(icon.svg);
+                              closeModal();
+                              handlePfpClick(icon.id); 
                             }}
                             className="p-2 border rounded hover:bg-gray-200 bg-green w-36 h-36 flex justify-center items-center"
                         >

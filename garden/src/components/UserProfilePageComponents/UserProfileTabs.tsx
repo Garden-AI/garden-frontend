@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import UserProfileInfo from "@/components/UserProfilePageComponents/UserProfileInfo";
 import MyGardens from "@/components/UserProfilePageComponents/MyGardens";
+import SavedGardens from "@/components/UserProfilePageComponents/SavedGardens";
 
 const UserProfileTabs = () => {
     const [active, setActive] = useState("");
@@ -55,7 +56,7 @@ const UserProfileTabs = () => {
                 )}
                 {active === "Saved Gardens" && (
                     <div className="px-6">
-                        <p>Saved Gardens Section</p>
+                        <SavedGardens />
                     </div>
                 )}
             </div>

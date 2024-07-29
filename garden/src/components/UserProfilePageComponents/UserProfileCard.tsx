@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UserProfileShareModal from '../UserProfileShareModal';
 import PfpSelectionModal from './PfpSelectionModal';
 import { useGetUserInfo } from "../../api/getUserInfo";
 import RenderTags from "../ui/renderTags";
+import { useGetUserGardens} from "../../api/getUserGardens";
+import { useUpdateUserInfo } from '../../api/updateUserInfo';
+import { icons } from './PfpSelectionModal'; // Import the icons array
 
 const UserProfileCard = () => {
     const [show, setShow] = useState(false);
     const [tooltipVisible, setTooltipVisible] = useState(false);
-    const [profileIcon, setProfileIcon] = useState(null);
+    const [profileIcon, setProfileIcon] = useState<JSX.Element | null>(null);
+
     const [showIconSelector, setShowIconSelector] = useState(false);
     const { data: currUserInfo, isLoading: getUserInfoLoading, isError:getUserInfoError } = useGetUserInfo();
+    const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens(currUserInfo?.identity_id);
+
+    // update pfp
+    useEffect(() => {
+        if (currUserInfo && currUserInfo.profile_pic_id) {
+            const selectedIcon = icons.find(icon => icon.id === currUserInfo.profile_pic_id);
+            if (selectedIcon) {
+                setProfileIcon(selectedIcon.svg);
+            } else {
+                setProfileIcon(null);
+            }
+        } else {
+            setProfileIcon(null);
+        }
+    }, [currUserInfo]);
 
     const copy = async () => {
         await navigator.clipboard.writeText(window.location.href);
@@ -67,18 +86,18 @@ const UserProfileCard = () => {
                 <div className="mt-6 mb-4 flex flex-col text-gray-600">
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
                     <div className="flex flex-row items-center justify-center w-full mt-4 mb-4">
-                        <p className="text-sky-500 text-xl font-bold">9</p>
+                        <p className="text-sky-500 text-xl font-bold">{userGardens?.length}</p>
                         <p className="text-lightSecondary text-base font-normal ml-2">Gardens Created</p>
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
                     <div className="flex flex-row items-center justify-center w-full mt-4 mb-4">
-                        <p className="text-orange text-xl font-bold">13</p>
+                        <p className="text-orange text-xl font-bold">{currUserInfo?.saved_garden_dois.length}</p>
                         <p className="text-lightSecondary text-base font-normal ml-2">Gardens Saved</p>
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
                     <div className="flex flex-col items-center gap-2 text-base mb-8">
                         <p className="text-lightSecondary font-normal mt-4">Skills</p>
-                        <RenderTags items={currUserInfo?.skills ?? []} title="" />
+                        <RenderTags items={currUserInfo?.skills ?? []} title=""/>
                     </div>
                 </div>
                 <button 

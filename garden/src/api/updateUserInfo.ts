@@ -1,7 +1,6 @@
 import { User } from "../types";
 import instance from "./axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 interface userUpdateRequest {
   username?: string;
@@ -11,17 +10,18 @@ interface userUpdateRequest {
   affiliations?: string[];
   skills?: string[];
   domains?: string[];
-  pfp_id?: number;
+  profile_pic_id?: number;
 }
 
 const updateUserInfo = async (user: userUpdateRequest): Promise<User> => {
     try {
-        // Convert BigInt to string if necessary
         const userToSend = {
             ...user,
-            pfp_id: user.pfp_id ? user.pfp_id.toString() : null
+            profile_pic_id: user.profile_pic_id ? Number(user.profile_pic_id) : undefined,
+            phone_number: user.phone || undefined,
         };
         const response = await instance.patch(`/users`, userToSend);
+        console.log("response data from server: ", response);
         return response.data;
     } catch (error) {
         console.error("Error updating user info:", error);
@@ -36,13 +36,11 @@ export const useUpdateUserInfo = () => {
         mutationFn: updateUserInfo,
         onError: (error: any) => {
             console.error("Error updating user info:", error);
-            toast.error("Error updating user info: " + error.message);
         },
         onSuccess: (data: User) => {
             console.log("User info updated successfully!", data);
             queryClient.setQueryData(['userInfo'], data);
             queryClient.invalidateQueries(['userInfo']);
-            toast.success("User info updated successfully!");
         },
         });
   };

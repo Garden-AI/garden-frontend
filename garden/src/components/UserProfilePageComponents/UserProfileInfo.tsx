@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useUpdateUserInfo } from '../../api/updateUserInfo';
 import MultipleSelector from "@/components/ui/multiple-select";
 import RenderTags from "../ui/renderTags";
+import InputMask from 'react-input-mask';
 
 const UserProfileInfo = () => {
     const [edit, setEdit] = useState(false);
@@ -125,17 +126,30 @@ const UserProfileInfo = () => {
                         <p>{currUserInfo?.name ?? 'No name entered yet.'}</p>
                     )}
                 </div>
-                <div className = "space-y-2 ">
+                <div className="space-y-2">
                     <p className="text-gray-600">Phone Number</p>
                     {edit ? (
-                        <input
-                            type="text"
-                            name="phone"
-                            value={userInfo.phone ?? ''}
-                            onChange={handleInputChange}
-                            placeholder="Phone Number"
-                            className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
-                        />
+                        <div className="relative">
+                            <InputMask
+                                mask="+9 999 999 9999"
+                                value={userInfo.phone ?? ''}
+                                onChange={handleInputChange}
+                                maskChar=""
+                                className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
+                            >
+                                {(inputProps: any) => (
+                                    <input
+                                        {...inputProps}
+                                        type="text"
+                                        name="phone"
+                                        placeholder="+1 234 567 8901"
+                                    />
+                                )}
+                            </InputMask>
+                            <div className="absolute top-0 right-0 mt-1 mr-2 text-gray-500 text-xs">
+                                Format: +(country code) xxx-xxx-xxxx
+                            </div>
+                        </div>
                     ) : (
                         <p>{currUserInfo?.phone_number ?? 'No phone number entered yet.'}</p>
                     )}
@@ -165,7 +179,7 @@ const UserProfileInfo = () => {
                             ...userInfo,
                             affiliations: newValue.map((item: any) => item.value)
                             })}
-                            className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2 bg-white"
+                            className="bg-white"
                         />
                     ) : (
                         <RenderTags items={userInfo?.affiliations ?? []} title="Affiliations" />
@@ -190,7 +204,7 @@ const UserProfileInfo = () => {
                 <div className = "space-y-2 ">
                     {edit ? (
                         <MultipleSelector
-                            placeholder="Edit Contributors"
+                            placeholder="Edit domains"
                             creatable
                             value={userInfo.domains?.map(domain => ({ label: domain, value: domain }))}
                             onChange={(newValue: any) => setUserInfo({
@@ -211,7 +225,7 @@ const UserProfileInfo = () => {
                         <button
                             className={cn(
                             buttonVariants({ variant: "default", size: "lg" }),
-                            "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mr-2"
+                            "flex flex-row items-center gap-2 rounded-lg border border-green px-2 py-1 text-sm mr-2 bg-white text-green"
                             )}
                             onClick={handleEdit}
                             disabled={!auth?.authorization?.user?.sub}

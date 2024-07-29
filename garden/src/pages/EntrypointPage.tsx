@@ -21,10 +21,14 @@ const EntrypointPage = () => {
     doi,
     limit: 1,
   });
+  console.log("useGetEntrypoint hook error: ", isError!);
   const { data: garden } = useSearchGardenByDOI(doi);
 
   if (!data) return <LoadingSpinner />;
   const entrypoint = data[0] || null;
+  if (!entrypoint){
+    console.log("entrypoint undefined");
+  }
 
   if (isPending) return <LoadingSpinner />;
 

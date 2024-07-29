@@ -28,19 +28,10 @@ import { useGetGarden, useSearchGardenByDOI } from "@/api";
 export default function GardenPage() {
   const { doi } = useParams();
   const { data: garden, isLoading: fetchGardensLoading, isError: fetchGardensError } = useSearchGardenByDOI(doi!);
-  // const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
-  const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens();
+  const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
+  const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens(user?.identity_id);
   
-  const canEditGarden = (() => {
-    if (!garden || !userGardens) return false;
-    
-    for (const userGarden of userGardens) {
-      if (userGarden.doi === garden.doi) {
-        return true;
-      }
-    }
-    return false;
-  })();  
+  const canEditGarden = !!garden && !!userGardens && userGardens.some(userGarden => userGarden.doi === garden.doi); 
 
   if (fetchGardensLoading || userGardensLoading ) {
     return <LoadingSpinner />;
@@ -82,7 +73,7 @@ function GardenHeader({ garden }: { garden: Garden }) {
     </div>
   );
 }
-git 
+
 function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: boolean }) {
 
   const navigate = useNavigate();

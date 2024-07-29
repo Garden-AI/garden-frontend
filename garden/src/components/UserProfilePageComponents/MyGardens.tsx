@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Garden } from "../../types";
 import GardenBox from "@/components/GardenBox";
-import { useSearchGardens } from "../../api/search/useSearchGardens";
 import { Link } from 'react-router-dom';
 import { useGetUserGardens} from "../../api/getUserGardens";
 import { useGetUserInfo } from "../../api/getUserInfo";
@@ -15,6 +14,13 @@ function isGardenArray(data: Garden[] | undefined): data is Garden[] {
 const MyGardens = () => {
     const { data: currUserInfo, isLoading: getUserInfoLoading, isError: getUserInfoError } = useGetUserInfo();
     const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens(currUserInfo?.identity_id);
+
+    if (getUserInfoLoading || userGardensLoading) {
+        return <LoadingSpinner />;
+    }
+    if (getUserInfoError || userGardensError) {
+        return <NotFoundPage />;
+    }
 
     return (
         <div className="">
@@ -43,21 +49,14 @@ const MyGardens = () => {
             </Link>
             </div>
             <div className="mb-6">
-                { (userGardensLoading || getUserInfoLoading) ? (
-                <LoadingSpinner/>
-                ) : (userGardensError || getUserInfoError) ? (
-                <NotFoundPage/>
-                ) : userGardens?.length > 0 ? (
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {userGardens?.map((singlegarden: Garden, index: number) => (
-                    <GardenBox 
-                        garden={singlegarden!} 
-                        key={index} 
-                    />
+                {userGardens && userGardens.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {userGardens.map((garden: Garden, index: number) => (
+                        <GardenBox garden={garden} key={index} />
                     ))}
-                </div>
+                    </div>
                 ) : (
-                <h3 className="mt-12 text-center text-xl opacity-60">No gardens created</h3>
+                    <h3 className="mt-12 text-center text-xl opacity-60">No gardens created</h3>
                 )}
             </div>
         </div>

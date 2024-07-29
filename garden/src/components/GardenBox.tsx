@@ -9,22 +9,50 @@ import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "@/api/types";
 import { useState } from "react";
+import {useGetUserInfo} from "../api/getUserInfo";
+import { useGetUserGardens} from "../api/getUserGardens";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();
   const [isSaved, setIsSaved] = useState(false);
+  const auth = useGlobusAuth();
+
+  const { data: currUserInfo } = useGetUserInfo();
+  const { data: userGardens } = useGetUserGardens(currUserInfo?.identity_id);
+
+  const canEditGarden = !!garden && !!userGardens && userGardens.some(userGarden => userGarden.doi === garden.doi);
 
   const { title, description, doi, tags } = garden;
+
+  interface savedGardensUpdateRequest {
+    saved_garden_dois: string[];
+  }
+
+  /*
+  const [currSavedGardens, setNewSavedGardens] = useState<savedGardensUpdateRequest>({
+    saved_garden_dois: currUserInfo?.saved_garden_dois : string[],
+  });  
+  */
 
   const handleClick = () => {
     navigate(`/garden/${encodeURIComponent(doi)}`);
   };
 
   const handleSaveClick = (e: any) => {
-    // hook to write data to backend (need to save doi of saved garden in 'saved gardens' field of user table)
     e.stopPropagation();
     setIsSaved(!isSaved);
+    if (isSaved){ // call put api hook to add garden doi to user's saved_garden_dois field
+
+    } else { // call put api hook to remove garden doi from user's saved_garden_dois field
+
+    }
     console.log(isSaved);
+  };
+
+  const handleEditGardenClick = (e: any) => {
+    e.stopPropagation();
+    navigate(`/garden/${encodeURIComponent(doi)}/metadataEditing`);
   };
 
   return (
@@ -56,24 +84,50 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
               ))}
             </div>
           )}
-          {/**only render if logged in, add that logic later*/}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={`lucide lucide-bookmark absolute bottom-6 right-6 cursor-pointer ${
-              (isSaved) ? 'stroke-green fill-green' : 'stroke-black'
-            }`}
-            onClick={handleSaveClick}
-          >
-            <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-          </svg>
+          {canEditGarden && (
+            <div>
+              <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-pencil absolute bottom-6 left-6 cursor-pointer stroke-black"
+              onClick={handleEditGardenClick}
+            >
+              <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+              <path d="m15 5 4 4" />
+            </svg>
+            </div>
+          )}
+          {auth.isAuthenticated ? (
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`lucide lucide-bookmark absolute bottom-6 right-6 cursor-pointer ${
+                (isSaved) ? 'stroke-green fill-green' : 'stroke-black'
+              }`}
+              onClick={handleSaveClick}
+            >
+              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+            </svg>
+          </div>
+          ):(
+            <div>
+            </div>
+          )}
         </CardFooter>
       </div>
     </Card>
