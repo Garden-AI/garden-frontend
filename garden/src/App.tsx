@@ -12,6 +12,7 @@ import TermsPage from "./pages/TermsPage";
 import ScrollToTop from "./components/ScrollToTop";
 import SearchPage from "./pages/SearchPage";
 import HomePage from "./pages/HomePage";
+import Landing from "./pages/Landing";
 import EntrypointPage from "./pages/EntrypointPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -108,6 +109,7 @@ function Root() {
         <Route index element={<HomePage />} />
         {/*  We should eventually eliminate this next route unless there is explicit need for it- can just use '/' as 'home' */}
         <Route path="home" element={<HomePage />} />
+        <Route path="landing" element={<Landing />} />
         <Route path="terms" element={<TermsPage />} />
         <Route path="search" element={<SearchPage bread={breadcrumbs} />} />
         <Route
@@ -119,6 +121,7 @@ function Root() {
           element={<EntrypointPage bread={breadcrumbs} />}
         />
         <Route path="team" element={<TeamsPage />} />
+
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
