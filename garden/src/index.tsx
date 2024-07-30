@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { GlobusAuthorizationManagerProvider } from "./components/auth/Provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GardenProvider } from "./components/garden/Context";
 
 async function enableMocking() {
   if (
@@ -39,7 +40,9 @@ enableMocking().then(() => {
         scopes={import.meta.env.VITE_GLOBUS_GARDEN_SCOPE}
       >
         <QueryClientProvider client={queryClient}>
-          <App />
+          <GardenProvider>
+            <App />
+          </GardenProvider>
         </QueryClientProvider>
       </GlobusAuthorizationManagerProvider>
       ,
