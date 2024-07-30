@@ -12,8 +12,12 @@ import GardenPage from "./pages/GardenPage";
 import TermsPage from "./pages/TermsPage";
 import SearchPage from "./pages/SearchPage";
 import HomePage from "./pages/HomePage";
+
+import Landing from "./pages/Landing";
+
 import EntrypointPage from "./pages/EntrypointPage";
-import TeamsPage from "./pages/TeamsPage";import NotFoundPage from "./pages/NotFoundPage";
+import TeamsPage from "./pages/TeamsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import MetadataEditing from "./pages/MetadataEditing";
 import useGoogleAnalytics from "./services/analytics";
@@ -47,6 +51,7 @@ function Root() {
     <Routes>
       <Route element={<RootLayout />}>
         <Route index element={<HomePage />} />
+        <Route path="landing" element={<Landing />} />
         <Route path="search" element={<SearchPage />} />
 
         {/* Garden Routes */}
