@@ -69,7 +69,15 @@ const Landing = () => {
         </div>
       </div>
 
-      <img src="img/heroImage.png"></img>
+      <div className="bg-hero w-full bg-cover bg-center">
+        <div className="flex h-full w-full items-center justify-center py-52">
+          <div className="text-center">
+            <div className="container mx-auto px-16">
+              <div className="mx-auto max-w-4xl text-center"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="mt-12 px-4">
         <div className="flex items-baseline">
@@ -114,6 +122,7 @@ const Landing = () => {
           </a>{" "}
           to get started.
         </h2>
+
         <div className="items-center sm:mx-8 sm:mt-8 sm:flex">
           <div className="order-1 sm:w-5/12">
             <img
@@ -137,108 +146,109 @@ const Landing = () => {
         </div>
       </div>
 
-      <div className="mt-12 px-4">
-        <h1 className="text-2xl font-semibold">
-          Research using ML doesn’t have to be hard.
-        </h1>
-        <h2 className="mt-2 text-base">
-          We overcome the barriers surrounding ML, so that you can spend more
-          time researching and less time setting up code to run models.
-        </h2>
-      </div>
-
-      <div className="mt-4">
-        <Accordion
-          type="double"
-          collapsible
-          className="mb-10 border-y"
-          defaultValue="materials"
-        >
-          <AccordionItem value="one">
-            <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-              <div className="flex items-center gap-x-2 p-2">
-                <Paperclip className="text-gray-500" />
-                <span className="font-medium text-gray-700">
-                  Reproducibility.
-                </span>
-                {/* <p>
+      <div className="sm:mt-8 sm:flex">
+        <div className="mt-12 px-4 sm:mt-8 sm:w-5/12">
+          <h1 className="text-2xl font-semibold">
+            Research using ML doesn’t have to be hard.
+          </h1>
+          <h2 className="mt-2 text-base">
+            We overcome the barriers surrounding ML, so that you can spend more
+            time researching and less time setting up code to run models.
+          </h2>
+        </div>
+        <div className="mt-4 sm:w-6/12">
+          <Accordion
+            type="double"
+            collapsible
+            className="mb-10 border-y"
+            defaultValue="materials"
+          >
+            <AccordionItem value="one">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <Paperclip className="text-gray-500" />
+                  <span className="font-medium text-gray-700">
+                    Reproducibility.
+                  </span>
+                  {/* <p>
                 Sharing code and data in a way that others can actually use it
                 is difficult.
               </p> */}
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
-              <>
-                <div className="rounded-md border bg-white p-6">
-                  <p className="text-base text-gray-800 ">
-                    There's a lot of code that goes into reproducing an ML
-                    pipeline to get the desired output. We make every garden
-                    easy to follow.{" "}
-                  </p>
                 </div>
-              </>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="two">
-            <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-              <div className="flex items-center gap-x-2 p-2">
-                <Paperclip className="text-gray-500" />
-                <span className="font-medium text-gray-700">
-                  Accessibility.
-                </span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
-              <>
-                <div className="rounded-md border bg-white p-6">
-                  <p className="text-base text-gray-800 ">
-                    All code, data, testing is available and free without any
-                    barriers to access. You can run models using our compute
-                    resources at UChicago or any Globus Compute endpoint.{" "}
-                  </p>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      There's a lot of code that goes into reproducing an ML
+                      pipeline to get the desired output. We make every garden
+                      easy to follow.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="two">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <Paperclip className="text-gray-500" />
+                  <span className="font-medium text-gray-700">
+                    Accessibility.
+                  </span>
                 </div>
-              </>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="three">
-            <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-              <div className="flex items-center gap-x-2 p-2">
-                <Paperclip className="text-gray-500" />
-                <span className="font-medium text-gray-700">Quality.</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
-              <>
-                <div className="rounded-md border bg-white p-6">
-                  <p className="text-base text-gray-800 ">
-                    We test and evaluate models on our side, so you can browse
-                    research without the time investment of doing all of that
-                    yourself.{" "}
-                  </p>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      All code, data, testing is available and free without any
+                      barriers to access. You can run models using our compute
+                      resources at UChicago or any Globus Compute endpoint.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="three">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <Paperclip className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Quality.</span>
                 </div>
-              </>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="four">
-            <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-              <div className="flex items-center gap-x-2 p-2">
-                <Paperclip className="text-gray-500" />
-                <span className="font-medium text-gray-700">Community.</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
-              <>
-                <div className="rounded-md border bg-white p-6">
-                  <p className="text-base text-gray-800 ">
-                    Garden is a collaborative platform that connects like-minded
-                    people. Find your ML community, collaborate, and set new
-                    benchmarks in your domain.{" "}
-                  </p>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      We test and evaluate models on our side, so you can browse
+                      research without the time investment of doing all of that
+                      yourself.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="four">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <Paperclip className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Community.</span>
                 </div>
-              </>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      Garden is a collaborative platform that connects
+                      like-minded people. Find your ML community, collaborate,
+                      and set new benchmarks in your domain.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
       </div>
 
       <div className=" bg-green px-4 pt-12">
