@@ -50,8 +50,8 @@ const MyGardens = () => {
             <div className="mb-6">
                 {userGardens && userGardens.length > 0 ? (
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {userGardens.map((garden: Garden, index: number) => (
-                        <GardenBox garden={garden} key={index} />
+                    {userGardens.map((userGarden: Garden, index: number) => (
+                        <GardenBox garden={userGarden} key={index} />
                     ))}
                 </div>
                 ) : (

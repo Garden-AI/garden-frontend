@@ -9,7 +9,8 @@ type Garden = {
   language: string;
   tags: string[];
   version: string;
-  entrypoints: Entrypoint[];
+  entrypoint_ids: string[];
+  // entrypoints: Entrypoint[]; 
   owner_identity_id: string; // Added this property
   id: number; // Added this property
 };
