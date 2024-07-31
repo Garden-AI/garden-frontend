@@ -20,53 +20,29 @@ import RelatedGardens from "@/components/RelatedGardens";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { useGetUserInfo } from "../api/getUserInfo";
-import { useGetUserGardens } from "../api/getUserGardens";
-import { useGetGarden } from "@/api";
-import { useEffect } from "react";
-import { useGardenContext } from "@/components/garden/Context";
+import {useGetUserInfo} from "../api/getUserInfo";
+import { useGetUserGardens} from "../api/getUserGardens";
+import { useGetGarden, useSearchGardenByDOI } from "@/api";
 // import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
 export default function GardenPage() {
   const { doi } = useParams();
-  if (!doi) {
-    return <NotFoundPage />;
-  }
-
-  const {
-    data: garden,
-    isLoading: fetchGardensLoading,
-    isError: fetchGardensError,
-  } = useGetGarden(doi);
-
-  const {
-    data: userGardens,
-    isLoading: userGardensLoading,
-    isError: userGardensError,
-  } = useGetUserGardens();
-
-  const gardenContext = useGardenContext();
-
-  useEffect(() => {
-    if (garden) {
-      gardenContext.updateGarden(garden);
-    }
-  }, [garden]);
-
+  const { data: garden, isLoading: fetchGardensLoading, isError: fetchGardensError } = useSearchGardenByDOI(doi!);
+  // const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
+  const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens();
+  
   const canEditGarden = (() => {
     if (!garden || !userGardens) return false;
-
+    
     for (const userGarden of userGardens) {
       if (userGarden.doi === garden.doi) {
-        // return true when adding edit button back in
-        // change back to return false later
         return true;
       }
     }
     return false;
-  })();
+  })();  
 
-  if (fetchGardensLoading || userGardensLoading) {
+  if (fetchGardensLoading || userGardensLoading ) {
     return <LoadingSpinner />;
   }
   if (fetchGardensError || userGardensError || !garden) {
@@ -79,10 +55,7 @@ export default function GardenPage() {
         crumbs={[
           { label: "Home", link: "/" },
           { label: "Gardens", link: "/search" },
-          {
-            label: garden.title,
-            link: `/garden/${encodeURIComponent(garden.doi)}`,
-          },
+          { label: garden.title, link: `/garden/${garden.doi}` },
         ]}
       />
       <GardenHeader garden={garden} />
@@ -110,22 +83,17 @@ function GardenHeader({ garden }: { garden: Garden }) {
   );
 }
 
-function GardenBody({
-  garden,
-  canEditGarden,
-}: {
-  garden: Garden;
-  canEditGarden: boolean;
-}) {
+function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: boolean }) {
+
   const navigate = useNavigate();
 
   const handleEditGardenClick = () => {
-    navigate(`metadataEditing`); //
+    navigate(`metadataEditing`); // 
   };
-
+  
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
-      <div className="flex w-full flex-row justify-between">
+      <div className="flex flex-row justify-between w-full">
         <div className="mb-4">
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors?.join(", ")}</p>
@@ -135,7 +103,7 @@ function GardenBody({
             onClick={handleEditGardenClick}
             className={cn(
               buttonVariants({ variant: "default", size: "lg" }),
-              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
+              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
             )}
           >
             Edit Garden
@@ -223,11 +191,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {entrypoints.map((entrypoint: any) => (
-        <EntrypointBox
-          key={entrypoint.doi}
-          entrypoint={entrypoint}
-          isEditing={false}
-        />
+        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={false}/>
       ))}
     </div>
   );
