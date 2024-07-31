@@ -13,6 +13,7 @@ import CopyButton from "@/components/CopyButton";
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import ShareModal from "@/components/ShareModal";
 import { Entrypoint, Garden } from "@/api/types";
+import { useGardenContext } from "@/components/garden/Context";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
@@ -21,8 +22,8 @@ const EntrypointPage = () => {
     doi,
     limit: 1,
   });
-  console.log("useGetEntrypoint hook error: ", isError!);
-  const { data: garden } = useSearchGardenByDOI(doi);
+  // const { data: garden } = useSearchGardenByDOI(doi);
+  const { garden } = useGardenContext();
 
   if (!data) return <LoadingSpinner />;
   const entrypoint = data[0] || null;
@@ -41,7 +42,11 @@ const EntrypointPage = () => {
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
-          { label: "Entrypoints" },
+          { label: "Gardens", link: "/search" },
+          garden && {
+            label: garden?.title,
+            link: `/garden/${encodeURIComponent(garden.doi)}`,
+          },
           { label: entrypoint.title },
         ]}
       />
