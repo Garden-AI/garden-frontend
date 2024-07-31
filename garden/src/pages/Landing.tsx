@@ -89,7 +89,7 @@ const Landing = () => {
         {icons.map((icon, index) => (
           <div
             key={index}
-            className="flex h-48 flex-col items-center text-center "
+            className="flex h-40 flex-col items-center text-center "
           >
             <div className="w-full">
               <icon.icon size={110} className="mx-auto w-full text-primary" />
@@ -104,12 +104,15 @@ const Landing = () => {
         <h1 className="text-2xl font-semibold">New to garden?</h1>
         <h2 className="text-base">
           Publish your first garden within 15 minutes. Read our{" "}
-          <a href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/">
+          <a
+            className="text-green"
+            href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
+          >
             user guide
           </a>{" "}
           to get started.
         </h2>
-        <img src="img/codeSnippetHomepage.jpg"></img>
+        <img className="p-8" src="img/codeSnippetHomepage.jpg"></img>
         <div>
           <h1 className="text-2xl font-semibold">
             Getting started is easy. We do the hard work so you don’t have to.
@@ -132,7 +135,7 @@ const Landing = () => {
         </h2>
       </div>
 
-      <div>
+      <div className="mt-4">
         <Accordion
           type="double"
           collapsible
@@ -226,20 +229,22 @@ const Landing = () => {
         </Accordion>
       </div>
 
-      <div className=" mt-12 px-4">
-        <h1 className="text-left text-2xl font-semibold">
-          <div className="flex space-x-4">
-            <Rocket size={35} className="my-auto" />
-            <h3>Explore Featured Gardens </h3>
-          </div>
-        </h1>
-        <p className="mt-2 text-base">
-          Take a look at some popular gardens that have been getting a lot of
-          attention! You can view the models, datasets, papers, and anything
-          else associated with the garden. Additionally, you can run the models
-          to optimize your own workflow, gain inspiration, or for any other
-          reason you see fit.
-        </p>
+      <div className=" bg-green px-4 pt-12">
+        <div className="text-white">
+          <h1 className="text-left text-2xl font-semibold">
+            <div className="flex space-x-4">
+              <Rocket size={35} className="my-auto" />
+              <h3>Explore Featured Gardens </h3>
+            </div>
+          </h1>
+          <p className="mt-2 text-base">
+            Take a look at some popular gardens that have been getting a lot of
+            attention! You can view the models, datasets, papers, and anything
+            else associated with the garden. Additionally, you can run the
+            models to optimize your own workflow, gain inspiration, or for any
+            other reason you see fit.
+          </p>
+        </div>
 
         <ScrollArea className="w-full">
           <div className="flex space-x-4 p-4 ">

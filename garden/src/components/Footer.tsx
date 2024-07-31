@@ -11,7 +11,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom section/credits */}
-      <div className="m-10 font-display text-black md:mx-20 md:my-10 md:flex md:columns-2">
+      <div className="m-6 font-display text-black md:mx-20 md:my-10 md:flex md:columns-2">
         <div className="flex flex-col">
           <Link to="/" className="hover:opacity-75">
             <img
