@@ -53,14 +53,16 @@ const Landing = () => {
 
   return (
     <div className="font-display">
-      <div className="mt-24">
+      <div className="mt-24 px-4 sm:flex sm:place-items-end">
         <div className="flex items-baseline">
           <h1 className="text-6xl font-semibold">Garden</h1>
-          <p className="ml-4 font-extrabold text-green">Search for gardens</p>
+          <p className="ml-4 w-36 text-sm font-extrabold text-green">
+            Search for gardens
+          </p>
         </div>
         <div className="mt-8">
           <h2 className="text-l">We make it simple to research using ML.</h2>
-          <h1 className="text-3xl font-semibold">
+          <h1 className="text-2xl font-semibold">
             Build a garden where your model can{" "}
             <span className="text-brightgreen">thrive.</span>
           </h1>
@@ -85,7 +87,7 @@ const Landing = () => {
       </div>
 
       {/* <Separator /> */}
-      <div className="mx-auto grid  grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 md:grid-cols-3 ">
+      <div className="mx-auto grid  grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
         {icons.map((icon, index) => (
           <div
             key={index}
@@ -112,21 +114,31 @@ const Landing = () => {
           </a>{" "}
           to get started.
         </h2>
-        <img className="p-8" src="img/codeSnippetHomepage.jpg"></img>
-        <div>
-          <h1 className="text-2xl font-semibold">
-            Getting started is easy. We do the hard work so you don’t have to.
-          </h1>
-          <h2 className="mt-2 text-base">
-            We automate the process from start to finish so you can spend more
-            time browsing gardens and less time fussing with setting up models.
-          </h2>
-          <p className="font-extrabold text-green">Create an account</p>
+        <div className="items-center sm:mx-8 sm:mt-8 sm:flex">
+          <div className="order-1 sm:w-5/12">
+            <img
+              className="mx-auto object-contain p-8 sm:p-2"
+              src="img/codeSnippetHomepage.jpg"
+            ></img>
+          </div>
+          <div className="order-2 sm:w-7/12 sm:p-4">
+            <h1 className="text-xl font-semibold">
+              Getting started is easy. We do the hard work so you don’t have to.
+            </h1>
+            <h2 className="mt-2 text-base">
+              We automate the process from start to finish so you can spend more
+              time browsing gardens and less time fussing with setting up
+              models.
+            </h2>
+            <p className="font-extrabold text-green sm:text-sm">
+              Create an account
+            </p>
+          </div>
         </div>
       </div>
 
       <div className="mt-12 px-4">
-        <h1 className="text-2xl font-semibold ">
+        <h1 className="text-2xl font-semibold">
           Research using ML doesn’t have to be hard.
         </h1>
         <h2 className="mt-2 text-base">
