@@ -17,6 +17,7 @@ import TeamsPage from "./pages/TeamsPage";import UserProfilePage from "./pages/U
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import MetadataEditing from "./pages/MetadataEditing";
+import EntrypointEditing from "./pages/EntrypointEditing";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -56,6 +57,7 @@ function Root() {
             <Route path="create" element={<CreateGardenPage />} />
             <Route path=":doi/edit" element={<CreateGardenPage />} />
             <Route path=":doi/metadataEditing" element={<MetadataEditing />} />
+            <Route path=":doi/entrypointEditing" element={<EntrypointEditing />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>

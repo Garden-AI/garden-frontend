@@ -28,8 +28,8 @@ import { useGetGarden, useSearchGardenByDOI } from "@/api";
 export default function GardenPage() {
   const { doi } = useParams();
   const { data: garden, isLoading: fetchGardensLoading, isError: fetchGardensError } = useSearchGardenByDOI(doi!);
-  // const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
-  const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens();
+  const { data: user, isError: userInfoError, isLoading: userInfoLoading } = useGetUserInfo(); 
+  const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens(user?.identity_id);
   
   const canEditGarden = (() => {
     if (!garden || !userGardens) return false;

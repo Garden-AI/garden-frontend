@@ -1,10 +1,21 @@
 import { Entrypoint } from "@/api/types";
 import React from "react";
+import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
-
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useGetCurrUserEntrypoints } from "../api/entrypoints/useGetCurrUserEntrypoints";
+import { useGetUserInfo } from "../api/getUserInfo"; 
+import { useGetEntrypoints } from "../api/entrypoints/useGetEntrypoints";
+ 
 const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: boolean }) => {
   const navigate = useNavigate();
+  const { doi } = useParams();
   const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
+  const { data: currUser } = useGetUserInfo();
+  const { data: currUserEntrypoints } = useGetCurrUserEntrypoints(currUser!.identity_id);
+
+  console.log("updated current user endpoints: ", currUserEntrypoints);
 
   // Early return if entrypoint is undefined
   if (!entrypoint) {
@@ -12,14 +23,40 @@ const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: 
   }
 
   const stepsLength = entrypoint.steps?.length ?? 0;
+/*
+  const canEditEntrypoint = currUserEntrypoints?.some(
+    (userEntrypoint) => userEntrypoint.doi === entrypoint.doi
+  );
 
+  const handleEditEntrypointClick = () =>{
+    navigate(`/garden/${encodeURIComponent(doi!)}/entrypointEditing`);
+  }
+
+  */
   return (
     <div
       className="flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:cursor-pointer hover:shadow-md"
       onClick={() => navigate(`/entrypoint/${text}`)}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
+        <div className="flex flex-row">
+          <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
+          {/*
+          <div className="flex flex-end">
+            {canEditEntrypoint && (
+              <button
+                onClick={handleEditEntrypointClick}
+                className={cn(
+                  buttonVariants({ variant: "default", size: "lg" }),
+                  "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+                )}
+              >
+                Edit Entrypoint
+              </button>
+            )}
+          </div>
+                */}
+        </div>
         <p className="text-gray-500">
           {stepsLength}{" "}
           {stepsLength === 1 ? <span>step</span> : <span>steps</span>}
@@ -56,17 +93,6 @@ const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: 
           </div>
         </div>
       ) : null}
-      {isEditing && (
-        <Link
-          to="entrypointEditing"
-          className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mb-4 mt-4 justify-center"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          edit
-        </Link>
-      )}
     </div>
   );
 };
