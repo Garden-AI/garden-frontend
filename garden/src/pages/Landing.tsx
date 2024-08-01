@@ -13,7 +13,14 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Paperclip, Rocket, Share2Icon, Lightbulb, Search } from "lucide-react";
+import {
+  Paperclip,
+  MoveRight,
+  Rocket,
+  Share2Icon,
+  Lightbulb,
+  Search,
+} from "lucide-react";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 const icons = [
@@ -54,13 +61,20 @@ const Landing = () => {
   return (
     <div className="font-display">
       <div className="mt-24 px-4 sm:flex sm:place-items-end">
-        <div className="flex items-baseline">
+        <div className="flex items-baseline sm:w-7/12">
           <h1 className="text-6xl font-semibold">Garden</h1>
-          <p className="ml-4 w-36 text-sm font-extrabold text-green">
-            Search for gardens
+          <p className="ml-2 font-extrabold text-green sm:text-sm">
+            <Link to="/search ">
+              <span className="inline-flex items-center">
+                Search for gardens
+                <MoveRight className="mx-2 h-5 w-5" />
+              </span>
+            </Link>
           </p>
+
+          {/* <MoveRight className="mx-auto text-primary" /> */}
         </div>
-        <div className="mt-8">
+        <div className="mt-8 sm:w-5/12">
           <h2 className="text-l">We make it simple to research using ML.</h2>
           <h1 className="text-2xl font-semibold">
             Build a garden where your model can{" "}
@@ -69,7 +83,7 @@ const Landing = () => {
         </div>
       </div>
 
-      <div className="bg-hero w-full bg-cover bg-center">
+      <div className="w-full bg-hero bg-cover bg-center">
         <div className="flex h-full w-full items-center justify-center py-52">
           <div className="text-center">
             <div className="container mx-auto px-16">
@@ -82,7 +96,14 @@ const Landing = () => {
       <div className="mt-12 px-4">
         <div className="flex items-baseline">
           <h1 className="text-2xl font-semibold">Start a garden</h1>
-          <p className="ml-4 font-extrabold text-green">The plot is yours</p>
+          <p className="ml-4 font-extrabold text-green sm:text-sm">
+            <a href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/">
+              <span className="inline-flex items-center">
+                The Plot is yours
+                <MoveRight className="mx-2 h-5 w-5" />
+              </span>
+            </a>
+          </p>
         </div>
         <h2 className="mt-2 text-base">
           Gardens are collections of ML models that are linked with data and
@@ -117,6 +138,7 @@ const Landing = () => {
           <a
             className="text-green"
             href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
+            target="_blank"
           >
             user guide
           </a>{" "}
@@ -140,7 +162,12 @@ const Landing = () => {
               models.
             </h2>
             <p className="font-extrabold text-green sm:text-sm">
-              Create an account
+              <a href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/">
+                <span className="inline-flex items-center">
+                  Create an account
+                  <MoveRight className="mx-2 h-5 w-5" />
+                </span>
+              </a>
             </p>
           </div>
         </div>
