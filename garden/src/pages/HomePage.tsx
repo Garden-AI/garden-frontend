@@ -65,18 +65,18 @@ const HomePage = () => {
           <h1 className="text-6xl font-semibold">Garden</h1>
           <div className="ml-2 hidden font-extrabold text-green sm:block sm:text-sm">
             <Link to="/search">
-              <span className="items-center sm:inline-flex">
-                Search for gardens
-                <MoveRight className="mx-2 h-5 w-5" />
+              <span className="group items-center sm:inline-flex">
+                <p>Search for gardens</p>
+                <MoveRight className="mx-1 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
               </span>
             </Link>
           </div>
         </div>
         <div className="ml-2 font-extrabold text-green sm:hidden">
           <Link to="/search">
-            <span className="inline-flex items-center">
-              Search for gardens
-              <MoveRight className="mx-2 h-5 w-5" />
+            <span className="group inline-flex items-center">
+              <p>Search for gardens</p>
+              <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
             </span>
           </Link>
         </div>
@@ -104,9 +104,9 @@ const HomePage = () => {
             <h1 className="text-2xl font-semibold">Start a garden</h1>
             <p className="ml-4 font-extrabold text-green sm:text-sm">
               <a href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/">
-                <span className="inline-flex items-center">
-                  The Plot is yours
-                  <MoveRight className="mx-2 h-5 w-5" />
+                <span className="group inline-flex items-center">
+                  <p>The Plot is yours</p>
+                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
                 </span>
               </a>
             </p>
@@ -172,9 +172,9 @@ const HomePage = () => {
               </h2>
               <p className="font-extrabold text-green sm:mt-2 sm:text-sm">
                 <a href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/">
-                  <span className="inline-flex items-center">
-                    Create an account
-                    <MoveRight className="mx-2 h-5 w-5" />
+                  <span className="group inline-flex items-center">
+                    <p>Create an account</p>
+                    <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
                   </span>
                 </a>
               </p>
