@@ -11,6 +11,7 @@ type Garden = {
   version: string;
   entrypoints: Entrypoint[];
 };
+
 type Repository = {
   repo_name: string;
   url: string;
