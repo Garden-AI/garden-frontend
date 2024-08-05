@@ -746,6 +746,8 @@ export interface components {
             id: number;
             /** Entrypoints */
             entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
+            /** Entrypoint_ids **/
+            entrypoint_ids: string[];
         };
         /** GeoLocation */
         GeoLocation: {
