@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate, useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NotFoundPage from "./NotFoundPage";
@@ -26,13 +26,6 @@ const MetadataEditing = () => {
         entrypoint_ids: string[];
     }
 
-const MetadataEditing = () => {
-    const nav = useNavigate();
-    const { doi } = useParams() as { doi: string }; // extract doi from url
-    const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
-    const { mutate: updateGarden } = useUpdateGarden();
-    const auth = useGlobusAuth();
-
     const [isUpdating, setIsUpdating] = useState(false);
     const [metadata, setMetadata] = useState<GardenUpdateRequest>({
         title: "",
@@ -41,18 +34,6 @@ const MetadataEditing = () => {
         description: "",
         entrypoint_ids: [],
     });
-
-    useEffect(() => {
-        if (garden) {
-            setMetadata({
-                title: garden.title || "",
-                contributors: garden?.contributors || [],
-                authors: garden?.authors || [],
-                description: garden?.description || "",
-                entrypoint_ids: [],
-            });
-        }
-    }, [garden]);  
 
     useEffect(() => {
         if (currGarden) {

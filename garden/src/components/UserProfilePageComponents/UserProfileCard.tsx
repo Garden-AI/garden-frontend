@@ -5,7 +5,7 @@ import { useGetUserInfo } from "../../api/getUserInfo";
 import RenderTags from "../ui/renderTags";
 import { useGetUserGardens} from "../../api/getUserGardens";
 import { useUpdateUserInfo } from '../../api/updateUserInfo';
-import { icons } from './PfpSelectionModal'; // Import the icons array
+import { icons } from './PfpSelectionModal'; 
 
 const UserProfileCard = () => {
     const [show, setShow] = useState(false);
@@ -16,7 +16,6 @@ const UserProfileCard = () => {
     const { data: currUserInfo, isLoading: getUserInfoLoading, isError:getUserInfoError } = useGetUserInfo();
     const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens(currUserInfo?.identity_id);
 
-    // update pfp
     useEffect(() => {
         if (currUserInfo && currUserInfo.profile_pic_id) {
             const selectedIcon = icons.find(icon => icon.id === currUserInfo.profile_pic_id);
