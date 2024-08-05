@@ -12,6 +12,20 @@ type Garden = {
   entrypoints: Entrypoint[];
 };
 
+type GardenMetadataResponse = {
+  title: string;
+  authors: string[];
+  contributors: string[];
+  doi: string;
+  description: string;
+  publisher: string;
+  year: string;
+  language: string;
+  tags: string[];
+  version: string;
+  entrypoints: Entrypoint[];
+};
+
 type Repository = {
   repo_name: string;
   url: string;
