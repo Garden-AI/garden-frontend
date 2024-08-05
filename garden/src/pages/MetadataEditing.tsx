@@ -18,8 +18,6 @@ const MetadataEditing = () => {
     const { mutate: updateGarden } = useUpdateGarden();
     const auth = useGlobusAuth();
 
-    console.log("garden data: ", currGarden);
-
     interface GardenUpdateRequest {
         title: string;
         authors: string[];
@@ -28,6 +26,7 @@ const MetadataEditing = () => {
         entrypoint_ids: string[];
     }
 
+    const [isUpdating, setIsUpdating] = useState(false);
     const [metadata, setMetadata] = useState<GardenUpdateRequest>({
         title: "",
         authors: [],
@@ -48,18 +47,37 @@ const MetadataEditing = () => {
         }
     }, [currGarden]);
 
+    useEffect(() => {
+        if (isUpdating) {
+            toast.loading("Updating garden...", { id: "updating-garden" });
+        } else {
+            toast.dismiss("updating-garden");
+        }
+    }, [isUpdating]);
+
     const handleSave = (updatedGardenData: any) => {
         if (!auth?.authorization?.user?.sub) {
             toast.error("You must be authenticated to save changes.");
             return;
         }
+        setIsUpdating(true);
+
         const dataToSend = {
             ...updatedGardenData,
             doi: doi,
         };
 
-        console.log("Updating garden with data:", dataToSend);
-        updateGarden({ doi, garden: dataToSend });
+        updateGarden(
+            { doi, garden: dataToSend },
+            {
+                onSuccess: () => {
+                    setIsUpdating(false);
+                },
+                onError: () => {
+                    setIsUpdating(false);
+                },
+            }
+        );
     };
 
     const handleInputChange = (e: any) => {
@@ -67,9 +85,10 @@ const MetadataEditing = () => {
         setMetadata({ ...metadata, [name]: value });
     };
 
-    if (isLoading) {
-        return <LoadingSpinner />;
+    if (isLoading ) {
+        return <LoadingSpinner />
     }
+    
     if (isError || !currGarden) {
         return <NotFoundPage />;
     }
