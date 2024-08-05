@@ -1,7 +1,6 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { Garden } from "../../types";
+import { useMemo } from 'react';
+import { Garden } from "@/api/types";
 import GardenBox from "@/components/GardenBox";
-import { Link } from 'react-router-dom';
 import { useGetAllGardens} from "../../api/getAllGardens";
 import { useGetUserInfo } from "../../api/getUserInfo";
 import LoadingSpinner from "../../components/LoadingSpinner";
