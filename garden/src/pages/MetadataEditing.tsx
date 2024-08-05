@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useSearchGardenByDOI } from "../api/search/useSearchGardenByDOI";
 import EntrypointBox from "../components/EntrypointBox";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -12,20 +12,20 @@ import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/ui/multiple-select";
 
-const MetadataEditing = () => {
-    const { doi } = useParams() as { doi: string }; // extract doi from url
+interface GardenUpdateRequest {
+    title: string;
+    authors: string[];
+    contributors: string[];
+    description: string | null;
+    entrypoint_ids: string[];
+}
 
+const MetadataEditing = () => {
+    const nav = useNavigate();
+    const { doi } = useParams() as { doi: string }; // extract doi from url
     const { data: garden, isLoading, isError } = useSearchGardenByDOI(doi!);
     const { mutate: updateGarden } = useUpdateGarden();
     const auth = useGlobusAuth();
-
-    interface GardenUpdateRequest{
-        title: string;
-        authors: string[];
-        contributors: string[];
-        description: string | null;
-        entrypoint_ids: string[];
-    }
 
     const [metadata, setMetadata] = useState<GardenUpdateRequest>({
         title: "",
@@ -34,6 +34,18 @@ const MetadataEditing = () => {
         description: "",
         entrypoint_ids: [],
     });
+
+    useEffect(() => {
+        if (garden) {
+            setMetadata({
+                title: garden.title || "",
+                contributors: garden?.contributors || [],
+                authors: garden?.authors || [],
+                description: garden?.description || "",
+                entrypoint_ids: [],
+            });
+        }
+    }, [garden]);  
 
     const handleSave = (updatedGardenData: any) => {
         if (!auth?.authorization?.user?.sub) {
@@ -51,30 +63,20 @@ const MetadataEditing = () => {
 
     if (isLoading) {
         return <LoadingSpinner />;
-      }
-      if (isError || !garden) {
+    }
+    if (isError || !garden) {
         return <NotFoundPage />;
-      }
+    }
 
-    useEffect(() => {
-        if (garden) {
-            setMetadata({
-                title: garden.title || "",
-                contributors: garden?.contributors || [],
-                authors: garden?.authors || [],
-                description: garden?.description || "",
-                entrypoint_ids: [],
-            });
-        }
-    }, [garden]);  
-
-    
     const handleInputChange = (e: any) => {
         const { name, value } = e.target;
         setMetadata({ ...metadata, [name]: value });
     };
-            
 
+    const backToGardenPage = () =>{
+        nav(`/garden/${encodeURIComponent(`${garden.doi}`)}`);
+    }
+            
     return (
         <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
             <Breadcrumb
@@ -141,24 +143,34 @@ const MetadataEditing = () => {
                     <p className="text-gray-600">Entrypoints</p>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {garden?.entrypoints?.map((entrypoint: any) => (
-                        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={true}/>
+                        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} garden={garden}/>
                         ))}
                     </div>
                 </div>
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
-                <div className="flex justify-end">
-              <button
-                className={cn(
-                  buttonVariants({ variant: "default", size: "lg" }),
-                  "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
-                )}
-                onClick={() => handleSave(metadata)}
-                disabled={!auth?.authorization?.user?.sub}
-                
-              >
-                Save Edits
-              </button>
-            </div>
+                <div className="flex flex-row justify-end">
+                    <button
+                        className={cn(
+                        buttonVariants({ variant: "default", size: "lg" }),
+                        "flex flex-row items-center gap-2 rounded-lg border border-green px-2 py-1 text-sm mr-2 bg-white text-green"
+                        )}
+                        onClick={backToGardenPage}
+                        disabled={!auth?.authorization?.user?.sub}
+                    >
+                    Cancel
+                    </button>
+                    <button
+                        className={cn(
+                        buttonVariants({ variant: "default", size: "lg" }),
+                        "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+                        )}
+                        onClick={() => handleSave(metadata)}
+                        disabled={!auth?.authorization?.user?.sub}
+                        
+                    >
+                        Save Edits
+                    </button>
+                </div>
             </div>
         </div>
     );

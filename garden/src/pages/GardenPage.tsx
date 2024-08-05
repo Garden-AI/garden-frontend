@@ -59,7 +59,8 @@ export default function GardenPage() {
     for (const userGarden of userGardens) {
       if (userGarden.doi === garden.doi) {
         // return true when adding edit button back in
-        return false;
+        // change back to false before I make PR
+        return true;
       }
     }
     return false;
@@ -225,7 +226,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
         <EntrypointBox
           key={entrypoint.doi}
           entrypoint={entrypoint}
-          isEditing={false}
+          garden={garden}
         />
       ))}
     </div>

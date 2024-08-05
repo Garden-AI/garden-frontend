@@ -10,8 +10,12 @@ const updateGarden = async (
 ): Promise<AxiosResponse<Garden>> => {
     try {
         const url = `${instance.defaults.baseURL}/gardens/${doi}`;
-        console.log(`sending put request to: ${url} with data: `, garden);
-        const response = await instance.put(`/gardens/${doi}`, garden,);
+        const updatedGarden = {
+            ...garden,
+            is_archived: false, 
+        };
+        console.log(`sending put request to: ${url} with data: `, updatedGarden);
+        const response = await instance.put(`/gardens/${doi}`, updatedGarden,);
         return response;
     } catch (error) {
         console.error("error details:", error);
