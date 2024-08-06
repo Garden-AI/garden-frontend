@@ -828,7 +828,7 @@ export interface components {
             version: string;
             /** Entrypoint Aliases */
             entrypoint_aliases?: {
-                [key: string]: string | undefined;
+                [key: string]: string;
             };
             /**
              * Is Archived
@@ -875,7 +875,7 @@ export interface components {
             version: string;
             /** Entrypoint Aliases */
             entrypoint_aliases?: {
-                [key: string]: string | undefined;
+                [key: string]: string;
             };
             /**
              * Is Archived
@@ -1387,7 +1387,7 @@ export interface components {
             entrypoints: components["schemas"]["_RegisteredEntrypoint"][];
             /** Entrypoint Aliases */
             entrypoint_aliases?: {
-                [key: string]: string | undefined;
+                [key: string]: string;
             };
         };
         /** _RegisteredEntrypoint */
