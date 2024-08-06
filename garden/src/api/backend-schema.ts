@@ -151,7 +151,8 @@ export interface paths {
         delete: operations["delete_entrypoint_entrypoints__doi__delete"];
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update Entrypoint */
+        patch: operations["update_entrypoint_entrypoints__doi__patch"];
         trace?: never;
     };
     "/gardens": {
@@ -191,7 +192,8 @@ export interface paths {
         delete: operations["delete_garden_gardens__doi__delete"];
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update Garden */
+        patch: operations["update_garden_gardens__doi__patch"];
         trace?: never;
     };
     "/users": {
@@ -216,6 +218,70 @@ export interface paths {
          * @description Update the user profile info for the current authed user.
          */
         patch: operations["update_user_info_users_patch"];
+        trace?: never;
+    };
+    "/users/{user_uuid}/saved/gardens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Saved Gardens
+         * @description Fetch the users list of saved gardens.
+         */
+        get: operations["get_saved_gardens_users__user_uuid__saved_gardens_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user_uuid}/saved/gardens/{doi}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save Garden
+         * @description Add a garden to the user's list of saved gardens by doi.
+         */
+        put: operations["save_garden_users__user_uuid__saved_gardens__doi__put"];
+        post?: never;
+        /**
+         * Remove Saved Garden
+         * @description Remove a garden from the user's list of saved gardens by doi.
+         */
+        delete: operations["remove_saved_garden_users__user_uuid__saved_gardens__doi__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/status/failed-updates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Failed Updates
+         * @description Fetch Failed Search Index Updates
+         */
+        get: operations["get_failed_updates_status_failed_updates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/": {
@@ -555,6 +621,11 @@ export interface components {
              * Format: uri
              */
             notebook_url: string;
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
             /** Short Name */
             short_name: string;
             /** Function Text */
@@ -606,6 +677,11 @@ export interface components {
             full_image_uri: string;
             /** Notebook Url */
             notebook_url: string;
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
             /** Short Name */
             short_name: string;
             /** Function Text */
@@ -634,11 +710,70 @@ export interface components {
             /** Id */
             id: number;
         };
+        /** EntrypointPatchRequest */
+        EntrypointPatchRequest: {
+            /** Doi Is Draft */
+            doi_is_draft?: boolean | null;
+            /** Title */
+            title?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Year */
+            year?: string | null;
+            /** Func Uuid */
+            func_uuid?: string | null;
+            /** Container Uuid */
+            container_uuid?: string | null;
+            /** Base Image Uri */
+            base_image_uri?: string | null;
+            /** Full Image Uri */
+            full_image_uri?: string | null;
+            /** Notebook Url */
+            notebook_url?: string | null;
+            /** Is Archived */
+            is_archived?: boolean | null;
+            /** Short Name */
+            short_name?: string | null;
+            /** Function Text */
+            function_text?: string | null;
+            /** Authors */
+            authors?: string[] | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Test Functions */
+            test_functions?: string[] | null;
+            /** Requirements */
+            requirements?: string[] | null;
+            /** Models */
+            models?: components["schemas"]["src__api__schemas__entrypoint___ModelMetadata"][] | null;
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata-Input"][] | null;
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][] | null;
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata-Input"][] | null;
+        };
         /**
          * Event
          * @enum {string}
          */
         Event: "publish" | "register" | "hide";
+        /** FailedSearchIndexUpdateResponse */
+        FailedSearchIndexUpdateResponse: {
+            /** Doi */
+            doi: string;
+            /** Operation Type */
+            operation_type: string;
+            /** Error Message */
+            error_message: string;
+            /** Retry Count */
+            retry_count: number;
+            /**
+             * Last Attempt
+             * Format: date-time
+             */
+            last_attempt: string;
+        };
         /**
          * FunderIdentifierType
          * @enum {string}
@@ -695,6 +830,11 @@ export interface components {
             entrypoint_aliases?: {
                 [key: string]: string | undefined;
             };
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
             /** Entrypoint Ids */
             entrypoint_ids?: string[];
             /** Owner Identity Id */
@@ -738,6 +878,11 @@ export interface components {
                 [key: string]: string | undefined;
             };
             /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /**
              * Owner Identity Id
              * Format: uuid
              */
@@ -746,8 +891,37 @@ export interface components {
             id: number;
             /** Entrypoints */
             entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
-            /** Entrypoint_ids **/
-            entrypoint_ids: string[];
+            /** Entrypoint Ids */
+            readonly entrypoint_ids: string[];
+        };
+        /** GardenPatchRequest */
+        GardenPatchRequest: {
+            /** Title */
+            title?: string | null;
+            /** Authors */
+            authors?: string[] | null;
+            /** Contributors */
+            contributors?: string[] | null;
+            /** Doi Is Draft */
+            doi_is_draft?: boolean | null;
+            /** Description */
+            description?: string | null;
+            /** Publisher */
+            publisher?: string | null;
+            /** Year */
+            year?: string | null;
+            /** Language */
+            language?: string | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Version */
+            version?: string | null;
+            /** Entrypoint Aliases */
+            entrypoint_aliases?: {
+                [key: string]: string | undefined;
+            };
+            /** Is Archived */
+            is_archived?: boolean | null;
         };
         /** GeoLocation */
         GeoLocation: {
@@ -1726,6 +1900,41 @@ export interface operations {
             };
         };
     };
+    update_entrypoint_entrypoints__doi__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntrypointPatchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntrypointMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     search_gardens_gardens_get: {
         parameters: {
             query?: {
@@ -1894,6 +2103,41 @@ export interface operations {
             };
         };
     };
+    update_garden_gardens__doi__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenPatchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_user_info_users_get: {
         parameters: {
             query?: never;
@@ -1943,6 +2187,121 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_saved_gardens_users__user_uuid__saved_gardens_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_garden_users__user_uuid__saved_gardens__doi__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_uuid: string;
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_saved_garden_users__user_uuid__saved_gardens__doi__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_uuid: string;
+                doi: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_failed_updates_status_failed_updates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FailedSearchIndexUpdateResponse"][];
                 };
             };
         };

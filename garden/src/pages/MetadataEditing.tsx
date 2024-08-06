@@ -9,31 +9,34 @@ import { cn } from "@/lib/utils";
 import Breadcrumb from "@/components/Breadcrumb";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
-import MultipleSelector from "@/components/ui/multiple-select";
+import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { useGetGarden } from "../api/gardens/useGetGarden";
+import { GardenCreateRequest } from "@/api/types";
+import { tagOptions } from "@/components/form/CreateGarden/constants";
 
 const MetadataEditing = () => {
     const { doi } = useParams() as { doi: string }; 
     const { data: currGarden, isLoading, isError } = useGetGarden(doi!);
     const { mutate: updateGarden } = useUpdateGarden();
     const auth = useGlobusAuth();
+    const [isUpdating, setIsUpdating] = useState(false);
 
-    interface GardenUpdateRequest {
+    const [metadata, setMetadata] = useState<{
         title: string;
         authors: string[];
         contributors: string[];
-        description: string | null;
+        description: string;
         entrypoint_ids: string[];
-    }
-
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [metadata, setMetadata] = useState<GardenUpdateRequest>({
+        tags: Option[]; 
+    }>({
         title: "",
         authors: [],
         contributors: [],
         description: "",
         entrypoint_ids: [],
+        tags: []
     });
+    
 
     useEffect(() => {
         if (currGarden) {
@@ -42,7 +45,8 @@ const MetadataEditing = () => {
                 contributors: currGarden.contributors || [],
                 authors: currGarden.authors || [],
                 description: currGarden.description || "",
-                entrypoint_ids: currGarden.entrypoint_ids || []
+                entrypoint_ids: currGarden.entrypoint_ids || [],
+                tags: currGarden.tags?.map(tag => ({ label: tag, value: tag })) || [] 
             });
         }
     }, [currGarden]);
@@ -63,8 +67,10 @@ const MetadataEditing = () => {
         setIsUpdating(true);
 
         const dataToSend = {
+            ...currGarden,
             ...updatedGardenData,
             doi: doi,
+            tags: updatedGardenData.tags?.map((tag: Option) => tag.value), 
         };
 
         updateGarden(
@@ -116,7 +122,7 @@ const MetadataEditing = () => {
                         value={metadata?.title}
                         onChange={handleInputChange}
                         placeholder="Title"
-                        className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
+                        className="border border-gray-200 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                     />
                 </div>
                 <div className="space-y-2">
@@ -124,7 +130,7 @@ const MetadataEditing = () => {
                     <MultipleSelector
                         placeholder="Edit Contributors"
                         creatable
-                        value={metadata.contributors.map(contributor => ({ label: contributor, value: contributor }))}
+                        value={metadata.contributors?.map(contributor => ({ label: contributor, value: contributor }))}
                         onChange={(newValue) =>
                             setMetadata({
                                 ...metadata,
@@ -139,7 +145,7 @@ const MetadataEditing = () => {
                     <MultipleSelector
                         placeholder="Edit Authors"
                         creatable
-                        value={metadata.authors.map(author => ({ label: author, value: author }))}
+                        value={metadata.authors!.map(author => ({ label: author, value: author }))}
                         onChange={(newValue) =>
                             setMetadata({
                                 ...metadata,
@@ -157,9 +163,30 @@ const MetadataEditing = () => {
                         value={metadata?.description ?? ""}
                         onChange={handleInputChange}
                         placeholder="Description"
-                        className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
+                        className="border border-gray-200 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                     />
                 </div>
+                <div className="space-y-2">
+                    <p className="text-gray-600">Tags</p>
+                    <MultipleSelector
+                        groupBy="group"
+                        placeholder="Add tags to your garden"
+                        creatable
+                        hideClearAllButton
+                        defaultOptions={tagOptions}
+                        maxSelected={5}
+                        hidePlaceholderWhenSelected
+                        inputProps={{ maxLength: 32 }}
+                        value={metadata.tags}
+                        onChange={(newValue) =>
+                            setMetadata({
+                                ...metadata,
+                                tags: newValue,
+                            })
+                        }
+                        className="bg-white"
+                    />
+                </div>  
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
                 <div className="space-y-2">
                     <p className="text-gray-600">Entrypoints</p>
