@@ -7,6 +7,8 @@ type GardenCreateResponse = components["schemas"]["GardenMetadataResponse"];
 type Entrypoint = components["schemas"]["EntrypointMetadataResponse"];
 type EntrypointCreateRequest = components["schemas"]["EntrypointCreateRequest"];
 
+type User = components["schemas"]["UserMetadataResponse"];
+
 // type Notebook = components["schemas"]["_RegisteredNotebook"];
 
 export type {
@@ -15,4 +17,5 @@ export type {
   GardenCreateResponse,
   Entrypoint,
   EntrypointCreateRequest,
+  User,
 };

@@ -15,6 +15,7 @@ export function transformFormToRequest(
     tags: formData.tags.map((tag) => tag.label),
     entrypoint_ids: formData.entrypoint_ids.map((entrypoint) => entrypoint.doi),
     owner_identity_id: ownerId,
+    is_archived: false,
     doi,
     publisher: "Gardens-AI",
   };
