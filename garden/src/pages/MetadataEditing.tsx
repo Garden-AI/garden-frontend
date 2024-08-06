@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 import Breadcrumb from "@/components/Breadcrumb";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
-import MultipleSelector from "@/components/ui/multiple-select";
+import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { useGetGarden } from "../api/gardens/useGetGarden";
 import { GardenCreateRequest } from "@/api/types";
+import { tagOptions } from "@/components/form/CreateGarden/constants";
 
 const MetadataEditing = () => {
     const { doi } = useParams() as { doi: string }; 
@@ -19,15 +20,23 @@ const MetadataEditing = () => {
     const { mutate: updateGarden } = useUpdateGarden();
     const auth = useGlobusAuth();
     const [isUpdating, setIsUpdating] = useState(false);
-    
-    const [metadata, setMetadata] = useState<Partial<GardenCreateRequest>>({
+
+    const [metadata, setMetadata] = useState<{
+        title: string;
+        authors: string[];
+        contributors: string[];
+        description: string;
+        entrypoint_ids: string[];
+        tags: Option[]; 
+    }>({
         title: "",
         authors: [],
         contributors: [],
         description: "",
         entrypoint_ids: [],
-        //tags: []
+        tags: []
     });
+    
 
     useEffect(() => {
         if (currGarden) {
@@ -37,7 +46,7 @@ const MetadataEditing = () => {
                 authors: currGarden.authors || [],
                 description: currGarden.description || "",
                 entrypoint_ids: currGarden.entrypoint_ids || [],
-                //tags: currGarden.tags || []
+                tags: currGarden.tags?.map(tag => ({ label: tag, value: tag })) || [] 
             });
         }
     }, [currGarden]);
@@ -61,6 +70,7 @@ const MetadataEditing = () => {
             ...currGarden,
             ...updatedGardenData,
             doi: doi,
+            tags: updatedGardenData.tags?.map((tag: Option) => tag.value), 
         };
 
         updateGarden(
@@ -156,23 +166,26 @@ const MetadataEditing = () => {
                         className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                     />
                 </div>
-                {/* add in tags later
                 <div className="space-y-2">
                     <p className="text-gray-600">Tags</p>
                     <MultipleSelector
-                        placeholder="Edit Tags"
+                        groupBy="group"
+                        placeholder="Add tags to your garden"
                         creatable
-                        value={metadata.tags?.map(tag => ({ label: tag, value: tag }))}
+                        hideClearAllButton
+                        defaultOptions={tagOptions}
+                        maxSelected={5}
+                        hidePlaceholderWhenSelected
+                        inputProps={{ maxLength: 32 }}
+                        value={metadata.tags}
                         onChange={(newValue) =>
                             setMetadata({
                                 ...metadata,
-                                tags: newValue.map(item => item.value),
+                                tags: newValue,
                             })
                         }
-                        className="bg-white"
                     />
-                </div>
-                    */}
+                </div>  
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
                 <div className="space-y-2">
                     <p className="text-gray-600">Entrypoints</p>
