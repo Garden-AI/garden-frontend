@@ -99,7 +99,7 @@ function GardenHeader({ garden }: { garden: Garden }) {
       <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
-          content={window.location.href}
+          content={`https://doi.org/${garden.doi}`}
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
@@ -129,7 +129,7 @@ function GardenBody({
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors?.join(", ")}</p>
         </div>
-        {canEditGarden && (
+        {/* {canEditGarden && (
           <button
             onClick={handleEditGardenClick}
             className={cn(
@@ -139,7 +139,7 @@ function GardenBody({
           >
             Edit Garden
           </button>
-        )}
+        )} */}
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>

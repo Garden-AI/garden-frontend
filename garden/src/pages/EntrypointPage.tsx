@@ -69,7 +69,7 @@ function EntrypointHeader({
       <div className="hidden flex-col items-center md:flex md:flex-row">
         <CopyButton
           hint="Copy Link"
-          content={window.location.href}
+          content={`https://doi.org/${doi}`}
           icon={<LinkIcon />}
           className="border-none bg-transparent"
         />

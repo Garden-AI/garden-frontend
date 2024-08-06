@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Rocket, Share2Icon, Lightbulb, Search } from "lucide-react";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import { transformSearchResultToGardens } from "@/api/search/useSearchGardens";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },
@@ -43,7 +44,11 @@ const HomePage = () => {
     getToken();
   }, [auth]);
 
-  const { data: gardens } = useSearchGardens("*", "6");
+  const { data } = useSearchGardens({
+    q: "*",
+    limit: 7,
+  });
+  const gardens = transformSearchResultToGardens(data);
 
   return (
     <div className="font-display">

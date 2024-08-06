@@ -17,6 +17,6 @@ export function transformFormToRequest(
     owner_identity_id: ownerId,
     doi,
     publisher: "Gardens-AI",
-    is_archived: false
+    is_archived: false,
   };
 }

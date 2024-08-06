@@ -1,4 +1,4 @@
-import { Garden } from "../types";
+import { Garden } from "@/api/types";
 import instance from "./axios";
 import { useQuery } from "@tanstack/react-query";
 
