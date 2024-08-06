@@ -11,28 +11,22 @@ import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { useGetGarden } from "../api/gardens/useGetGarden";
+import { GardenCreateRequest } from "@/api/types";
 
 const MetadataEditing = () => {
     const { doi } = useParams() as { doi: string }; 
     const { data: currGarden, isLoading, isError } = useGetGarden(doi!);
     const { mutate: updateGarden } = useUpdateGarden();
     const auth = useGlobusAuth();
-
-    interface GardenUpdateRequest {
-        title: string;
-        authors: string[];
-        contributors: string[];
-        description: string | null;
-        entrypoint_ids: string[];
-    }
-
     const [isUpdating, setIsUpdating] = useState(false);
-    const [metadata, setMetadata] = useState<GardenUpdateRequest>({
+    
+    const [metadata, setMetadata] = useState<Partial<GardenCreateRequest>>({
         title: "",
         authors: [],
         contributors: [],
         description: "",
         entrypoint_ids: [],
+        //tags: []
     });
 
     useEffect(() => {
@@ -42,7 +36,8 @@ const MetadataEditing = () => {
                 contributors: currGarden.contributors || [],
                 authors: currGarden.authors || [],
                 description: currGarden.description || "",
-                entrypoint_ids: currGarden.entrypoint_ids || []
+                entrypoint_ids: currGarden.entrypoint_ids || [],
+                //tags: currGarden.tags || []
             });
         }
     }, [currGarden]);
@@ -63,6 +58,7 @@ const MetadataEditing = () => {
         setIsUpdating(true);
 
         const dataToSend = {
+            ...currGarden,
             ...updatedGardenData,
             doi: doi,
         };
@@ -124,7 +120,7 @@ const MetadataEditing = () => {
                     <MultipleSelector
                         placeholder="Edit Contributors"
                         creatable
-                        value={metadata.contributors.map(contributor => ({ label: contributor, value: contributor }))}
+                        value={metadata.contributors?.map(contributor => ({ label: contributor, value: contributor }))}
                         onChange={(newValue) =>
                             setMetadata({
                                 ...metadata,
@@ -139,7 +135,7 @@ const MetadataEditing = () => {
                     <MultipleSelector
                         placeholder="Edit Authors"
                         creatable
-                        value={metadata.authors.map(author => ({ label: author, value: author }))}
+                        value={metadata.authors!.map(author => ({ label: author, value: author }))}
                         onChange={(newValue) =>
                             setMetadata({
                                 ...metadata,
@@ -160,6 +156,23 @@ const MetadataEditing = () => {
                         className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                     />
                 </div>
+                {/* add in tags later
+                <div className="space-y-2">
+                    <p className="text-gray-600">Tags</p>
+                    <MultipleSelector
+                        placeholder="Edit Tags"
+                        creatable
+                        value={metadata.tags?.map(tag => ({ label: tag, value: tag }))}
+                        onChange={(newValue) =>
+                            setMetadata({
+                                ...metadata,
+                                tags: newValue.map(item => item.value),
+                            })
+                        }
+                        className="bg-white"
+                    />
+                </div>
+                    */}
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
                 <div className="space-y-2">
                     <p className="text-gray-600">Entrypoints</p>
