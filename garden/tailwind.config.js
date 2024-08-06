@@ -22,12 +22,7 @@ module.exports = {
     extend: {
       colors: {
         green: "#53A86C",
-        white: "#ffffff",
         transparent: "transparent",
-        black: "black",
-        blue: "blue",
-        orange: "orange",
-        purple: "magenta",
         fail: "#D86F55",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

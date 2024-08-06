@@ -1,38 +1,83 @@
 import { search } from "@globus/sdk/cjs";
-import { Garden } from "@/api/types";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Garden } from "../types";
 
-const searchGardens = async (
-  query: string,
-  limit: `${number}`,
-): Promise<Garden[]> => {
+const searchGlobus = async (
+  searchOptions: Globus.Search.GSearchRequest,
+): Promise<Globus.Search.GSearchResult> => {
   try {
-    const response = await search.query.get(
+    const response = await search.query.post(
       import.meta.env.VITE_GLOBUS_SEARCH_INDEX_UUID,
       {
-        query: { q: query, limit },
+        payload: searchOptions,
       },
     );
-    return (await response.json()).gmeta.map((g: any) => g.entries[0].content);
+    return await response.json();
   } catch (error) {
     throw new Error("Error fetching gardens by query");
   }
 };
 
 export const useSearchGardens = (
-  query: string,
-  limit: `${number}`,
-  relatedDOI?: string,
+  searchOptions: Globus.Search.GSearchRequest,
 ) => {
-  return useQuery<Garden[], Error>({
-    queryKey: ["search", query, limit, relatedDOI],
-    queryFn: async () => {
-      {
-        const gardens = searchGardens(query, limit);
-        if (relatedDOI)
-          return (await gardens).filter((garden) => garden.doi !== relatedDOI);
-        return gardens;
-      }
-    },
+  return useQuery<Globus.Search.GSearchResult, Error>({
+    queryKey: [
+      "search",
+      searchOptions.q,
+      searchOptions.limit,
+      searchOptions.offset,
+      searchOptions.filters,
+      searchOptions.sort,
+      searchOptions.facets,
+    ],
+    queryFn: async () => searchGlobus(searchOptions),
+    placeholderData: keepPreviousData,
   });
+};
+
+export const transformSearchResultToGardens = (
+  searchResult?: Globus.Search.GSearchResult,
+): Garden[] => {
+  return (
+    searchResult?.gmeta.map((result) => result.entries[0].content as Garden) ||
+    []
+  );
+};
+
+export const transformSearchParamsToGSearchRequest = (
+  searchParams: URLSearchParams,
+): Globus.Search.GSearchRequest => {
+  const filterKeys = ["year", "authors", "tags"];
+  const filters: Globus.Search.GFilter[] = filterKeys
+    .filter((key) => searchParams.has(key))
+    .map((key) => {
+      return {
+        field_name: key,
+        values: searchParams.get(key)!.split(",").map(decodeURIComponent),
+        type: "match_any",
+        post_filter: true,
+      };
+    });
+
+  const size = Number(searchParams.get("size")) || 10;
+  const page = Number(searchParams.get("page")) || 1;
+  const sort = searchParams.get("sort");
+
+  const offset = (page - 1) * size;
+
+  const order = sort === "asc" ? "asc" : sort === "desc" ? "desc" : undefined;
+
+  return {
+    q: searchParams.get("q") || "*",
+    limit: size,
+    offset,
+    filters: filters.length > 0 ? filters : undefined,
+    facets: filterKeys.flatMap((key: string) => ({
+      name: key,
+      field_name: key,
+      type: "terms",
+    })),
+    sort: order ? [{ field_name: "title", order }] : undefined,
+  };
 };
