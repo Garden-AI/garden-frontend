@@ -7,6 +7,7 @@ type Entrypoint = components["schemas"]["EntrypointMetadataResponse"];
 type EntrypointCreateRequest = components["schemas"]["EntrypointCreateRequest"];
 
 type User = components["schemas"]["UserMetadataResponse"];
+type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 
 // type Notebook = components["schemas"]["_RegisteredNotebook"];
 
@@ -17,4 +18,5 @@ export type {
   Entrypoint,
   EntrypointCreateRequest,
   User,
+  UpdateUserSchema
 };
