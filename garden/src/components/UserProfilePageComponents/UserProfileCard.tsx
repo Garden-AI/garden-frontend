@@ -4,7 +4,7 @@ import PfpSelectionModal from './PfpSelectionModal';
 import { useGetUserInfo } from "../../api/getUserInfo";
 import RenderTags from "../ui/renderTags";
 import { useGetUserGardens} from "../../api/getUserGardens";
-import { useUpdateUserInfo } from '../../api/updateUserInfo';
+// import { useUpdateUserInfo } from '../../api/updateUserInfo';
 import { icons } from './PfpSelectionModal'; 
 
 const UserProfileCard = () => {
@@ -90,13 +90,13 @@ const UserProfileCard = () => {
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
                     <div className="flex flex-row items-center justify-center w-full mt-4 mb-4">
-                        <p className="text-orange text-xl font-bold">{currUserInfo?.saved_garden_dois.length}</p>
+                        <p className="text-orange-400 text-xl font-bold">{currUserInfo?.saved_garden_dois?.length}</p>
                         <p className="text-lightSecondary text-base font-normal ml-2">Gardens Saved</p>
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
                     <div className="flex flex-col items-center gap-2 text-base mb-8">
                         <p className="text-lightSecondary font-normal mt-4">Skills</p>
-                        <RenderTags items={currUserInfo?.skills ?? []} title=""/>
+                        <RenderTags items={currUserInfo?.skills ?? []} title="" customBgColor="bg-indigo-300"/>
                     </div>
                 </div>
                 <button 

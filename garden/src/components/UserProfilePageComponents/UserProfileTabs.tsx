@@ -35,12 +35,14 @@ const UserProfileTabs = () => {
                     >
                         My Gardens
                     </button>
+                    {/* hide this tab for now
                     <button
                         className={`w-full border-b-4 ${active === "Saved Gardens" ? "border-green bg-green bg-opacity-30" : "bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"}`}
                         onClick={() => setActive("Saved Gardens")}
                     >
                         Saved Gardens
                     </button>
+                    */}
                 </div>
             </div>
             <div className="flex-grow pt-4 sm:pt-8 overflow-auto h-96">

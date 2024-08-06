@@ -77,57 +77,56 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
               {tags.map((value: any, index: number) => (
                 <span
                   key={index}
-                  className="mx-0.5 rounded-lg bg-primary p-1 px-2  text-xs text-primary-foreground"
+                  className="mx-0.5 rounded-lg bg-primary p-1 px-2 text-xs text-primary-foreground"
                 >
                   {value}
                 </span>
               ))}
             </div>
           )}
-          {canEditGarden && (
-            <div>
+          <div className="ml-auto flex items-center">
+            {canEditGarden && (
               <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-pencil absolute bottom-6 left-6 cursor-pointer stroke-black"
-              onClick={handleEditGardenClick}
-            >
-              <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-              <path d="m15 5 4 4" />
-            </svg>
-            </div>
-          )}
-          {auth.isAuthenticated ? (
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={`lucide lucide-bookmark absolute bottom-6 right-6 cursor-pointer ${
-                (isSaved) ? 'stroke-green fill-green' : 'stroke-black'
-              }`}
-              onClick={handleSaveClick}
-            >
-              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-            </svg>
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-pencil cursor-pointer stroke-black mr-2"
+                onClick={handleEditGardenClick}
+              >
+                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                <path d="m15 5 4 4" />
+              </svg>
+            )}
+
+            {/* hide save buttons in this branch, work on in save gardens button branch
+            {auth.isAuthenticated && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`lucide lucide-bookmark cursor-pointer ml-4 ${
+                  isSaved ? 'stroke-green fill-green' : 'stroke-black'
+                }`}
+                onClick={handleSaveClick}
+              >
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+              </svg>
+            )}
+            */}
+
           </div>
-          ):(
-            <div>
-            </div>
-          )}
         </CardFooter>
       </div>
     </Card>

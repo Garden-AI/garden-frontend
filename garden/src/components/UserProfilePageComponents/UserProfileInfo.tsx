@@ -176,7 +176,7 @@ const UserProfileInfo = () => {
                             className="bg-white"
                         />
                     ) : (
-                        <RenderTags items={userInfo?.affiliations ?? []} title="Affiliations" />
+                        <RenderTags items={userInfo?.affiliations ?? []} title="Affiliations"/>
                     )}
                 </div>
                 <div className = "space-y-2 ">
@@ -192,7 +192,7 @@ const UserProfileInfo = () => {
                             className="bg-white"
                         />
                     ) : (
-                        <RenderTags items={userInfo?.skills ?? []} title="Skills" />
+                        <RenderTags items={userInfo?.skills ?? []} title="Skills"/>
                     )}
                 </div>
                 <div className = "space-y-2 ">
@@ -204,11 +204,11 @@ const UserProfileInfo = () => {
                             onChange={(newValue: any) => setUserInfo({
                             ...userInfo,
                             domains: newValue.map((item: any) => item.value)
-                            })}
+                            })}                      
                             className="bg-white"
                         />
                     ) : (
-                        <RenderTags items={userInfo?.domains ?? []} title="Domains" />
+                        <RenderTags items={userInfo?.domains ?? []} title="Domains"/>
                     )}
                 </div>
             </div>
