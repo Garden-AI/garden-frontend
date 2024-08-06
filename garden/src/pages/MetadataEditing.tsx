@@ -122,7 +122,7 @@ const MetadataEditing = () => {
                         value={metadata?.title}
                         onChange={handleInputChange}
                         placeholder="Title"
-                        className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
+                        className="border border-gray-200 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                     />
                 </div>
                 <div className="space-y-2">
@@ -163,7 +163,7 @@ const MetadataEditing = () => {
                         value={metadata?.description ?? ""}
                         onChange={handleInputChange}
                         placeholder="Description"
-                        className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
+                        className="border border-gray-200 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
                     />
                 </div>
                 <div className="space-y-2">
@@ -184,6 +184,7 @@ const MetadataEditing = () => {
                                 tags: newValue,
                             })
                         }
+                        className="bg-white"
                     />
                 </div>  
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
