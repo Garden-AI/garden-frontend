@@ -9,6 +9,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/ui/multiple-select";
+import { EntrypointCreateRequest } from "@/api/types";
 
 export default function EntrypointEditing() {
     const nav = useNavigate();
@@ -24,16 +25,9 @@ export default function EntrypointEditing() {
     const { mutate: updateEntrypoint } = useUpdateCurrUserEntrypoint();
     const auth = useGlobusAuth();
 
-    interface UserEntrypointUpdateRequest {
-        title: string;
-        description: string | null;
-        authors: string[];
-        tags: string[];
-    }
-
-    const [entrypointData, setEntrypointData] = useState<UserEntrypointUpdateRequest>({
-        title: currEntrypoint?.title || "",
-        description: currEntrypoint?.description || null,
+    const [entrypointData, setEntrypointData] = useState<Partial<EntrypointCreateRequest>>({
+        title: currEntrypoint!.title,
+        description: currEntrypoint?.description || null, 
         authors: currEntrypoint?.authors || [],
         tags: currEntrypoint?.tags || [],
     });
@@ -41,8 +35,8 @@ export default function EntrypointEditing() {
     useEffect(() => {
         if (currEntrypoint) {
             setEntrypointData({
-                title: currEntrypoint.title,
-                description: currEntrypoint.description,
+                title: currEntrypoint!.title,
+                description: currEntrypoint.description || null,
                 authors: currEntrypoint.authors || [],
                 tags: currEntrypoint.tags || [],
             });
@@ -59,7 +53,7 @@ export default function EntrypointEditing() {
             toast.error("You must be authenticated to save changes.");
             return;
         }
-        if (!entrypointData.title.trim()) {
+        if (! entrypointData.title?.trim()) {
             toast.error("Title cannot be empty");
             return;
         }  
@@ -98,7 +92,7 @@ export default function EntrypointEditing() {
                         label: currEntrypoint.title,
                         link: `/entrypoint/${encodeURIComponent(currEntrypoint.doi)}`,
                     },
-                    { label: "Edit Entrypoint" },
+                    { label: `Edit "${currEntrypoint.title}"`},
                 ]}
             />
             <h1 className="text-2xl sm:text-3xl mb-4">Edit '{currEntrypoint.title}'</h1>
@@ -108,7 +102,7 @@ export default function EntrypointEditing() {
                     <MultipleSelector
                         placeholder="Edit Authors"
                         creatable
-                        value={entrypointData.authors.map(author => ({ label: author, value: author }))}
+                        value={entrypointData.authors?.map(author => ({ label: author, value: author }))}
                         onChange={(newValue) =>
                             setEntrypointData({
                                 ...entrypointData,
@@ -145,7 +139,7 @@ export default function EntrypointEditing() {
                     <MultipleSelector
                         placeholder="Edit Tags"
                         creatable
-                        value={entrypointData?.tags.map(tag => ({ label: tag, value: tag }))}
+                        value={entrypointData.tags?.map(tag => ({ label: tag, value: tag }))}
                         onChange={(newValue) =>
                             setEntrypointData({
                                 ...entrypointData,

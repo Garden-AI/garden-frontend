@@ -1,29 +1,11 @@
 import instance from "../axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
-interface UserEntrypointUpdateRequest {
-    doi: string;
-    doi_is_draft: boolean;
-    title: string;
-    description: string | null;
-    year: string;
-    func_uuid: string;
-    container_uuid: string;
-    base_image_uri: string;
-    full_image_uri: string;
-    notebook_url: string;
-    short_name: string;
-    function_text: string;
-    owner_identity_id: string;
-    id: number;
-    authors?: string[];
-    tags?: string[];
-}
+import { EntrypointCreateRequest } from "@/api/types";
   
 const updateCurrUserEntrypoint = async (
     entrypointDOI: string, 
-    entrypointData: Partial<UserEntrypointUpdateRequest> 
+    entrypointData: Partial<EntrypointCreateRequest> 
 ) => {
     try {
         console.log("Payload being sent:", JSON.stringify(entrypointData, null, 2));
@@ -39,7 +21,7 @@ export const useUpdateCurrUserEntrypoint = () => {
     const queryClient = useQueryClient();
     
     return useMutation({
-        mutationFn: ({ entrypointDOI, entrypointData }: { entrypointDOI: string, entrypointData: Partial<UserEntrypointUpdateRequest> }) => 
+        mutationFn: ({ entrypointDOI, entrypointData }: { entrypointDOI: string, entrypointData: Partial<EntrypointCreateRequest> }) => 
             updateCurrUserEntrypoint(entrypointDOI, entrypointData),
         
         onError: (error) => {

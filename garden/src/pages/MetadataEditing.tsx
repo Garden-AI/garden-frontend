@@ -10,7 +10,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/ui/multiple-select";
-import { useGetGarden } from "../api/gardens/useGetGarden";
+import { useGetGarden } from "../api/gardens/useGetGarden"; 
 
 const MetadataEditing = () => {
     const { doi } = useParams() as { doi: string }; 
@@ -103,7 +103,7 @@ const MetadataEditing = () => {
                         label: currGarden.title,
                         link: `/garden/${encodeURIComponent(`${currGarden.doi}`)}`,
                     },
-                    { label: "Edit Garden" },
+                    { label: `Edit "${currGarden.title}"` },
                 ]}
             />
             <h1 className="text-2xl sm:text-3xl mb-4">Edit '{currGarden?.title}'</h1>
@@ -165,7 +165,7 @@ const MetadataEditing = () => {
                     <p className="text-gray-600">Entrypoints</p>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {currGarden?.entrypoints?.map((entrypoint: any) => (
-                            <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={true} />
+                            <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} garden={currGarden}/>
                         ))}
                     </div>
                 </div>
