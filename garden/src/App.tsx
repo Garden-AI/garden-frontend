@@ -12,8 +12,10 @@ import GardenPage from "./pages/GardenPage";
 import TermsPage from "./pages/TermsPage";
 import SearchPage from "./pages/SearchPage";
 import HomePage from "./pages/HomePage";
+
 import EntrypointPage from "./pages/EntrypointPage";
-import TeamsPage from "./pages/TeamsPage";import UserProfilePage from "./pages/UserProfilePage";
+import TeamsPage from "./pages/TeamsPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import MetadataEditing from "./pages/MetadataEditing";
