@@ -64,7 +64,7 @@ const HomePage = () => {
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
-      id: "100",
+      id: 100,
     },
     {
       title: "Atom segmentation deep learning models",
@@ -77,7 +77,7 @@ const HomePage = () => {
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
-      id: "100",
+      id: 100,
     },
     {
       title: "Transmission electron microscopy (TEM) video analysis models",
@@ -90,7 +90,7 @@ const HomePage = () => {
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
-      id: "100",
+      id: 100,
     },
     {
       title:
@@ -104,7 +104,7 @@ const HomePage = () => {
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
-      id: "100",
+      id: 100,
     },
     {
       title: "Semiconductor property prediction models",
@@ -117,7 +117,7 @@ const HomePage = () => {
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
-      id: "100",
+      id: 100,
     },
   ];
 
