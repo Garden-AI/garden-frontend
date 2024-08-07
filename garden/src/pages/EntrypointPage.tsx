@@ -27,6 +27,9 @@ const EntrypointPage = () => {
 
   if (!data) return <LoadingSpinner />;
   const entrypoint = data[0] || null;
+  if (!entrypoint){
+    console.log("entrypoint undefined");
+  }
 
   if (isPending) return <LoadingSpinner />;
 

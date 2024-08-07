@@ -34,6 +34,10 @@ export default function GardenPage() {
   }
 
   const {
+    data: currUser,
+  } = useGetUserInfo();
+
+  const {
     data: garden,
     isLoading: fetchGardensLoading,
     isError: fetchGardensError,
@@ -43,7 +47,7 @@ export default function GardenPage() {
     data: userGardens,
     isLoading: userGardensLoading,
     isError: userGardensError,
-  } = useGetUserGardens();
+  } = useGetUserGardens(currUser?.identity_id);
 
   const gardenContext = useGardenContext();
 
