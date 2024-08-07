@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSearchGardens } from "@/api";
+import { useSearchGardens } from "@/api/search/useSearchGardens";
 import {
   Accordion,
   AccordionContent,
@@ -50,6 +50,8 @@ const HomePage = () => {
     getToken();
   }, [auth]);
 
+  // const { data: gardens } = useSearchGardens("*", "6");
+
   const gardens: Garden[] = [
     {
       title: "Garden of assorted materials properties",
@@ -61,6 +63,8 @@ const HomePage = () => {
       version: "1.0",
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
+      owner_identity_id: "placeholder",
+      id: "placeholder",
     },
     {
       title: "Atom segmentation deep learning models",
@@ -72,6 +76,8 @@ const HomePage = () => {
       version: "1.0",
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
+      owner_identity_id: "placeholder",
+      id: "placeholder",
     },
     {
       title: "Transmission electron microscopy (TEM) video analysis models",
@@ -83,6 +89,8 @@ const HomePage = () => {
       version: "1.0",
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
+      owner_identity_id: "placeholder",
+      id: "placeholder",
     },
     {
       title:
@@ -95,6 +103,8 @@ const HomePage = () => {
       version: "1.0",
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
+      owner_identity_id: "placeholder",
+      id: "placeholder",
     },
     {
       title: "Semiconductor property prediction models",
@@ -106,6 +116,8 @@ const HomePage = () => {
       version: "1.0",
       is_archived: false,
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
+      owner_identity_id: "placeholder",
+      id: "placeholder",
     },
   ];
 
@@ -134,8 +146,10 @@ const HomePage = () => {
         <div className="mt-8 sm:w-5/12">
           <h2 className="text-lg">We make it simple to research using ML.</h2>
           <h1 className="text-3xl font-semibold lg:text-4xl">
-            Build a garden where your model can{" "}
-            <span className="text-brightgreen">thrive.</span>
+            <p>
+              Build a garden where your model can{" "}
+              <span className="text-brightgreen">thrive.</span>
+            </p>
           </h1>
         </div>
       </div>
@@ -205,12 +219,6 @@ const HomePage = () => {
           </h2>
 
           <div className="items-center sm:mx-8 sm:mt-8 sm:flex">
-            {/* <div className="order-1 sm:w-5/12">
-              <img
-                className="mx-auto object-contain p-8 sm:p-2"
-                src="img/codeSnippetHomepage.jpg"
-              ></img>
-            </div> */}
             <div className="order-1 text-sm sm:w-6/12">
               <SyntaxHighlighter>
                 {
