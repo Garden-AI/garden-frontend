@@ -193,11 +193,7 @@ const HomePage = () => {
               ></img>
             </div> */}
             <div className="order-1 text-sm sm:w-6/12">
-              <SyntaxHighlighter
-                // language={"python"}
-                useInlineStyles={false}
-                wrapLongLines
-              >
+              <SyntaxHighlighter>
                 {
                   "from garden_ai import GardenClient\nclient = GardenClient()\ngarden = client.get_published_garden(\"10.26311/ep98-br79\")\ndef test_the_model():\n\texample_input = ['AgI', 'CdTe', 'BN']\n\tresult = garden.predict_piezoelectric(example_input)\n\treturn result"
                 }
