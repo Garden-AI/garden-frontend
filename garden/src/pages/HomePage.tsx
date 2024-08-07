@@ -134,12 +134,12 @@ const HomePage = () => {
           <div className="flex items-baseline">
             <h1 className="text-2xl font-semibold">Start a garden</h1>
             <p className="ml-4 font-extrabold text-green sm:text-sm">
-              <a href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/">
+              <Link to="/garden/create">
                 <span className="group inline-flex items-center">
                   <p>The Plot is yours</p>
                   <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
                 </span>
-              </a>
+              </Link>
             </p>
           </div>
           <h2 className="mt-2 text-base">
@@ -213,12 +213,12 @@ const HomePage = () => {
                 models.
               </h2>
               <p className="font-extrabold text-green sm:mt-2 sm:text-sm">
-                <a href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/">
+                <Link to="/login">
                   <span className="group inline-flex items-center">
                     <p>Create an account</p>
                     <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
                   </span>
-                </a>
+                </Link>
               </p>
             </div>
           </div>
@@ -232,7 +232,7 @@ const HomePage = () => {
           </span>
           <div className="mt-8 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
             <a
-              href="#"
+              href="https://www.uchicago.edu/en"
               target="_blank"
               className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-200"
             >
@@ -265,7 +265,7 @@ const HomePage = () => {
             </a>
 
             <a
-              href="#"
+              href="https://www.wisc.edu/"
               target="_blank"
               className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
