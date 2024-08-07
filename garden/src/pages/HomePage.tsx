@@ -30,6 +30,7 @@ import {
   Search,
 } from "lucide-react";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import { transformSearchResultToGardens } from "@/api/search/useSearchGardens";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },
@@ -88,6 +89,7 @@ const HomePage = () => {
       tags: "",
     },
   ];
+
 
   return (
     <div className="font-display">

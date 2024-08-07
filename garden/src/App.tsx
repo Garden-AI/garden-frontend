@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage";
 
 import EntrypointPage from "./pages/EntrypointPage";
 import TeamsPage from "./pages/TeamsPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import MetadataEditing from "./pages/MetadataEditing";
@@ -71,6 +72,7 @@ function Root() {
         <Route path="terms" element={<TermsPage />} />
         <Route path="auth" element={<LoadingSpinner />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="userProfilePage" element={<UserProfilePage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, RefObject } from "react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
@@ -8,6 +8,24 @@ const Navbar = () => {
   const auth = useGlobusAuth();
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
+  const dropdownRef: RefObject<HTMLDivElement> = useRef(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setOpenMenuDropdown(false);
+    }
+  };
+  
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      handleClickOutside(event);
+    };
+  
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);  
 
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
@@ -54,6 +72,7 @@ const Navbar = () => {
         <div
           onClick={toggleMenuDropdown}
           className="relative text-sm transition-all duration-500"
+          ref={dropdownRef}
         >
           {auth.isAuthenticated ? (
             <div>
