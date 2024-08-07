@@ -15,17 +15,17 @@ const Navbar = () => {
       setOpenMenuDropdown(false);
     }
   };
-  
+
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       handleClickOutside(event);
     };
-  
+
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, []);  
+  }, []);
 
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
@@ -109,16 +109,20 @@ const Navbar = () => {
               </div>
             </div>
           ) : (
-            <div></div>
-            //add this button back in for user profile features
-            // <button
-            //   className="bg-green-500 hover:bg-green-600 rounded px-4 py-1 text-sm shadow-md md:text-lg"
-            //   onClick={() => auth.authorization?.login()}
-            // >
-            //   Log In
-            // </button>
+            <div>
+
+              <button
+                className="bg-green-500 hover:bg-green-600 rounded px-4 py-1 text-sm shadow-md md:text-lg"
+                onClick={() => auth.authorization?.login()}
+              >
+                Log In
+              </button>
+            </div>
           )}
         </div>
+
+
+
       </div>
     </nav>
   );
