@@ -9,7 +9,7 @@ import {
 } from "../components/ui/accordion";
 
 import { cn } from "@/lib/utils";
-import { Entrypoint } from "@/api/types";
+import { Entrypoint, Garden } from "@/api/types";
 
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
@@ -89,7 +89,6 @@ const HomePage = () => {
       tags: "",
     },
   ];
-
 
   return (
     <div className="font-display">
@@ -195,7 +194,7 @@ const HomePage = () => {
             </div> */}
             <div className="order-1 text-sm sm:w-6/12">
               <SyntaxHighlighter
-                language={"python"}
+                // language={"python"}
                 useInlineStyles={false}
                 wrapLongLines
               >
