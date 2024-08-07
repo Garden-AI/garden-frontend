@@ -11,7 +11,6 @@ import {
 import { cn } from "@/lib/utils";
 import { Entrypoint } from "@/api/types";
 
-// import { ExampleFunction } from "@/components/ExampleFunction";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -50,7 +49,45 @@ const HomePage = () => {
     getToken();
   }, [auth]);
 
-  const { data: gardens } = useSearchGardens("*", "6");
+  // const { data: gardens } = useSearchGardens("*", "6");
+  const gardens: Garden[] = [
+    {
+      title: "Garden of assorted materials properties",
+      description:
+        "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
+      doi: "10.26311/ep98-br79",
+      tags: "",
+    },
+    {
+      title: "Atom segmentation deep learning models",
+      description:
+        "A collection of models that identify atomic column coordinates in scanning transmission electron microscopy (STEM) images.",
+      doi: "10.26311/naqk-9p91",
+      tags: "",
+    },
+    {
+      title: "Transmission electron microscopy (TEM) video analysis models",
+      description:
+        "This garden just hosts the DefectTrack model for now, and may host other TEM video processing models in the future.",
+      doi: "10.26311/frce-y203",
+      tags: "",
+    },
+    {
+      title:
+        "Models for processing position-averaged convergent beam electron diffraction images",
+      description:
+        "This garden just hosts the PACBED-CNN model for now, and may host other position-averaged convergent beam electron diffraction models in the future.",
+      doi: "10.26311/hqgg-7m42",
+      tags: "",
+    },
+    {
+      title: "Semiconductor property prediction models",
+      description:
+        "A collection of models for predicting properties of semiconductors",
+      doi: "10.26311/bg7s-v305",
+      tags: "",
+    },
+  ];
 
   return (
     <div className="font-display">
