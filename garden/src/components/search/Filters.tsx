@@ -47,22 +47,11 @@ export function SearchFilters() {
       if (isChecked) {
         newFilters[facet] = [...(newFilters[facet] || []), bucket];
       } else {
-        newFilters[facet] =
-          newFilters[facet]?.filter((b) => b !== bucket) || [];
-        if (newFilters[facet].length === 0) {
-          delete newFilters[facet];
-        }
+        newFilters[facet] = newFilters[facet]?.filter((b) => b !== bucket);
       }
+
       return newFilters;
     });
-  };
-
-  const applyFilters = () => {
-    const params = new URLSearchParams(searchParams);
-    Object.entries(selectedFilters).forEach(([key, values]) => {
-      params.set(key, values.map(encodeURIComponent).join(","));
-    });
-    setSearchParams(params);
   };
 
   const clearFilters = () => {
@@ -81,7 +70,15 @@ export function SearchFilters() {
   };
 
   useEffect(() => {
-    applyFilters();
+    const params = new URLSearchParams(searchParams);
+    Object.entries(selectedFilters).forEach(([key, values]) => {
+      if (values.length === 0) {
+        params.delete(key);
+        return;
+      }
+      params.set(key, values.map(encodeURIComponent).join(","));
+    });
+    setSearchParams(params);
   }, [selectedFilters]);
 
   if (!allFacets.length) return null;

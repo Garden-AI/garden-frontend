@@ -20,20 +20,20 @@ import { Entrypoint, Garden } from "@/api/types";
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
 
-  const { data, isError, isPending } = useGetEntrypoint({
+  const { data, isError, isLoading } = useGetEntrypoint({
     doi,
     limit: 1,
   });
-  // const { data: garden } = useSearchGardenByDOI(doi);
-  const { garden } = useGardenContext();
+  const { data: garden } = useSearchGardenByDOI(doi);
+  // const { garden } = useGardenContext();
 
   if (!data) return <LoadingSpinner />;
   const entrypoint = data[0] || null;
-  if (!entrypoint){
+  if (!entrypoint) {
     console.log("entrypoint undefined");
   }
 
-  if (isPending) return <LoadingSpinner />;
+  if (isLoading) return <LoadingSpinner />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 

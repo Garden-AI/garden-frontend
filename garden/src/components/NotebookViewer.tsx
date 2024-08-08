@@ -11,19 +11,15 @@ export const NotebookViewer = ({ notebookURL }: { notebookURL: string }) => {
     );
   }
 
-  const { data: notebook, isLoading, isError } = useGetNotebook(notebookURL);
+  const { data: notebook, isFetching, isError } = useGetNotebook(notebookURL);
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>
     );
   } else if (isError || !notebook) {
     return (
       <p className="pb-16 pt-8 text-center text-xl">Could not load notebook.</p>
-    );
-  } else if (!notebook) {
-    return (
-      <p className="pb-16 pt-8 text-center text-xl">Loading notebook ...</p>
     );
   }
   return (
