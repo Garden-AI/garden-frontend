@@ -146,10 +146,8 @@ const HomePage = () => {
         <div className="mt-8 sm:w-5/12">
           <h2 className="text-lg">We make it simple to research using ML.</h2>
           <h1 className="text-3xl font-semibold lg:text-4xl">
-            <p>
-              Build a garden where your model can{" "}
-              <span className="text-brightgreen">thrive.</span>
-            </p>
+            Build a garden where your model can{" "}
+            <span className="text-brightgreen">thrive.</span>
           </h1>
         </div>
       </div>
@@ -170,7 +168,7 @@ const HomePage = () => {
             <p className="ml-4 font-extrabold text-green sm:text-sm">
               <Link to="/garden/create">
                 <span className="group inline-flex items-center">
-                  <p>The Plot is yours</p>
+                  The Plot is yours
                   <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
                 </span>
               </Link>
@@ -236,14 +234,14 @@ const HomePage = () => {
                 more time browsing gardens and less time fussing with setting up
                 models.
               </h2>
-              <p className="font-extrabold text-green sm:mt-2 sm:text-sm">
-                <Link to="/login">
+              <Link to="/login">
+                <p className="font-extrabold text-green sm:mt-2 sm:text-sm">
                   <span className="group inline-flex items-center">
-                    <p>Create an account</p>
+                    Create an account
                     <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
                   </span>
-                </Link>
-              </p>
+                </p>
+              </Link>
             </div>
           </div>
         </div>
