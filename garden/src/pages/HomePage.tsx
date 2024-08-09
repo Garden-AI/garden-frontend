@@ -185,7 +185,7 @@ const HomePage = () => {
         <div className="mt-12 px-4 ">
           <div className="flex items-baseline">
             <h1 className="text-2xl font-semibold">Start a garden</h1>
-            <p className="ml-4 font-extrabold text-green sm:text-sm">
+            <p className="ml-4 font-extrabold text-green">
               <Link to="/garden/create">
                 <span className="group inline-flex items-center">
                   The Plot is yours
@@ -253,7 +253,7 @@ const HomePage = () => {
               models.
             </h2>
             <Link to="/login">
-              <p className="font-extrabold text-green sm:mt-2 sm:text-sm">
+              <p className="font-extrabold text-green sm:mt-2">
                 <span className="group inline-flex items-center">
                   Create an account
                   <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
@@ -265,7 +265,7 @@ const HomePage = () => {
       </div>
 
       <div className="mt-4 items-center bg-gray-700 px-4 py-4">
-        <div className="mx-auto text-center sm:px-24 md:max-w-screen-md lg:max-w-screen-xl lg:px-12">
+        <div className="mx-auto text-center sm:px-8 md:max-w-screen-md md:px-20 lg:max-w-screen-xl lg:px-12">
           <span className="font-semibold uppercase text-gray-200">
             connected to
           </span>
