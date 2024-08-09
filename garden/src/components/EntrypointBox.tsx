@@ -2,7 +2,13 @@ import { Entrypoint } from "@/api/types";
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: boolean }) => {
+const EntrypointBox = ({
+  entrypoint,
+  isEditing,
+}: {
+  entrypoint: any;
+  isEditing: boolean;
+}) => {
   const navigate = useNavigate();
   const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
 
@@ -20,10 +26,6 @@ const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: 
     >
       <div className="flex flex-col gap-2">
         <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
-        <p className="text-gray-500">
-          {stepsLength}{" "}
-          {stepsLength === 1 ? <span>step</span> : <span>steps</span>}
-        </p>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
             {entrypoint.description || "No description available"}
@@ -59,7 +61,7 @@ const EntrypointBox = ({ entrypoint, isEditing }: { entrypoint: any, isEditing: 
       {isEditing && (
         <Link
           to="entrypointEditing"
-          className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mb-4 mt-4 justify-center"
+          className="mb-4 mt-4 flex flex-row items-center justify-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
           onClick={(e) => {
             e.stopPropagation();
           }}
