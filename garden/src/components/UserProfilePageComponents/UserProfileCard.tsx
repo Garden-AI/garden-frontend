@@ -1,16 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import UserProfileShareModal from '../UserProfileShareModal';
 import PfpSelectionModal from './PfpSelectionModal';
 import { useGetUserInfo } from "../../api/getUserInfo";
 import RenderTags from "../ui/renderTags";
 import { useGetUserGardens} from "../../api/getUserGardens";
 // import { useUpdateUserInfo } from '../../api/updateUserInfo';
-import { icons } from './PfpSelectionModal'; 
+import { icons, IconType } from './PfpSelectionModal'; 
+import { toast } from "sonner";
 
-const UserProfileCard = () => {
+type UserProfileCardProps = {
+    pfp: JSX.Element | null;
+    setPfp: React.Dispatch<React.SetStateAction<JSX.Element | null>>;
+};
+
+type PfpSelectionModalProps = {
+    setSelectedIcon: (icon: IconType | null) => void;
+    closeModal: () => void;
+};
+
+const UserProfileCard = ({ pfp, setPfp }: UserProfileCardProps) => {
     const [show, setShow] = useState(false);
     const [tooltipVisible, setTooltipVisible] = useState(false);
-    const [profileIcon, setProfileIcon] = useState<JSX.Element | null>(null);
+    // const [profileIcon, setProfileIcon] = useState<JSX.Element | null>(null);
 
     const [showIconSelector, setShowIconSelector] = useState(false);
     const { data: currUserInfo, isLoading: getUserInfoLoading, isError:getUserInfoError } = useGetUserInfo();
@@ -19,15 +30,9 @@ const UserProfileCard = () => {
     useEffect(() => {
         if (currUserInfo && currUserInfo.profile_pic_id) {
             const selectedIcon = icons.find(icon => icon.id === currUserInfo.profile_pic_id);
-            if (selectedIcon) {
-                setProfileIcon(selectedIcon.svg);
-            } else {
-                setProfileIcon(null);
-            }
-        } else {
-            setProfileIcon(null);
+            setPfp(selectedIcon ? selectedIcon.svg : pfp);
         }
-    }, [currUserInfo]);
+    }, [currUserInfo, setPfp, pfp]);
 
     const copy = async () => {
         await navigator.clipboard.writeText(window.location.href);
@@ -64,15 +69,15 @@ const UserProfileCard = () => {
     );
 
     return (
-        <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md w-4/12'>
+        <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md w-3/12'>
             <div className="dark:bg-navy-800 shadow-shadow-500 shadow-3xl rounded-primary relative mx-auto flex h-full w-full max-w-[550px] flex-col items-center bg-white bg-cover bg-clip-border p-4 dark:shadow-none">
                 <div className="mt-8 flex flex-col items-center px-2">
                     <div className="relative h-[150px] w-[150px] overflow-hidden">
                         <div
-                            className="cursor-pointer block relative h-full w-full flex items-center justify-center bg-green rounded-full"
+                            className="cursor-pointer block relative h-full w-full flex items-center justify-center bg-primary rounded-full"
                             onClick={handleIconClick}
                         >
-                            {profileIcon || defaultProfileIcon}
+                            {pfp || defaultProfileIcon}
                         </div>
                     </div>
                 </div>
@@ -89,16 +94,19 @@ const UserProfileCard = () => {
                         <p className="text-lightSecondary text-base font-normal ml-2">Gardens Created</p>
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
+                    {/* hide for now until save gardens buttons gets implemented
                     <div className="flex flex-row items-center justify-center w-full mt-4 mb-4">
                         <p className="text-orange-400 text-xl font-bold">{currUserInfo?.saved_garden_dois?.length}</p>
                         <p className="text-lightSecondary text-base font-normal ml-2">Gardens Saved</p>
                     </div>
                     <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
+                    */}
                     <div className="flex flex-col items-center gap-2 text-base mb-8">
                         <p className="text-lightSecondary font-normal mt-4">Skills</p>
                         <RenderTags items={currUserInfo?.skills ?? []} title="" customBgColor="bg-indigo-300"/>
                     </div>
                 </div>
+                {/*hide button for now
                 <button 
                     onClick={showModal}
                     title="Share" 
@@ -109,7 +117,8 @@ const UserProfileCard = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
                     </svg>
                 </button>
-                <UserProfileShareModal               
+                */}
+                <UserProfileShareModal   
                     show={show}
                     close={closeModal}
                     copy={copy}
@@ -117,8 +126,14 @@ const UserProfileCard = () => {
                 />
                 {showIconSelector && (
                     <PfpSelectionModal
-                        setSelectedIcon={setProfileIcon}
-                        closeModal={closeIconSelector}
+                    setSelectedIcon={(icon) => {
+                        if (icon) {
+                            setPfp(icon.svg);
+                        } else {
+                            setPfp(null);
+                        }
+                    }}
+                    closeModal={closeIconSelector}            
                     />
                 )}
             </div>

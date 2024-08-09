@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 
 const UserProfileShareModal = (props: {
   show: boolean;
@@ -90,7 +91,11 @@ const UserProfileShareModal = (props: {
           <div className="ml-4 mt-2 overflow-auto whitespace-nowrap border-2 border-solid border-gray-100 sm:ml-14 sm:w-[30vw]">
             <span className="px-4 text-sm">{window.location.href}</span>
           </div>
-          <button onClick={() => props.copy()} className="ml-2 mt-1">
+          <button
+            onClick={() => {
+            props.copy();
+            toast.success("Copied to clipboard!");
+          }} className="ml-2 mt-1">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
