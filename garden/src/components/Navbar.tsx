@@ -1,17 +1,21 @@
 import { useState, useEffect, useRef, RefObject } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
+  const navigate = useNavigate();
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
   const dropdownRef: RefObject<HTMLDivElement> = useRef(null);
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
       setOpenMenuDropdown(false);
     }
   };
@@ -33,7 +37,7 @@ const Navbar = () => {
 
   function handleLogOut() {
     auth.authorization?.revoke();
-    window.location.replace("/");
+    navigate("/");
   }
 
   return (
@@ -110,7 +114,6 @@ const Navbar = () => {
             </div>
           ) : (
             <div>
-
               <button
                 className="bg-green-500 hover:bg-green-600 rounded px-4 py-1 text-sm shadow-md md:text-lg"
                 onClick={() => auth.authorization?.login()}
@@ -120,9 +123,6 @@ const Navbar = () => {
             </div>
           )}
         </div>
-
-
-
       </div>
     </nav>
   );
