@@ -119,6 +119,32 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
     },
+    {
+      title: "Materials Screening Performance Tests",
+      description:
+        "Figuring out how to run millions of materials property predictions quickly",
+      doi: "10.23677/m4ek-bd27",
+      publisher: "Will Engler",
+      language: "English",
+      version: "1.0",
+      is_archived: false,
+      entrypoint_ids: ["entrypoint1", "entrypoint2"],
+      owner_identity_id: "100",
+      id: 100,
+    },
+    {
+      title: "Framework example garden",
+      description:
+        "This garden contains entrypoints showing how to use different popular AI frameworks in Garden",
+      doi: "10.26311/b74a-5c58",
+      publisher: "Will Engler",
+      language: "English",
+      version: "1.0",
+      is_archived: false,
+      entrypoint_ids: ["entrypoint1", "entrypoint2"],
+      owner_identity_id: "100",
+      id: 100,
+    },
   ];
 
   return (
@@ -220,7 +246,7 @@ const HomePage = () => {
             <div className="order-1 text-sm sm:w-6/12">
               <SyntaxHighlighter>
                 {
-                  "from garden_ai import GardenClient\nclient = GardenClient()\ngarden = client.get_published_garden(\"10.26311/ep98-br79\")\ndef test_the_model():\n\texample_input = ['AgI', 'CdTe', 'BN']\n\tresult = garden.predict_piezoelectric(example_input)\n\treturn result"
+                  "from garden_ai import GardenClient\ngarden = garden_client.get_garden()(\"10.26311/ep98-br79\")\ndef test_the_model():\n\texample_input = ['AgI', 'CdTe', 'BN']\n\tresult = garden.predict_piezoelectric(example_input)\n\treturn result"
                 }
               </SyntaxHighlighter>
             </div>
@@ -387,7 +413,7 @@ const HomePage = () => {
                   <div className="flex items-center gap-x-2 p-2">
                     <SquareStack className="text-gray-500" />
                     <span className="font-medium text-gray-700">
-                      Reproducibility.
+                      Reproducibility
                     </span>
                   </div>
                 </AccordionTrigger>
@@ -429,7 +455,7 @@ const HomePage = () => {
                 <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                   <div className="flex items-center gap-x-2 p-2">
                     <ShieldCheck className="text-gray-500" />
-                    <span className="font-medium text-gray-700">Quality.</span>
+                    <span className="font-medium text-gray-700">Quality</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="grid grid-cols-1 gap-4 py-6">
@@ -448,9 +474,7 @@ const HomePage = () => {
                 <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                   <div className="flex items-center gap-x-2 p-2">
                     <PersonStanding className="text-gray-500" />
-                    <span className="font-medium text-gray-700">
-                      Community.
-                    </span>
+                    <span className="font-medium text-gray-700">Community</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="grid grid-cols-1 gap-4 py-6">
