@@ -15,6 +15,7 @@ import { number } from "zod";
 
 const UserProfileInfo = () => {
     const [edit, setEdit] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
     const { data: currUserInfo, isLoading: fetchingUserInfoLoading, isError: fetchingUserInfoError, refetch } = useGetUserInfo();
     const auth = useGlobusAuth();
     const { mutate: updateUser } = useUpdateUserInfo();
@@ -44,6 +45,15 @@ const UserProfileInfo = () => {
             });
         }
     }, [currUserInfo]);
+
+    useEffect(() => {
+        if (isUpdating) {
+            toast.loading("Updating profile...", { id: "updating-profile" });
+        } else {
+            toast.dismiss("updating-profile");
+        }
+    }, [isUpdating]);
+
 
     const handleSave = () => {
         if (!auth?.authorization?.user?.sub) {
@@ -76,6 +86,12 @@ const UserProfileInfo = () => {
                 });
                 await refetch();
                 setEdit(false);
+                setIsUpdating(false);
+                toast.success("Profile updated successfully!");
+            },
+            onError: () => {
+                setIsUpdating(false);
+                toast.error("Failed to update profile. Please try again.");
             }
         });    
     };
@@ -101,7 +117,7 @@ const UserProfileInfo = () => {
     }
 
     return (
-        <div className="pr-20 pl-20 pb-20 w-full">
+        <div className="pr-20 pl-20 pb-20 w-full h-full">
             <div className="grid grid-cols-2 gap-8">
                 <div className = "space-y-2 ">
                     <p className="text-gray-600">Full Name</p>
