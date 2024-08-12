@@ -24,16 +24,12 @@ const EntrypointPage = () => {
     doi,
     limit: 1,
   });
-  const { data: garden } = useSearchGardenByDOI(doi);
-  // const { garden } = useGardenContext();
 
-  if (!data) return <LoadingSpinner />;
-  const entrypoint = data[0] || null;
-  if (!entrypoint) {
-    console.log("entrypoint undefined");
-  }
+  const entrypoint = data?.[0];
+  const { data: garden, isLoading: gardenIsLoading } =
+    useSearchGardenByDOI(doi);
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading || gardenIsLoading) return <LoadingSpinner />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 
