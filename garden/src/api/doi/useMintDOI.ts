@@ -1,20 +1,18 @@
 import axios from "@/api/axios";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { DOIRequest } from "../types";
 
 interface MintDOIResponse {
   doi: string;
 }
-interface MintDOIRequest {
-  data: {
-    type: string;
-    attributes: {};
-  };
-}
 
 const mintDOI = async (): Promise<MintDOIResponse> => {
   try {
-    const request: MintDOIRequest = {
-      data: { type: "dois", attributes: {} },
+    const request: DOIRequest = {
+      data: {
+        type: "dois",
+        attributes: {},
+      },
     };
     const response = await axios.post<MintDOIResponse>(`/doi`, request);
     return response.data;

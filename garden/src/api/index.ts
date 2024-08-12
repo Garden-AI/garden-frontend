@@ -2,7 +2,8 @@
 import { useCreateGarden } from "./gardens/useCreateGarden";
 import { useGetGarden } from "./gardens/useGetGarden";
 import { useUpdateGarden } from "./gardens/useUpdateGarden";
-// import {useDeleteGarden} from "./garden/useDeleteGarden";
+import { useDeleteGarden } from "./gardens/useDeleteGarden";
+import { usePatchGarden } from "./gardens/usePatchGarden";
 
 /* Entrypoint */
 import { useCreateEntrypoint } from "./entrypoints/useCreateEntrypoint";
@@ -24,12 +25,14 @@ import { useSearchGardens } from "./search/useSearchGardens";
 /* Misc */
 import { useGreetings } from "./misc/useGreetings";
 import { useMintDOI } from "./doi/useMintDOI";
+import { useUpdateDOI } from "./doi/useUpdateDOI";
 
 export {
   useCreateGarden,
   useGetGarden,
   useUpdateGarden,
-  //   useDeleteGarden,
+  usePatchGarden,
+  useDeleteGarden,
   useCreateEntrypoint,
   useGetEntrypoint,
   useGetEntrypoints,
@@ -43,5 +46,5 @@ export {
   useSearchGardenByDOI,
   useGreetings,
   useMintDOI,
-  // useUpdateDOI
+  useUpdateDOI,
 };

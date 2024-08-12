@@ -17,15 +17,16 @@ import ShareModal from "@/components/ShareModal";
 import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useGetUserInfo } from "../api/getUserInfo";
-import { useGetUserGardens } from "../api/getUserGardens";
 import { useGetGarden } from "@/api";
 import { useEffect } from "react";
 import { useGardenContext } from "@/components/garden/Context";
-// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { Badge } from "@/components/ui/badge";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import TombstonePage from "./TombstonePage";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -41,12 +42,6 @@ export default function GardenPage() {
     isError: fetchGardensError,
   } = useGetGarden(doi);
 
-  const {
-    data: userGardens,
-    isLoading: userGardensLoading,
-    isError: userGardensError,
-  } = useGetUserGardens(currUser?.identity_id);
-
   const gardenContext = useGardenContext();
 
   useEffect(() => {
@@ -55,23 +50,17 @@ export default function GardenPage() {
     }
   }, [garden]);
 
-  const canEditGarden = (() => {
-    if (!garden || !userGardens) return false;
+  const canEditGarden = currUser?.identity_id === garden?.owner_identity_id;
 
-    for (const userGarden of userGardens) {
-      if (userGarden.doi === garden.doi) {
-        // return true when adding edit button back in
-        return true;
-      }
-    }
-    return false;
-  })();
-
-  if (fetchGardensLoading || userGardensLoading) {
+  if (fetchGardensLoading) {
     return <LoadingSpinner />;
   }
-  if (fetchGardensError || userGardensError || !garden) {
+  if (fetchGardensError || !garden) {
     return <NotFoundPage />;
+  }
+
+  if (garden.is_archived) {
+    return <TombstonePage garden={garden} />;
   }
 
   return (
@@ -95,9 +84,29 @@ export default function GardenPage() {
 }
 
 function GardenHeader({ garden }: { garden: Garden }) {
+  const auth = useGlobusAuth();
+
   return (
     <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
-      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
+        <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+        {garden.owner_identity_id === auth?.authorization?.user?.sub && (
+          <Badge
+            className="ml-4 mt-1 px-3 text-sm"
+            variant={
+              cn(garden.doi_is_draft ? "outline" : "default") as
+                | "default"
+                | "outline"
+            }
+          >
+            {garden.doi_is_draft
+              ? "Draft"
+              : garden.is_archived
+                ? "Archived"
+                : "Published"}
+          </Badge>
+        )}
+      </div>
       <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
@@ -105,19 +114,13 @@ function GardenHeader({ garden }: { garden: Garden }) {
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
-        {/* <GardenDropdownOptions garden={garden} /> */}
+        <GardenDropdownOptions garden={garden} />
       </div>
     </div>
   );
 }
 
-function GardenBody({
-  garden,
-  canEditGarden,
-}: {
-  garden: Garden;
-  canEditGarden: boolean;
-}) {
+function GardenBody({ garden }: { garden: Garden; canEditGarden: boolean }) {
   const navigate = useNavigate();
 
   const handleEditGardenClick = () => {
