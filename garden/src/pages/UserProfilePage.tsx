@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import UserProfileTabs from "../components/UserProfilePageComponents/UserProfileTabs";
 import UserProfileCard from "../components/UserProfilePageComponents/UserProfileCard";
 import { useGetUserInfo } from "../api/getUserInfo";
-import { icons } from '../components/UserProfilePageComponents/PfpSelectionModal'; // Import icons array
+import { icons } from '../components/UserProfilePageComponents/PfpSelectionModal'; 
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const UserProfilePage = () => {
     const defaultProfileIcon = (
@@ -22,7 +23,7 @@ const UserProfilePage = () => {
     }, [currUserInfo]);
 
     if (fetchingUserInfoLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>
     }
 
     if (fetchingUserInfoError) {
