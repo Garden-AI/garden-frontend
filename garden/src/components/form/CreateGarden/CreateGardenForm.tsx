@@ -48,7 +48,6 @@ export const CreateGardenForm = () => {
         throw new Error("User not authenticated");
       }
       const { doi } = await mintDOI();
-      console.log(values);
 
       const requestData: GardenCreateRequest = transformFormToRequest(
         values,
