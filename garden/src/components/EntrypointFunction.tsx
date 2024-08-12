@@ -19,18 +19,6 @@ function EntrypointFunction({
           />
         </div>
       </div>
-      <div className="mt-0 flex justify-center pt-0">
-        <p>
-          To run this entrypoint, you need to be a part of{" "}
-          <a
-            className="text-green underline"
-            target="_blank"
-            href=" https://app.globus.org/groups/53952f8a-d592-11ee-9957-193531752178/about"
-          >
-            this Globus group
-          </a>
-        </p>
-      </div>
     </div>
   );
 }

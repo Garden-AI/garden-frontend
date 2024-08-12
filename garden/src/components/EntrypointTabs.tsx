@@ -127,19 +127,18 @@ function DatasetsTab({ datasets }: { datasets?: any[] }) {
               <span className="text-gray-400">
                 # Make sure you've imported and instantiated foundry <br />
               </span>
-              <span className="text-purple">from</span> foundry{" "}
-              <span className="text-purple">import</span> Foundry <br />
-              f = Foundry()
+              <span className="text-purple-600">from</span> foundry{" "}
+              <span className="text-purple-600">import</span> Foundry <br />f{" "}
+              <span className="text-indigo-400">=</span> Foundry()
               <br />
               <br />
               <span className="text-gray-400">
                 # Load the data here <br />
               </span>
-              f.load(
-              <span className="text-green">'DOI goes here'</span>, globus=
-              <span className="text-orange">False</span>)
+              dataset <span className="text-indigo-400">=</span> f.get_dataset(
+              <span className="text-green">'DOI goes here'</span>)
               <br />
-              res = f.load_data()
+              dataset.get_as_dict()
             </code>
           </div>
           <p className="pt-8 text-center text-lg ">
