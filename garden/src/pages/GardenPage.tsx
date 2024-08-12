@@ -25,7 +25,9 @@ import { useGetUserGardens } from "../api/getUserGardens";
 import { useGetGarden } from "@/api";
 import { useEffect } from "react";
 import { useGardenContext } from "@/components/garden/Context";
-// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { Badge } from "@/components/ui/badge";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -33,9 +35,7 @@ export default function GardenPage() {
     return <NotFoundPage />;
   }
 
-  const {
-    data: currUser,
-  } = useGetUserInfo();
+  const { data: currUser } = useGetUserInfo();
 
   const {
     data: garden,
@@ -97,9 +97,29 @@ export default function GardenPage() {
 }
 
 function GardenHeader({ garden }: { garden: Garden }) {
+  const auth = useGlobusAuth();
+
   return (
     <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
-      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
+        <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+        {garden.owner_identity_id === auth?.authorization?.user?.sub && (
+          <Badge
+            className="ml-4 mt-1 px-3 text-base"
+            variant={
+              cn(garden.doi_is_draft ? "outline" : "default") as
+                | "default"
+                | "outline"
+            }
+          >
+            {garden.doi_is_draft
+              ? "Draft"
+              : garden.is_archived
+                ? "Archived"
+                : "Published"}
+          </Badge>
+        )}
+      </div>
       <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
@@ -107,7 +127,7 @@ function GardenHeader({ garden }: { garden: Garden }) {
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
-        {/* <GardenDropdownOptions garden={garden} /> */}
+        <GardenDropdownOptions garden={garden} />
       </div>
     </div>
   );

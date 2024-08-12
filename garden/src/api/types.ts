@@ -1,4 +1,4 @@
-import type { paths, components } from "./backend-schema";
+import type { components } from "./backend-schema";
 
 type Garden = components["schemas"]["GardenMetadataResponse"];
 type GardenCreateRequest = components["schemas"]["GardenCreateRequest"];
@@ -11,6 +11,8 @@ type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 
 // type Notebook = components["schemas"]["_RegisteredNotebook"];
 
+type UpdateDOIRequest = components["schemas"]["Doi"];
+
 export type {
   Garden,
   GardenCreateRequest,
@@ -18,5 +20,6 @@ export type {
   Entrypoint,
   EntrypointCreateRequest,
   User,
-  UpdateUserSchema
+  UpdateUserSchema,
+  UpdateDOIRequest,
 };

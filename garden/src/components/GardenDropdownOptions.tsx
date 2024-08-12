@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  Archive,
   Edit,
   EllipsisVertical,
   Globe,
@@ -27,6 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useDeleteGarden, useUpdateDOI } from "@/api";
+import { useUpdateGarden } from "@/api/editgarden";
 import { Input } from "./ui/input";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +46,7 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
   const queryClient = useQueryClient();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const { mutate: updateDOI, isPending } = useUpdateDOI();
+  const { mutate: updateGarden } = useUpdateGarden();
   const [input, setInput] = React.useState("");
 
   const doi = garden.doi;
@@ -70,18 +73,22 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
         },
       },
     };
+
     updateDOI(body, {
       onSuccess: () => {
         setIsDeleteModalOpen(false);
         toast.success("Garden published successfully!");
-        // queryClient.invalidateQueries({ queryKey: ["search"] });
-        // queryClient.setQueryData(["garden", doi], null);
-        // navigate("/");
+
+        updateGarden({
+          doi,
+          garden: {
+            ...garden,
+            doi_is_draft: false,
+          },
+        });
+        queryClient.invalidateQueries({ queryKey: ["garden", doi] });
+        queryClient.invalidateQueries({ queryKey: ["search"] });
       },
-      // onError: (error) => {
-      //   toast.error("There was an error deleting the garden.");
-      //   setIsDeleteModalOpen(false);
-      // },
     });
   };
 
@@ -100,13 +107,50 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
         <DropdownMenuContent className="w-56" align="end">
           <DropdownMenuLabel>Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
+
           <DropdownMenuItem
-            onSelect={() => setIsDeleteModalOpen(true)}
-            className="text-blue-800 hover:text-blue-600"
+            onSelect={() => navigate(`metadataEditing`)}
+            className="text-primary"
           >
-            <Globe className="mr-2 h-5 w-5" />
-            <span className="">Publish Garden</span>
+            <Edit className="mr-2 h-5 w-5" />
+            <span className="">Edit Garden</span>
           </DropdownMenuItem>
+
+          {garden.doi_is_draft ? (
+            <>
+              <DropdownMenuItem
+                onSelect={() => setIsDeleteModalOpen(true)}
+                className="text-blue-800 hover:text-blue-600"
+              >
+                <Globe className="mr-2 h-5 w-5" />
+                <span className="">Publish Garden</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onSelect={() => navigate(`entrypoint`)}
+                className="text-blue-800 hover:text-blue-600"
+              >
+                <Trash className="mr-2 h-5 w-5" />
+                <span className="">Delete Garden</span>
+              </DropdownMenuItem>
+            </>
+          ) : garden.is_archived ? (
+            <DropdownMenuItem
+              onSelect={() => setIsDeleteModalOpen(true)}
+              className="text-blue-800 hover:text-blue-600"
+            >
+              <Globe className="mr-2 h-5 w-5" />
+              <span className="">Publish Garden</span>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              onSelect={() => navigate(`entrypoint`)}
+              className="text-red-800 hover:text-red-600"
+            >
+              <Archive className="mr-2 h-5 w-5" />
+              <span className="">Archive Garden</span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
