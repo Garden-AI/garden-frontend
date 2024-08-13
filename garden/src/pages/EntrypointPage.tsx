@@ -2,33 +2,34 @@ import { useParams } from "react-router-dom";
 
 import { useGetEntrypoint, useSearchGardenByDOI } from "@/api";
 
+import NotFoundPage from "@/pages/NotFoundPage";
+
 import EntrypointTabs from "@/components/EntrypointTabs";
 import AssociatedMaterials from "@/components/AssociatedMaterials";
-import NotFoundPage from "@/pages/NotFoundPage";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Separator } from "@/components/ui/separator";
 import Breadcrumb from "@/components/Breadcrumb";
+import ShareModal from "@/components/ShareModal";
 import EntrypointFunction from "@/components/EntrypointFunction";
 import CopyButton from "@/components/CopyButton";
-import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
-import ShareModal from "@/components/ShareModal";
-import { Entrypoint, Garden } from "@/api/types";
 import { useGardenContext } from "@/components/garden/Context";
+
+import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
+import { Entrypoint, Garden } from "@/api/types";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
 
-  const { data, isError, isPending } = useGetEntrypoint({
+  const { data, isError, isLoading } = useGetEntrypoint({
     doi,
     limit: 1,
   });
-  // const { data: garden } = useSearchGardenByDOI(doi);
-  const { garden } = useGardenContext();
 
-  if (!data) return <LoadingSpinner />;
-  const entrypoint = data[0] || null;
+  const entrypoint = data?.[0];
+  const { data: garden, isLoading: gardenIsLoading } =
+    useSearchGardenByDOI(doi);
 
-  if (isPending) return <LoadingSpinner />;
+  if (isLoading || gardenIsLoading) return <LoadingSpinner />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 
@@ -69,7 +70,7 @@ function EntrypointHeader({
       <div className="hidden flex-col items-center md:flex md:flex-row">
         <CopyButton
           hint="Copy Link"
-          content={window.location.href}
+          content={`https://doi.org/${doi}`}
           icon={<LinkIcon />}
           className="border-none bg-transparent"
         />

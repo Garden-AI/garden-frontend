@@ -190,11 +190,15 @@ const MetadataEditing = () => {
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
                 <div className="space-y-2">
                     <p className="text-gray-600">Entrypoints</p>
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {currGarden?.entrypoints?.map((entrypoint: any) => (
-                            <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} garden={currGarden}/>
-                        ))}
-                    </div>
+                    {currGarden?.entrypoints && currGarden.entrypoints.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {currGarden.entrypoints.map((entrypoint: any) => (
+                                <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={true} />
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">No Entrypoints created yet.</p>
+                    )}
                 </div>
                 <hr className="h-px border-t-0 bg-gray-300 opacity-100 dark:opacity-100" />
                 <div className="flex justify-end">
@@ -203,7 +207,10 @@ const MetadataEditing = () => {
                             buttonVariants({ variant: "default", size: "lg" }),
                             "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
                         )}
-                        onClick={() => handleSave(metadata)}
+                        onClick={
+                            () => handleSave(metadata)
+                            
+                        }
                         disabled={!auth?.authorization?.user?.sub}
                     >
                         Save Edits

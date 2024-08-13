@@ -1,13 +1,35 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef, RefObject } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
+  const navigate = useNavigate();
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
+  const dropdownRef: RefObject<HTMLDivElement> = useRef(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setOpenMenuDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      handleClickOutside(event);
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
@@ -15,7 +37,7 @@ const Navbar = () => {
 
   function handleLogOut() {
     auth.authorization?.revoke();
-    window.location.replace("/");
+    navigate("/");
   }
 
   return (
@@ -54,6 +76,7 @@ const Navbar = () => {
         <div
           onClick={toggleMenuDropdown}
           className="relative text-sm transition-all duration-500"
+          ref={dropdownRef}
         >
           {auth.isAuthenticated ? (
             <div>
@@ -90,13 +113,14 @@ const Navbar = () => {
               </div>
             </div>
           ) : (
-            /*comment out below button when making pr*/
-            <button
-               className="bg-green-500 hover:bg-green-600 rounded px-4 py-1 text-sm shadow-md md:text-lg"
-               onClick={() => auth.authorization?.login()}
-             >
-               Log In
-             </button>
+            <div>
+              <button
+                className="bg-green-500 hover:bg-green-600 rounded px-4 py-1 text-sm shadow-md md:text-lg"
+                onClick={() => auth.authorization?.login()}
+              >
+                Log In
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -21,13 +21,10 @@ module.exports = {
     },
     extend: {
       colors: {
-        green: "#53A86C",
+        green: "#1E9941",
+        brightgreen: "#2FB254",
         white: "#ffffff",
         transparent: "transparent",
-        black: "black",
-        blue: "blue",
-        orange: "orange",
-        purple: "magenta",
         fail: "#D86F55",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -81,6 +78,9 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      backgroundImage: {
+        hero: "url('../img/heroImage3.png')",
       },
     },
   },
