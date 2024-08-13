@@ -98,3 +98,4 @@ const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any, garden: any })
 };
 
 export default EntrypointBox;
+
