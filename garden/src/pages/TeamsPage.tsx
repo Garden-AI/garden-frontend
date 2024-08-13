@@ -172,6 +172,34 @@ const TeamsPage = () => {
     // }
   ];
 
+  const alums = [
+    {
+      name: "Jennifer Jin",
+      major: "Computer Science @ Washington University in St. Louis",
+      linkedin_link: "https://www.linkedin.com/in/jen-jin/",
+      github_link: "",
+    },
+    {
+      name: "Chase Jenkins",
+      major: "Computer Science @ University of North Carolina at Asheville",
+      linkedin_link: "https://www.linkedin.com/in/chase-jenkins-90018a26a/",
+      github_link: "",
+    },
+    {
+      name: "Mark Muchane",
+      major: "Computer Science and Math @ University of Chicago",
+      linkedin_link: "https://www.linkedin.com/in/mark-muchane-649623112",
+      github_link: "https://github.com/muchanem",
+    },
+    {
+      name: "Allison Daemicke",
+      major:
+        "Computer Science + Statistics @ University of Illinois Urbana-Champaign",
+      linkedin_link: "https://www.linkedin.com/in/allison-daemicke/",
+      github_link: "",
+    },
+  ];
+
   const students = [
     {
       name: "Isaac Darling",
@@ -181,8 +209,7 @@ const TeamsPage = () => {
     },
     {
       name: "Jennifer Jin",
-      major:
-        "Computer Science + Human-Computer Interaction @ Washington University in St. Louis",
+      major: "Computer Science @ Washington University in St. Louis",
       linkedin_link: "https://www.linkedin.com/in/jen-jin/",
       github_link: "",
     },
@@ -199,9 +226,9 @@ const TeamsPage = () => {
       github_link: "",
     },
     {
-      name: "Philip Kim",
+      name: "Phillip Kim",
       major:
-        "Computer Science, Communication Design + Human Computer Interaction @ Washington University in St. Louis",
+        "Computer Science, Communication Design @ Washington University in St. Louis",
       linkedin_link: "https://www.linkedin.com/in/phillip-kim-8601b6188/",
       github_link: "",
     },
@@ -221,26 +248,42 @@ const TeamsPage = () => {
   ];
 
   return (
-    <div className="mx-10 font-display">
-      <div className="flex justify-center">
-        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
-          Our team
-        </h1>
+    <div className="font-display">
+      <div className="bg-darkgreen py-32 text-white ">
+        <div className="px-4">
+          <h1 className="mx-auto text-center text-5xl">Our team</h1>
+        </div>
       </div>
-      <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {people.map((person) => (
-          <TeamMember key={person.name} member={person} />
-        ))}
+      <div className="mt-12 px-4 text-gray-800">
+        <p className="">
+          The people who work on garden are driven by the idea that research
+          with AI/ML should be simple.
+        </p>
       </div>
-      <div className="flex justify-center">
-        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
-          Current Students
-        </h1>
-      </div>
-      <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {students.map((student) => (
-          <StudentMember key={student.name} member={student} />
-        ))}
+      <div className="mx-10">
+        <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {people.map((person) => (
+            <TeamMember key={person.name} member={person} />
+          ))}
+        </div>
+        <div className="mx-auto text-center">
+          <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
+            Current Students
+          </h1>
+        </div>
+        <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {students.map((student) => (
+            <StudentMember key={student.name} member={student} />
+          ))}
+        </div>
+        <div className="mx-auto text-center">
+          <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
+            Alumni
+          </h1>
+          <p className="pt-8">
+            Our project wouldn't be the same without these past team members.
+          </p>
+        </div>
       </div>
     </div>
   );

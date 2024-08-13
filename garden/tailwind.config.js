@@ -23,6 +23,7 @@ module.exports = {
       colors: {
         green: "#1E9941",
         brightgreen: "#2FB254",
+        darkgreen: "#276E49",
         white: "#ffffff",
         transparent: "transparent",
         fail: "#D86F55",

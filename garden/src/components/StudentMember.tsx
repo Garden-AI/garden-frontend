@@ -2,7 +2,7 @@ const StudentMember = ({ member }: { member: any }) => {
   return (
     <div className="flex flex-col rounded-lg border border-gray-200 p-5 shadow-sm">
       <p className="text-xl font-bold">{member.name}</p>
-      <p className="italic text-gray-600">{member.major}</p>
+      <p className="text-sm italic text-gray-600">{member.major}</p>
       <div className="flex gap-5">
         {member.linkedin_link.length > 0 ? (
           <a
