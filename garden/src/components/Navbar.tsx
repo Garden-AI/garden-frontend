@@ -31,12 +31,14 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
-
+  
+  /*
   useEffect(() => {
     if (auth.isAuthenticated) {
       toast.success("Logged in successfully!");
     }
   }, [auth.isAuthenticated]);
+  */
 
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
@@ -46,6 +48,15 @@ const Navbar = () => {
     auth.authorization?.revoke();
     navigate("/");
     toast.success("Logged out successfully!");
+  }
+
+  function handleLogin() {
+    auth.authorization?.login();
+    /*
+    if (auth.isAuthenticated) {
+      toast.success("Logged in successfully!");
+    }
+    */
   }
 
   return (
@@ -124,7 +135,7 @@ const Navbar = () => {
             <div>
               <button
                 className="bg-primary hover:bg-green-600 rounded-lg px-5 py-1 text-sm text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 md:text-lg"
-                onClick={() => auth.authorization?.login()}
+                onClick={handleLogin}
               >
                 Login
               </button>
