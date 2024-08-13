@@ -5,7 +5,6 @@ import { UpdateDOIRequest } from "../types";
 const updateDOI = async (doi: UpdateDOIRequest): Promise<UpdateDOIRequest> => {
   try {
     const response = await axios.put<UpdateDOIRequest>(`/doi`, doi);
-    console.log(response, doi);
     return response.data;
   } catch (error) {
     throw new Error("Error updating DOI");

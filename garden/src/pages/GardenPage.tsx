@@ -28,6 +28,7 @@ import { useGardenContext } from "@/components/garden/Context";
 import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 import { Badge } from "@/components/ui/badge";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import TombstonePage from "./TombstonePage";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -74,6 +75,10 @@ export default function GardenPage() {
   }
   if (fetchGardensError || userGardensError || !garden) {
     return <NotFoundPage />;
+  }
+
+  if (garden.is_archived) {
+    return <TombstonePage garden={garden} />;
   }
 
   return (
