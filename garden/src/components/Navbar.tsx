@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
@@ -30,6 +31,14 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+  
+  /*
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      toast.success("Logged in successfully!");
+    }
+  }, [auth.isAuthenticated]);
+  */
 
   const toggleMenuDropdown = () => {
     setOpenMenuDropdown(!openMenuDropdown);
@@ -38,6 +47,16 @@ const Navbar = () => {
   function handleLogOut() {
     auth.authorization?.revoke();
     navigate("/");
+    toast.success("Logged out successfully!");
+  }
+
+  function handleLogin() {
+    auth.authorization?.login();
+    /*
+    if (auth.isAuthenticated) {
+      toast.success("Logged in successfully!");
+    }
+    */
   }
 
   return (
@@ -95,7 +114,7 @@ const Navbar = () => {
                   <div className="flex flex-row gap-2 hover:text-green hover:underline">
                     <User />
                     <Link to="/UserProfilePage"> Your Profile </Link>{" "}
-                    {/* add in actual link later once that branch is merged into staging*/}
+
                   </div>
                   <div className="flex flex-row gap-2 hover:text-green hover:underline">
                     <Plus />
@@ -115,10 +134,10 @@ const Navbar = () => {
           ) : (
             <div>
               <button
-                className="bg-green-500 hover:bg-green-600 rounded px-4 py-1 text-sm shadow-md md:text-lg"
-                onClick={() => auth.authorization?.login()}
+                className="bg-primary hover:bg-green-600 rounded-lg px-5 py-1 text-sm text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 md:text-lg"
+                onClick={handleLogin}
               >
-                Log In
+                Login
               </button>
             </div>
           )}
