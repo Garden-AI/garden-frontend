@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import ShareModal from "@/components/ShareModal";
 import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
@@ -34,8 +34,6 @@ export default function GardenPage() {
     return <NotFoundPage />;
   }
 
-  const { data: currUser } = useGetUserInfo();
-
   const {
     data: garden,
     isLoading: fetchGardensLoading,
@@ -49,8 +47,6 @@ export default function GardenPage() {
       gardenContext.updateGarden(garden);
     }
   }, [garden]);
-
-  const canEditGarden = currUser?.identity_id === garden?.owner_identity_id;
 
   if (fetchGardensLoading) {
     return <LoadingSpinner />;
@@ -76,7 +72,7 @@ export default function GardenPage() {
         ]}
       />
       <GardenHeader garden={garden} />
-      <GardenBody garden={garden} canEditGarden={canEditGarden} />
+      <GardenBody garden={garden} />
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
@@ -120,13 +116,7 @@ function GardenHeader({ garden }: { garden: Garden }) {
   );
 }
 
-function GardenBody({ garden }: { garden: Garden; canEditGarden: boolean }) {
-  const navigate = useNavigate();
-
-  const handleEditGardenClick = () => {
-    navigate(`metadataEditing`); //
-  };
-
+function GardenBody({ garden }: { garden: Garden }) {
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex w-full flex-row justify-between">
@@ -134,17 +124,6 @@ function GardenBody({ garden }: { garden: Garden; canEditGarden: boolean }) {
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors?.join(", ")}</p>
         </div>
-        {canEditGarden && (
-          <button
-            onClick={handleEditGardenClick}
-            className={cn(
-              buttonVariants({ variant: "default", size: "lg" }),
-              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
-            )}
-          >
-            Edit Garden
-          </button>
-        )}
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>
