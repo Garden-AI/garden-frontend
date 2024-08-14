@@ -60,14 +60,14 @@ export default function EntrypointEditing() {
 
         console.log("inside handle save function, current entrypoint data: ", currEntrypoint);
 
-        const dataToSend = {
+        const dataToSend: Partial<EntrypointCreateRequest> = {
             ...currEntrypoint,
             title: entrypointData.title,
             description: entrypointData.description,
             authors: entrypointData.authors,
             tags: entrypointData.tags,
         };
-    
+        console.log("entrypoint doi: ", currEntrypoint.doi);
         updateEntrypoint({ entrypointDOI: currEntrypoint.doi, entrypointData: dataToSend });
     };
     
@@ -102,7 +102,7 @@ export default function EntrypointEditing() {
                     <MultipleSelector
                         placeholder="Edit Authors"
                         creatable
-                        value={entrypointData.authors?.map(author => ({ label: author, value: author }))}
+                        value={entrypointData.authors!.map(author => ({ label: author, value: author }))}
                         onChange={(newValue) =>
                             setEntrypointData({
                                 ...entrypointData,

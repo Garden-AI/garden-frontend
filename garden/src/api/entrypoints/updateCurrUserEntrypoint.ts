@@ -9,13 +9,18 @@ const updateCurrUserEntrypoint = async (
 ) => {
     try {
         console.log("Payload being sent:", JSON.stringify(entrypointData, null, 2));
-        const response = await instance.put(`/entrypoints/${entrypointDOI}`, entrypointData);
-        return response.data;
+        const response = await instance.patch(`/entrypoints/${entrypointDOI}`, entrypointData, {
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+        return response;
     } catch (error) {
         console.error("Error updating user's entrypoint:", error);
         throw new Error("Error updating user's entrypoint.");
     }
 };
+
 
 export const useUpdateCurrUserEntrypoint = () => {
     const queryClient = useQueryClient();
