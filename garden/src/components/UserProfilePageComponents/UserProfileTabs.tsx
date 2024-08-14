@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import UserProfileInfo from "@/components/UserProfilePageComponents/UserProfileInfo";
 import MyGardens from "@/components/UserProfilePageComponents/MyGardens";
 import SavedGardens from "@/components/UserProfilePageComponents/SavedGardens";
+import { BookOpenText, Leaf } from "lucide-react";
 
 const UserProfileTabs = () => {
     const [active, setActive] = useState("");
@@ -26,13 +27,19 @@ const UserProfileTabs = () => {
                         className={`w-full border-b-4 ${active === "" || active === "Profile Information" ? "border-green bg-green bg-opacity-30" : "bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"}`}
                         onClick={() => setActive("")}
                     >
-                        Profile Information
+                        <div className="flex flex-row justify-center gap-4 text-black">
+                            Profile Information
+                            <BookOpenText/>
+                        </div>
                     </button>
                     <button
                         className={`w-full border-b-4 ${active === "My Gardens" ? "border-green bg-green bg-opacity-30" : "bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green"}`}
                         onClick={() => setActive("My Gardens")}
                     >
-                        My Gardens
+                        <div className="flex flex-row justify-center gap-4 text-black">
+                            My Gardens
+                            <Leaf/>
+                        </div>
                     </button>
                     {/* hide this tab for now
                     <button
