@@ -69,12 +69,12 @@ const UserProfileCard = ({ pfp, setPfp }: UserProfileCardProps) => {
     );
 
     return (
-        <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md w-3/12'>
+        <div className='flex flex-col justify-between rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md w-4/12'>
             <div className="dark:bg-navy-800 shadow-shadow-500 shadow-3xl rounded-primary relative mx-auto flex h-full w-full max-w-[550px] flex-col items-center bg-white bg-cover bg-clip-border p-4 dark:shadow-none">
-                <div className="mt-8 flex flex-col items-center px-2">
-                    <div className="relative h-[150px] w-[150px] overflow-hidden">
+                <div className="mt-4 flex flex-col items-center px-2">
+                    <div className="relative h-[180px] w-[180px]">
                         <div
-                            className="cursor-pointer block relative h-full w-full flex items-center justify-center bg-primary rounded-full"
+                            className="cursor-pointer block relative h-full w-full flex items-center justify-center bg-primary rounded-full border-8 border-white shadow-lg"
                             onClick={handleIconClick}
                         >
                             {pfp || defaultProfileIcon}
