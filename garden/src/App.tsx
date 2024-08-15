@@ -21,6 +21,7 @@ import LoginPage from "./pages/LoginPage";
 import MetadataEditing from "./pages/MetadataEditing";
 import useGoogleAnalytics from "./services/analytics";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import EntrypointEditing from "./pages/EntrypointEditing";
 
 import { Toaster } from "sonner";
 
@@ -58,6 +59,7 @@ function Root() {
             <Route path="create" element={<CreateGardenPage />} />
             <Route path=":doi/edit" element={<CreateGardenPage />} />
             <Route path=":doi/metadataEditing" element={<MetadataEditing />} />
+            <Route path=":doi/entrypointEditing" element={<EntrypointEditing />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>

@@ -10,20 +10,20 @@ import { GlobusSearchResult, SortOrder } from "@/hooks/useSearchResults";
 
 export const SearchResultsHeader = ({
   searchResult,
+  verboseSearchResults,
+  setVerboseSearchResults,
   sortOrder,
   setSortOrder,
   resultsPerPage,
   setResultsPerPage,
-  verboseSearchResults,
-  setVerboseSearchResults,
 }: {
   searchResult: GlobusSearchResult;
-  sortOrder: SortOrder;
-  setSortOrder: (order: SortOrder) => void;
-  resultsPerPage: string;
-  setResultsPerPage: (value: string) => void;
   verboseSearchResults: boolean;
   setVerboseSearchResults: (value: boolean) => void;
+  sortOrder: SortOrder;
+  setSortOrder: (order: SortOrder) => void;
+  resultsPerPage: string | null;
+  setResultsPerPage: (value: string) => void;
 }) => {
   return (
     <div className="mb-8 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
@@ -44,13 +44,13 @@ export const SearchResultsHeader = ({
         </div>
 
         <Select
-          value={sortOrder}
+          value={sortOrder ? sortOrder : "relevance"}
           onValueChange={(value) => {
             setSortOrder(value as SortOrder);
           }}
         >
           <SelectTrigger className="w-full xl:w-48">
-            <SelectValue placeholder="Sort by Relevance" />
+            <SelectValue placeholder="Sort Order" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="relevance">Sort by Relevance</SelectItem>
@@ -60,7 +60,7 @@ export const SearchResultsHeader = ({
         </Select>
 
         <Select
-          value={resultsPerPage}
+          value={resultsPerPage ? resultsPerPage : "10"}
           onValueChange={(value) => {
             setResultsPerPage(value);
           }}

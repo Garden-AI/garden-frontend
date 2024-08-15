@@ -109,7 +109,7 @@ const MetadataEditing = () => {
                         label: currGarden.title,
                         link: `/garden/${encodeURIComponent(`${currGarden.doi}`)}`,
                     },
-                    { label: "Edit Garden" },
+                    { label: `Edit "${currGarden.title}"` },
                 ]}
             />
             <h1 className="text-2xl sm:text-3xl mb-4">Edit '{currGarden?.title}'</h1>
