@@ -9,28 +9,17 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useSearchParams } from "react-router-dom";
-import { useSearchResults } from "@/hooks/useSearchResults";
+import { GlobusSearchResult } from "@/hooks/useSearchResults";
 
-export function SearchFilters() {
-  const { searchResult } = useSearchResults();
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
-
-  useEffect(() => {
-    const params = Object.fromEntries(searchParams);
-    const filters: Record<string, string[]> = {};
-    Object.entries(params).forEach(([key, value]) => {
-      if (!["q", "page", "size", "sort"].includes(key)) {
-        filters[key] = decodeURIComponent(value).split(",");
-      }
-    });
-    setSelectedFilters(filters);
-  }, [searchParams]);
-
+export function SearchFilters({
+  searchResult,
+  selectedFilters,
+  setSelectedFilters,
+}: {
+  searchResult: GlobusSearchResult;
+  selectedFilters: Record<string, string[]>;
+  setSelectedFilters: (filters: Record<string, string[]>) => void;
+}) {
   const allFacets = useMemo(() => {
     return (
       searchResult?.facetResults?.map((f) => ({
@@ -42,44 +31,16 @@ export function SearchFilters() {
   }, [searchResult]);
 
   const updateFilter = (facet: string, bucket: string, isChecked: boolean) => {
-    setSelectedFilters((prev) => {
-      const newFilters = { ...prev };
-      if (isChecked) {
-        newFilters[facet] = [...(newFilters[facet] || []), bucket];
-      } else {
-        newFilters[facet] = newFilters[facet]?.filter((b) => b !== bucket);
-      }
-
-      return newFilters;
-    });
+    const selected = selectedFilters[facet] || [];
+    const updated = isChecked
+      ? [...selected, bucket]
+      : selected.filter((b: any) => b !== bucket);
+    setSelectedFilters({ ...selectedFilters, [facet]: updated });
   };
 
   const clearFilters = () => {
     setSelectedFilters({});
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-      Object.keys(selectedFilters).forEach((key) => {
-        params.delete(key);
-      });
-      return params.toString();
-    });
   };
-
-  const isFilterSelected = (facet: string, bucket: string) => {
-    return selectedFilters[facet]?.includes(bucket) || false;
-  };
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    Object.entries(selectedFilters).forEach(([key, values]) => {
-      if (values.length === 0) {
-        params.delete(key);
-        return;
-      }
-      params.set(key, values.map(encodeURIComponent).join(","));
-    });
-    setSearchParams(params);
-  }, [selectedFilters]);
 
   if (!allFacets.length) return null;
 
@@ -108,10 +69,11 @@ export function SearchFilters() {
                       <div key={index} className="mb-2 flex items-center gap-2">
                         <Checkbox
                           id={`${facet.name}-${bucket.value}`}
-                          checked={isFilterSelected(
-                            facet.name,
-                            String(bucket.value),
-                          )}
+                          checked={
+                            selectedFilters[facet.name]?.includes(
+                              String(bucket.value),
+                            ) || false
+                          }
                           onCheckedChange={(checked) =>
                             updateFilter(
                               facet.name,
@@ -132,15 +94,6 @@ export function SearchFilters() {
           </Accordion>
 
           <div className="my-4 flex justify-center gap-4">
-            {/* <Button
-              type="button"
-              variant="default"
-              size="sm"
-              className="px-8"
-              onClick={applyFilters}
-            >
-              Apply
-            </Button> */}
             <Button
               type="button"
               variant="secondary"
