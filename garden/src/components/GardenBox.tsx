@@ -25,16 +25,6 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
 
   const { title, description, doi, tags } = garden;
 
-  interface savedGardensUpdateRequest {
-    saved_garden_dois: string[];
-  }
-
-  /*
-  const [currSavedGardens, setNewSavedGardens] = useState<savedGardensUpdateRequest>({
-    saved_garden_dois: currUserInfo?.saved_garden_dois : string[],
-  });  
-  */
-
   const handleClick = () => {
     navigate(`/garden/${encodeURIComponent(doi)}`);
   };
@@ -42,11 +32,8 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
   const handleSaveClick = (e: any) => {
     e.stopPropagation();
     setIsSaved(!isSaved);
-    if (isSaved){ // call put api hook to add garden doi to user's saved_garden_dois field
-
-    } else { // call put api hook to remove garden doi from user's saved_garden_dois field
-
-    }
+    // implement logic here
+    // use api hook (not yet created)
     console.log(isSaved);
   };
 
@@ -104,7 +91,6 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
               </svg>
             )}
 
-            {/* hide save buttons in this branch, work on in save gardens button branch
             {auth.isAuthenticated && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +110,6 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
                 <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
               </svg>
             )}
-            */}
 
           </div>
         </CardFooter>
