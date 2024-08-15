@@ -194,7 +194,7 @@ const MetadataEditing = () => {
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {currGarden.entrypoints.map((entrypoint: any) => (
                                 <div className="bg-white rounded-lg">
-                                <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={false} />
+                                <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} garden={currGarden} />
                                 </div>
                             ))}
                         </div>
