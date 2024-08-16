@@ -59,7 +59,6 @@ function Root() {
             <Route path="create" element={<CreateGardenPage />} />
             <Route path=":doi/edit" element={<CreateGardenPage />} />
             <Route path=":doi/metadataEditing" element={<MetadataEditing />} />
-            <Route path=":doi/entrypointEditing" element={<EntrypointEditing />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>
@@ -67,6 +66,7 @@ function Root() {
         {/* Entrypoint Routes */}
         <Route path="entrypoint">
           <Route path=":doi" element={<EntrypointPage />} />
+          <Route path=":doi/entrypointEditing" element={<EntrypointEditing />} />
         </Route>
 
         {/* Misc Routes */}

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
-import NotFoundPage from "./NotFoundPage";
 import { useUpdateCurrUserEntrypoint } from "../api/entrypoints/updateCurrUserEntrypoint";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,40 +9,47 @@ import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { EntrypointCreateRequest } from "@/api/types";
+import { useGetEntrypoint } from "../api/entrypoints/useGetEntrypoint";
 
 export default function EntrypointEditing() {
+    const { doi } = useParams() as { doi: string };
+    const { data, isLoading } = useGetEntrypoint({
+        doi,
+        limit: 1,
+    });
+    const entrypoint = data?.[0]; // current entrypoint fetched from backend
     const nav = useNavigate();
     const location = useLocation();
-    const currEntrypoint = location.state?.entrypoint;
     const currGarden = location.state?.garden;
-
-    // console.log("Location state:", location.state); 
-    // console.log("current entrypoint", currEntrypoint);
-    // console.log("current entrypint doi: ", currEntrypoint.doi);
-    // console.log("current garden: ", currGarden);  
-    
-    const { mutate: updateEntrypoint } = useUpdateCurrUserEntrypoint();
+    const { mutate: updateEntrypoint, isSuccess: isUpdateSuccess, data: updatedEntrypoint } = useUpdateCurrUserEntrypoint();
     const auth = useGlobusAuth();
 
-    const [entrypointData, setEntrypointData] = useState<Partial<EntrypointCreateRequest>>({
-        title: currEntrypoint!.title,
-        description: currEntrypoint?.description || null, 
-        authors: currEntrypoint?.authors || [],
-        tags: currEntrypoint?.tags || [],
-    });
+    const [entrypointData, setEntrypointData] = useState<Partial<EntrypointCreateRequest>>({});
 
     useEffect(() => {
-        if (currEntrypoint) {
+        if (entrypoint) {
             setEntrypointData({
-                title: currEntrypoint!.title,
-                description: currEntrypoint.description || null,
-                authors: currEntrypoint.authors || [],
-                tags: currEntrypoint.tags || [],
+                title: entrypoint.title || "",
+                description: entrypoint.description || "",
+                authors: entrypoint.authors || [],
+                tags: entrypoint.tags || [],
             });
         }
-    }, [currEntrypoint]);
+    }, [entrypoint]);
 
-    const handleInputChange = (e: any) => {
+    useEffect(() => {
+        if (isUpdateSuccess && updatedEntrypoint) {
+            setEntrypointData({
+                title: updatedEntrypoint.data.title,
+                description: updatedEntrypoint.data.description,
+                authors: updatedEntrypoint.data.authors,
+                tags: updatedEntrypoint.data.tags,
+            });
+            toast.success("Entrypoint updated successfully!");
+        }
+    }, [isUpdateSuccess, updatedEntrypoint]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setEntrypointData({ ...entrypointData, [name]: value });
     };
@@ -53,32 +59,28 @@ export default function EntrypointEditing() {
             toast.error("You must be authenticated to save changes.");
             return;
         }
-        if (! entrypointData.title?.trim()) {
+        if (!entrypointData.title?.trim()) {
             toast.error("Title cannot be empty");
             return;
         }  
 
-        console.log("inside handle save function, current entrypoint data: ", currEntrypoint);
-
         const dataToSend: Partial<EntrypointCreateRequest> = {
-            ...currEntrypoint,
+            ...entrypoint,
             title: entrypointData.title,
             description: entrypointData.description,
             authors: entrypointData.authors,
             tags: entrypointData.tags,
         };
-        console.log("entrypoint doi: ", currEntrypoint.doi);
-        updateEntrypoint({ entrypointDOI: currEntrypoint.doi, entrypointData: dataToSend });
+  
+        updateEntrypoint({ entrypointDOI: doi, entrypointData: dataToSend });
     };
     
-    
-
-    if (!currEntrypoint) {
+    if (isLoading || !entrypoint) {
         return <LoadingSpinner />;
     }
 
     const backToGardenPage = () =>{
-        nav(`/entrypoint/${encodeURIComponent(`${currEntrypoint.doi}`)}`);
+        nav(`/entrypoint/${encodeURIComponent(`${entrypoint.doi}`)}`);
     }
 
     return (
@@ -89,20 +91,20 @@ export default function EntrypointEditing() {
                     { label: "Gardens", link: "/search" },
                     { label: currGarden.title, link: `/garden/${encodeURIComponent(currGarden.doi)}` },
                     {
-                        label: currEntrypoint.title,
-                        link: `/entrypoint/${encodeURIComponent(currEntrypoint.doi)}`,
+                        label: entrypoint.title,
+                        link: `/entrypoint/${encodeURIComponent(entrypoint.doi)}`,
                     },
-                    { label: `Edit "${currEntrypoint.title}"`},
+                    { label: `Edit "${entrypoint.title}"`},
                 ]}
             />
-            <h1 className="text-2xl sm:text-3xl mb-4">Edit '{currEntrypoint.title}'</h1>
+            <h1 className="text-2xl sm:text-3xl mb-4">Edit '{entrypoint.title}'</h1>
             <div className="flex flex-col gap-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
                 <div className="space-y-2">
                     <p className="text-gray-600">Authors</p>
                     <MultipleSelector
                         placeholder="Edit Authors"
                         creatable
-                        value={entrypointData.authors!.map(author => ({ label: author, value: author }))}
+                        value={entrypointData.authors?.map(author => ({ label: author, value: author }))}
                         onChange={(newValue) =>
                             setEntrypointData({
                                 ...entrypointData,
@@ -117,7 +119,7 @@ export default function EntrypointEditing() {
                     <input
                         type="text"
                         name="title"
-                        value={entrypointData.title}
+                        value={entrypointData.title || ""}
                         onChange={handleInputChange}
                         placeholder="Title"
                         className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"
@@ -128,7 +130,7 @@ export default function EntrypointEditing() {
                     <input
                         type="text"
                         name="description"
-                        value={entrypointData.description ?? ""}
+                        value={entrypointData.description || ""}
                         onChange={handleInputChange}
                         placeholder="Description"
                         className="border border-gray-300 rounded px-2 py-1 w-full focus:border-green focus:outline-none focus:ring-0 focus:border-2"

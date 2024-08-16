@@ -1,5 +1,5 @@
 import { Entrypoint } from "@/api/types";
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
@@ -9,20 +9,15 @@ import { useGetUserInfo } from "../api/getUserInfo";
  
 const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any, garden: any }) => {
   const navigate = useNavigate();
-  const { doi } = useParams();
   const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
   const { data: currUser } = useGetUserInfo();
   const { data: currUserEntrypoints } = useGetCurrUserEntrypoints({
     owner_uuid: currUser?.identity_id
   });
-  // console.log("updated current user endpoints: ", currUserEntrypoints);
 
-  // Early return if entrypoint is undefined
   if (!entrypoint) {
     return null;
   }
-
-  // console.log("within entrypoint box, garden: ", garden);
 
   const stepsLength = entrypoint.steps?.length ?? 0;
 
@@ -32,7 +27,7 @@ const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any, garden: any })
 
   const handleEditEntrypointClick = (e: any) => {
     e.stopPropagation();
-    navigate(`/garden/${encodeURIComponent(doi!)}/entrypointEditing`, { state: { entrypoint, garden } }); 
+    navigate(`/entrypoint/${encodeURIComponent(entrypoint?.doi)}/entrypointEditing`, { state: { entrypoint, garden } }); 
   };  
 
   return (

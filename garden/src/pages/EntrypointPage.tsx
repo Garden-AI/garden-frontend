@@ -66,15 +66,17 @@ function EntrypointHeader({
 }) {
   return (
     <div className="mb-4 flex gap-x-2">
-      <h1 className="text-xl md:text-3xl">{entrypoint.title}</h1>
-      <div className="hidden flex-col items-center md:flex md:flex-row">
-        <CopyButton
-          hint="Copy Link"
-          content={`https://doi.org/${doi}`}
-          icon={<LinkIcon />}
-          className="border-none bg-transparent"
-        />
-        <ShareModal doi={doi} />
+      <div className="flex flex-row">
+        <h1 className="text-xl md:text-3xl">{entrypoint.title}</h1>
+        <div className="hidden flex-col items-center md:flex md:flex-row">
+          <CopyButton
+            hint="Copy Link"
+            content={`https://doi.org/${doi}`}
+            icon={<LinkIcon />}
+            className="border-none bg-transparent"
+          />
+          <ShareModal doi={doi} />
+        </div>
       </div>
     </div>
   );
