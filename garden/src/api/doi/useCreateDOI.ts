@@ -2,11 +2,11 @@ import axios from "@/api/axios";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { DOIRequest } from "../types";
 
-interface MintDOIResponse {
+interface CreateDOIResponse {
   doi: string;
 }
 
-const mintDOI = async (): Promise<MintDOIResponse> => {
+const createDOI = async (): Promise<CreateDOIResponse> => {
   try {
     const request: DOIRequest = {
       data: {
@@ -14,20 +14,20 @@ const mintDOI = async (): Promise<MintDOIResponse> => {
         attributes: {},
       },
     };
-    const response = await axios.post<MintDOIResponse>(`/doi`, request);
+    const response = await axios.post<CreateDOIResponse>(`/doi`, request);
     return response.data;
   } catch (error) {
     throw new Error("Error minting DOI");
   }
 };
 
-export const useMintDOI = (): UseMutationResult<
-  MintDOIResponse,
+export const useCreateDOI = (): UseMutationResult<
+  CreateDOIResponse,
   Error,
   void,
   unknown
 > => {
-  return useMutation<MintDOIResponse, Error, void, unknown>({
-    mutationFn: mintDOI,
+  return useMutation<CreateDOIResponse, Error, void, unknown>({
+    mutationFn: createDOI,
   });
 };

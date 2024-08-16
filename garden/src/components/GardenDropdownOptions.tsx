@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Archive, Edit, EllipsisVertical, Globe, Trash } from "lucide-react";
+import {
+  Archive,
+  Edit,
+  EllipsisVertical,
+  Globe,
+  Trash,
+  TriangleAlert,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +36,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "./LoadingSpinner";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Separator } from "./ui/separator";
+import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
+import { usePatchEntrypoint } from "@/api/entrypoints/usePatchEntrypoint";
 
 export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
   const auth = useGlobusAuth();
@@ -141,48 +151,59 @@ const PublishGardenModal = ({
   setIsOpen: (open: boolean) => void;
 }) => {
   const [input, setInput] = React.useState("");
+  const [updateEntrypoints, setUpdateEntrypoints] = React.useState(false);
 
   const queryClient = useQueryClient();
   const { mutate: updateDOI, isPending } = useUpdateDOI();
   const { mutate: updateGarden } = usePatchGarden();
+  const { mutate: updateEntrypoint } = usePatchEntrypoint();
 
   const doi = garden.doi;
 
   const handlePublishGarden = () => {
-    const body = {
-      data: {
-        type: "dois" as const,
-        attributes: {
-          event: "publish" as const,
-          identifiers: [
-            {
-              identifier: doi,
-              identifierType: "DOI",
-            },
-          ],
+    updateDOI(
+      {
+        resource: garden,
+        event: "publish",
+        updateEntrypoints,
+      },
+      {
+        onSuccess: () => {
+          setIsOpen(false);
+          setInput("");
+          toast.success("Garden published successfully!");
+          updateGarden({
+            doi,
+            garden: { doi_is_draft: false, is_archived: false },
+          });
+
+          for (const entrypoint of garden.entrypoints || []) {
+            updateEntrypoint(
+              {
+                doi: entrypoint.doi,
+                entrypoint: { doi_is_draft: false, is_archived: false },
+              },
+              {
+                onSuccess: () => {
+                  queryClient.invalidateQueries({
+                    queryKey: ["entrypoint", doi],
+                  });
+                },
+              },
+            );
+          }
+
+          queryClient.invalidateQueries({ queryKey: ["search"] });
+          queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+            return { ...oldData, doi_is_draft: false, is_archived: false };
+          });
+        },
+        onError: () => {
+          setIsOpen(false);
+          toast.error("Error publishing garden. Please try again later.");
         },
       },
-    };
-
-    updateDOI(body, {
-      onSuccess: () => {
-        setIsOpen(false);
-        setInput("");
-        toast.success("Garden published successfully!");
-        updateGarden({
-          doi,
-          garden: { doi_is_draft: false, is_archived: false },
-        });
-        queryClient.invalidateQueries({ queryKey: ["search"] });
-        queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
-          return { ...oldData, doi_is_draft: false, is_archived: false };
-        });
-      },
-      onError: () => {
-        setIsOpen(false);
-        toast.error("Error publishing garden. Please try again later.");
-      },
-    });
+    );
   };
 
   return (
@@ -190,13 +211,15 @@ const PublishGardenModal = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Publish Garden</AlertDialogTitle>
-          <AlertDialogDescription className="mb-6">
+          <AlertDialogDescription className="pb-4">
             Publish your garden to make it findable on the web.
           </AlertDialogDescription>
-          <Alert>
-            <Globe className="h-4 w-4" />
-            <AlertTitle>Heads up!</AlertTitle>
-            <AlertDescription>
+          <Alert className="my-4 border-yellow-400 bg-yellow-50 p-4 py-6">
+            <div className="mb-2 flex items-center space-x-2">
+              <TriangleAlert className="h-5 w-5 text-yellow-700" />
+              <AlertTitle>Heads up!</AlertTitle>
+            </div>
+            <AlertDescription className="pl-2">
               <ul className="list-inside list-disc">
                 <li>
                   This will make your Garden public and available to everyone.
@@ -208,12 +231,12 @@ const PublishGardenModal = ({
             </AlertDescription>
           </Alert>
 
-          <Separator className="my-4" />
-          <p className="text-sm">
+          <Separator className=" block" />
+          <p className="pt-2 text-sm">
             Please type
             <span className="font-semibold"> publish {doi} </span>to confirm:
           </p>
-          <div>
+          <div className=" mb-4">
             <Input
               type="text"
               className="mt-2 w-full rounded border border-gray-300 p-2"
@@ -225,6 +248,16 @@ const PublishGardenModal = ({
                 return false;
               }}
             />
+          </div>
+          <div className="flex items-center space-x-2 py-4">
+            <Checkbox
+              className=""
+              checked={updateEntrypoints}
+              onCheckedChange={(checked: boolean) =>
+                setUpdateEntrypoints(checked)
+              }
+            />
+            <Label className="">Also publish this Garden's entrypoints</Label>
           </div>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -347,39 +380,30 @@ const ArchiveGardenModal = ({
   const doi = garden.doi;
 
   const handleArchiveGarden = () => {
-    const body = {
-      data: {
-        type: "dois" as const,
-        attributes: {
-          event: "hide" as const,
-          identifiers: [
-            {
-              identifier: doi,
-              identifierType: "DOI",
+    updateDOI(
+      {
+        resource: garden,
+        event: "hide",
+      },
+      {
+        onSuccess: () => {
+          updateGarden({
+            doi,
+            garden: {
+              doi_is_draft: false,
+              is_archived: true,
             },
-          ],
+          });
+
+          setInput("");
+          queryClient.invalidateQueries({ queryKey: ["search"] });
+          toast.success("Garden archived successfully!");
+          queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+            return { ...oldData, is_archived: true };
+          });
         },
       },
-    };
-
-    updateDOI(body, {
-      onSuccess: () => {
-        updateGarden({
-          doi,
-          garden: {
-            doi_is_draft: false,
-            is_archived: true,
-          },
-        });
-
-        setInput("");
-        queryClient.invalidateQueries({ queryKey: ["search"] });
-        toast.success("Garden archived successfully!");
-        queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
-          return { ...oldData, is_archived: true };
-        });
-      },
-    });
+    );
   };
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

@@ -24,7 +24,7 @@ import { useSearchGardens } from "./search/useSearchGardens";
 
 /* Misc */
 import { useGreetings } from "./misc/useGreetings";
-import { useMintDOI } from "./doi/useMintDOI";
+import { useCreateDOI } from "./doi/useCreateDOI";
 import { useUpdateDOI } from "./doi/useUpdateDOI";
 
 export {
@@ -45,6 +45,6 @@ export {
   useSearchGardens,
   useSearchGardenByDOI,
   useGreetings,
-  useMintDOI,
+  useCreateDOI,
   useUpdateDOI,
 };
