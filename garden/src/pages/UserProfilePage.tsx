@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import UserProfileTabs from "../components/UserProfilePageComponents/UserProfileTabs";
 import UserProfileCard from "../components/UserProfilePageComponents/UserProfileCard";
 import { useGetUserInfo } from "../api/getUserInfo";

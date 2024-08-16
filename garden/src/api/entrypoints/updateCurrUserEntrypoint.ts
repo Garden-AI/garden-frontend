@@ -8,7 +8,6 @@ const updateCurrUserEntrypoint = async (
     entrypointData: Partial<EntrypointCreateRequest> 
 ) => {
     try {
-        console.log("Payload being sent:", JSON.stringify(entrypointData, null, 2));
         const response = await instance.patch(`/entrypoints/${entrypointDOI}`, entrypointData, {
             headers: {
                 'Accept': 'application/json',
@@ -16,7 +15,6 @@ const updateCurrUserEntrypoint = async (
         });
         return response;
     } catch (error) {
-        console.error("Error updating user's entrypoint:", error);
         throw new Error("Error updating user's entrypoint.");
     }
 };
@@ -30,12 +28,10 @@ export const useUpdateCurrUserEntrypoint = () => {
             updateCurrUserEntrypoint(entrypointDOI, entrypointData),
         
         onError: (error) => {
-            console.error("Error updating entrypoint:", error);
             toast.error("Failed to update the entrypoint.");
         },
         
         onSuccess: (data, variables, context) => {
-            console.log("Entrypoint updated successfully!", data, variables, context);
             queryClient.setQueryData(['entrypoint', variables.entrypointDOI], data);
             toast.success("Entrypoint updated successfully!");
         },

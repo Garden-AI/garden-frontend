@@ -4,9 +4,7 @@ import PfpSelectionModal from './PfpSelectionModal';
 import { useGetUserInfo } from "../../api/getUserInfo";
 import RenderTags from "../ui/renderTags";
 import { useGetUserGardens} from "../../api/getUserGardens";
-// import { useUpdateUserInfo } from '../../api/updateUserInfo';
 import { icons, IconType } from './PfpSelectionModal'; 
-import { toast } from "sonner";
 
 type UserProfileCardProps = {
     pfp: JSX.Element | null;
@@ -21,7 +19,6 @@ type PfpSelectionModalProps = {
 const UserProfileCard = ({ pfp, setPfp }: UserProfileCardProps) => {
     const [show, setShow] = useState(false);
     const [tooltipVisible, setTooltipVisible] = useState(false);
-    // const [profileIcon, setProfileIcon] = useState<JSX.Element | null>(null);
 
     const [showIconSelector, setShowIconSelector] = useState(false);
     const { data: currUserInfo, isLoading: getUserInfoLoading, isError:getUserInfoError } = useGetUserInfo();
@@ -47,11 +44,7 @@ const UserProfileCard = ({ pfp, setPfp }: UserProfileCardProps) => {
             }, 3000);
         }
     };
-
-    const showModal = () => {
-        setShow(true);
-    };
-
+    
     const closeModal = () => {
         setShow(false);
     };

@@ -11,7 +11,6 @@ import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { useGetGarden } from "../api/gardens/useGetGarden";
-import { GardenCreateRequest } from "@/api/types";
 import { tagOptions } from "@/components/form/CreateGarden/constants";
 
 const MetadataEditing = () => {

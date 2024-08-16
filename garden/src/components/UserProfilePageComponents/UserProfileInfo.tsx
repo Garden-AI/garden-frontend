@@ -11,7 +11,6 @@ import MultipleSelector from "@/components/ui/multiple-select";
 import RenderTags from "../ui/renderTags";
 import InputMask from 'react-input-mask';
 import { UpdateUserSchema } from "@/api/types";
-import { number } from "zod";
 
 const UserProfileInfo = () => {
     const [edit, setEdit] = useState(false);
@@ -28,7 +27,7 @@ const UserProfileInfo = () => {
         affiliations: [],
         skills: [],
         domains: [],
-        profile_pic_id: undefined, // initially
+        profile_pic_id: undefined,
     });
 
     useEffect(() => {
@@ -256,4 +255,3 @@ const UserProfileInfo = () => {
 };
 
 export default UserProfileInfo;
-;

@@ -1,4 +1,4 @@
-import { Garden, Entrypoint } from "@/api/types";
+import { Garden } from "@/api/types";
 import GardenBox from "@/components/GardenBox";
 import { Link } from 'react-router-dom';
 import { useGetUserGardens} from "../../api/getUserGardens";

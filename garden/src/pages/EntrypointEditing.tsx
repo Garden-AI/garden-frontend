@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
-import NotFoundPage from "./NotFoundPage";
 import { useUpdateCurrUserEntrypoint } from "../api/entrypoints/updateCurrUserEntrypoint";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,12 +15,6 @@ export default function EntrypointEditing() {
     const location = useLocation();
     const currEntrypoint = location.state?.entrypoint;
     const currGarden = location.state?.garden;
-
-    // console.log("Location state:", location.state); 
-    // console.log("current entrypoint", currEntrypoint);
-    // console.log("current entrypint doi: ", currEntrypoint.doi);
-    // console.log("current garden: ", currGarden);  
-    
     const { mutate: updateEntrypoint } = useUpdateCurrUserEntrypoint();
     const auth = useGlobusAuth();
 
@@ -158,7 +151,7 @@ export default function EntrypointEditing() {
                         onClick={backToGardenPage}
                         disabled={!auth?.authorization?.user?.sub}
                     >
-                    Cancel
+                        Cancel
                     </button>
                     <button
                         className={cn(
