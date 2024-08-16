@@ -7,10 +7,6 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import NotFoundPage from "../../pages/NotFoundPage";
 import { Plus } from "lucide-react"; 
 
-function isGardenArray(data: Garden[] | undefined): data is Garden[] {
-    return Array.isArray(data);
-}
-
 const MyGardens = () => {
     const { data: currUserInfo, isLoading: getUserInfoLoading, isError: getUserInfoError } = useGetUserInfo();
     const { data: userGardens, isLoading: userGardensLoading, isError: userGardensError } = useGetUserGardens(currUserInfo?.identity_id);
@@ -27,9 +23,9 @@ const MyGardens = () => {
             <div className="flex justify-end mb-4">
             <Link
             to="/garden/create"
-            className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm mb-6"
+            className="flex flex-row items-center gap-2 rounded-lg px-2 py-1 text-sm mb-6 bg-primary text-white"
             >
-            <span className="text-black">Create New Garden</span>
+            <span>Create New Garden</span>
             <Plus />
             </Link>
             </div>

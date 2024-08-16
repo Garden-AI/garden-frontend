@@ -222,7 +222,7 @@ const UserProfileInfo = () => {
                     )}
                 </div>
             </div>
-            <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50 my-10 mx-auto w-full" />
+            <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50 my-8 mx-auto w-full" />
             <div className="flex justify-end">
                 {edit ? (
                     <div className="flex flex-row">
@@ -248,7 +248,7 @@ const UserProfileInfo = () => {
                         </button>
                 </div>
                 ) : (
-                    <button onClick={handleEdit} className="flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm">Edit Profile</button>
+                    <button onClick={handleEdit} className="flex flex-row items-center gap-2 rounded-lg px-2 py-1 text-sm mb-6 border border-gray text-black">Edit Profile</button>
                 )}
             </div>
         </div>

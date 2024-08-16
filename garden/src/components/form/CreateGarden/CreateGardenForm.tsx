@@ -48,6 +48,7 @@ export const CreateGardenForm = () => {
       if (!ownerId) {
         throw new Error("User not authenticated");
       }
+      
       const { doi } = await createDOI();
 
       const requestData: GardenCreateRequest = transformFormToRequest(

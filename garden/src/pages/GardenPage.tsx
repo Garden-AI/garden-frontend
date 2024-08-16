@@ -209,7 +209,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
         <EntrypointBox
           key={entrypoint.doi}
           entrypoint={entrypoint}
-          isEditing={false}
+          garden={garden}
         />
       ))}
     </div>
