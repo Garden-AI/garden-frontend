@@ -25,6 +25,7 @@ import { useGetUserGardens } from "../api/getUserGardens";
 import { useGetGarden } from "@/api";
 import { useEffect } from "react";
 import { useGardenContext } from "@/components/garden/Context";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 // import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
 export default function GardenPage() {
@@ -68,7 +69,7 @@ export default function GardenPage() {
   })();
 
   if (fetchGardensLoading || userGardensLoading) {
-    return <LoadingSpinner />;
+    return <LoadingOverlay />;
   }
   if (fetchGardensError || userGardensError || !garden) {
     return <NotFoundPage />;

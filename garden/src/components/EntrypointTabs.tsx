@@ -190,14 +190,6 @@ function NotebookTab({ notebookURL }: { notebookURL?: string }) {
 
   return (
     <>
-      <div className="mb-4 py-8">
-        <p className="text-gray-700">
-          This notebook contains the definition of this entrypoint, tagged with
-          @garden_entrypoint. <br />
-          When you execute the entrypoint, it runs in a Python session created
-          by running every cell in this notebook once.
-        </p>
-      </div>
       <NotebookViewer notebookURL={notebookURL} />
     </>
   );
