@@ -248,7 +248,7 @@ const TeamsPage = () => {
             Meet the Garden Team
           </h1>
           <p className="mx-auto mt-20 max-w-lg text-center">
-            The people who work on garden are driven by the idea that research
+            The people who build garden are driven by the idea that research
             with AI/ML should be simple and accessible.
           </p>
         </div>
