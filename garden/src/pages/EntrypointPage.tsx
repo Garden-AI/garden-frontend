@@ -95,14 +95,14 @@ function EntrypointBody({
 
       <div className="mb-6 flex items-center space-x-2 text-base md:text-lg ">
         <span className="font-semibold">Contributors:</span>
-        <span>{garden.authors?.join(", ")}</span>
+        <span>{entrypoint.authors?.join(", ")}</span>
       </div>
 
       <div className="mb-2 flex items-center gap-2 text-lg md:text-xl">
         <Eye />
         <h2>At a glance</h2>
       </div>
-      <p className="mb-6">{garden.description}</p>
+      <p className="mb-6">{entrypoint.description}</p>
 
       <Separator className="mb-12" />
     </div>

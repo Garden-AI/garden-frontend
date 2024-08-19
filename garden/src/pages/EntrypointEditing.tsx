@@ -9,32 +9,32 @@ import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { EntrypointCreateRequest } from "@/api/types";
-import { useGetEntrypoint } from "@/api";
+import { useGetEntrypoint, useSearchGardenByDOI } from "@/api";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import NotFoundPage from "./NotFoundPage";
+import { useGetUserInfo } from "@/api/getUserInfo";
 
 export default function EntrypointEditing() {
   const { doi } = useParams() as { doi: string };
   const { data: entrypoint, isLoading } = useGetEntrypoint(doi);
+  const { data: user } = useGetUserInfo();
 
   const nav = useNavigate();
-  const location = useLocation();
-  const currGarden = location.state?.garden;
+
+  const { data: garden, isLoading: gardenIsLoading } =
+    useSearchGardenByDOI(doi);
+
   const { mutate: updateEntrypoint, isPending } = usePatchEntrypoint();
   const auth = useGlobusAuth();
 
   const [entrypointData, setEntrypointData] = useState<
     Partial<EntrypointCreateRequest>
-  >({});
+  >(entrypoint || {});
 
   useEffect(() => {
     if (entrypoint) {
-      setEntrypointData({
-        title: entrypoint.title || "",
-        description: entrypoint.description || "",
-        authors: entrypoint.authors || [],
-        tags: entrypoint.tags || [],
-      });
+      setEntrypointData(entrypoint);
     }
   }, [entrypoint]);
 
@@ -64,8 +64,16 @@ export default function EntrypointEditing() {
     updateEntrypoint({ doi, entrypoint: dataToSend });
   };
 
-  if (isLoading || !entrypoint) {
+  if (user?.identity_id !== entrypoint?.owner_identity_id) {
+    return <NotFoundPage />;
+  }
+
+  if (isLoading || gardenIsLoading) {
     return <LoadingSpinner />;
+  }
+
+  if (!entrypoint || !garden) {
+    return <NotFoundPage />;
   }
 
   const backToGardenPage = () => {
@@ -84,8 +92,8 @@ export default function EntrypointEditing() {
           { label: "Home", link: "/" },
           { label: "Gardens", link: "/search" },
           {
-            label: currGarden.title,
-            link: `/garden/${encodeURIComponent(currGarden.doi)}`,
+            label: garden.title,
+            link: `/garden/${encodeURIComponent(garden.doi)}`,
           },
           {
             label: entrypoint.title,
