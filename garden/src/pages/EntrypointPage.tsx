@@ -6,16 +6,15 @@ import NotFoundPage from "@/pages/NotFoundPage";
 
 import EntrypointTabs from "@/components/EntrypointTabs";
 import AssociatedMaterials from "@/components/AssociatedMaterials";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { Separator } from "@/components/ui/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import ShareModal from "@/components/ShareModal";
 import EntrypointFunction from "@/components/EntrypointFunction";
 import CopyButton from "@/components/CopyButton";
-import { useGardenContext } from "@/components/garden/Context";
 
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import { Entrypoint, Garden } from "@/api/types";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
@@ -29,7 +28,7 @@ const EntrypointPage = () => {
   const { data: garden, isLoading: gardenIsLoading } =
     useSearchGardenByDOI(doi);
 
-  if (isLoading || gardenIsLoading) return <LoadingSpinner />;
+  if (isLoading || gardenIsLoading) return <LoadingOverlay />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 
