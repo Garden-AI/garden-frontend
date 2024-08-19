@@ -1,8 +1,7 @@
 import { useParams, Link, Outlet } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
-import { Entrypoint, Garden } from "@/api/types";
-import LoadingSpinner from "../components/LoadingSpinner";
+import { Garden } from "@/api/types";
 import { LinkIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -18,11 +17,7 @@ import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { useGetUserInfo } from "../api/getUserInfo";
 import { useGetGarden } from "@/api";
-import { useEffect } from "react";
-import { useGardenContext } from "@/components/garden/Context";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +33,7 @@ export default function GardenPage() {
   const { data: garden, isLoading, isError } = useGetGarden(doi);
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingOverlay />;
   }
   if (isError || !garden) {
     return <NotFoundPage />;
