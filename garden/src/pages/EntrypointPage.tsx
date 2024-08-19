@@ -6,7 +6,6 @@ import NotFoundPage from "@/pages/NotFoundPage";
 
 import EntrypointTabs from "@/components/EntrypointTabs";
 import AssociatedMaterials from "@/components/AssociatedMaterials";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { Separator } from "@/components/ui/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import ShareModal from "@/components/ShareModal";
@@ -18,6 +17,7 @@ import { Entrypoint, Garden } from "@/api/types";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
@@ -31,7 +31,7 @@ const EntrypointPage = () => {
   const { data: garden, isLoading: gardenIsLoading } =
     useSearchGardenByDOI(doi);
 
-  if (isLoading || gardenIsLoading) return <LoadingSpinner />;
+  if (isLoading || gardenIsLoading) return <LoadingOverlay />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 

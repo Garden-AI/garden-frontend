@@ -23,6 +23,7 @@ import { useGetUserInfo } from "../api/getUserInfo";
 import { useGetGarden } from "@/api";
 import { useEffect } from "react";
 import { useGardenContext } from "@/components/garden/Context";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 import { Badge } from "@/components/ui/badge";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
@@ -34,24 +35,12 @@ export default function GardenPage() {
     return <NotFoundPage />;
   }
 
-  const {
-    data: garden,
-    isLoading: fetchGardensLoading,
-    isError: fetchGardensError,
-  } = useGetGarden(doi);
+  const { data: garden, isLoading, isError } = useGetGarden(doi);
 
-  const gardenContext = useGardenContext();
-
-  useEffect(() => {
-    if (garden) {
-      gardenContext.updateGarden(garden);
-    }
-  }, [garden]);
-
-  if (fetchGardensLoading) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
-  if (fetchGardensError || !garden) {
+  if (isError || !garden) {
     return <NotFoundPage />;
   }
 
