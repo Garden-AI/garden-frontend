@@ -35,7 +35,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FormNavigation } from "./FormNavigation";
 import { tagOptions, initialEntrypoints } from "./constants";
 import WithTooltip from "@/components/WithTooltip";
-import { useGetEntrypoint, useGetEntrypoints } from "@/api";
+import { useGetEntrypoints } from "@/api";
 import { cn } from "@/lib/utils";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -138,7 +138,7 @@ const Step2 = () => {
     data: availableEntrypoints,
     isFetching,
     refetch,
-  } = useGetEntrypoint({
+  } = useGetEntrypoints({
     owner_uuid: auth?.authorization?.user?.sub,
   });
 

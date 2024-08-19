@@ -12,20 +12,14 @@ import Breadcrumb from "@/components/Breadcrumb";
 import ShareModal from "@/components/ShareModal";
 import EntrypointFunction from "@/components/EntrypointFunction";
 import CopyButton from "@/components/CopyButton";
-import { useGardenContext } from "@/components/garden/Context";
 
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import { Entrypoint, Garden } from "@/api/types";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
+  const { data: entrypoint, isError, isLoading } = useGetEntrypoint(doi);
 
-  const { data, isError, isLoading } = useGetEntrypoint({
-    doi,
-    limit: 1,
-  });
-
-  const entrypoint = data?.[0];
   const { data: garden, isLoading: gardenIsLoading } =
     useSearchGardenByDOI(doi);
 
@@ -65,8 +59,8 @@ function EntrypointHeader({
   doi: string;
 }) {
   return (
-    <div className="mb-4 flex gap-x-2">
-      <div className="flex flex-row">
+    <div className="mb-4 ">
+      <div className="flex flex-row justify-between">
         <h1 className="text-xl md:text-3xl">{entrypoint.title}</h1>
         <div className="hidden flex-col items-center md:flex md:flex-row">
           <CopyButton

@@ -66,7 +66,7 @@ function Root() {
         {/* Entrypoint Routes */}
         <Route path="entrypoint">
           <Route path=":doi" element={<EntrypointPage />} />
-          <Route path=":doi/entrypointEditing" element={<EntrypointEditing />} />
+          <Route path=":doi/edit" element={<EntrypointEditing />} />
         </Route>
 
         {/* Misc Routes */}

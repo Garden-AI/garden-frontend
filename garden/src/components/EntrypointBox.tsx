@@ -5,14 +5,20 @@ import { useNavigate, Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useGetCurrUserEntrypoints } from "../api/entrypoints/getCurrUserEntrypoints";
-import { useGetUserInfo } from "../api/getUserInfo"; 
- 
-const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any, garden: any }) => {
+import { useGetUserInfo } from "../api/getUserInfo";
+
+const EntrypointBox = ({
+  entrypoint,
+  garden,
+}: {
+  entrypoint: any;
+  garden: any;
+}) => {
   const navigate = useNavigate();
   const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
   const { data: currUser } = useGetUserInfo();
   const { data: currUserEntrypoints } = useGetCurrUserEntrypoints({
-    owner_uuid: currUser?.identity_id
+    owner_uuid: currUser?.identity_id,
   });
 
   if (!entrypoint) {
@@ -22,13 +28,15 @@ const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any, garden: any })
   const stepsLength = entrypoint.steps?.length ?? 0;
 
   const canEditEntrypoint = currUserEntrypoints?.some(
-    (userEntrypoint) => userEntrypoint.doi === entrypoint.doi
+    (userEntrypoint) => userEntrypoint.doi === entrypoint.doi,
   );
 
   const handleEditEntrypointClick = (e: any) => {
     e.stopPropagation();
-    navigate(`/entrypoint/${encodeURIComponent(entrypoint?.doi)}/entrypointEditing`, { state: { entrypoint, garden } }); 
-  };  
+    navigate(`/entrypoint/${encodeURIComponent(entrypoint?.doi)}/edit`, {
+      state: { entrypoint, garden },
+    });
+  };
 
   return (
     <div
@@ -38,13 +46,13 @@ const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any, garden: any })
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between">
           <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
-          <div className="flex flex-end">
+          <div className="flex-end flex">
             {canEditEntrypoint && (
               <button
                 onClick={handleEditEntrypointClick}
                 className={cn(
                   buttonVariants({ variant: "default", size: "lg" }),
-                  "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm"
+                  "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
                 )}
               >
                 Edit Entrypoint
@@ -93,4 +101,3 @@ const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any, garden: any })
 };
 
 export default EntrypointBox;
-
