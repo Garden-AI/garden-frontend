@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserProfileInfo from "@/components/UserProfilePageComponents/UserProfileInfo";
 import MyGardens from "@/components/UserProfilePageComponents/MyGardens";
 import SavedGardens from "@/components/UserProfilePageComponents/SavedGardens";
+import { BookOpenText, Leaf } from "lucide-react";
 
 const UserProfileTabs = () => {
   return (
@@ -46,6 +47,7 @@ const UserProfileTabs = () => {
       </div>
     </Tabs>
   );
+
 };
 
 export default UserProfileTabs;

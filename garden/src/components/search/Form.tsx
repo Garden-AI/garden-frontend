@@ -3,7 +3,15 @@ import { useSearchParams } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-export const SearchForm = () => {
+import { useSearchResults } from "@/hooks/useSearchResults";
+
+export const SearchForm = ({
+  query,
+  setQuery,
+}: {
+  query: string;
+  setQuery: (query: string) => void;
+}) => {
   let [searchParams, setSearchParams] = useSearchParams();
   const [queryValue, setQueryValue] = useState(searchParams.get("q") || "");
 
@@ -19,22 +27,11 @@ export const SearchForm = () => {
   }, [queryValue]);
 
   const handleSearch = () => {
-    if (queryValue.trim()) {
-      setSearchParams((prev) => {
-        const params = new URLSearchParams(prev);
-        params.set("q", queryValue);
-        return params;
-      });
-    }
+    setQuery(queryValue);
   };
 
   const handleClear = () => {
-    setQueryValue("");
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-      params.delete("q");
-      return params;
-    });
+    setQuery("");
   };
 
   return (

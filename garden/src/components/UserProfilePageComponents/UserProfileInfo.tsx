@@ -157,6 +157,7 @@ const UserProfileInfo = () => {
               <div className="absolute right-0 top-0 mr-2 mt-1 text-xs text-gray-500">
                 Format: +(country code) xxx-xxx-xxxx
               </div>
+
             </div>
           ) : (
             <p>{currUserInfo?.phone_number ?? "No phone number entered yet."}</p>
