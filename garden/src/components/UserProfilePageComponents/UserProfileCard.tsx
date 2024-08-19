@@ -118,14 +118,13 @@ const UserProfileCard = ({ pfp, setPfp }: UserProfileCardProps) => {
             <p className="text-lightSecondary ml-2 text-base font-normal">Gardens Created</p>
           </div>
           <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
-          {/* hide for now until save gardens buttons gets implemented
-
-                    <div className="flex flex-row items-center justify-center w-full mt-4 mb-4">
-                        <p className="text-orange-400 text-xl font-bold">{currUserInfo?.saved_garden_dois?.length}</p>
-                        <p className="text-lightSecondary text-base font-normal ml-2">Gardens Saved</p>
-                    </div>
-                    <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
-                    */}
+          <div className="mb-4 mt-4 flex w-full flex-row items-center justify-center">
+            <p className="text-xl font-bold text-orange-400">
+              {currUserInfo?.saved_garden_dois?.length}
+            </p>
+            <p className="text-lightSecondary ml-2 text-base font-normal">Gardens Saved</p>
+          </div>
+          <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
           <div className="mb-8 flex flex-col items-center gap-2 text-base">
             <p className="text-lightSecondary mt-4 font-normal">Skills</p>
             <RenderTags items={currUserInfo?.skills ?? []} title="" customBgColor="bg-indigo-300" />

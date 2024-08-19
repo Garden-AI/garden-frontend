@@ -1,7 +1,7 @@
-import { useParams, Link, Outlet } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
-import { Entrypoint, Garden } from "@/api/types";
+import { Garden } from "@/api/types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { LinkIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,11 +14,7 @@ import RelatedGardens from "@/components/RelatedGardens";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { useGetUserInfo } from "@/api";
-import { useGetUserGardens } from "../api/getUserGardens";
-import { useGetGarden } from "@/api";
-import { useEffect } from "react";
-import { useGardenContext } from "@/components/garden/Context";
+import { useGetUserInfo, useGetGarden } from "@/api";
 import SaveGardenButton from "@/components/SaveGardenButton";
 // import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
@@ -28,7 +24,7 @@ export default function GardenPage() {
     return <NotFoundPage />;
   }
 
-  const { data: currUser } = useGetUserInfo();
+  const { data: user } = useGetUserInfo();
 
   const {
     data: garden,
@@ -36,38 +32,13 @@ export default function GardenPage() {
     isError: fetchGardensError,
   } = useGetGarden(doi);
 
-  const {
-    data: userGardens,
-    isLoading: userGardensLoading,
-    isError: userGardensError,
-  } = useGetUserGardens(currUser?.identity_id);
-
-  const gardenContext = useGardenContext();
-
-  useEffect(() => {
-    if (garden) {
-      gardenContext.updateGarden(garden);
-    }
-  }, [garden]);
-
-  const canEditGarden = (() => {
-    if (!garden || !userGardens) return false;
-
-    for (const userGarden of userGardens) {
-      if (userGarden.doi === garden.doi) {
-        // return true when adding edit button back in
-        return true;
-      }
-    }
-    return false;
-  })();
-
-  if (fetchGardensLoading || userGardensLoading) {
+  if (fetchGardensLoading) {
     return <LoadingSpinner />;
   }
-  if (fetchGardensError || userGardensError || !garden) {
+  if (fetchGardensError || !garden) {
     return <NotFoundPage />;
   }
+  const canEdit = user?.identity_id === garden?.owner_identity_id;
 
   return (
     <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
@@ -82,7 +53,7 @@ export default function GardenPage() {
         ]}
       />
       <GardenHeader garden={garden} />
-      <GardenBody garden={garden} canEditGarden={canEditGarden} />
+      <GardenBody garden={garden} canEditGarden={canEdit} />
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
