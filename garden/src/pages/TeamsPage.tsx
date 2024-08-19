@@ -174,12 +174,6 @@ const TeamsPage = () => {
 
   const students = [
     {
-      name: "Isaac Darling",
-      major: "Computer Science @ University of Chicago",
-      linkedin_link: "https://www.linkedin.com/in/idarling/",
-      github_link: "https://github.com/isaac-darling",
-    },
-    {
       name: "Max Tuecke",
       major: "Computer Science @ University of Illinois Urbana-Champaign",
       linkedin_link: "",
@@ -214,6 +208,12 @@ const TeamsPage = () => {
 
   const alums = [
     {
+      name: "Isaac Darling",
+      major: "Computer Science @ University of Chicago",
+      linkedin_link: "https://www.linkedin.com/in/idarling/",
+      github_link: "https://github.com/isaac-darling",
+    },
+    {
       name: "Jennifer Jin",
       major: "Computer Science + HCI @ Washington University in St. Louis",
       linkedin_link: "https://www.linkedin.com/in/jen-jin/",
@@ -244,7 +244,7 @@ const TeamsPage = () => {
     <div className="font-display">
       <div className="bg-darkgreen py-28 text-white ">
         <div className="px-4">
-          <h1 className="mx-auto text-center text-5xl">Who We Are</h1>
+          <h1 className="mx-auto text-center text-5xl">Meet the Garden Team</h1>
           <p className="mx-auto mt-20 max-w-lg text-center">
             The people who work on garden are driven by the idea that research
             with AI/ML should be simple and accessible.
@@ -252,7 +252,9 @@ const TeamsPage = () => {
         </div>
       </div>
       <div className="mx-10 mt-12 text-gray-800">
-        <h2 className="text-2xl">The Team</h2>
+        <h2 className="text-3xl underline decoration-green underline-offset-4">
+          The Team
+        </h2>
       </div>
       <div className="mx-10 mt-4">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -260,30 +262,29 @@ const TeamsPage = () => {
             <TeamMember key={person.name} member={person} />
           ))}
         </div>
-        <div className="mx-auto text-center">
-          <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
+        <div className="mt-12 text-gray-800">
+          <h1 className="text-3xl underline decoration-green underline-offset-4">
             Current Students
           </h1>
         </div>
-        <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {students.map((student) => (
             <StudentMember key={student.name} member={student} />
           ))}
         </div>
-        <div className="mx-auto text-center">
-          <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
+        <div className="mt-12 text-gray-800">
+          <h1 className="text-3xl underline decoration-green underline-offset-4">
             Alumni
           </h1>
-          <p className="pt-8">
-            Our project wouldn't be the same without these past team members.
-          </p>
-          <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+
+          <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {alums.map((student) => (
               <StudentMember key={student.name} member={student} />
             ))}
           </div>
         </div>
       </div>
+      <hr className="mt-12"></hr>
     </div>
   );
 };
