@@ -205,7 +205,7 @@ const HomePage = () => {
         </div>
 
         {/* <Separator /> */}
-        <div className="mx-auto grid  grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
+        <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
           {icons.map((icon, index) => (
             <div
               key={index}
