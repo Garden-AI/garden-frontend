@@ -20,11 +20,7 @@ export const SearchResultsList = ({
   if (isError) return <NotFoundPage />;
 
   if (searchResult.total === 0 && !isFetching)
-    return (
-      <div className="flex h-96 items-center justify-center">
-        No results found
-      </div>
-    );
+    return <div className="flex h-96 items-center justify-center">No results found</div>;
 
   return (
     <div
@@ -41,11 +37,7 @@ export const SearchResultsList = ({
         </div>
       )}
       {gardens.map((garden: any, index: number) => (
-        <SearchResult
-          key={index}
-          garden={garden}
-          verbose={verboseSearchResults}
-        />
+        <SearchResult key={index} garden={garden} verbose={verboseSearchResults} />
       ))}
     </div>
   );

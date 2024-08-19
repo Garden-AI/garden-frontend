@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
@@ -11,12 +12,10 @@ const Navbar = () => {
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
   const dropdownRef: RefObject<HTMLDivElement> = useRef(null);
+  const queryClient = useQueryClient();
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setOpenMenuDropdown(false);
     }
   };
@@ -31,7 +30,7 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
-  
+
   /*
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -48,6 +47,7 @@ const Navbar = () => {
     auth.authorization?.revoke();
     navigate("/");
     toast.success("Logged out successfully!");
+    queryClient.removeQueries();
   }
 
   function handleLogin() {
@@ -64,11 +64,7 @@ const Navbar = () => {
       <Link to="/" className="py-2">
         <div className="relative w-28 pb-[27%]">
           <div className="absolute inset-0">
-            <img
-              src="img/normalColorIcon_Garden.jpg"
-              alt="Garden AI Logo"
-              className=""
-            />
+            <img src="img/normalColorIcon_Garden.jpg" alt="Garden AI Logo" className="" />
           </div>
         </div>
       </Link>
@@ -113,8 +109,7 @@ const Navbar = () => {
                   <Separator />
                   <div className="flex flex-row gap-2 hover:text-green hover:underline">
                     <User />
-                    <Link to="/UserProfilePage"> Your Profile </Link>{" "}
-
+                    <Link to="/user"> Your Profile </Link>{" "}
                   </div>
                   <div className="flex flex-row gap-2 hover:text-green hover:underline">
                     <Plus />
@@ -134,7 +129,7 @@ const Navbar = () => {
           ) : (
             <div>
               <button
-                className="bg-primary hover:bg-green-600 rounded-lg px-5 py-1 text-sm text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 md:text-lg"
+                className="hover:bg-green-600 transform rounded-lg bg-primary px-5 py-1 text-sm text-white shadow-lg transition-all duration-300 ease-in-out hover:scale-105 md:text-lg"
                 onClick={handleLogin}
               >
                 Login

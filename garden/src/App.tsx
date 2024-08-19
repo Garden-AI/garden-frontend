@@ -1,9 +1,4 @@
-import {
-  Routes,
-  Route,
-  RouterProvider,
-  createHashRouter,
-} from "react-router-dom";
+import { Routes, Route, RouterProvider, createHashRouter } from "react-router-dom";
 import { useEffect } from "react";
 
 /* Pages */
@@ -56,8 +51,7 @@ function Root() {
         <Route path="garden">
           <Route element={<PrivateRoutes />}>
             <Route path="create" element={<CreateGardenPage />} />
-            <Route path=":doi/edit" element={<CreateGardenPage />} />
-            <Route path=":doi/metadataEditing" element={<MetadataEditing />} />
+            <Route path=":doi/edit" element={<MetadataEditing />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>
@@ -72,7 +66,7 @@ function Root() {
         <Route path="terms" element={<TermsPage />} />
         <Route path="auth" element={<LoadingSpinner />} />
         <Route path="login" element={<LoginPage />} />
-        <Route path="userProfilePage" element={<UserProfilePage />} />
+        <Route path="user" element={<UserProfilePage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
