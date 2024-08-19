@@ -214,13 +214,15 @@ const PublishGardenModal = ({
           <AlertDialogDescription className="pb-4">
             Publish your garden to make it findable on the web.
           </AlertDialogDescription>
-          <Alert className="my-4 border-yellow-400 bg-yellow-50 p-4 py-6">
+          <Alert className="my-4 rounded-lg border-yellow-200 bg-yellow-50 p-4 text-yellow-800 shadow-md">
             <div className="mb-2 flex items-center space-x-2">
-              <TriangleAlert className="h-5 w-5 text-yellow-700" />
-              <AlertTitle>Heads up!</AlertTitle>
+              <TriangleAlert className="mb-1 h-5 w-5 text-yellow-600" />
+              <AlertTitle className="text-lg font-semibold">
+                Heads up!
+              </AlertTitle>
             </div>
-            <AlertDescription className="pl-2">
-              <ul className="list-inside list-disc">
+            <AlertDescription className="space-y-4">
+              <ul className="list-disc space-y-1 pl-5">
                 <li>
                   This will make your Garden public and available to everyone.
                 </li>
@@ -231,8 +233,7 @@ const PublishGardenModal = ({
             </AlertDescription>
           </Alert>
 
-          <Separator className=" block" />
-          <p className="pt-2 text-sm">
+          <p className="pt-3 text-sm">
             Please type
             <span className="font-semibold"> publish {doi} </span>to confirm:
           </p>
@@ -311,14 +312,18 @@ const DeleteGardenModal = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Garden</AlertDialogTitle>
-          <AlertDialogDescription className="mb-6">
+          <AlertDialogDescription className="pb-3">
             Are you sure you want to delete this garden?
           </AlertDialogDescription>
-          <Alert>
-            <Trash className="h-4 w-4" />
-            <AlertTitle>Heads up!</AlertTitle>
-            <AlertDescription>
-              <ul className="list-inside list-disc">
+          <Alert className=" rounded-lg border-red-200 bg-red-50 p-4 text-red-800 shadow-md">
+            <div className="mb-2 flex items-center space-x-2">
+              <TriangleAlert className="mb-1 h-5 w-5 text-red-600" />
+              <AlertTitle className="text-lg font-semibold">
+                Heads up!
+              </AlertTitle>
+            </div>
+            <AlertDescription className="space-y-4">
+              <ul className="list-disc space-y-1 pl-5">
                 <li>
                   This will permanently delete your Garden and all its contents.
                 </li>
@@ -330,7 +335,7 @@ const DeleteGardenModal = ({
             </AlertDescription>
           </Alert>
 
-          <p className="text-sm">
+          <p className="pt-2 text-sm">
             Please type
             <span className="font-semibold"> delete {doi} </span>to confirm:
           </p>
@@ -410,14 +415,18 @@ const ArchiveGardenModal = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Archive Garden</AlertDialogTitle>
-          <AlertDialogDescription className="mb-6">
+          <AlertDialogDescription className="pb-3">
             Are you sure you want to archive this garden?
           </AlertDialogDescription>
-          <Alert>
-            <Archive className="h-4 w-4" />
-            <AlertTitle>Heads up!</AlertTitle>
-            <AlertDescription>
-              <ul className="list-inside list-disc">
+          <Alert className="rounded-lg border-yellow-200 bg-yellow-50 p-4 text-yellow-800 shadow-md">
+            <div className="mb-2 flex items-center space-x-2">
+              <Archive className="mb-1 h-5 w-5 text-yellow-600" />
+              <AlertTitle className="text-lg font-semibold">
+                Heads up!
+              </AlertTitle>
+            </div>
+            <AlertDescription className="space-y-4">
+              <ul className="list-disc space-y-1 pl-5">
                 <li>This will hide your Garden from public view.</li>
                 <li>
                   Archived gardens can be published again but not deleted.
@@ -426,7 +435,7 @@ const ArchiveGardenModal = ({
             </AlertDescription>
           </Alert>
 
-          <p className="text-sm">
+          <p className="pt-3 text-sm">
             Please type
             <span className="font-semibold"> archive {doi} </span>to confirm:
           </p>
