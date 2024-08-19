@@ -4,6 +4,7 @@ import UserProfileCard from "../components/UserProfilePageComponents/UserProfile
 import { useGetUserInfo } from "@/api";
 import { icons } from "@/components/UserProfilePageComponents/icons";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 const UserProfilePage = () => {
   const defaultProfileIcon = (
@@ -41,7 +42,7 @@ const UserProfilePage = () => {
   }, [currUserInfo]);
 
   if (fetchingUserInfoLoading) {
-    return <LoadingSpinner />;
+    return <LoadingOverlay />;
   }
 
   if (fetchingUserInfoError) {
