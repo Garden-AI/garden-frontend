@@ -244,7 +244,9 @@ const TeamsPage = () => {
     <div className="font-display">
       <div className="bg-darkgreen py-28 text-white ">
         <div className="px-4">
-          <h1 className="mx-auto text-center text-5xl">Meet the Garden Team</h1>
+          <h1 className="font-serifDisplay mx-auto text-center text-5xl">
+            Meet the Garden Team
+          </h1>
           <p className="mx-auto mt-20 max-w-lg text-center">
             The people who work on garden are driven by the idea that research
             with AI/ML should be simple and accessible.

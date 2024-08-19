@@ -11,6 +11,7 @@ module.exports = {
   theme: {
     fontFamily: {
       display: ["Work Sans", "sans-serif"],
+      serifDisplay: ["Noto Serif JP", "serif"],
     },
     container: {
       center: true,
