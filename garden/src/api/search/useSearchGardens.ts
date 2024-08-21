@@ -49,16 +49,32 @@ export const transformSearchParamsToGSearchRequest = (
   searchParams: URLSearchParams,
 ): Globus.Search.GSearchRequest => {
   const filterKeys = ["year", "authors", "tags"];
-  const filters: Globus.Search.GFilter[] = filterKeys
-    .filter((key) => searchParams.has(key))
-    .map((key) => {
-      return {
-        field_name: key,
-        values: searchParams.get(key)!.split(",").map(decodeURIComponent),
-        type: "match_any",
-        post_filter: true,
-      };
-    });
+  const userFilters: Globus.Search.GFilter[] =
+    filterKeys
+      .filter((key) => searchParams.has(key))
+      .map((key) => {
+        return {
+          field_name: key,
+          values: searchParams.get(key)!.split(",").map(decodeURIComponent),
+          type: "match_any",
+          post_filter: true,
+        };
+      }) || [];
+
+  const defaultFilters: Globus.Search.GFilter[] = [
+    {
+      field_name: "doi_is_draft",
+      values: ["false"],
+      type: "match_all",
+    },
+    {
+      field_name: "is_archived",
+      values: ["false"],
+      type: "match_all",
+    },
+  ];
+
+  const filters = [...defaultFilters, ...userFilters];
 
   const size = Number(searchParams.get("size")) || 10;
   const page = Number(searchParams.get("page")) || 1;
@@ -72,7 +88,7 @@ export const transformSearchParamsToGSearchRequest = (
     q: searchParams.get("q") || "*",
     limit: size,
     offset,
-    filters: filters.length > 0 ? filters : undefined,
+    filters,
     facets: filterKeys.flatMap((key: string) => ({
       name: key,
       field_name: key,

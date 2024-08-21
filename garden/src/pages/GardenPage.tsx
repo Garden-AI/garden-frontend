@@ -1,8 +1,7 @@
 import { useParams, Link, Outlet } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import Breadcrumb from "../components/Breadcrumb";
-import { Entrypoint, Garden } from "@/api/types";
-import LoadingSpinner from "../components/LoadingSpinner";
+import { Garden } from "@/api/types";
 import { LinkIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -12,21 +11,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import ShareModal from "@/components/ShareModal";
 import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { useGetUserInfo } from "../api/getUserInfo";
-import { useGetUserGardens } from "../api/getUserGardens";
 import { useGetGarden } from "@/api";
-import { useEffect } from "react";
-import { useGardenContext } from "@/components/garden/Context";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { Badge } from "@/components/ui/badge";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import TombstonePage from "./TombstonePage";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -34,45 +30,17 @@ export default function GardenPage() {
     return <NotFoundPage />;
   }
 
-  const { data: currUser } = useGetUserInfo();
+  const { data: garden, isLoading, isError } = useGetGarden(doi);
 
-  const {
-    data: garden,
-    isLoading: fetchGardensLoading,
-    isError: fetchGardensError,
-  } = useGetGarden(doi);
-
-  const {
-    data: userGardens,
-    isLoading: userGardensLoading,
-    isError: userGardensError,
-  } = useGetUserGardens(currUser?.identity_id);
-
-  const gardenContext = useGardenContext();
-
-  useEffect(() => {
-    if (garden) {
-      gardenContext.updateGarden(garden);
-    }
-  }, [garden]);
-
-  const canEditGarden = (() => {
-    if (!garden || !userGardens) return false;
-
-    for (const userGarden of userGardens) {
-      if (userGarden.doi === garden.doi) {
-        // return true when adding edit button back in
-        return true;
-      }
-    }
-    return false;
-  })();
-
-  if (fetchGardensLoading || userGardensLoading) {
+  if (isLoading) {
     return <LoadingOverlay />;
   }
-  if (fetchGardensError || userGardensError || !garden) {
+  if (isError || !garden) {
     return <NotFoundPage />;
+  }
+
+  if (garden.is_archived) {
+    return <TombstonePage garden={garden} />;
   }
 
   return (
@@ -88,7 +56,7 @@ export default function GardenPage() {
         ]}
       />
       <GardenHeader garden={garden} />
-      <GardenBody garden={garden} canEditGarden={canEditGarden} />
+      <GardenBody garden={garden} />
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
@@ -96,9 +64,29 @@ export default function GardenPage() {
 }
 
 function GardenHeader({ garden }: { garden: Garden }) {
+  const auth = useGlobusAuth();
+
   return (
     <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
-      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
+        <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+        {garden.owner_identity_id === auth?.authorization?.user?.sub && (
+          <Badge
+            className="ml-4 mt-1 px-3 text-sm"
+            variant={
+              cn(garden.doi_is_draft ? "outline" : "default") as
+                | "default"
+                | "outline"
+            }
+          >
+            {garden.doi_is_draft
+              ? "Draft"
+              : garden.is_archived
+                ? "Archived"
+                : "Published"}
+          </Badge>
+        )}
+      </div>
       <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
@@ -106,25 +94,13 @@ function GardenHeader({ garden }: { garden: Garden }) {
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
-        {/* <GardenDropdownOptions garden={garden} /> */}
+        <GardenDropdownOptions garden={garden} />
       </div>
     </div>
   );
 }
 
-function GardenBody({
-  garden,
-  canEditGarden,
-}: {
-  garden: Garden;
-  canEditGarden: boolean;
-}) {
-  const navigate = useNavigate();
-
-  const handleEditGardenClick = () => {
-    navigate(`metadataEditing`); //
-  };
-
+function GardenBody({ garden }: { garden: Garden }) {
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex w-full flex-row justify-between">
@@ -132,17 +108,6 @@ function GardenBody({
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors?.join(", ")}</p>
         </div>
-        {canEditGarden && (
-          <button
-            onClick={handleEditGardenClick}
-            className={cn(
-              buttonVariants({ variant: "default", size: "lg" }),
-              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
-            )}
-          >
-            Edit Garden
-          </button>
-        )}
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>

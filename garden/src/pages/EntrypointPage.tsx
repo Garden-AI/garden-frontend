@@ -14,6 +14,9 @@ import CopyButton from "@/components/CopyButton";
 
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import { Entrypoint, Garden } from "@/api/types";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 const EntrypointPage = () => {
@@ -63,9 +66,30 @@ function EntrypointHeader({
   entrypoint: Entrypoint;
   doi: string;
 }) {
+  const auth = useGlobusAuth();
   return (
     <div className="mb-4 flex gap-x-2">
-      <h1 className="text-xl md:text-3xl">{entrypoint.title}</h1>
+      <div className="flex items-center">
+        <h1 className="text-xl md:text-3xl">{entrypoint.title}</h1>
+
+        {entrypoint.owner_identity_id === auth?.authorization?.user?.sub && (
+          <Badge
+            className="ml-4 mt-1 px-3 text-sm"
+            variant={
+              cn(entrypoint.doi_is_draft ? "outline" : "default") as
+                | "default"
+                | "outline"
+            }
+          >
+            {entrypoint.doi_is_draft
+              ? "Draft"
+              : entrypoint.is_archived
+                ? "Archived"
+                : "Published"}
+          </Badge>
+        )}
+      </div>
+
       <div className="hidden flex-col items-center md:flex md:flex-row">
         <CopyButton
           hint="Copy Link"
