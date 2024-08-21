@@ -18,7 +18,7 @@ import { useGetUserInfo } from "@/api/getUserInfo";
 export default function EntrypointEditing() {
   const { doi } = useParams() as { doi: string };
   const { data: entrypoint, isLoading } = useGetEntrypoint(doi);
-  const { data: user } = useGetUserInfo();
+  const { data: user, isLoading: userIsLoading } = useGetUserInfo();
 
   const nav = useNavigate();
 
@@ -64,11 +64,7 @@ export default function EntrypointEditing() {
     updateEntrypoint({ doi, entrypoint: dataToSend });
   };
 
-  if (user?.identity_id !== entrypoint?.owner_identity_id) {
-    return <NotFoundPage />;
-  }
-
-  if (isLoading || gardenIsLoading) {
+  if (isLoading || gardenIsLoading || userIsLoading) {
     return <LoadingSpinner />;
   }
 
@@ -76,6 +72,9 @@ export default function EntrypointEditing() {
     return <NotFoundPage />;
   }
 
+  if (user?.identity_id !== entrypoint?.owner_identity_id) {
+    return <NotFoundPage />;
+  }
   const backToGardenPage = () => {
     nav(`/entrypoint/${encodeURIComponent(`${entrypoint.doi}`)}`);
   };
