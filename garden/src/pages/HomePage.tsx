@@ -150,7 +150,7 @@ const HomePage = () => {
     <div className="font-display">
       <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 py-40">
         <div className="mx-auto px-4 text-center max-w-4xl">
-          <h1 className="mb-4 text-5xl font-bold text-gray-900 sm:text-6xl">
+          <h1 className="mb-4 text-4xl font-bold text-gray-900 sm:text-6xl">
             Publish, Share, and Run ML Models with <span className="text-brightgreen">Garden</span>
           </h1>
           <p className="mb-8 mt-8 text-xl text-gray-600 max-w-2xl mx-auto">
