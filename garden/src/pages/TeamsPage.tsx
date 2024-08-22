@@ -242,7 +242,7 @@ const TeamsPage = () => {
 
   return (
     <div className="font-display">
-      <div className="bg-darkgreen py-28 text-white ">
+      <div className="bg-darkgreen py-20 text-white ">
         <div className="px-4">
           <h1 className="font-serifDisplay mx-auto text-center text-5xl">
             Meet the Garden Team
@@ -286,7 +286,6 @@ const TeamsPage = () => {
           </div>
         </div>
       </div>
-      <hr className="mt-12"></hr>
     </div>
   );
 };

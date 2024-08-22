@@ -19,7 +19,6 @@ import GardenBox from "@/components/GardenBox";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   SquareStack,
-  LifeBuoy,
   LockKeyholeOpen,
   ShieldCheck,
   PersonStanding,
@@ -149,127 +148,35 @@ const HomePage = () => {
 
   return (
     <div className="font-display">
-      <div className="mx-auto mt-24 max-w-5xl px-4 sm:flex sm:place-items-end">
-        <div className="flex items-baseline sm:w-7/12">
-          <h1 className="text-6xl font-semibold">Garden</h1>
-          <div className="ml-2 hidden font-extrabold text-green sm:block sm:text-lg md:text-lg">
-            <Link to="/search">
-              <span className="group items-center sm:inline-flex">
-                <p>Search for gardens</p>
-                <MoveRight className="mx-1 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-              </span>
-            </Link>
-          </div>
-        </div>
-        <div className="ml-2 font-extrabold text-green sm:hidden">
-          <Link to="/search">
-            <span className="group inline-flex items-center">
-              <p>Search for gardens</p>
-              <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-            </span>
-          </Link>
-        </div>
-        <div className="mt-8 sm:w-5/12">
-          <h2 className="text-lg">We make it simple to research using ML.</h2>
-          <h1 className="text-3xl font-semibold lg:text-4xl">
-            Build a garden where your model can{" "}
-            <span className="text-brightgreen">thrive.</span>
+      <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 py-40">
+        <div className="mx-auto px-4 text-center max-w-4xl">
+          <h1 className="mb-4 text-4xl font-bold text-gray-900 sm:text-6xl">
+            Publish, Share, and Run ML Models with <span className="text-brightgreen">Garden</span>
           </h1>
-        </div>
-      </div>
-
-      <div className="w-full bg-hero bg-cover bg-center">
-        <div className="flex h-full w-full py-52"></div>
-      </div>
-      <div className="mx-auto max-w-5xl">
-        <div className="mt-12 px-4 ">
-          <div className="flex items-baseline">
-            <h1 className="text-2xl font-semibold">Start a garden</h1>
-            <p className="ml-4 font-extrabold text-green">
-              <Link to="/garden/create">
-                <span className="group inline-flex items-center">
-                  The Plot is yours
-                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-                </span>
-              </Link>
-            </p>
-          </div>
-          <h2 className="mt-2 text-base">
-            Gardens are collections of ML models that are linked with data and
-            computing resources to advance the work of research communities.
-            These gardens make it easy to publish models which can be integrated
-            into academia and industry alike. Researchers can provide broad
-            access to their models, without having to worry about the
-            difficulties surrounding discovery, access, and deployment.
-          </h2>
-        </div>
-
-        {/* <Separator /> */}
-        <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
-          {icons.map((icon, index) => (
-            <div
-              key={index}
-              className="flex h-40 flex-col items-center text-center "
+          <p className="mb-8 mt-8 text-xl text-gray-600 max-w-2xl mx-auto">
+            Empower your research with easy-to-use machine learning models for science applications
+          </p>
+          <div className="flex justify-center space-x-4">
+            <Link
+              to="/garden/create"
             >
-              <div className="w-full">
-                <icon.icon size={110} className="mx-auto w-full text-primary" />
-              </div>
-              <p className="text-center md:text-xl">{icon.text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <Separator />
-
-      <div className="mx-auto mt-12 max-w-5xl px-4">
-        <h1 className="text-2xl font-semibold">New to garden?</h1>
-        <h2 className="text-base">
-          Publish your first garden within 15 minutes. Read our{" "}
-          <a
-            className="text-green"
-            href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
-            target="_blank"
-          >
-            user guide
-          </a>{" "}
-          to get started.
-        </h2>
-
-        <div className="items-center sm:mx-8 sm:mt-8 sm:flex">
-          <div className="order-1 text-sm sm:w-6/12">
-            <SyntaxHighlighter>
-              {
-                "from garden_ai import GardenClient\ngarden = garden_client.get_garden()(\"10.26311/ep98-br79\")\ndef test_the_model():\n\texample_input = ['AgI', 'CdTe', 'BN']\n\tresult = garden.predict_piezoelectric(example_input)\n\treturn result"
-              }
-            </SyntaxHighlighter>
-          </div>
-          <div className="order-2 sm:w-7/12 sm:p-4">
-            <h1 className="text-xl font-semibold">
-              Getting started is easy. We do the hard work so you don’t have to.
-            </h1>
-            <h2 className="mt-2 text-base">
-              We automate the process from start to finish so you can spend more
-              time browsing gardens and less time fussing with setting up
-              models.
-            </h2>
-            <Link to="/login">
-              <p className="font-extrabold text-green sm:mt-2">
-                <span className="group inline-flex items-center">
-                  Create an account
-                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-                </span>
-              </p>
+              <button className="px-8 py-3 text-lg font-semibold text-white rounded-full bg-green transition-transform hover:scale-105">Start Your Garden</button>
+            </Link>
+            <Link
+              to="/search"
+            >
+              <button className="px-8 py-3 text-lg font-semibold text-green rounded-full border-2 border-green bg-white transition-transform hover:scale-105">Explore Models</button>
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="mt-4 items-center bg-gray-700 px-4 py-4">
+      <div className="items-center bg-gray-700 px-4 py-4">
         <div className="mx-auto text-center sm:px-8 md:max-w-screen-md md:px-20 lg:max-w-screen-xl lg:px-12">
-          <span className="font-semibold uppercase text-gray-200">
+          <span className="font-semibold uppercase text-gray-300">
             connected to
           </span>
-          <div className="mt-8 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
+          <div className="mt-2 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
             <a
               href="https://www.uchicago.edu/en"
               target="_blank"
@@ -381,120 +288,197 @@ const HomePage = () => {
       </div>
 
       <div className="mx-auto max-w-5xl">
-        <div className="sm:mt-8 sm:flex">
-          <div className="mt-12 px-4 sm:mt-8 sm:w-5/12">
-            <h1 className="text-2xl font-semibold">
-              Research using ML doesn’t have to be hard.
-            </h1>
-            <h2 className="mt-2 text-base">
-              We overcome the barriers surrounding ML, so that you can spend
-              more time researching and less time setting up code to run models.
-            </h2>
+        <div className="mt-12 px-4 ">
+          <div className="flex items-baseline">
+            <h1 className="text-3xl font-semibold">Start a garden</h1>
+            <p className="ml-4 font-extrabold text-green">
+              <Link to="/garden/create">
+                <span className="group inline-flex items-center text-lg">
+                  The Plot is yours
+                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </p>
           </div>
-
-          <div className="mt-4 sm:w-6/12">
-            <Accordion
-              type="single"
-              collapsible
-              className="mb-10 border-y"
-              defaultValue="materials"
+          <h2 className="mt-2 text-lg">
+            Gardens are collections of ML models that are linked with data and
+            computing resources to advance the work of research communities.
+            These gardens make it easy to publish models which can be integrated
+            into academia and industry alike. Researchers can provide broad
+            access to their models, without having to worry about the
+            difficulties surrounding discovery, access, and deployment.
+          </h2>
+        </div>
+        <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
+          {icons.map((icon, index) => (
+            <div
+              key={index}
+              className="flex h-40 flex-col items-center text-center "
             >
-              <AccordionItem value="one">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <SquareStack className="text-gray-500" />
-                    <span className="font-medium text-gray-700">
-                      Reproducibility
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        There's a lot of code that goes into reproducing an ML
-                        pipeline to get the desired output. We make every garden
-                        easy to follow.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="two">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <LockKeyholeOpen className="text-gray-500" />
-                    <span className="font-medium text-gray-700">
-                      Accessibility
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        All code, data, testing is available and free without
-                        any barriers to access. You can run models using our
-                        compute resources at UChicago or any Globus Compute
-                        endpoint.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="three">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <ShieldCheck className="text-gray-500" />
-                    <span className="font-medium text-gray-700">Quality</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        We test and evaluate models on our side, so you can
-                        browse research without the time investment of doing all
-                        of that yourself.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="four">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <PersonStanding className="text-gray-500" />
-                    <span className="font-medium text-gray-700">Community</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        Garden is a collaborative platform that connects
-                        like-minded people. Find your ML community, collaborate,
-                        and set new benchmarks in your domain.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+              <div className="w-full">
+                <icon.icon size={110} className="mx-auto w-full text-primary" />
+              </div>
+              <p className="text-center md:text-xl">{icon.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Separator />
+
+      <div className="mx-auto mt-20 max-w-5xl px-4">
+        <h2 className="text-3xl font-semibold">Get Started in Minutes</h2>
+        <p className="text-lg mt-4">
+          In within 15 minutes, you can publish your first garden and start growing entrypoints!
+        </p>
+        <div className="mx-auto max-w-6xl pt-4">
+          <div className="flex flex-col items-center space-y-8 md:flex-row md:space-x-12 md:space-y-0">
+            <div className="w-full text-sm md:w-1/2">
+              <SyntaxHighlighter>
+                {`from garden_ai import GardenClient
+
+garden = garden_client.get_garden("10.26311/ep98-br79")
+
+def predict_properties():
+    materials = ['AgI', 'CdTe', 'BN']
+    result = garden.predict_piezoelectric(materials)
+    return result
+
+# Run the model and get results
+predictions = predict_properties()`}
+              </SyntaxHighlighter>
+            </div>
+            <div className="w-full md:w-1/2">
+              <h3 className="mb-4 text-2xl font-semibold">Easy Integration, Powerful Results</h3>
+              <p className="mb-6 text-lg">
+                With just a few lines of code, you can access and run sophisticated ML models.
+                Garden handles the complexities, so you can focus on your research.
+              </p>
+              <a
+                href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
+                target="_blank"              >
+                <span className="group inline-flex items-center text-lg text-green">
+                  Read the documentation
+                  <MoveRight className="ml-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
+                </span>
+              </a>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-5xl mt-20 mb-12 md:flex">
+        <div className="mt-12 px-4 md:mt-8 md:w-5/12">
+          <h1 className="text-3xl font-semibold">
+            Research using ML doesn’t have to be hard.
+          </h1>
+          <h2 className="mt-4 text-lg">
+            We overcome the barriers surrounding ML, so that you can spend
+            more time researching and less time setting up code to run models.
+          </h2>
+        </div>
+
+        <div className="mt-4 mx-auto md:w-5/12">
+          <Accordion
+            type="single"
+            collapsible
+            className="mb-10 border-y"
+            defaultValue="materials"
+          >
+            <AccordionItem value="one">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <SquareStack className="text-gray-500" />
+                  <span className="font-medium text-gray-700">
+                    Reproducibility
+                  </span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      There's a lot of code that goes into reproducing an ML
+                      pipeline to get the desired output. We make every garden
+                      easy to follow.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="two">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <LockKeyholeOpen className="text-gray-500" />
+                  <span className="font-medium text-gray-700">
+                    Accessibility
+                  </span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      All code, data, testing is available and free without
+                      any barriers to access. You can run models using our
+                      compute resources at UChicago or any Globus Compute
+                      endpoint.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="three">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <ShieldCheck className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Quality</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      We test and evaluate models on our side, so you can
+                      browse research without the time investment of doing all
+                      of that yourself.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="four">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <PersonStanding className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Community</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      Garden is a collaborative platform that connects
+                      like-minded people. Find your ML community, collaborate,
+                      and set new benchmarks in your domain.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
 
       <div className="bg-green pt-12">
         <div className="mx-auto max-w-5xl px-4">
           <div className="text-white">
-            <h1 className="text-left text-2xl font-semibold">
+            <h1 className="text-left text-3xl font-semibold">
               <div className="flex space-x-4">
                 <Rocket size={35} className="my-auto" />
                 <h3>Explore Featured Gardens </h3>
               </div>
             </h1>
-            <p className="mt-2 text-base">
+            <p className="mt-4 text-lg">
               Take a look at some popular gardens that have been getting a lot
               of attention! You can view the models, datasets, papers, and
               anything else associated with the garden. Additionally, you can
