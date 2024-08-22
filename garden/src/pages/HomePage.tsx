@@ -19,7 +19,6 @@ import GardenBox from "@/components/GardenBox";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   SquareStack,
-  LifeBuoy,
   LockKeyholeOpen,
   ShieldCheck,
   PersonStanding,
@@ -149,38 +148,33 @@ const HomePage = () => {
 
   return (
     <div className="font-display">
-      <div className="mx-auto mt-24 max-w-5xl px-4 sm:flex sm:place-items-end">
-        <div className="flex items-baseline sm:w-7/12">
-          <h1 className="text-6xl font-semibold">Garden</h1>
-          <div className="ml-2 hidden font-extrabold text-green sm:block sm:text-lg md:text-lg">
-            <Link to="/search">
-              <span className="group items-center sm:inline-flex">
-                <p>Search for gardens</p>
-                <MoveRight className="mx-1 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-              </span>
+
+
+
+      <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 py-32">
+        <div className="mx-auto px-4 text-center max-w-4xl">
+          <h1 className="mb-4 text-4xl font-bold text-gray-900 sm:text-6xl">
+            Publish, Share, and Run ML Models with <span className="text-brightgreen">Garden</span>
+          </h1>
+          <p className="mb-8 mt-8 text-xl text-gray-600 max-w-2xl mx-auto">
+            Empower your research with easy-to-use machine learning models for science applications
+          </p>
+          <div className="flex justify-center space-x-4">
+            <Link
+              to="/garden/create"
+            >
+              <button className="px-8 py-3 text-lg font-semibold text-white rounded-full bg-green transition-transform hover:scale-105">Start Your Garden</button>
+            </Link>
+            <Link
+              to="/search"
+            >
+              <button className="px-8 py-3 text-lg font-semibold text-green rounded-full border-2 border-green bg-white transition-transform hover:scale-105">Explore Models</button>
             </Link>
           </div>
-        </div>
-        <div className="ml-2 font-extrabold text-green sm:hidden">
-          <Link to="/search">
-            <span className="group inline-flex items-center">
-              <p>Search for gardens</p>
-              <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-            </span>
-          </Link>
-        </div>
-        <div className="mt-8 sm:w-5/12">
-          <h2 className="text-lg">We make it simple to research using ML.</h2>
-          <h1 className="text-3xl font-semibold lg:text-4xl">
-            Build a garden where your model can{" "}
-            <span className="text-brightgreen">thrive.</span>
-          </h1>
+
         </div>
       </div>
 
-      <div className="w-full bg-hero bg-cover bg-center">
-        <div className="flex h-full w-full py-52"></div>
-      </div>
       <div className="mx-auto max-w-5xl">
         <div className="mt-12 px-4 ">
           <div className="flex items-baseline">
@@ -263,6 +257,8 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+
 
       <div className="mt-4 items-center bg-gray-700 px-4 py-4">
         <div className="mx-auto text-center sm:px-8 md:max-w-screen-md md:px-20 lg:max-w-screen-xl lg:px-12">
