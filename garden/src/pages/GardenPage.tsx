@@ -1,25 +1,26 @@
-import { useParams, Link } from "react-router-dom";
-import EntrypointBox from "../components/EntrypointBox";
-import Breadcrumb from "../components/Breadcrumb";
-import { Garden } from "@/api/types";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { LinkIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
-import ShareModal from "@/components/ShareModal";
-import NotFoundPage from "./NotFoundPage";
-import CopyButton from "@/components/CopyButton";
-import RelatedGardens from "@/components/RelatedGardens";
-import { cn } from "@/lib/utils";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
-import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
-import TombstonePage from "./TombstonePage";
-import { useNavigate } from "react-router-dom";
-import { useGetUserInfo, useGetGarden } from "@/api";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LinkIcon } from "lucide-react";
+
+import Breadcrumb from "../components/Breadcrumb";
+import CopyButton from "@/components/CopyButton";
+import EntrypointBox from "../components/EntrypointBox";
+import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import NotFoundPage from "./NotFoundPage";
+import RelatedGardens from "@/components/RelatedGardens";
 import SaveGardenButton from "@/components/SaveGardenButton";
+import ShareModal from "@/components/ShareModal";
+import TombstonePage from "./TombstonePage";
+
+import { useGetGarden } from "@/api";
+import { Garden } from "@/api/types";
+
+import { cn } from "@/lib/utils";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -27,25 +28,18 @@ export default function GardenPage() {
     return <NotFoundPage />;
   }
 
-  const { data: user } = useGetUserInfo();
-  console.log(user?.saved_garden_dois);
-  const {
-    data: garden,
-    isLoading: fetchGardensLoading,
-    isError: fetchGardensError,
-  } = useGetGarden(doi);
+  const { data: garden, isLoading, isError } = useGetGarden(doi);
 
-  if (fetchGardensLoading) {
+  if (isLoading) {
     return <LoadingOverlay />;
   }
-  if (fetchGardensError || !garden) {
+  if (isError || !garden) {
     return <NotFoundPage />;
   }
 
   if (garden.is_archived) {
     return <TombstonePage garden={garden} />;
   }
-  const canEdit = user?.identity_id === garden?.owner_identity_id;
 
   return (
     <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
@@ -98,8 +92,6 @@ function GardenHeader({ garden }: { garden: Garden }) {
 }
 
 function GardenBody({ garden }: { garden: Garden }) {
-  const navigate = useNavigate();
-
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex w-full flex-row justify-between">
