@@ -1,28 +1,26 @@
-import { useParams, Link, Outlet } from "react-router-dom";
-import EntrypointBox from "../components/EntrypointBox";
-import Breadcrumb from "../components/Breadcrumb";
-import { Garden } from "@/api/types";
-import { LinkIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
-import ShareModal from "@/components/ShareModal";
-import NotFoundPage from "./NotFoundPage";
-import CopyButton from "@/components/CopyButton";
-import RelatedGardens from "@/components/RelatedGardens";
-import { cn } from "@/lib/utils";
-import { useGetGarden } from "@/api";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
-import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LinkIcon } from "lucide-react";
+
+import Breadcrumb from "../components/Breadcrumb";
+import CopyButton from "@/components/CopyButton";
+import EntrypointBox from "../components/EntrypointBox";
+import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import NotFoundPage from "./NotFoundPage";
+import RelatedGardens from "@/components/RelatedGardens";
+import SaveGardenButton from "@/components/SaveGardenButton";
+import ShareModal from "@/components/ShareModal";
 import TombstonePage from "./TombstonePage";
+
+import { useGetGarden } from "@/api";
+import { Garden } from "@/api/types";
+
+import { cn } from "@/lib/utils";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -73,17 +71,9 @@ function GardenHeader({ garden }: { garden: Garden }) {
         {garden.owner_identity_id === auth?.authorization?.user?.sub && (
           <Badge
             className="ml-4 mt-1 px-3 text-sm"
-            variant={
-              cn(garden.doi_is_draft ? "outline" : "default") as
-                | "default"
-                | "outline"
-            }
+            variant={cn(garden.doi_is_draft ? "outline" : "default") as "default" | "outline"}
           >
-            {garden.doi_is_draft
-              ? "Draft"
-              : garden.is_archived
-                ? "Archived"
-                : "Published"}
+            {garden.doi_is_draft ? "Draft" : garden.is_archived ? "Archived" : "Published"}
           </Badge>
         )}
       </div>
@@ -94,6 +84,7 @@ function GardenHeader({ garden }: { garden: Garden }) {
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
+        <SaveGardenButton garden={garden} />
         <GardenDropdownOptions garden={garden} />
       </div>
     </div>
@@ -120,11 +111,7 @@ function GardenBody({ garden }: { garden: Garden }) {
           >
             {garden.doi}
           </a>
-          <CopyButton
-            content={garden.doi}
-            hint="Copy DOI"
-            className="h-8 w-8 p-0.5"
-          />
+          <CopyButton content={garden.doi} hint="Copy DOI" className="h-8 w-8 p-0.5" />
         </div>
       </div>
       <div>
@@ -161,11 +148,7 @@ function GardenAccordion({ garden }: { garden: Garden }) {
         ))}
       </TabsList>
       {tabs.map(({ name, content }) => (
-        <TabsContent
-          key={name}
-          value={name.toLowerCase()}
-          className="px-4 py-8"
-        >
+        <TabsContent key={name} value={name.toLowerCase()} className="px-4 py-8">
           {content}
         </TabsContent>
       ))}
@@ -178,23 +161,15 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   if (!entrypoints || entrypoints.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">
-          No Entrypoints Found
-        </h2>
-        <p className="mt-2 text-gray-600">
-          There are no entrypoints linked to this resource.
-        </p>
+        <h2 className="text-xl font-semibold text-gray-800">No Entrypoints Found</h2>
+        <p className="mt-2 text-gray-600">There are no entrypoints linked to this resource.</p>
       </div>
     );
   }
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {entrypoints.map((entrypoint: any) => (
-        <EntrypointBox
-          key={entrypoint.doi}
-          entrypoint={entrypoint}
-          garden={garden}
-        />
+        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={false} />
       ))}
     </div>
   );
@@ -212,12 +187,8 @@ function DatasetsTab({ garden }: { garden: Garden }) {
   if (datasets.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">
-          No Datasets Found
-        </h2>
-        <p className="mt-2 text-gray-600">
-          There are no datasets linked to this resource.
-        </p>
+        <h2 className="text-xl font-semibold text-gray-800">No Datasets Found</h2>
+        <p className="mt-2 text-gray-600">There are no datasets linked to this resource.</p>
       </div>
     );
   }
@@ -226,14 +197,9 @@ function DatasetsTab({ garden }: { garden: Garden }) {
     <div>
       <div className="mb-16 grid grid-cols-1 gap-2 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-4 ">
         {datasets?.map((dataset: any) => (
-          <Card
-            key={dataset.doi}
-            className="rounded-lg border border-gray-200 shadow-md"
-          >
+          <Card key={dataset.doi} className="rounded-lg border border-gray-200 shadow-md">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold">
-                {dataset.title}
-              </CardTitle>
+              <CardTitle className="text-xl font-semibold">{dataset.title}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -262,13 +228,10 @@ function DatasetsTab({ garden }: { garden: Garden }) {
           </Card>
         ))}
       </div>
-      {datasets.some((dataset) =>
-        dataset.url.toString().includes("foundry"),
-      ) && (
+      {datasets.some((dataset) => dataset.url.toString().includes("foundry")) && (
         <div>
           <p className="mb-8 text-center text-lg">
-            One or more of these datasets uses Foundry, here is how you can view
-            it:
+            One or more of these datasets uses Foundry, here is how you can view it:
           </p>
           <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
             <code className="leading-loose">

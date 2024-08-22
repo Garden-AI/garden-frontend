@@ -1,5 +1,5 @@
 import { User } from "@/api/types";
-import instance from "./axios";
+import instance from "@/api/axios";
 import { useQuery } from "@tanstack/react-query";
 
 const getUserInfo = async (): Promise<User> => {
@@ -13,7 +13,7 @@ const getUserInfo = async (): Promise<User> => {
 
 export const useGetUserInfo = () => {
   return useQuery<User>({
-    queryKey: ["currUser"],
+    queryKey: ["user", "me"],
     queryFn: () => getUserInfo(),
   });
 };

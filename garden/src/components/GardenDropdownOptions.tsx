@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-  Archive,
-  Edit,
-  EllipsisVertical,
-  Globe,
-  Trash,
-  TriangleAlert,
-} from "lucide-react";
+import { Archive, Edit, EllipsisVertical, Globe, Trash, TriangleAlert } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,17 +37,11 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
   const auth = useGlobusAuth();
   const navigate = useNavigate();
 
-  const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] =
-    React.useState(false);
-  const [isDeleteGardenModalOpen, setIsDeleteGardenModalOpen] =
-    React.useState(false);
-  const [isArchiveGardenModalOpen, setIsArchiveGardenModalOpen] =
-    React.useState(false);
+  const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
+  const [isDeleteGardenModalOpen, setIsDeleteGardenModalOpen] = React.useState(false);
+  const [isArchiveGardenModalOpen, setIsArchiveGardenModalOpen] = React.useState(false);
 
-  if (
-    !auth.isAuthenticated ||
-    garden.owner_identity_id !== auth.authorization?.user?.sub
-  ) {
+  if (!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) {
     return null;
   }
 
@@ -70,7 +57,7 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
           <DropdownMenuLabel>Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {!garden.is_archived && (
-            <DropdownMenuItem onSelect={() => navigate(`metadataEditing`)}>
+            <DropdownMenuItem onSelect={() => navigate(`edit`)}>
               <Edit className="mr-2 h-5 w-5" />
               <span className="">Edit Garden</span>
             </DropdownMenuItem>
@@ -78,9 +65,7 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
 
           {garden.doi_is_draft ? (
             <>
-              <DropdownMenuItem
-                onSelect={() => setIsPublishGardenModalOpen(true)}
-              >
+              <DropdownMenuItem onSelect={() => setIsPublishGardenModalOpen(true)}>
                 <Globe className="mr-2 h-5 w-5" />
                 <span className="">Publish Garden</span>
               </DropdownMenuItem>
@@ -94,9 +79,7 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
               </DropdownMenuItem>
             </>
           ) : garden.is_archived ? (
-            <DropdownMenuItem
-              onSelect={() => setIsPublishGardenModalOpen(true)}
-            >
+            <DropdownMenuItem onSelect={() => setIsPublishGardenModalOpen(true)}>
               <Globe className="mr-2 h-5 w-5" />
               <span className="">Make Garden Visible</span>
             </DropdownMenuItem>
@@ -217,18 +200,12 @@ const PublishGardenModal = ({
           <Alert className="my-4 rounded-lg border-yellow-200 bg-yellow-50 p-4 text-yellow-800 shadow-md">
             <div className="mb-2 flex items-center space-x-2">
               <TriangleAlert className="mb-1 h-5 w-5 text-yellow-600" />
-              <AlertTitle className="text-lg font-semibold">
-                Heads up!
-              </AlertTitle>
+              <AlertTitle className="text-lg font-semibold">Heads up!</AlertTitle>
             </div>
             <AlertDescription className="space-y-4">
               <ul className="list-disc space-y-1 pl-5">
-                <li>
-                  This will make your Garden public and available to everyone.
-                </li>
-                <li>
-                  Published gardens can be archived (hidden) but not deleted.
-                </li>
+                <li>This will make your Garden public and available to everyone.</li>
+                <li>Published gardens can be archived (hidden) but not deleted.</li>
               </ul>
             </AlertDescription>
           </Alert>
@@ -254,9 +231,7 @@ const PublishGardenModal = ({
             <Checkbox
               className=""
               checked={updateEntrypoints}
-              onCheckedChange={(checked: boolean) =>
-                setUpdateEntrypoints(checked)
-              }
+              onCheckedChange={(checked: boolean) => setUpdateEntrypoints(checked)}
             />
             <Label className="">Also publish this Garden's entrypoints</Label>
           </div>
@@ -318,19 +293,12 @@ const DeleteGardenModal = ({
           <Alert className=" rounded-lg border-red-200 bg-red-50 p-4 text-red-800 shadow-md">
             <div className="mb-2 flex items-center space-x-2">
               <TriangleAlert className="mb-1 h-5 w-5 text-red-600" />
-              <AlertTitle className="text-lg font-semibold">
-                Heads up!
-              </AlertTitle>
+              <AlertTitle className="text-lg font-semibold">Heads up!</AlertTitle>
             </div>
             <AlertDescription className="space-y-4">
               <ul className="list-disc space-y-1 pl-5">
-                <li>
-                  This will permanently delete your Garden and all its contents.
-                </li>
-                <li>
-                  Deleted gardens cannot be recovered. Please be sure before
-                  proceeding.
-                </li>
+                <li>This will permanently delete your Garden and all its contents.</li>
+                <li>Deleted gardens cannot be recovered. Please be sure before proceeding.</li>
               </ul>
             </AlertDescription>
           </Alert>
@@ -421,16 +389,12 @@ const ArchiveGardenModal = ({
           <Alert className="rounded-lg border-yellow-200 bg-yellow-50 p-4 text-yellow-800 shadow-md">
             <div className="mb-2 flex items-center space-x-2">
               <Archive className="mb-1 h-5 w-5 text-yellow-600" />
-              <AlertTitle className="text-lg font-semibold">
-                Heads up!
-              </AlertTitle>
+              <AlertTitle className="text-lg font-semibold">Heads up!</AlertTitle>
             </div>
             <AlertDescription className="space-y-4">
               <ul className="list-disc space-y-1 pl-5">
                 <li>This will hide your Garden from public view.</li>
-                <li>
-                  Archived gardens can be published again but not deleted.
-                </li>
+                <li>Archived gardens can be published again but not deleted.</li>
               </ul>
             </AlertDescription>
           </Alert>

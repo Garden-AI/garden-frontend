@@ -6,21 +6,16 @@ const searchGlobus = async (
   searchOptions: Globus.Search.GSearchRequest,
 ): Promise<Globus.Search.GSearchResult> => {
   try {
-    const response = await search.query.post(
-      import.meta.env.VITE_GLOBUS_SEARCH_INDEX_UUID,
-      {
-        payload: searchOptions,
-      },
-    );
+    const response = await search.query.post(import.meta.env.VITE_GLOBUS_SEARCH_INDEX_UUID, {
+      payload: searchOptions,
+    });
     return await response.json();
   } catch (error) {
     throw new Error("Error fetching gardens by query");
   }
 };
 
-export const useSearchGardens = (
-  searchOptions: Globus.Search.GSearchRequest,
-) => {
+export const useSearchGardens = (searchOptions: Globus.Search.GSearchRequest) => {
   return useQuery<Globus.Search.GSearchResult, Error>({
     queryKey: [
       "search",
@@ -39,10 +34,7 @@ export const useSearchGardens = (
 export const transformSearchResultToGardens = (
   searchResult?: Globus.Search.GSearchResult,
 ): Garden[] => {
-  return (
-    searchResult?.gmeta.map((result) => result.entries[0].content as Garden) ||
-    []
-  );
+  return searchResult?.gmeta.map((result) => result.entries[0].content as Garden) || [];
 };
 
 export const transformSearchParamsToGSearchRequest = (
