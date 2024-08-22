@@ -6,17 +6,20 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import { LinkIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import ShareModal from "@/components/ShareModal";
 import NotFoundPage from "./NotFoundPage";
 import CopyButton from "@/components/CopyButton";
 import RelatedGardens from "@/components/RelatedGardens";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import { Badge } from "@/components/ui/badge";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import TombstonePage from "./TombstonePage";
 import { useNavigate } from "react-router-dom";
 import { useGetUserInfo, useGetGarden } from "@/api";
 import SaveGardenButton from "@/components/SaveGardenButton";
-// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -25,7 +28,7 @@ export default function GardenPage() {
   }
 
   const { data: user } = useGetUserInfo();
-
+  console.log(user?.saved_garden_dois);
   const {
     data: garden,
     isLoading: fetchGardensLoading,
@@ -33,10 +36,14 @@ export default function GardenPage() {
   } = useGetGarden(doi);
 
   if (fetchGardensLoading) {
-    return <LoadingSpinner />;
+    return <LoadingOverlay />;
   }
   if (fetchGardensError || !garden) {
     return <NotFoundPage />;
+  }
+
+  if (garden.is_archived) {
+    return <TombstonePage garden={garden} />;
   }
   const canEdit = user?.identity_id === garden?.owner_identity_id;
 
@@ -53,7 +60,7 @@ export default function GardenPage() {
         ]}
       />
       <GardenHeader garden={garden} />
-      <GardenBody garden={garden} canEditGarden={canEdit} />
+      <GardenBody garden={garden} />
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
@@ -61,9 +68,21 @@ export default function GardenPage() {
 }
 
 function GardenHeader({ garden }: { garden: Garden }) {
+  const auth = useGlobusAuth();
+
   return (
     <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
-      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
+        <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+        {garden.owner_identity_id === auth?.authorization?.user?.sub && (
+          <Badge
+            className="ml-4 mt-1 px-3 text-sm"
+            variant={cn(garden.doi_is_draft ? "outline" : "default") as "default" | "outline"}
+          >
+            {garden.doi_is_draft ? "Draft" : garden.is_archived ? "Archived" : "Published"}
+          </Badge>
+        )}
+      </div>
       <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
@@ -72,18 +91,14 @@ function GardenHeader({ garden }: { garden: Garden }) {
         />
         <ShareModal doi={garden.doi} />
         <SaveGardenButton garden={garden} />
-        {/* <GardenDropdownOptions garden={garden} /> */}
+        <GardenDropdownOptions garden={garden} />
       </div>
     </div>
   );
 }
 
-function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: boolean }) {
+function GardenBody({ garden }: { garden: Garden }) {
   const navigate = useNavigate();
-
-  const handleEditGardenClick = () => {
-    navigate(`edit`);
-  };
 
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
@@ -92,17 +107,6 @@ function GardenBody({ garden, canEditGarden }: { garden: Garden; canEditGarden: 
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors?.join(", ")}</p>
         </div>
-        {canEditGarden && (
-          <button
-            onClick={handleEditGardenClick}
-            className={cn(
-              buttonVariants({ variant: "default", size: "lg" }),
-              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
-            )}
-          >
-            Edit Garden
-          </button>
-        )}
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>

@@ -12,7 +12,6 @@ export default function SaveGardenButton({ garden }: { garden: Garden }) {
   const { data: user } = useGetUserInfo();
 
   const isSaved = user?.saved_garden_dois?.includes(garden.doi);
-  console.log(user?.saved_garden_dois);
 
   if (!user) {
     return null;

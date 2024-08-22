@@ -1,6 +1,6 @@
 import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker, useNavigate } from "react-router-dom";
-import { useCreateGarden, useMintDOI } from "@/api";
+import { useCreateGarden, useCreateDOI, useUpdateDOI } from "@/api";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { formSchema, GardenCreateFormData } from "./schemas";
 import { transformFormToRequest } from "./transformers";
@@ -10,13 +10,14 @@ import { Form } from "@/components/ui/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "../UnsavedChangesDialog";
 import { FormFields } from "./FormFields";
-import { GardenCreateRequest } from "@/api/types";
+import { Garden, GardenCreateRequest } from "@/api/types";
 
 export const CreateGardenForm = () => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
-  const { mutateAsync: mintDOI } = useMintDOI();
+  const { mutateAsync: createDOI } = useCreateDOI();
   const { mutateAsync: createGarden } = useCreateGarden();
+  const { mutateAsync: updateDOI } = useUpdateDOI();
 
   const form = useForm<GardenCreateFormData>({
     resolver: zodResolver(formSchema),
@@ -47,7 +48,8 @@ export const CreateGardenForm = () => {
       if (!ownerId) {
         throw new Error("User not authenticated");
       }
-      const { doi } = await mintDOI();
+      
+      const { doi } = await createDOI();
 
       const requestData: GardenCreateRequest = transformFormToRequest(
         values,
@@ -56,6 +58,11 @@ export const CreateGardenForm = () => {
       );
 
       const res = await createGarden(requestData);
+      const garden: Garden = res.data;
+      await updateDOI({
+        resource: garden,
+      });
+
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(requestData.doi)}`);
     } catch (error) {
