@@ -81,28 +81,29 @@ const Navbar = () => {
         </Link>
 
         {/* menu */}
-        <div onClick={() => setIsOpen(!isOpen)} className="w-8 h-8 absolute right-8 top-6 cursor-pointer md:hidden">
+        <div onClick={() => setIsOpen(!isOpen)} className="w-8 h-8 absolute right-8 top-5 cursor-pointer md:hidden">
           {
             isOpen ? <X /> : <Menu />
           }
         </div>
 
         {/* links */}
-        <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-300 ease-in ${isOpen ? 'top-24' : 'top-[-490px]'}`}>
-          <li>
-            <Link to="/search" className="no-underline hover:underline my-7 md:my-0 md:ml-8">
-              Search
-            </Link>
-          </li>
 
-          {
-            Links.map(link => (
-              <li className="no-underline hover:underline my-7 md:my-0 md:ml-8">
-                <a href={link.link} target="_blank">{link.name}</a>
-              </li>
-            ))
-          }
-
+        <div className={`md:flex md:items-center md:pb-0 md:static md:w-auto md:pl-0`}>
+          <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-300 ease-in ${isOpen ? 'top-24' : 'top-[-490px]'}`}>
+            <li>
+              <Link to="/search" className="no-underline hover:underline my-7 md:my-0 md:ml-8">
+                Search
+              </Link>
+            </li>
+            {
+              Links.map(link => (
+                <li className="no-underline hover:underline my-7 md:my-0 md:ml-8">
+                  <a href={link.link} target="_blank">{link.name}</a>
+                </li>
+              ))
+            }
+          </ul>
           <div
             onClick={toggleMenuDropdown}
             className="relative text-sm transition-all duration-500"
@@ -143,7 +144,7 @@ const Navbar = () => {
                 </div>
               </div>
             ) : (
-              <div>
+              <div className={`absolute md:static bg-white right-16 -top-7 transition-all duration-300 ease-in`}>
                 <button
                   className="bg-green hover:bg-darkgreen rounded px-4 py-1 text-white transition-all duration-300 ease-in-out transform hover:scale-105 md:ml-8 md:static"
                   onClick={handleLogin}
@@ -153,7 +154,9 @@ const Navbar = () => {
               </div>
             )}
           </div>
-        </ul>
+        </div>
+
+
       </div>
     </div>
 
