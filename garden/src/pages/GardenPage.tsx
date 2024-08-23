@@ -42,7 +42,7 @@ export default function GardenPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
+    <div className="mx-auto max-w-7xl px-8 font-display pt-4">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },

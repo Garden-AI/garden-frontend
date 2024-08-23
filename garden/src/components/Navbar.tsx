@@ -68,11 +68,11 @@ const Navbar = () => {
   let [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="shadow-md w-full fixed top-0 left-0">
-      <div className="md:px-10 py-4 px-7 md:flex justify-between items-center bg-white">
+    <div className="shadow-md w-full absolute top-0 left-0 z-10">
+      <div className="py-4 px-7 justify-between items-center bg-white md:px-10 md:py-2 md:flex">
         {/* logo */}
         <Link to="/" className="py-2">
-          <div className="relative w-28 absolute inset-0">
+          <div className="relative w-32 absolute inset-0">
             <img
               src="img/normalColorIcon_Garden.jpg"
               alt="Garden AI Logo"
@@ -90,8 +90,8 @@ const Navbar = () => {
 
         {/* links */}
 
-        <div className={`md:flex md:items-center md:pb-0 md:static md:w-auto md:pl-0`}>
-          <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-300 ease-in ${isOpen ? 'top-24' : 'top-[-490px]'}`}>
+        <div className={`md:flex`}>
+          <ul className={`pb-8 pt-12 absolute z-[-1] left-0 w-full bg-white pl-9 md:flex md:items-center md:pb-0 md:pt-0 md:static md:z-auto md:w-auto md:pl-0 transition-all duration-300 ease-in ${isOpen ? 'top-12' : 'top-[-490px]'}`}>
             <li>
               <Link to="/search" className="no-underline hover:underline my-7 md:my-0 md:ml-8">
                 Search
@@ -99,19 +99,20 @@ const Navbar = () => {
             </li>
             {
               Links.map(link => (
-                <li className="no-underline hover:underline my-7 md:my-0 md:ml-8">
+                <li key={link.name} className="no-underline hover:underline my-7 md:my-0 md:ml-8">
                   <a href={link.link} target="_blank">{link.name}</a>
                 </li>
               ))
             }
           </ul>
+
           <div
             onClick={toggleMenuDropdown}
             className="relative text-sm transition-all duration-500"
             ref={dropdownRef}
           >
             {auth.isAuthenticated ? (
-              <div>
+              <div className="absolute md:static right-12 -top-8 ml-4">
                 <button className="bg-green-500 hover:bg-green-600 px-4 py-1">
                   <div className="flex items-center space-x-2">
                     <User size={24} />
@@ -126,7 +127,7 @@ const Navbar = () => {
                     <Separator />
                     <div className="flex flex-row gap-2 hover:text-green hover:underline">
                       <User />
-                      <Link to="/UserProfilePage"> Your Profile </Link>{" "}
+                      <Link to="/user"> Your Profile </Link>{" "}
 
                     </div>
                     <div className="flex flex-row gap-2 hover:text-green hover:underline">
@@ -145,7 +146,7 @@ const Navbar = () => {
                 </div>
               </div>
             ) : (
-              <div className={`absolute md:static bg-white right-16 -top-7 transition-all duration-300 ease-in`}>
+              <div className={`absolute md:static bg-white right-16 -top-8 transition-all duration-300 ease-in`}>
                 <button
                   className="bg-green hover:bg-darkgreen rounded px-4 py-1 text-white transition-all duration-300 ease-in-out transform hover:scale-105 md:ml-8 md:static"
                   onClick={handleLogin}

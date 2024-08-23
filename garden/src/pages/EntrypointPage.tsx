@@ -38,7 +38,7 @@ const EntrypointPage = () => {
   if (!garden) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
+    <div className="mx-auto max-w-7xl px-8 font-display pt-4">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
@@ -77,8 +77,8 @@ function EntrypointHeader({
             className="ml-4 mt-1 px-3 text-sm"
             variant={
               cn(entrypoint.doi_is_draft ? "outline" : "default") as
-                | "default"
-                | "outline"
+              | "default"
+              | "outline"
             }
           >
             {entrypoint.doi_is_draft
