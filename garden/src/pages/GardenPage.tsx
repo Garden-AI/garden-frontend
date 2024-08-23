@@ -1,32 +1,26 @@
-import { useParams, Link, Outlet } from "react-router-dom";
-import EntrypointBox from "../components/EntrypointBox";
-import Breadcrumb from "../components/Breadcrumb";
-import { Entrypoint, Garden } from "@/api/types";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { LinkIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Link, useParams } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import ShareModal from "@/components/ShareModal";
-import NotFoundPage from "./NotFoundPage";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LinkIcon } from "lucide-react";
+
+import Breadcrumb from "../components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
-import RelatedGardens from "@/components/RelatedGardens";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { useGetUserInfo } from "../api/getUserInfo";
-import { useGetUserGardens } from "../api/getUserGardens";
-import { useGetGarden } from "@/api";
-import { useEffect } from "react";
-import { useGardenContext } from "@/components/garden/Context";
+import EntrypointBox from "../components/EntrypointBox";
+import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-// import GardenDropdownOptions from "@/components/GardenDropdownOptions";
+import NotFoundPage from "./NotFoundPage";
+import RelatedGardens from "@/components/RelatedGardens";
+import SaveGardenButton from "@/components/SaveGardenButton";
+import ShareModal from "@/components/ShareModal";
+import TombstonePage from "./TombstonePage";
+
+import { useGetGarden } from "@/api";
+import { Garden } from "@/api/types";
+
+import { cn } from "@/lib/utils";
+import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 export default function GardenPage() {
   const { doi } = useParams();
@@ -34,45 +28,17 @@ export default function GardenPage() {
     return <NotFoundPage />;
   }
 
-  const { data: currUser } = useGetUserInfo();
+  const { data: garden, isLoading, isError } = useGetGarden(doi);
 
-  const {
-    data: garden,
-    isLoading: fetchGardensLoading,
-    isError: fetchGardensError,
-  } = useGetGarden(doi);
-
-  const {
-    data: userGardens,
-    isLoading: userGardensLoading,
-    isError: userGardensError,
-  } = useGetUserGardens(currUser?.identity_id);
-
-  const gardenContext = useGardenContext();
-
-  useEffect(() => {
-    if (garden) {
-      gardenContext.updateGarden(garden);
-    }
-  }, [garden]);
-
-  const canEditGarden = (() => {
-    if (!garden || !userGardens) return false;
-
-    for (const userGarden of userGardens) {
-      if (userGarden.doi === garden.doi) {
-        // return true when adding edit button back in
-        return true;
-      }
-    }
-    return false;
-  })();
-
-  if (fetchGardensLoading || userGardensLoading) {
+  if (isLoading) {
     return <LoadingOverlay />;
   }
-  if (fetchGardensError || userGardensError || !garden) {
+  if (isError || !garden) {
     return <NotFoundPage />;
+  }
+
+  if (garden.is_archived) {
+    return <TombstonePage garden={garden} />;
   }
 
   return (
@@ -88,7 +54,7 @@ export default function GardenPage() {
         ]}
       />
       <GardenHeader garden={garden} />
-      <GardenBody garden={garden} canEditGarden={canEditGarden} />
+      <GardenBody garden={garden} />
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
@@ -96,9 +62,21 @@ export default function GardenPage() {
 }
 
 function GardenHeader({ garden }: { garden: Garden }) {
+  const auth = useGlobusAuth();
+
   return (
     <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
-      <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+      <div className="flex items-center">
+        <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+        {garden.owner_identity_id === auth?.authorization?.user?.sub && (
+          <Badge
+            className="ml-4 mt-1 px-3 text-sm"
+            variant={cn(garden.doi_is_draft ? "outline" : "default") as "default" | "outline"}
+          >
+            {garden.doi_is_draft ? "Draft" : garden.is_archived ? "Archived" : "Published"}
+          </Badge>
+        )}
+      </div>
       <div className="flex items-center">
         <CopyButton
           icon={<LinkIcon />}
@@ -106,25 +84,14 @@ function GardenHeader({ garden }: { garden: Garden }) {
           hint="Copy Link"
         />
         <ShareModal doi={garden.doi} />
-        {/* <GardenDropdownOptions garden={garden} /> */}
+        <SaveGardenButton garden={garden} />
+        <GardenDropdownOptions garden={garden} />
       </div>
     </div>
   );
 }
 
-function GardenBody({
-  garden,
-  canEditGarden,
-}: {
-  garden: Garden;
-  canEditGarden: boolean;
-}) {
-  const navigate = useNavigate();
-
-  const handleEditGardenClick = () => {
-    navigate(`metadataEditing`); //
-  };
-
+function GardenBody({ garden }: { garden: Garden }) {
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex w-full flex-row justify-between">
@@ -132,17 +99,6 @@ function GardenBody({
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors?.join(", ")}</p>
         </div>
-        {canEditGarden && (
-          <button
-            onClick={handleEditGardenClick}
-            className={cn(
-              buttonVariants({ variant: "default", size: "lg" }),
-              "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
-            )}
-          >
-            Edit Garden
-          </button>
-        )}
       </div>
       <div className="mb-4">
         <h2 className="font-semibold">DOI</h2>
@@ -155,11 +111,7 @@ function GardenBody({
           >
             {garden.doi}
           </a>
-          <CopyButton
-            content={garden.doi}
-            hint="Copy DOI"
-            className="h-8 w-8 p-0.5"
-          />
+          <CopyButton content={garden.doi} hint="Copy DOI" className="h-8 w-8 p-0.5" />
         </div>
       </div>
       <div>
@@ -196,11 +148,7 @@ function GardenAccordion({ garden }: { garden: Garden }) {
         ))}
       </TabsList>
       {tabs.map(({ name, content }) => (
-        <TabsContent
-          key={name}
-          value={name.toLowerCase()}
-          className="px-4 py-8"
-        >
+        <TabsContent key={name} value={name.toLowerCase()} className="px-4 py-8">
           {content}
         </TabsContent>
       ))}
@@ -213,23 +161,15 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   if (!entrypoints || entrypoints.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">
-          No Entrypoints Found
-        </h2>
-        <p className="mt-2 text-gray-600">
-          There are no entrypoints linked to this resource.
-        </p>
+        <h2 className="text-xl font-semibold text-gray-800">No Entrypoints Found</h2>
+        <p className="mt-2 text-gray-600">There are no entrypoints linked to this resource.</p>
       </div>
     );
   }
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {entrypoints.map((entrypoint: any) => (
-        <EntrypointBox
-          key={entrypoint.doi}
-          entrypoint={entrypoint}
-          garden={garden}
-        />
+        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={false} />
       ))}
     </div>
   );
@@ -247,12 +187,8 @@ function DatasetsTab({ garden }: { garden: Garden }) {
   if (datasets.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">
-          No Datasets Found
-        </h2>
-        <p className="mt-2 text-gray-600">
-          There are no datasets linked to this resource.
-        </p>
+        <h2 className="text-xl font-semibold text-gray-800">No Datasets Found</h2>
+        <p className="mt-2 text-gray-600">There are no datasets linked to this resource.</p>
       </div>
     );
   }
@@ -261,14 +197,9 @@ function DatasetsTab({ garden }: { garden: Garden }) {
     <div>
       <div className="mb-16 grid grid-cols-1 gap-2 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-4 ">
         {datasets?.map((dataset: any) => (
-          <Card
-            key={dataset.doi}
-            className="rounded-lg border border-gray-200 shadow-md"
-          >
+          <Card key={dataset.doi} className="rounded-lg border border-gray-200 shadow-md">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold">
-                {dataset.title}
-              </CardTitle>
+              <CardTitle className="text-xl font-semibold">{dataset.title}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -297,13 +228,10 @@ function DatasetsTab({ garden }: { garden: Garden }) {
           </Card>
         ))}
       </div>
-      {datasets.some((dataset) =>
-        dataset.url.toString().includes("foundry"),
-      ) && (
+      {datasets.some((dataset) => dataset.url.toString().includes("foundry")) && (
         <div>
           <p className="mb-8 text-center text-lg">
-            One or more of these datasets uses Foundry, here is how you can view
-            it:
+            One or more of these datasets uses Foundry, here is how you can view it:
           </p>
           <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
             <code className="leading-loose">

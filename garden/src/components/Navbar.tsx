@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { useGlobusAuth } from "./auth/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User, Menu, X } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
@@ -11,12 +12,10 @@ const Navbar = () => {
   const user = auth.authorization?.user;
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
   const dropdownRef: RefObject<HTMLDivElement> = useRef(null);
+  const queryClient = useQueryClient();
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setOpenMenuDropdown(false);
     }
   };
@@ -31,6 +30,7 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+
 
   /*
   useEffect(() => {
@@ -48,6 +48,7 @@ const Navbar = () => {
     auth.authorization?.revoke();
     navigate("/");
     toast.success("Logged out successfully!");
+    queryClient.removeQueries();
   }
 
   function handleLogin() {
