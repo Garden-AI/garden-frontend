@@ -50,7 +50,7 @@ const UserProfilePage = () => {
   }
 
   return (
-    <div className="flex h-full min-h-[80vh]  w-full flex-row justify-center gap-10 p-10">
+    <div className="flex h-full min-h-[80vh] w-full flex-row justify-center gap-10 p-10 mt-16">
       <UserProfileCard pfp={pfp} setPfp={setPfp} />
       <UserProfileTabs />
     </div>

@@ -4,7 +4,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 
 export default function CreateGardenPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 font-display">
+    <div className="mx-auto max-w-7xl px-8 font-display pt-4">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
