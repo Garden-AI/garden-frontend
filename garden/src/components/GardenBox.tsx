@@ -9,7 +9,7 @@ import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();
-  const [isSaved, setIsSaved] = useState(false);
+  // const [isSaved, setIsSaved] = useState(false);
   const auth = useGlobusAuth();
 
   const { data: currUserInfo } = useGetUserInfo();
@@ -24,13 +24,13 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
     navigate(`/garden/${encodeURIComponent(doi)}`);
   };
 
-  const handleSaveClick = (e: any) => {
-    e.stopPropagation();
-    setIsSaved(!isSaved);
-    // implement logic here
-    // use api hook (not yet created)
-    console.log(isSaved);
-  };
+  // const handleSaveClick = (e: any) => {
+  //   e.stopPropagation();
+  //   setIsSaved(!isSaved);
+  //   // implement logic here
+  //   // use api hook (not yet created)
+  //   console.log(isSaved);
+  // };
 
   const handleEditGardenClick = (e: any) => {
     e.stopPropagation();
@@ -86,7 +86,7 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
               </svg>
             )}
 
-            {auth.isAuthenticated && (
+            {/* {auth.isAuthenticated && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -104,7 +104,7 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
               >
                 <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
               </svg>
-            )}
+            )} */}
           </div>
         </CardFooter>
       </div>

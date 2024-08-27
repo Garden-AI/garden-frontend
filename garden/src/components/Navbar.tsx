@@ -61,8 +61,7 @@ const Navbar = () => {
   }
 
   let Links = [
-    { name: 'Documentation', link: "https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/" },
-    { name: 'Examples', link: "https://github.com/Garden-AI/matminer-example" },
+    { name: 'Documentation', link: "https://garden-ai.readthedocs.io/en/latest/" },
   ]
 
   let [isOpen, setIsOpen] = useState(false);

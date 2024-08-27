@@ -158,29 +158,25 @@ const HomePage = () => {
           </p>
           <div className="flex justify-center space-x-4">
             <Link
-              to="/garden/create"
-            >
-              <button className="px-8 py-3 text-lg font-semibold text-white rounded-full bg-green transition-transform hover:scale-105">Start Your Garden</button>
-            </Link>
-            <Link
               to="/search"
             >
-              <button className="px-8 py-3 text-lg font-semibold text-green rounded-full border-2 border-green bg-white transition-transform hover:scale-105">Explore Models</button>
+              <button className="px-8 py-3 text-lg font-semibold text-white rounded-full bg-green transition-transform hover:scale-105">Explore Models</button>
+            </Link>
+            <Link
+              to="/garden/create"
+            >
+              <button className="px-8 py-3 text-lg font-semibold text-green rounded-full border-2 border-green bg-white transition-transform hover:scale-105">Start Your Garden</button>
             </Link>
           </div>
         </div>
       </div>
-
       <div className="items-center bg-gray-700 px-4 py-4">
         <div className="mx-auto text-center sm:px-8 md:max-w-screen-md md:px-20 lg:max-w-screen-xl lg:px-12">
-          <span className="font-semibold uppercase text-gray-300">
-            connected to
-          </span>
-          <div className="mt-2 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
+          <div className="mt-1 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
             <a
               href="https://www.uchicago.edu/en"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-200"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -197,7 +193,7 @@ const HomePage = () => {
             <a
               href="https://www.nsf.gov/"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +210,7 @@ const HomePage = () => {
             <a
               href="https://www.wisc.edu/"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -230,7 +226,7 @@ const HomePage = () => {
             <a
               href="https://www.anl.gov/"
               target="_blank"
-              className="mb-5 mr-5 pb-4 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 pb-4 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -252,7 +248,7 @@ const HomePage = () => {
             <a
               href="https://www.energy.gov/"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -328,7 +324,7 @@ const HomePage = () => {
       <div className="mx-auto mt-20 max-w-5xl px-4">
         <h2 className="text-3xl font-semibold">Get Started in Minutes</h2>
         <p className="text-lg mt-4">
-          In within 15 minutes, you can publish your first garden and start growing entrypoints!
+          You can publish your first garden and start growing entrypoints within 15 minutes!
         </p>
         <div className="mx-auto max-w-6xl pt-4">
           <div className="flex flex-col items-center space-y-8 md:flex-row md:space-x-12 md:space-y-0">

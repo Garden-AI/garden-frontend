@@ -30,10 +30,6 @@ const EntrypointBox = ({
     return null;
   }
 
-  // console.log("within entrypoint box, garden: ", garden);
-
-  const stepsLength = entrypoint.steps?.length ?? 0;
-
   const canEditEntrypoint = currUserEntrypoints?.some(
     (userEntrypoint) => userEntrypoint.doi === entrypoint.doi,
   );
@@ -68,9 +64,6 @@ const EntrypointBox = ({
             )} */}
           </div>
         </div>
-        <p className="text-gray-500">
-          {stepsLength} {stepsLength === 1 ? <span>step</span> : <span>steps</span>}
-        </p>
         <div className="max-h-[120px] overflow-y-hidden">
           <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
             {entrypoint.description || "No description available"}

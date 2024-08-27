@@ -22,7 +22,7 @@ export default function CopyButton({
           "border-none bg-transparent text-gray-700 transition-colors hover:bg-transparent hover:text-gray-500",
           className,
         )}
-        {...content}
+        content={content} 
       >
         <Copy />
       </CopyIconButton>
