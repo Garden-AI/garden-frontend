@@ -158,14 +158,14 @@ const HomePage = () => {
           </p>
           <div className="flex justify-center space-x-4">
             <Link
-              to="/garden/create"
-            >
-              <button className="px-8 py-3 text-lg font-semibold text-white rounded-full bg-green transition-transform hover:scale-105">Start Your Garden</button>
-            </Link>
-            <Link
               to="/search"
             >
-              <button className="px-8 py-3 text-lg font-semibold text-green rounded-full border-2 border-green bg-white transition-transform hover:scale-105">Explore Models</button>
+              <button className="px-8 py-3 text-lg font-semibold text-white rounded-full bg-green transition-transform hover:scale-105">Explore Models</button>
+            </Link>
+            <Link
+              to="/garden/create"
+            >
+              <button className="px-8 py-3 text-lg font-semibold text-green rounded-full border-2 border-green bg-white transition-transform hover:scale-105">Start Your Garden</button>
             </Link>
           </div>
         </div>
