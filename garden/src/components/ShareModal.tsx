@@ -50,6 +50,8 @@ const socialMediaItems = [
 ];
 
 const ShareModal = ({ doi }: { doi: string }) => {
+  const doiURL = "https://doi.org/" + doi
+  console.log(doiURL)
   const [isTooltipAllowed, setIsTooltipAllowed] = useState(true);
   return (
     <Dialog onOpenChange={() => setIsTooltipAllowed(false)}>
@@ -95,17 +97,10 @@ const ShareModal = ({ doi }: { doi: string }) => {
           ))}
         </div>
         <div className="mb-4">
-          <div className="mb-2 font-semibold">Copy Link</div>
+          <div className="mb-2 font-semibold">Copy DOI Link</div>
           <div className="flex items-center justify-between">
-            <span className="text-gray-500">{window.location.href}</span>
-            <CopyButton content={window.location.href} className="ml-2" />
-          </div>
-        </div>
-        <div className="mb-4">
-          <div className="mb-2 font-semibold">Copy DOI</div>
-          <div className="flex items-center justify-between">
-            <span className="text-gray-500">{doi}</span>
-            <CopyButton content={doi} className="ml-2" />
+            <span className="text-gray-500">{doiURL}</span>
+            <CopyButton hint="Copy DOI URL" content={doiURL} className="ml-2" />
           </div>
         </div>
       </DialogContent>
