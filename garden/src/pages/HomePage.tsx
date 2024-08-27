@@ -170,7 +170,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-
       <div className="items-center bg-gray-700 px-4 py-4">
         <div className="mx-auto text-center sm:px-8 md:max-w-screen-md md:px-20 lg:max-w-screen-xl lg:px-12">
           <div className="mt-1 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
