@@ -10,6 +10,9 @@ type EntrypointPatchRequest = components["schemas"]["EntrypointPatchRequest"];
 type User = components["schemas"]["UserMetadataResponse"];
 type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 
+type Dataset = components["schemas"]["_DatasetMetadata-Output"];
+type Paper = components["schemas"]["_Paper"];
+type Repository = components["schemas"]["_Repository"];
 // type Notebook = components["schemas"]["_RegisteredNotebook"];
 
 export type {
@@ -21,4 +24,7 @@ export type {
   EntrypointPatchRequest,
   User,
   UpdateUserSchema,
+  Dataset,
+  Paper,
+  Repository,
 };

@@ -4,7 +4,6 @@ import {
   RouterProvider,
   createHashRouter,
 } from "react-router-dom";
-import { useEffect } from "react";
 
 /* Pages */
 import RootLayout from "./pages/RootLayout";
@@ -19,19 +18,14 @@ import UserProfilePage from "./pages/UserProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import MetadataEditing from "./pages/MetadataEditing";
-import useGoogleAnalytics from "./services/analytics";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import EntrypointEditing from "./pages/EntrypointEditing";
-
-import { Toaster } from "sonner";
 
 /* Components */
-import CreateGardenPage from "./components/form/CreateGarden/CreateGardenPage";
+import CreateGardenPage from "./components/form/garden/create/CreateGardenPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
 /* Lib */
-import { useGlobusAuth } from "./components/auth/useGlobusAuth";
+import EditEntrypointPage from "./components/form/entrypoint/edit/EditEntrypointPage";
 
 export default function App() {
   return (
@@ -67,7 +61,7 @@ function Root() {
         <Route path="entrypoint">
           <Route path=":doi" element={<EntrypointPage />} />
           <Route element={<PrivateRoutes />}>
-            <Route path=":doi/edit" element={<EntrypointEditing />} />
+            <Route path=":doi/edit" element={<EditEntrypointPage />} />
           </Route>
         </Route>
 

@@ -8,6 +8,7 @@ import { useUpdateGarden } from "./gardens/useUpdateGarden";
 import { useCreateEntrypoint } from "./entrypoints/useCreateEntrypoint";
 import { useGetEntrypoint } from "./entrypoints/useGetEntrypoint";
 import { useGetEntrypoints } from "./entrypoints/useGetEntrypoints";
+import { usePatchEntrypoint } from "./entrypoints/useEditEntrypoint";
 // import { useUpdateEntrypoint } from "./entrypoint/useUpdateEntrypoint";
 // import { useDeleteEntrypoint } from "./entrypoint/useDeleteEntrypoint";
 
@@ -33,6 +34,7 @@ export {
   useCreateEntrypoint,
   useGetEntrypoint,
   useGetEntrypoints,
+  usePatchEntrypoint,
   //   useUpdateEntrypoint,
   //   useDeleteEntrypoint,
   //   useCreateNotebook,

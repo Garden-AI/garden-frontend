@@ -1,6 +1,6 @@
 import { Entrypoint } from "@/api/types";
 import axios from "../axios";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const getEntrypoint = async (doi: string): Promise<Entrypoint> => {
   try {

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { UnsavedChangesDialog } from "../UnsavedChangesDialog";
+import { UnsavedChangesDialog } from "../../UnsavedChangesDialog";
 import { FormFields } from "./FormFields";
 import { GardenCreateRequest } from "@/api/types";
 
@@ -48,8 +48,6 @@ export const CreateGardenForm = () => {
         throw new Error("User not authenticated");
       }
       const { doi } = await mintDOI();
-      console.log(values);
-
       const requestData: GardenCreateRequest = transformFormToRequest(
         values,
         doi,
