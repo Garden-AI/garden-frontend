@@ -1,9 +1,4 @@
-import {
-  Routes,
-  Route,
-  RouterProvider,
-  createHashRouter,
-} from "react-router-dom";
+import { Routes, Route, RouterProvider, createHashRouter } from "react-router-dom";
 
 /* Pages */
 import RootLayout from "./pages/RootLayout";
@@ -70,7 +65,7 @@ function Root() {
         <Route path="terms" element={<TermsPage />} />
         <Route path="auth" element={<LoadingSpinner />} />
         <Route path="login" element={<LoginPage />} />
-        <Route path="userProfilePage" element={<UserProfilePage />} />
+        <Route path="user" element={<UserProfilePage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

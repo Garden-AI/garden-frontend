@@ -1,13 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
-import LoadingSpinner from "./LoadingSpinner";
+import { LoadingOverlay } from "./LoadingOverlay";
 
 const PrivateRoutes = () => {
   const { isLoading, authorization } = useGlobusAuth();
   const location = useLocation();
 
   if (isLoading || authorization === undefined) {
-    return <LoadingSpinner />;
+    return <LoadingOverlay />;
   }
 
   if (!authorization.authenticated) {

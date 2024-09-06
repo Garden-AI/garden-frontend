@@ -19,7 +19,6 @@ import GardenBox from "@/components/GardenBox";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   SquareStack,
-  LifeBuoy,
   LockKeyholeOpen,
   ShieldCheck,
   PersonStanding,
@@ -30,7 +29,6 @@ import {
   Search,
 } from "lucide-react";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
-import { transformSearchResultToGardens } from "@/api/search/useSearchGardens";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },
@@ -93,8 +91,7 @@ const HomePage = () => {
       id: 100,
     },
     {
-      title:
-        "Models for processing position-averaged convergent beam electron diffraction images",
+      title: "Models for processing position-averaged convergent beam electron diffraction images",
       description:
         "This garden just hosts the PACBED-CNN model for now, and may host other position-averaged convergent beam electron diffraction models in the future.",
       doi: "10.26311/hqgg-7m42",
@@ -108,8 +105,7 @@ const HomePage = () => {
     },
     {
       title: "Semiconductor property prediction models",
-      description:
-        "A collection of models for predicting properties of semiconductors",
+      description: "A collection of models for predicting properties of semiconductors",
       doi: "10.26311/bg7s-v305",
       publisher: "Will Engler",
       language: "English",
@@ -121,8 +117,7 @@ const HomePage = () => {
     },
     {
       title: "Materials Screening Performance Tests",
-      description:
-        "Figuring out how to run millions of materials property predictions quickly",
+      description: "Figuring out how to run millions of materials property predictions quickly",
       doi: "10.23677/m4ek-bd27",
       publisher: "Will Engler",
       language: "English",
@@ -149,131 +144,36 @@ const HomePage = () => {
 
   return (
     <div className="font-display">
-      <div className="mx-auto mt-24 max-w-5xl px-4 sm:flex sm:place-items-end">
-        <div className="flex items-baseline sm:w-7/12">
-          <h1 className="text-6xl font-semibold">Garden</h1>
-          <div className="ml-2 hidden font-extrabold text-green sm:block sm:text-lg md:text-lg">
-            <Link to="/search">
-              <span className="group items-center sm:inline-flex">
-                <p>Search for gardens</p>
-                <MoveRight className="mx-1 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-              </span>
-            </Link>
-          </div>
-        </div>
-        <div className="ml-2 font-extrabold text-green sm:hidden">
-          <Link to="/search">
-            <span className="group inline-flex items-center">
-              <p>Search for gardens</p>
-              <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-            </span>
-          </Link>
-        </div>
-        <div className="mt-8 sm:w-5/12">
-          <h2 className="text-lg">We make it simple to research using ML.</h2>
-          <h1 className="text-3xl font-semibold lg:text-4xl">
-            Build a garden where your model can{" "}
-            <span className="text-brightgreen">thrive.</span>
+      <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 py-36">
+        <div className="mx-auto max-w-4xl px-4 text-center">
+          <h1 className="mb-4 text-4xl font-bold text-gray-900 sm:text-6xl">
+            Publish, Share, and Run ML Models with <span className="text-brightgreen">Garden</span>
           </h1>
-        </div>
-      </div>
-
-      <div className="w-full bg-hero bg-cover bg-center">
-        <div className="flex h-full w-full py-52"></div>
-      </div>
-      <div className="mx-auto max-w-5xl">
-        <div className="mt-12 px-4 ">
-          <div className="flex items-baseline">
-            <h1 className="text-2xl font-semibold">Start a garden</h1>
-            <p className="ml-4 font-extrabold text-green">
-              <Link to="/garden/create">
-                <span className="group inline-flex items-center">
-                  The Plot is yours
-                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-                </span>
-              </Link>
-            </p>
-          </div>
-          <h2 className="mt-2 text-base">
-            Gardens are collections of ML models that are linked with data and
-            computing resources to advance the work of research communities.
-            These gardens make it easy to publish models which can be integrated
-            into academia and industry alike. Researchers can provide broad
-            access to their models, without having to worry about the
-            difficulties surrounding discovery, access, and deployment.
-          </h2>
-        </div>
-
-        {/* <Separator /> */}
-        <div className="mx-auto grid  grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
-          {icons.map((icon, index) => (
-            <div
-              key={index}
-              className="flex h-40 flex-col items-center text-center "
-            >
-              <div className="w-full">
-                <icon.icon size={110} className="mx-auto w-full text-primary" />
-              </div>
-              <p className="text-center md:text-xl">{icon.text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <Separator />
-
-      <div className="mx-auto mt-12 max-w-5xl px-4">
-        <h1 className="text-2xl font-semibold">New to garden?</h1>
-        <h2 className="text-base">
-          Publish your first garden within 15 minutes. Read our{" "}
-          <a
-            className="text-green"
-            href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
-            target="_blank"
-          >
-            user guide
-          </a>{" "}
-          to get started.
-        </h2>
-
-        <div className="items-center sm:mx-8 sm:mt-8 sm:flex">
-          <div className="order-1 text-sm sm:w-6/12">
-            <SyntaxHighlighter>
-              {
-                "from garden_ai import GardenClient\ngarden = garden_client.get_garden()(\"10.26311/ep98-br79\")\ndef test_the_model():\n\texample_input = ['AgI', 'CdTe', 'BN']\n\tresult = garden.predict_piezoelectric(example_input)\n\treturn result"
-              }
-            </SyntaxHighlighter>
-          </div>
-          <div className="order-2 sm:w-7/12 sm:p-4">
-            <h1 className="text-xl font-semibold">
-              Getting started is easy. We do the hard work so you don’t have to.
-            </h1>
-            <h2 className="mt-2 text-base">
-              We automate the process from start to finish so you can spend more
-              time browsing gardens and less time fussing with setting up
-              models.
-            </h2>
-            <Link to="/login">
-              <p className="font-extrabold text-green sm:mt-2">
-                <span className="group inline-flex items-center">
-                  Create an account
-                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-                </span>
-              </p>
+          <p className="mx-auto mb-8 mt-8 max-w-2xl text-xl text-gray-600">
+            Empower your research with easy-to-use machine learning models for science applications
+          </p>
+          <div className="flex justify-center space-x-4">
+            <Link to="/search">
+              <button className="rounded-full bg-green px-8 py-3 text-lg font-semibold text-white transition-transform hover:scale-105">
+                Explore Models
+              </button>
+            </Link>
+            <Link to="/garden/create">
+              <button className="rounded-full border-2 border-green bg-white px-8 py-3 text-lg font-semibold text-green transition-transform hover:scale-105">
+                Start Your Garden
+              </button>
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="mt-4 items-center bg-gray-700 px-4 py-4">
+      <div className="items-center bg-gray-700 px-2 py-2">
         <div className="mx-auto text-center sm:px-8 md:max-w-screen-md md:px-20 lg:max-w-screen-xl lg:px-12">
-          <span className="font-semibold uppercase text-gray-200">
-            connected to
-          </span>
-          <div className="mt-8 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
+          <div className="mt-1 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
             <a
               href="https://www.uchicago.edu/en"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-200"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -290,7 +190,7 @@ const HomePage = () => {
             <a
               href="https://www.nsf.gov/"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -307,7 +207,7 @@ const HomePage = () => {
             <a
               href="https://www.wisc.edu/"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -323,7 +223,7 @@ const HomePage = () => {
             <a
               href="https://www.anl.gov/"
               target="_blank"
-              className="mb-5 mr-5 pb-4 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 pb-4 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +245,7 @@ const HomePage = () => {
             <a
               href="https://www.energy.gov/"
               target="_blank"
-              className="mb-5 mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -376,130 +276,212 @@ const HomePage = () => {
                 <path d="M501.9 118.2c-1.1-1.1-2.2-2.2-3.4-3.3 4.4-1.6 8-4 10.8-7.2 4.1-4.9 6.2-11.1 6.2-18.2s-1.4-11-4.1-15.4c-2.8-4.6-6.5-7.7-11.2-9.6-4.5-1.8-11.1-2.7-20.3-2.7h-38.1v93.1h23.5v-36c4 0 6 .5 6.9.8 1 .3 2.2 1.2 3.6 2.7 1 1 3.2 4 8.3 12.1l12.9 20.3h27.8l-13.2-22c-4.5-7.8-7.4-12-9.8-14.6Zm-11.5-23c-.7 1-1.7 1.8-2.8 2.2-.8.3-3.7.9-13.6.9h-8.6V83.4h9.4c3.8 0 7.7 0 11.5.3 1.5.2 2.9 1 3.9 2.1 1 1.3 1.4 2.8 1.4 4.8s-.4 3.4-1.1 4.6ZM386.2 117.1h41V95.5h-41v-12h44V61.8h-67.4v93.1h69v-21.5h-45.6v-16.3zM565 123.4h18.9v5.6c-4.7 3.4-10.1 5.3-15.9 5.5-5.9 0-10.6-2.1-14.2-6.4-3.8-4.5-5.7-11.4-5.7-20.7s1.9-14.8 5.6-19c3.5-4 8.2-6 14.4-6h.2c3.5-.2 6.9.9 9.7 2.9 2.6 2 4.4 4.9 5.2 8l.8 3.3 22.9-4.6-.6-3.4c-1.4-8.1-5.8-15.5-12.3-20.7-6.4-4.9-15-7.4-25.7-7.4-16.1-.9-31.1 7.8-38.4 22.1-3.8 7.4-5.8 16-5.8 25.5s1.7 16.8 5.1 24.2c3.3 7.5 8.7 13.6 15.8 17.8 7 4 14.9 6.1 22.9 6.1h1.1c7.3 0 14.3-1.4 21.3-4.2 6-2.2 11.4-5.5 16.1-9.9l1.1-1v-39.2H565v21.6ZM327 109.9l-28-48.1h-21.5v93h22.3v-46.9l27.5 47h22v-93H327v48zM669 61.9l-16.7 30.3L635 61.9h-27.6l32.7 54.2v38.7h23.5v-38.5l32.7-54.4H669zM221.9 117.1h41V95.5h-41v-12h44V61.8h-67.4v93.1h69v-21.5h-45.6v-16.3zM467.3 44V24.2l5.2 19.8h5.3l5.1-19.7v19.6h5v-25h-8l-4.8 17-4.9-17h-8V44h5.1zM412.4 33.5h1.1c1.2 0 2.1 0 2.7.3.6.2 1.1.5 1.7 1l2.8 3.7 3.9 5.5h6.5l-3.3-5-3-4c-.8-.8-1.8-1.5-3-2.1 2.3-.3 4.1-1.1 5.3-2.3s1.8-2.8 1.8-4.6-.4-2.8-1.2-4c-.8-1.2-1.8-2-3.1-2.4-1.3-.5-3.4-.7-6.2-.7H407V44h5.4V33.5Zm0-10.3h8.2c.8.2 1.5.5 2 1s.7 1.2.7 2 0 1.6-.5 2-.8.8-1.5 1c-.7.2-2.3.3-4.9.3h-4v-6.3ZM559.4 44h5.4V23.2h8V19h-21.3v4h7.9v21zM629.2 33.3h11.2v-4.2h-11.2v-6h13v-4.2h-18.4V44h5.4V33.3zM516.5 39.7h-15v-6.8h13.4v-4.2h-13.4v-5.6H516v-4.2h-20V44h20.5v-4.3zM528.7 27.6 539.6 44h5.3V19h-5v16.7l-11-16.8h-5.2V44h5V27.6zM603.9 44.4c3.5.2 6.9-1 9.5-3.4 2.3-2.3 3.5-5.5 3.5-9.5s-1.2-7.3-3.6-9.6c-2.4-2.3-5.5-3.4-9.4-3.4s-4.2.3-5.8 1c-2.6 1.1-4.8 3.1-6 5.7-.8 1.7-1.2 3.9-1.2 6.4-.2 3.5 1.1 6.9 3.5 9.4 2.4 2.3 5.5 3.4 9.5 3.4Zm-7.4-13c0-2.8.6-4.9 2-6.4s3.1-2.2 5.4-2.2 4 .7 5.4 2.1c1.3 1.5 2 3.5 2 6.5s-.8 5-2.1 6.5-3.2 2.2-5.3 2.2-3.9-.7-5.3-2.2-2.2-3.6-2.2-6.5ZM200.5 41.4c.9 1 2 1.7 3.2 2.2 1.3.6 3.2.8 5.8.8s3.8-.2 5.1-.8c1.4-.4 2.4-1.1 3.2-2 .8-.8 1.3-1.8 1.6-3.1.3-1.3.5-3.4.5-6.4V18.9h-5.5v13.9c0 2 0 3.4-.2 4.3-.2.8-.6 1.5-1.4 2.1-.8.6-1.9 1-3.5 1s-2.6-.4-3.6-1a4.2 4.2 0 0 1-1.6-2.5c-.2-.6-.2-2-.2-4.2V18.9h-5.4v13.4c0 2.8.2 4.9.5 6.4.3 1 .8 1.9 1.5 2.7ZM369.7 32.9c1-.6 1.7-1.3 2.3-2.4.6-1.1.9-2.4.9-3.9.2-3.4-2.1-6.5-5.4-7.3-1-.3-3.1-.4-6.4-.4h-8.7V44h5.4v-9.5h3.5c1.9 0 3.7-.1 5.6-.4 1-.2 1.9-.6 2.8-1.2Zm-4.6-3.1c-.8.4-2.2.4-4.3.4h-3v-7.1h2.6c2 0 3.3.1 4 .3.8 0 1.5.4 2 1 .7.6 1 1.4 1 2.2s-.3 1.5-.7 2c-.4.6-.8.8-1.6 1.2ZM228.2 39h5v5h-5zM268.9 39h5v5h-5zM382.5 38.3h10.7l2.3 5.7h6c0-.1-10.7-25.1-10.7-25.1H385L374.5 44h5.8l2.2-5.7Zm5.3-13.6 3.6 9.3H384l3.8-9.3ZM442.7 44h5.4V23.2h7.9V19h-21.3v4h8v21zM345.2 39.7h-15v-6.8h13.4v-4.2h-13.4v-5.6h14.4v-4.2h-19.8V44h20.4v-4.3zM310 43.4a7.3 7.3 0 0 0 3.7-2c1.3-1.2 2.4-2.7 3-4.4.5-1.5.8-3.3.8-5.3s-.3-4.4-.9-6c-.6-1.6-1.4-3-2.6-4a8.95 8.95 0 0 0-4-2.3c-1.2-.3-2.9-.5-5-.5h-10V44h10.2c2 0 3.6-.2 4.8-.6Zm-9.6-3.7V23.1h2.5c2.2 0 3.7 0 4.4.3 1 .2 1.9.7 2.5 1.2.6.5 1.2 1.4 1.6 2.4.3 1 .5 2.4.5 4.4s-.2 3.5-.5 4.6c-.4 1.1-.9 1.9-1.4 2.5-.6.4-1.4.8-2.2 1-.7.2-1.8.2-3.4.2h-4ZM255 39.1c-1 .7-2.3 1-4 1s-2.9-.3-3.9-1.1c-1-.7-1.7-2-2-3.7l-5.2.5c.2 2.5 1.3 4.8 3.2 6.4 1.8 1.5 4.4 2.3 7.8 2.3s4.3-.4 5.9-1a7.24 7.24 0 0 0 4.8-6.8c0-1.6-.3-3-1-4-.7-1.1-1.8-2-3-2.6-1.2-.6-3-1.2-5.7-1.8s-4.4-1.1-5-1.6c-.6-.5-.8-1-.8-1.6s.2-1.1.8-1.5c.9-.6 2.1-.9 3.7-.9s2.7.2 3.4.8a5 5 0 0 1 1.5 2.8l5.4-.2c0-2.1-1-4.2-2.7-5.5-1.7-1.4-4.2-2.2-7.6-2.2s-3.8.4-5.2 1c-1.4.5-2.6 1.4-3.4 2.5-.7 1.1-1.1 2.3-1.1 3.6 0 2 .9 3.8 2.5 5 1.1 1 3.1 1.8 6 2.5l4.3 1.1c1 .3 1.6.7 2 1.1.4.4.5.9.5 1.5 0 .9-.2 1.7-1.2 2.4Z" />
               </svg>
             </a>
+
+            <a
+              href="https://www.mit.edu/"
+              target="_blank"
+              className="mr-5 w-24 pb-4 pt-3 hover:text-gray-200 dark:hover:text-gray-400"
+            >
+              <svg
+                version="1.1"
+                id="Layer_1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="0 0 1680 1040"
+                enableBackground="new 0 0 1680 1040"
+                xmlSpace="preserve"
+                className="fill-current"
+              >
+                <path
+                  d="M880,880h160V400H880V880z M1120,320h400V160h-400V320z M880,160.00003h160v160H880V160.00003z M640,880h160V160H640V880z
+            M400,720h160V160H400V720z M160,880h160V160H160V880z M1120,880h160V400h-160V880z"
+                />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-5xl">
-        <div className="sm:mt-8 sm:flex">
-          <div className="mt-12 px-4 sm:mt-8 sm:w-5/12">
-            <h1 className="text-2xl font-semibold">
-              Research using ML doesn’t have to be hard.
-            </h1>
-            <h2 className="mt-2 text-base">
-              We overcome the barriers surrounding ML, so that you can spend
-              more time researching and less time setting up code to run models.
-            </h2>
+        <div className="mt-12 px-4 ">
+          <div className="flex items-baseline">
+            <h1 className="text-3xl font-semibold">Start a garden</h1>
+            <p className="ml-4 font-extrabold text-green">
+              <Link to="/garden/create">
+                <span className="group inline-flex items-center text-lg">
+                  The Plot is yours
+                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </p>
           </div>
+          <h2 className="mt-2 text-lg">
+            Gardens are collections of ML models that are linked with data and computing resources
+            to advance the work of research communities. These gardens make it easy to publish
+            models which can be integrated into academia and industry alike. Researchers can provide
+            broad access to their models, without having to worry about the difficulties surrounding
+            discovery, access, and deployment.
+          </h2>
+        </div>
+        <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
+          {icons.map((icon, index) => (
+            <div key={index} className="flex h-40 flex-col items-center text-center ">
+              <div className="w-full">
+                <icon.icon size={110} className="mx-auto w-full text-primary" />
+              </div>
+              <p className="text-center md:text-xl">{icon.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Separator />
 
-          <div className="mt-4 sm:w-6/12">
-            <Accordion
-              type="single"
-              collapsible
-              className="mb-10 border-y"
-              defaultValue="materials"
-            >
-              <AccordionItem value="one">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <SquareStack className="text-gray-500" />
-                    <span className="font-medium text-gray-700">
-                      Reproducibility
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        There's a lot of code that goes into reproducing an ML
-                        pipeline to get the desired output. We make every garden
-                        easy to follow.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="two">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <LockKeyholeOpen className="text-gray-500" />
-                    <span className="font-medium text-gray-700">
-                      Accessibility
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        All code, data, testing is available and free without
-                        any barriers to access. You can run models using our
-                        compute resources at UChicago or any Globus Compute
-                        endpoint.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="three">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <ShieldCheck className="text-gray-500" />
-                    <span className="font-medium text-gray-700">Quality</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        We test and evaluate models on our side, so you can
-                        browse research without the time investment of doing all
-                        of that yourself.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="four">
-                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                  <div className="flex items-center gap-x-2 p-2">
-                    <PersonStanding className="text-gray-500" />
-                    <span className="font-medium text-gray-700">Community</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                  <>
-                    <div className="rounded-md border bg-white p-6">
-                      <p className="text-base text-gray-800 ">
-                        Garden is a collaborative platform that connects
-                        like-minded people. Find your ML community, collaborate,
-                        and set new benchmarks in your domain.{" "}
-                      </p>
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+      <div className="mx-auto mt-20 max-w-5xl px-4">
+        <h2 className="text-3xl font-semibold">Get Started in Minutes</h2>
+        <p className="mt-4 text-lg">
+          You can publish your first garden and start growing entrypoints within 15 minutes!
+        </p>
+        <div className="mx-auto max-w-6xl pt-4">
+          <div className="flex flex-col items-center space-y-8 md:flex-row md:space-x-12 md:space-y-0">
+            <div className="w-full text-sm md:w-1/2">
+              <SyntaxHighlighter>
+                {`from garden_ai import GardenClient
+
+garden = garden_client.get_garden("10.26311/ep98-br79")
+
+def predict_properties():
+    materials = ['AgI', 'CdTe', 'BN']
+    result = garden.predict_piezoelectric(materials)
+    return result
+
+# Run the model and get results
+predictions = predict_properties()`}
+              </SyntaxHighlighter>
+            </div>
+            <div className="w-full md:w-1/2">
+              <h3 className="mb-4 text-2xl font-semibold">Easy Integration, Powerful Results</h3>
+              <p className="mb-6 text-lg">
+                With just a few lines of code, you can access and run sophisticated ML models.
+                Garden handles the complexities, so you can focus on your research.
+              </p>
+              <a
+                href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
+                target="_blank"
+              >
+                <span className="group inline-flex items-center text-lg text-green">
+                  Read the documentation
+                  <MoveRight className="ml-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
+                </span>
+              </a>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div className="mx-auto mb-12 mt-20 max-w-5xl md:flex">
+        <div className="mt-12 px-4 md:mt-8 md:w-5/12">
+          <h1 className="text-3xl font-semibold">Research using ML doesn't have to be hard.</h1>
+          <h2 className="mt-4 text-lg">
+            We overcome the barriers surrounding ML, so that you can spend more time researching and
+            less time setting up code to run models.
+          </h2>
+        </div>
+
+        <div className="mx-auto mt-4 md:w-5/12">
+          <Accordion type="single" collapsible className="mb-10 border-y" defaultValue="materials">
+            <AccordionItem value="one">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <SquareStack className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Reproducibility</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      There's a lot of code that goes into reproducing an ML pipeline to get the
+                      desired output. We make every garden easy to follow.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="two">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <LockKeyholeOpen className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Accessibility</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      All code, data, testing is available and free without any barriers to access.
+                      You can run models using our compute resources at UChicago or any Globus
+                      Compute endpoint.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="three">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <ShieldCheck className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Quality</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      We test and evaluate models on our side, so you can browse research without
+                      the time investment of doing all of that yourself.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="four">
+              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                <div className="flex items-center gap-x-2 p-2">
+                  <PersonStanding className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Community</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                <>
+                  <div className="rounded-md border bg-white p-6">
+                    <p className="text-base text-gray-800 ">
+                      Garden is a collaborative platform that connects like-minded people. Find your
+                      ML community, collaborate, and set new benchmarks in your domain.{" "}
+                    </p>
+                  </div>
+                </>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
 
       <div className="bg-green pt-12">
         <div className="mx-auto max-w-5xl px-4">
           <div className="text-white">
-            <h1 className="text-left text-2xl font-semibold">
+            <h1 className="text-left text-3xl font-semibold">
               <div className="flex space-x-4">
                 <Rocket size={35} className="my-auto" />
                 <h3>Explore Featured Gardens </h3>
               </div>
             </h1>
-            <p className="mt-2 text-base">
-              Take a look at some popular gardens that have been getting a lot
-              of attention! You can view the models, datasets, papers, and
-              anything else associated with the garden. Additionally, you can
-              run the models to optimize your own workflow, gain inspiration, or
-              for any other reason you see fit.
+            <p className="mt-4 text-lg">
+              Take a look at some popular gardens that have been getting a lot of attention! You can
+              view the models, datasets, papers, and anything else associated with the garden.
+              Additionally, you can run the models to optimize your own workflow, gain inspiration,
+              or for any other reason you see fit.
             </p>
           </div>
         </div>

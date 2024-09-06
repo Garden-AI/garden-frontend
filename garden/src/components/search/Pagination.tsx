@@ -2,35 +2,24 @@ import { Button } from "../ui/button";
 import { useSearchParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchResults } from "@/hooks/useSearchResults";
-
-interface SearchResultsPaginationProps {
-  totalPages: number;
-  hasNextPage: boolean;
-}
+import { GlobusSearchResult, useSearchResults } from "@/hooks/useSearchResults";
 
 export function SearchResultsPagination({
-  hasNextPage,
-  totalPages,
-}: SearchResultsPaginationProps) {
-  const { searchResult } = useSearchResults();
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    setPage(Number(params.get("page") || 1));
-  }, [searchParams]);
+  searchResult,
+  page,
+  setPage,
+}: {
+  searchResult: GlobusSearchResult;
+  page: number;
+  setPage: (page: number) => void;
+}) {
+  const totalPages = searchResult?.totalPages;
+  const hasNextPage = searchResult?.hasNextPage;
 
   if (!searchResult || searchResult.totalPages === 0) return null;
 
   const goToPage = (pageNumber: number) => {
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-      params.set("page", String(pageNumber));
-      return params.toString();
-    });
+    setPage(pageNumber);
   };
 
   return (

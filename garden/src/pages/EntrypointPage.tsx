@@ -6,7 +6,6 @@ import NotFoundPage from "@/pages/NotFoundPage";
 
 import EntrypointTabs from "@/components/EntrypointTabs";
 import AssociatedMaterials from "@/components/AssociatedMaterials";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { Separator } from "@/components/ui/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import ShareModal from "@/components/ShareModal";
@@ -15,22 +14,22 @@ import CopyButton from "@/components/CopyButton";
 
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import { Entrypoint, Garden } from "@/api/types";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
   const { data: entrypoint, isError, isLoading } = useGetEntrypoint(doi);
 
-  const { data: garden, isLoading: gardenIsLoading } =
-    useSearchGardenByDOI(doi);
+  const { data: garden, isLoading: gardenIsLoading } = useSearchGardenByDOI(doi);
 
-  if (isLoading || gardenIsLoading) return <LoadingSpinner />;
+  if (isLoading || gardenIsLoading) return <LoadingOverlay />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 
   if (!garden) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
+    <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
@@ -51,13 +50,7 @@ const EntrypointPage = () => {
   );
 };
 
-function EntrypointHeader({
-  entrypoint,
-  doi,
-}: {
-  entrypoint: Entrypoint;
-  doi: string;
-}) {
+function EntrypointHeader({ entrypoint, doi }: { entrypoint: Entrypoint; doi: string }) {
   return (
     <div className="mb-4 ">
       <div className="flex flex-row justify-between">
@@ -76,13 +69,7 @@ function EntrypointHeader({
   );
 }
 
-function EntrypointBody({
-  garden,
-  entrypoint,
-}: {
-  garden: Garden;
-  entrypoint: Entrypoint;
-}) {
+function EntrypointBody({ garden, entrypoint }: { garden: Garden; entrypoint: Entrypoint }) {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">

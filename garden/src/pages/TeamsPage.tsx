@@ -174,6 +174,40 @@ const TeamsPage = () => {
 
   const students = [
     {
+      name: "Max Tuecke",
+      major: "Computer Science @ University of Illinois Urbana-Champaign",
+      linkedin_link: "",
+      github_link: "",
+    },
+    {
+      name: "Phillip Kim",
+      major:
+        "Computer Science, Communication Design @ Washington University in St. Louis",
+      linkedin_link: "https://www.linkedin.com/in/phillip-kim-8601b6188/",
+      github_link: "",
+    },
+    {
+      name: "Jamie Shin",
+      major: "Computer Science + HCI @ Washington University in St. Louis",
+      linkedin_link: "https://www.linkedin.com/in/jamie-sh/",
+      github_link: "",
+    },
+    {
+      name: "Shane Jung",
+      major: "M.S. in Data Science @ DePaul University",
+      linkedin_link: "https://linkedin.com/in/shane-jung",
+      github_link: "",
+    },
+    {
+      name: "Hayden Holbrook",
+      major: "Computer Science @ University of North Carolina Asheville",
+      linkedin_link: "http://www.linkedin.com/in/hholb",
+      github_link: "https://github.com/hholb",
+    },
+  ];
+
+  const alums = [
+    {
       name: "Isaac Darling",
       major: "Computer Science @ University of Chicago",
       linkedin_link: "https://www.linkedin.com/in/idarling/",
@@ -181,8 +215,7 @@ const TeamsPage = () => {
     },
     {
       name: "Jennifer Jin",
-      major:
-        "Computer Science + Human-Computer Interaction @ Washington University in St. Louis",
+      major: "Computer Science + HCI @ Washington University in St. Louis",
       linkedin_link: "https://www.linkedin.com/in/jen-jin/",
       github_link: "",
     },
@@ -190,19 +223,6 @@ const TeamsPage = () => {
       name: "Chase Jenkins",
       major: "Computer Science @ University of North Carolina at Asheville",
       linkedin_link: "https://www.linkedin.com/in/chase-jenkins-90018a26a/",
-      github_link: "",
-    },
-    {
-      name: "Max Tuecke",
-      major: "Computer Science @ University of Illinois Urbana-Champaign",
-      linkedin_link: "",
-      github_link: "",
-    },
-    {
-      name: "Philip Kim",
-      major:
-        "Computer Science, Communication Design + Human Computer Interaction @ Washington University in St. Louis",
-      linkedin_link: "https://www.linkedin.com/in/phillip-kim-8601b6188/",
       github_link: "",
     },
     {
@@ -221,26 +241,50 @@ const TeamsPage = () => {
   ];
 
   return (
-    <div className="mx-10 font-display">
-      <div className="flex justify-center">
-        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
-          Our team
-        </h1>
+    <div className="font-display">
+      <div className="bg-darkgreen py-20 text-white ">
+        <div className="px-4">
+          <h1 className="font-serifDisplay mx-auto text-center text-5xl">
+            Meet the Garden Team
+          </h1>
+          <p className="mx-auto mt-20 max-w-lg text-center">
+            The people who build garden are driven by the idea that research
+            with AI/ML should be simple and accessible.
+          </p>
+        </div>
       </div>
-      <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {people.map((person) => (
-          <TeamMember key={person.name} member={person} />
-        ))}
+      <div className="mx-10 mt-12 text-gray-800">
+        <h2 className="text-3xl underline decoration-green underline-offset-4">
+          The Team
+        </h2>
       </div>
-      <div className="flex justify-center">
-        <h1 className="pt-8 text-5xl underline decoration-green underline-offset-4">
-          Current Students
-        </h1>
-      </div>
-      <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {students.map((student) => (
-          <StudentMember key={student.name} member={student} />
-        ))}
+      <div className="mx-10 mt-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {people.map((person) => (
+            <TeamMember key={person.name} member={person} />
+          ))}
+        </div>
+        <div className="mt-12 text-gray-800">
+          <h1 className="text-3xl underline decoration-green underline-offset-4">
+            Current Students
+          </h1>
+        </div>
+        <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {students.map((student) => (
+            <StudentMember key={student.name} member={student} />
+          ))}
+        </div>
+        <div className="mt-12 text-gray-800">
+          <h1 className="text-3xl underline decoration-green underline-offset-4">
+            Alumni
+          </h1>
+
+          <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {alums.map((student) => (
+              <StudentMember key={student.name} member={student} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

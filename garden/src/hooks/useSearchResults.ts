@@ -1,5 +1,4 @@
-// hooks/useSearchResults.ts
-import { useState, useEffect, useMemo } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSearchGardens } from "@/api";
 import {
@@ -8,7 +7,8 @@ import {
 } from "@/api/search/useSearchGardens";
 import { Garden } from "@/api/types";
 
-type SortOrder = "asc" | "desc" | "relevance";
+type SortOrder = "asc" | "desc" | "relevance" | null;
+const filterKeys = ["tags", "authors", "year"];
 
 interface GlobusSearchResult {
   total: number;
@@ -21,28 +21,41 @@ interface GlobusSearchResult {
 interface SearchResultsState {
   searchResult: GlobusSearchResult;
   isLoading: boolean;
-  isPending: boolean;
   isFetching: boolean;
   isError: boolean;
   sortOrder: SortOrder;
+  verboseSearchResults: boolean;
+  setVerboseSearchResults: (value: boolean) => void;
   setSortOrder: (order: SortOrder) => void;
   resultsPerPage: string;
   setResultsPerPage: (value: string) => void;
-  verboseSearchResults: boolean;
-  setVerboseSearchResults: (value: boolean) => void;
+  selectedFilters: Record<string, string[]>;
+  setSelectedFilters: (filters: Record<string, string[]>) => void;
+  query: string;
+  setQuery: (query: string) => void;
+  page: number;
+  setPage: (page: number) => void;
 }
 
 export const useSearchResults = (): SearchResultsState => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [verboseSearchResults, setVerboseSearchResults] = useState(false);
 
-  const [verboseSearchResults, setVerboseSearchResults] =
-    useState<boolean>(false);
-  const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (searchParams.get("sort") as SortOrder) || "relevance",
-  );
-  const [resultsPerPage, setResultsPerPage] = useState<string>(
-    searchParams.get("size") || "10",
-  );
+  const query = searchParams.get("q") || "";
+  const page = Number(searchParams.get("page") || "1");
+  const sortOrder = searchParams.get("sort") as SortOrder;
+  const resultsPerPage = searchParams.get("size") || "10";
+
+  const selectedFilters = useMemo(() => {
+    const filters: Record<string, string[]> = {};
+    filterKeys.forEach((key) => {
+      const value = searchParams.get(key);
+      if (value) {
+        filters[key] = value.split(",");
+      }
+    });
+    return filters;
+  }, [searchParams]);
 
   const searchRequest: Globus.Search.GSearchRequest = useMemo(
     () => transformSearchParamsToGSearchRequest(searchParams),
@@ -51,7 +64,6 @@ export const useSearchResults = (): SearchResultsState => {
 
   const {
     data: searchResult,
-    isPending,
     isLoading,
     isFetching,
     isError,
@@ -62,20 +74,55 @@ export const useSearchResults = (): SearchResultsState => {
     [searchResult],
   );
 
-  useEffect(() => {
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-      params.set("sort", sortOrder);
-      params.set("size", resultsPerPage);
-      params.delete("page");
-      return params;
-    });
-  }, [sortOrder, resultsPerPage]);
-
   const totalPages: number = useMemo(
-    () =>
-      Math.ceil((searchResult?.total || 0) / (Number(resultsPerPage) || 10)),
+    () => Math.ceil((searchResult?.total || 0) / Number(resultsPerPage)),
     [searchResult?.total, resultsPerPage],
+  );
+
+  const updateSearchParams = useCallback(
+    (updates: Partial<Record<string, string | number | null>>) => {
+      const newParams = new URLSearchParams(searchParams);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null) {
+          newParams.delete(key);
+        } else {
+          newParams.set(key, String(value));
+        }
+      });
+      setSearchParams(newParams);
+    },
+    [searchParams, setSearchParams],
+  );
+
+  const setQuery = useCallback(
+    (newQuery: string) => updateSearchParams({ q: newQuery, page: 1 }),
+    [updateSearchParams],
+  );
+
+  const setPage = useCallback(
+    (newPage: number) => updateSearchParams({ page: newPage }),
+    [updateSearchParams],
+  );
+
+  const setSortOrder = useCallback(
+    (newOrder: SortOrder) => updateSearchParams({ sort: newOrder }),
+    [updateSearchParams],
+  );
+
+  const setResultsPerPage = useCallback(
+    (newSize: string) => updateSearchParams({ size: newSize, page: 1 }),
+    [updateSearchParams],
+  );
+
+  const setSelectedFilters = useCallback(
+    (newFilters: Record<string, string[]>) => {
+      const updates: Record<string, string | null> = {};
+      filterKeys.forEach((key) => {
+        updates[key] = newFilters[key]?.join(",") || null;
+      });
+      updateSearchParams({ ...updates, page: 1 });
+    },
+    [updateSearchParams],
   );
 
   return {
@@ -87,15 +134,20 @@ export const useSearchResults = (): SearchResultsState => {
       facetResults: searchResult?.facet_results,
     },
     isLoading,
-    isPending,
     isFetching,
     isError,
     sortOrder,
     setSortOrder,
     resultsPerPage,
     setResultsPerPage,
+    selectedFilters,
+    setSelectedFilters,
     verboseSearchResults,
     setVerboseSearchResults,
+    query,
+    setQuery,
+    page,
+    setPage,
   };
 };
 

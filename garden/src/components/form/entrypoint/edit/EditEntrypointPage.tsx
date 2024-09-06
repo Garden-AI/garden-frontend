@@ -4,7 +4,7 @@ import { useGetEntrypoint, useSearchGardenByDOI } from "@/api";
 import NotFoundPage from "@/pages/NotFoundPage";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useGetUserInfo } from "@/api/getUserInfo";
+import { useGetUserInfo } from "@/api";
 
 export default function EditEntrypointPage() {
   const { doi } = useParams<{ doi: string }>();
@@ -13,8 +13,7 @@ export default function EditEntrypointPage() {
     return <NotFoundPage />;
   }
 
-  const { data: entrypoint, isLoading: entrypointLoading } =
-    useGetEntrypoint(doi);
+  const { data: entrypoint, isLoading: entrypointLoading } = useGetEntrypoint(doi);
   const { data: garden, isLoading: gardenLoading } = useSearchGardenByDOI(doi);
   const { data: user, isLoading: userLoading } = useGetUserInfo();
 
@@ -32,7 +31,7 @@ export default function EditEntrypointPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 font-display">
+    <div className="mx-auto max-w-7xl px-8 pb-8 pt-16 font-display">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
