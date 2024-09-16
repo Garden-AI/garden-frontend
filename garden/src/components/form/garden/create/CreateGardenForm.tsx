@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { UnsavedChangesDialog } from "../UnsavedChangesDialog";
+import { UnsavedChangesDialog } from "../../UnsavedChangesDialog";
 import { FormFields } from "./FormFields";
 import { Garden, GardenCreateRequest } from "@/api/types";
 
@@ -37,9 +37,7 @@ export const CreateGardenForm = () => {
   });
 
   const blocker = useBlocker(
-    () =>
-      !form?.formState.isSubmitting &&
-      Object.keys(form.formState.touchedFields).length > 0,
+    () => !form?.formState.isSubmitting && Object.keys(form.formState.touchedFields).length > 0,
   );
 
   const onSubmit = async (values: GardenCreateFormData) => {
@@ -48,14 +46,10 @@ export const CreateGardenForm = () => {
       if (!ownerId) {
         throw new Error("User not authenticated");
       }
-      
+
       const { doi } = await createDOI();
 
-      const requestData: GardenCreateRequest = transformFormToRequest(
-        values,
-        doi,
-        ownerId,
-      );
+      const requestData: GardenCreateRequest = transformFormToRequest(values, doi, ownerId);
 
       const res = await createGarden(requestData);
       const garden: Garden = res.data;

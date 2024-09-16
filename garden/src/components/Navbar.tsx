@@ -31,7 +31,6 @@ const Navbar = () => {
     };
   }, []);
 
-
   /*
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -60,49 +59,46 @@ const Navbar = () => {
     */
   }
 
-  let Links = [
-    { name: 'Documentation', link: "https://garden-ai.readthedocs.io/en/latest/" },
-  ]
+  let Links = [{ name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" }];
 
   let [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="shadow-md w-full absolute top-0 left-0 z-10">
-      <div className="py-4 px-7 justify-between items-center bg-white md:px-10 md:py-2 md:flex">
+    <div className="relative left-0 top-0 z-10 w-full shadow-md">
+      <div className="items-center justify-between bg-white px-7 py-4 md:flex md:px-10 md:py-2">
         {/* logo */}
         <Link to="/" className="py-2">
-          <div className="relative w-32 absolute inset-0">
-            <img
-              src="img/normalColorIcon_Garden.jpg"
-              alt="Garden AI Logo"
-              className=""
-            />
+          <div className="absolute relative inset-0 w-32">
+            <img src="img/normalColorIcon_Garden.jpg" alt="Garden AI Logo" className="" />
           </div>
         </Link>
 
         {/* menu */}
-        <div onClick={() => setIsOpen(!isOpen)} className="w-8 h-8 absolute right-8 top-5 cursor-pointer md:hidden">
-          {
-            isOpen ? <X /> : <Menu />
-          }
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          className="absolute right-8 top-5 h-8 w-8 cursor-pointer md:hidden"
+        >
+          {isOpen ? <X /> : <Menu />}
         </div>
 
         {/* links */}
 
         <div className={`md:flex`}>
-          <ul className={`pb-8 pt-12 absolute z-[-1] left-0 w-full bg-white pl-9 md:flex md:items-center md:pb-0 md:pt-0 md:static md:z-auto md:w-auto md:pl-0 transition-all duration-300 ease-in ${isOpen ? 'top-12' : 'top-[-490px]'}`}>
+          <ul
+            className={`absolute left-0 z-[-1] w-full bg-white pb-8 pl-9 pt-12 transition-all duration-300 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:pb-0 md:pl-0 md:pt-0 ${isOpen ? "top-12" : "top-[-490px]"}`}
+          >
             <li>
-              <Link to="/search" className="no-underline hover:underline my-7 md:my-0 md:ml-8">
+              <Link to="/search" className="my-7 no-underline hover:underline md:my-0 md:ml-8">
                 Search
               </Link>
             </li>
-            {
-              Links.map(link => (
-                <li key={link.name} className="no-underline hover:underline my-7 md:my-0 md:ml-8">
-                  <a href={link.link} target="_blank">{link.name}</a>
-                </li>
-              ))
-            }
+            {Links.map((link) => (
+              <li key={link.name} className="my-7 no-underline hover:underline md:my-0 md:ml-8">
+                <a href={link.link} target="_blank">
+                  {link.name}
+                </a>
+              </li>
+            ))}
           </ul>
 
           <div
@@ -111,7 +107,7 @@ const Navbar = () => {
             ref={dropdownRef}
           >
             {auth.isAuthenticated ? (
-              <div className="absolute md:static right-12 -top-8 ml-4">
+              <div className="absolute -top-8 right-12 ml-4 md:static">
                 <button className="bg-green-500 hover:bg-green-600 px-4 py-1">
                   <div className="flex items-center space-x-2">
                     <User size={24} />
@@ -127,7 +123,6 @@ const Navbar = () => {
                     <div className="flex flex-row gap-2 hover:text-green hover:underline">
                       <User />
                       <Link to="/user"> Your Profile </Link>{" "}
-
                     </div>
                     <div className="flex flex-row gap-2 hover:text-green hover:underline">
                       <Plus />
@@ -145,9 +140,11 @@ const Navbar = () => {
                 </div>
               </div>
             ) : (
-              <div className={`absolute md:static bg-white right-16 -top-8 transition-all duration-300 ease-in`}>
+              <div
+                className={`absolute -top-8 right-16 bg-white transition-all duration-300 ease-in md:static`}
+              >
                 <button
-                  className="bg-green hover:bg-darkgreen rounded px-4 py-1 text-white transition-all duration-300 ease-in-out transform hover:scale-105 md:ml-8 md:static"
+                  className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen md:static md:ml-8"
                   onClick={handleLogin}
                 >
                   Login
@@ -156,12 +153,8 @@ const Navbar = () => {
             )}
           </div>
         </div>
-
-
       </div>
     </div>
-
-
   );
 };
 

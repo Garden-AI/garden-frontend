@@ -11,7 +11,7 @@ export default function RootLayout() {
     <>
       <ScrollToTop />
       <Navbar />
-      <div className="min-h-screen bg-white mt-16">
+      <div className="min-h-screen bg-white">
         <Outlet />
       </div>
       <Footer />

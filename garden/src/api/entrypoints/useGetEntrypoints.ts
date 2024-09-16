@@ -1,68 +1,45 @@
-import { useQuery } from "@tanstack/react-query";
+import { Entrypoint } from "@/api/types";
 import axios from "../axios";
-import { Entrypoint } from "../types";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-interface UseGetEntrypointsProps {
-  userId?: string;
-  gardenId?: string;
+interface EntrypointParams {
+  doi?: string;
+  tags?: string;
+  authors?: string;
+  owner_uuid?: string;
+  draft?: string;
+  year?: string;
+  limit?: number;
 }
-let callCount = 0;
-const initialEntrypoints = [
-  {
-    doi: "10.26311/3p8f-se33",
-    title: "Bandgap model",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-  {
-    doi: "10.26311/mk1a-ve41",
-    title:
-      "Lithium solid state electrolyte conductivity model. Lithium solid state electrolyte conductivity model",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-];
 
-const additionalEntrypoints = [
-  {
-    doi: "10.26311/17nn-hj98",
-    title: "Metallic glass Rc model (LLM data)",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-];
-
-const getEntrypoints = async ({
-  userId,
-  gardenId,
-}: UseGetEntrypointsProps): Promise<any[]> => {
-  // console.log("userId", userId);
-  // console.log("gardenId", gardenId);
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (callCount === 0) {
-        callCount++;
-        resolve(initialEntrypoints);
-      } else {
-        const newEntrypoint = additionalEntrypoints[callCount - 1];
-        if (newEntrypoint) {
-          callCount++;
-          resolve([...initialEntrypoints, newEntrypoint] as any);
-        } else {
-          resolve([...initialEntrypoints, ...additionalEntrypoints] as any);
-        }
-      }
-    }, 500);
-  });
+const getEntrypoints = async (
+  params: EntrypointParams,
+): Promise<Entrypoint[]> => {
+  try {
+    const response = await axios.get("/entrypoints", { params });
+    return response.data;
+  } catch (error) {
+    throw new Error("Error fetching entrypoint");
+  }
 };
 
-export const useGetEntrypoints = ({
-  userId,
-  gardenId,
-}: UseGetEntrypointsProps) => {
+export const useGetEntrypoints = (
+  params: EntrypointParams,
+  options?: UseQueryOptions<Entrypoint[], Error>,
+) => {
   return useQuery<Entrypoint[], Error>({
-    queryKey: ["entrypoints", userId],
-    queryFn: () => getEntrypoints({ userId, gardenId }),
+    queryKey: [
+      "entrypoint",
+      params.doi,
+      params.tags,
+      params.authors,
+      params.owner_uuid,
+      params.draft,
+      params.year,
+      params.limit,
+    ],
+
+    queryFn: () => getEntrypoints(params),
+    ...options,
   });
 };

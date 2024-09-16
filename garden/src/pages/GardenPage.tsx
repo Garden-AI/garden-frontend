@@ -42,7 +42,7 @@ export default function GardenPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-8 font-display pt-4">
+    <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
@@ -169,7 +169,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {entrypoints.map((entrypoint: any) => (
-        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} isEditing={false} />
+        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
       ))}
     </div>
   );

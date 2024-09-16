@@ -1,5 +1,5 @@
 import { Entrypoint } from "@/api/types";
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
@@ -7,25 +7,14 @@ import { cn } from "@/lib/utils";
 import { useGetCurrUserEntrypoints } from "../api/entrypoints/getCurrUserEntrypoints";
 import { useGetUserInfo } from "@/api";
 
-const EntrypointBox = ({
-  entrypoint,
-  garden,
-  isEditing,
-}: {
-  entrypoint: any;
-  garden?: any;
-  isEditing?: boolean;
-}) => {
+const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any; garden?: any }) => {
   const navigate = useNavigate();
-  const { doi } = useParams();
   const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
   const { data: currUser } = useGetUserInfo();
   const { data: currUserEntrypoints } = useGetCurrUserEntrypoints({
     owner_uuid: currUser?.identity_id,
   });
-  // console.log("updated current user endpoints: ", currUserEntrypoints);
 
-  // Early return if entrypoint is undefined
   if (!entrypoint) {
     return null;
   }
@@ -36,7 +25,7 @@ const EntrypointBox = ({
 
   const handleEditEntrypointClick = (e: any) => {
     e.stopPropagation();
-    navigate(`/garden/${encodeURIComponent(doi!)}/entrypointEditing`, {
+    navigate(`/entrypoint/${encodeURIComponent(entrypoint?.doi)}/edit`, {
       state: { entrypoint, garden },
     });
   };
@@ -50,8 +39,7 @@ const EntrypointBox = ({
         <div className="flex flex-row justify-between">
           <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
           <div className="flex-end flex">
-            {/* Commenting out for now--going to work from different branch to work on Entrypoint Editing */}
-            {/* {canEditEntrypoint && (
+            {canEditEntrypoint && (
               <button
                 onClick={handleEditEntrypointClick}
                 className={cn(
@@ -61,7 +49,7 @@ const EntrypointBox = ({
               >
                 Edit Entrypoint
               </button>
-            )} */}
+            )}
           </div>
         </div>
         <div className="max-h-[120px] overflow-y-hidden">

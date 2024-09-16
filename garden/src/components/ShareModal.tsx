@@ -1,18 +1,7 @@
 import { Copy, Share2 } from "lucide-react";
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { useState } from "react";
 import CopyButton from "./CopyButton";
 
@@ -50,17 +39,13 @@ const socialMediaItems = [
 ];
 
 const ShareModal = ({ doi }: { doi: string }) => {
-  const doiURL = "https://doi.org/" + doi
-  console.log(doiURL)
+  const doiURL = "https://doi.org/" + doi;
   const [isTooltipAllowed, setIsTooltipAllowed] = useState(true);
   return (
     <Dialog onOpenChange={() => setIsTooltipAllowed(false)}>
       <TooltipProvider>
         <Tooltip defaultOpen={false} delayDuration={40}>
-          <TooltipTrigger
-            asChild
-            onMouseEnter={() => setIsTooltipAllowed(true)}
-          >
+          <TooltipTrigger asChild onMouseEnter={() => setIsTooltipAllowed(true)}>
             <DialogTrigger asChild>
               <Button
                 size="icon"
@@ -80,9 +65,7 @@ const ShareModal = ({ doi }: { doi: string }) => {
       </TooltipProvider>
       <DialogContent className="sm:max-w-[540px]">
         <DialogTitle>Share</DialogTitle>
-        <DialogDescription className="mb-4">
-          Share this garden with others
-        </DialogDescription>
+        <DialogDescription className="mb-4">Share this garden with others</DialogDescription>
         <div className="mb-8 flex justify-evenly">
           {socialMediaItems.map((item, index) => (
             <a

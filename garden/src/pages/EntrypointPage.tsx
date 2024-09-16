@@ -14,22 +14,13 @@ import CopyButton from "@/components/CopyButton";
 
 import { Link as LinkIcon, Eye, TagIcon } from "lucide-react";
 import { Entrypoint, Garden } from "@/api/types";
-import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
+  const { data: entrypoint, isError, isLoading } = useGetEntrypoint(doi);
 
-  const { data, isError, isLoading } = useGetEntrypoint({
-    doi,
-    limit: 1,
-  });
-
-  const entrypoint = data?.[0];
-  const { data: garden, isLoading: gardenIsLoading } =
-    useSearchGardenByDOI(doi);
+  const { data: garden, isLoading: gardenIsLoading } = useSearchGardenByDOI(doi);
 
   if (isLoading || gardenIsLoading) return <LoadingOverlay />;
 
@@ -38,7 +29,7 @@ const EntrypointPage = () => {
   if (!garden) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-7xl px-8 font-display pt-4">
+    <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
@@ -59,57 +50,26 @@ const EntrypointPage = () => {
   );
 };
 
-function EntrypointHeader({
-  entrypoint,
-  doi,
-}: {
-  entrypoint: Entrypoint;
-  doi: string;
-}) {
-  const auth = useGlobusAuth();
+function EntrypointHeader({ entrypoint, doi }: { entrypoint: Entrypoint; doi: string }) {
   return (
-    <div className="mb-4 flex gap-x-2">
-      <div className="flex items-center">
+    <div className="mb-4 ">
+      <div className="flex flex-row justify-between">
         <h1 className="text-xl md:text-3xl">{entrypoint.title}</h1>
-
-        {entrypoint.owner_identity_id === auth?.authorization?.user?.sub && (
-          <Badge
-            className="ml-4 mt-1 px-3 text-sm"
-            variant={
-              cn(entrypoint.doi_is_draft ? "outline" : "default") as
-              | "default"
-              | "outline"
-            }
-          >
-            {entrypoint.doi_is_draft
-              ? "Draft"
-              : entrypoint.is_archived
-                ? "Archived"
-                : "Published"}
-          </Badge>
-        )}
-      </div>
-
-      <div className="hidden flex-col items-center md:flex md:flex-row">
-        <CopyButton
-          hint="Copy Link"
-          content={`https://doi.org/${doi}`}
-          icon={<LinkIcon />}
-          className="border-none bg-transparent"
-        />
-        <ShareModal doi={doi} />
+        <div className="hidden flex-col items-center md:flex md:flex-row">
+          <CopyButton
+            hint="Copy Link"
+            content={`https://doi.org/${doi}`}
+            icon={<LinkIcon />}
+            className="border-none bg-transparent"
+          />
+          <ShareModal doi={doi} />
+        </div>
       </div>
     </div>
   );
 }
 
-function EntrypointBody({
-  garden,
-  entrypoint,
-}: {
-  garden: Garden;
-  entrypoint: Entrypoint;
-}) {
+function EntrypointBody({ garden, entrypoint }: { garden: Garden; entrypoint: Entrypoint }) {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
@@ -122,14 +82,14 @@ function EntrypointBody({
 
       <div className="mb-6 flex items-center space-x-2 text-base md:text-lg ">
         <span className="font-semibold">Contributors:</span>
-        <span>{garden.authors?.join(", ")}</span>
+        <span>{entrypoint.authors?.join(", ")}</span>
       </div>
 
       <div className="mb-2 flex items-center gap-2 text-lg md:text-xl">
         <Eye />
         <h2>At a glance</h2>
       </div>
-      <p className="mb-6">{garden.description}</p>
+      <p className="mb-6">{entrypoint.description}</p>
 
       <Separator className="mb-12" />
     </div>

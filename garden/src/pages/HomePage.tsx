@@ -29,7 +29,6 @@ import {
   Search,
 } from "lucide-react";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
-import { transformSearchResultToGardens } from "@/api/search/useSearchGardens";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },
@@ -92,8 +91,7 @@ const HomePage = () => {
       id: 100,
     },
     {
-      title:
-        "Models for processing position-averaged convergent beam electron diffraction images",
+      title: "Models for processing position-averaged convergent beam electron diffraction images",
       description:
         "This garden just hosts the PACBED-CNN model for now, and may host other position-averaged convergent beam electron diffraction models in the future.",
       doi: "10.26311/hqgg-7m42",
@@ -107,8 +105,7 @@ const HomePage = () => {
     },
     {
       title: "Semiconductor property prediction models",
-      description:
-        "A collection of models for predicting properties of semiconductors",
+      description: "A collection of models for predicting properties of semiconductors",
       doi: "10.26311/bg7s-v305",
       publisher: "Will Engler",
       language: "English",
@@ -120,8 +117,7 @@ const HomePage = () => {
     },
     {
       title: "Materials Screening Performance Tests",
-      description:
-        "Figuring out how to run millions of materials property predictions quickly",
+      description: "Figuring out how to run millions of materials property predictions quickly",
       doi: "10.23677/m4ek-bd27",
       publisher: "Will Engler",
       language: "English",
@@ -148,31 +144,29 @@ const HomePage = () => {
 
   return (
     <div className="font-display">
-      <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 py-24">
-        <div className="mx-auto px-4 text-center max-w-4xl">
+      <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 py-36">
+        <div className="mx-auto max-w-4xl px-4 text-center">
           <h1 className="mb-4 text-4xl font-bold text-gray-900 sm:text-6xl">
             Publish, Share, and Run ML Models with <span className="text-brightgreen">Garden</span>
           </h1>
-          <p className="mb-8 mt-8 text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="mx-auto mb-8 mt-8 max-w-2xl text-xl text-gray-600">
             Empower your research with easy-to-use machine learning models for science applications
           </p>
           <div className="flex justify-center space-x-4">
-            <Link
-              to="/search"
-            >
-              <button className="px-8 py-3 text-lg font-semibold text-white rounded-full bg-green transition-transform hover:scale-105">Explore Models</button>
+            <Link to="/search">
+              <button className="rounded-full bg-green px-8 py-3 text-lg font-semibold text-white transition-transform hover:scale-105">
+                Explore Models
+              </button>
             </Link>
-            <Link
-              to="/garden/create"
-            >
-              <button className="px-8 py-3 text-lg font-semibold text-green rounded-full border-2 border-green bg-white transition-transform hover:scale-105">Start Your Garden</button>
+            <Link to="/garden/create">
+              <button className="rounded-full border-2 border-green bg-white px-8 py-3 text-lg font-semibold text-green transition-transform hover:scale-105">
+                Start Your Garden
+              </button>
             </Link>
           </div>
         </div>
       </div>
 
-
-      
       <div className="items-center bg-gray-700 px-2 py-2">
         <div className="mx-auto text-center sm:px-8 md:max-w-screen-md md:px-20 lg:max-w-screen-xl lg:px-12">
           <div className="mt-1 flex flex-wrap items-center justify-center text-gray-400 sm:justify-between">
@@ -253,9 +247,6 @@ const HomePage = () => {
               target="_blank"
               className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
-                
-
-
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 699 176.3"
@@ -291,14 +282,24 @@ const HomePage = () => {
               target="_blank"
               className="mr-5 w-24 pb-4 pt-3 hover:text-gray-200 dark:hover:text-gray-400"
             >
-              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-            viewBox="0 0 1680 1040" enableBackground="new 0 0 1680 1040" xmlSpace="preserve" className="fill-current">
-          <path d="M880,880h160V400H880V880z M1120,320h400V160h-400V320z M880,160.00003h160v160H880V160.00003z M640,880h160V160H640V880z
-            M400,720h160V160H400V720z M160,880h160V160H160V880z M1120,880h160V400h-160V880z"/>
-          </svg>
+              <svg
+                version="1.1"
+                id="Layer_1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="0 0 1680 1040"
+                enableBackground="new 0 0 1680 1040"
+                xmlSpace="preserve"
+                className="fill-current"
+              >
+                <path
+                  d="M880,880h160V400H880V880z M1120,320h400V160h-400V320z M880,160.00003h160v160H880V160.00003z M640,880h160V160H640V880z
+            M400,720h160V160H400V720z M160,880h160V160H160V880z M1120,880h160V400h-160V880z"
+                />
+              </svg>
             </a>
-
-
           </div>
         </div>
       </div>
@@ -317,20 +318,16 @@ const HomePage = () => {
             </p>
           </div>
           <h2 className="mt-2 text-lg">
-            Gardens are collections of ML models that are linked with data and
-            computing resources to advance the work of research communities.
-            These gardens make it easy to publish models which can be integrated
-            into academia and industry alike. Researchers can provide broad
-            access to their models, without having to worry about the
-            difficulties surrounding discovery, access, and deployment.
+            Gardens are collections of ML models that are linked with data and computing resources
+            to advance the work of research communities. These gardens make it easy to publish
+            models which can be integrated into academia and industry alike. Researchers can provide
+            broad access to their models, without having to worry about the difficulties surrounding
+            discovery, access, and deployment.
           </h2>
         </div>
         <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
           {icons.map((icon, index) => (
-            <div
-              key={index}
-              className="flex h-40 flex-col items-center text-center "
-            >
+            <div key={index} className="flex h-40 flex-col items-center text-center ">
               <div className="w-full">
                 <icon.icon size={110} className="mx-auto w-full text-primary" />
               </div>
@@ -343,7 +340,7 @@ const HomePage = () => {
 
       <div className="mx-auto mt-20 max-w-5xl px-4">
         <h2 className="text-3xl font-semibold">Get Started in Minutes</h2>
-        <p className="text-lg mt-4">
+        <p className="mt-4 text-lg">
           You can publish your first garden and start growing entrypoints within 15 minutes!
         </p>
         <div className="mx-auto max-w-6xl pt-4">
@@ -371,7 +368,8 @@ predictions = predict_properties()`}
               </p>
               <a
                 href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
-                target="_blank"              >
+                target="_blank"
+              >
                 <span className="group inline-flex items-center text-lg text-green">
                   Read the documentation
                   <MoveRight className="ml-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
@@ -382,40 +380,30 @@ predictions = predict_properties()`}
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl mt-20 mb-12 md:flex">
+      <div className="mx-auto mb-12 mt-20 max-w-5xl md:flex">
         <div className="mt-12 px-4 md:mt-8 md:w-5/12">
-          <h1 className="text-3xl font-semibold">
-            Research using ML doesn’t have to be hard.
-          </h1>
+          <h1 className="text-3xl font-semibold">Research using ML doesn't have to be hard.</h1>
           <h2 className="mt-4 text-lg">
-            We overcome the barriers surrounding ML, so that you can spend
-            more time researching and less time setting up code to run models.
+            We overcome the barriers surrounding ML, so that you can spend more time researching and
+            less time setting up code to run models.
           </h2>
         </div>
 
-        <div className="mt-4 mx-auto md:w-5/12">
-          <Accordion
-            type="single"
-            collapsible
-            className="mb-10 border-y"
-            defaultValue="materials"
-          >
+        <div className="mx-auto mt-4 md:w-5/12">
+          <Accordion type="single" collapsible className="mb-10 border-y" defaultValue="materials">
             <AccordionItem value="one">
               <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                 <div className="flex items-center gap-x-2 p-2">
                   <SquareStack className="text-gray-500" />
-                  <span className="font-medium text-gray-700">
-                    Reproducibility
-                  </span>
+                  <span className="font-medium text-gray-700">Reproducibility</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="grid grid-cols-1 gap-4 py-6">
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      There's a lot of code that goes into reproducing an ML
-                      pipeline to get the desired output. We make every garden
-                      easy to follow.{" "}
+                      There's a lot of code that goes into reproducing an ML pipeline to get the
+                      desired output. We make every garden easy to follow.{" "}
                     </p>
                   </div>
                 </>
@@ -425,19 +413,16 @@ predictions = predict_properties()`}
               <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                 <div className="flex items-center gap-x-2 p-2">
                   <LockKeyholeOpen className="text-gray-500" />
-                  <span className="font-medium text-gray-700">
-                    Accessibility
-                  </span>
+                  <span className="font-medium text-gray-700">Accessibility</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="grid grid-cols-1 gap-4 py-6">
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      All code, data, testing is available and free without
-                      any barriers to access. You can run models using our
-                      compute resources at UChicago or any Globus Compute
-                      endpoint.{" "}
+                      All code, data, testing is available and free without any barriers to access.
+                      You can run models using our compute resources at UChicago or any Globus
+                      Compute endpoint.{" "}
                     </p>
                   </div>
                 </>
@@ -454,9 +439,8 @@ predictions = predict_properties()`}
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      We test and evaluate models on our side, so you can
-                      browse research without the time investment of doing all
-                      of that yourself.{" "}
+                      We test and evaluate models on our side, so you can browse research without
+                      the time investment of doing all of that yourself.{" "}
                     </p>
                   </div>
                 </>
@@ -473,9 +457,8 @@ predictions = predict_properties()`}
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      Garden is a collaborative platform that connects
-                      like-minded people. Find your ML community, collaborate,
-                      and set new benchmarks in your domain.{" "}
+                      Garden is a collaborative platform that connects like-minded people. Find your
+                      ML community, collaborate, and set new benchmarks in your domain.{" "}
                     </p>
                   </div>
                 </>
@@ -495,11 +478,10 @@ predictions = predict_properties()`}
               </div>
             </h1>
             <p className="mt-4 text-lg">
-              Take a look at some popular gardens that have been getting a lot
-              of attention! You can view the models, datasets, papers, and
-              anything else associated with the garden. Additionally, you can
-              run the models to optimize your own workflow, gain inspiration, or
-              for any other reason you see fit.
+              Take a look at some popular gardens that have been getting a lot of attention! You can
+              view the models, datasets, papers, and anything else associated with the garden.
+              Additionally, you can run the models to optimize your own workflow, gain inspiration,
+              or for any other reason you see fit.
             </p>
           </div>
         </div>

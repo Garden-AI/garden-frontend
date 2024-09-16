@@ -47,16 +47,12 @@ const SearchPage = () => {
         isError={isError}
         verboseSearchResults={verboseSearchResults}
       />
-      <SearchResultsPagination
-        searchResult={searchResult}
-        page={page}
-        setPage={setPage}
-      />
+      <SearchResultsPagination searchResult={searchResult} page={page} setPage={setPage} />
     </>
   );
 
   return (
-    <div className="min-h-screen px-6 mt-28 font-display md:px-12">
+    <div className="mt-16 min-h-screen px-6 font-display md:px-12">
       <h1 className="my-6 text-3xl">Search</h1>
       <SearchForm query={query} setQuery={setQuery} />
       <div className="relative my-8">
