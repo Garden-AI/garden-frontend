@@ -5,32 +5,27 @@ import { useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import React from "react";
-import { Entrypoint } from "@/api/types";
-import { EntrypointEditFormData, formSchema } from "./schemas";
+import { Entrypoint, EntrypointPatchRequest } from "@/api/types";
+import { EntrypointPatchFormData, formSchema } from "./schemas";
 import { UnsavedChangesDialog } from "../../UnsavedChangesDialog";
 import FormFields from "./FormFields";
+import { getDirtyValues } from "@/lib/utils";
 
 const getEntrypointValues = (entrypoint: Entrypoint) => ({
   title: entrypoint.title || "",
   description: entrypoint.description || "",
   year: entrypoint.year || "",
-  authors:
-    entrypoint.authors?.map((author) => ({ value: author, label: author })) ||
-    [],
+  authors: entrypoint.authors?.map((author) => ({ value: author, label: author })) || [],
   tags: entrypoint.tags?.map((tag) => ({ value: tag, label: tag })) || [],
   repositories: entrypoint.repositories || [],
   datasets: entrypoint.datasets || [],
   papers: entrypoint.papers || [],
 });
 
-export const EditEntrypointForm = ({
-  entrypoint,
-}: {
-  entrypoint: Entrypoint;
-}) => {
-  const { mutateAsync: updateEntrypoint } = usePatchEntrypoint();
+export const EditEntrypointForm = ({ entrypoint }: { entrypoint: Entrypoint }) => {
+  const { mutateAsync: patchEntrypoint } = usePatchEntrypoint();
 
-  const form = useForm<EntrypointEditFormData>({
+  const form = useForm<EntrypointPatchFormData>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
     defaultValues: React.useMemo(
@@ -52,9 +47,7 @@ export const EditEntrypointForm = ({
   });
 
   const blocker = useBlocker(
-    () =>
-      !form?.formState.isSubmitting &&
-      Object.keys(form.formState.touchedFields).length > 0,
+    () => !form?.formState.isSubmitting && Object.keys(form.formState.touchedFields).length > 0,
   );
 
   React.useEffect(() => {
@@ -64,18 +57,25 @@ export const EditEntrypointForm = ({
   }, [entrypoint, form]);
 
   const onSubmit = React.useCallback(
-    async (values: EntrypointEditFormData) => {
-      const updatedEntrypoint = {
-        ...values,
-        authors: values.authors.map((author) => author.value),
-        tags: values.tags.map((tag) => tag.value),
-      };
-      await updateEntrypoint({
+    async (values: EntrypointPatchFormData) => {
+      const { dirtyFields } = form.formState;
+
+      const entrypointPatchRequest: EntrypointPatchRequest = {
+        ...getDirtyValues(values, dirtyFields),
+        ...(values.authors && {
+          authors: values.authors.map((author) => author.value),
+        }),
+        ...(values.tags && {
+          tags: values.tags.map((tag) => tag.value),
+        }),
+      } as EntrypointPatchRequest;
+
+      await patchEntrypoint({
         doi: entrypoint.doi,
-        entrypoint: updatedEntrypoint,
+        entrypoint: entrypointPatchRequest,
       });
     },
-    [entrypoint.doi, updateEntrypoint],
+    [entrypoint.doi, patchEntrypoint],
   );
 
   return (

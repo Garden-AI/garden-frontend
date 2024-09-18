@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import EntrypointBox from "../components/EntrypointBox";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NotFoundPage from "./NotFoundPage";
-import { useUpdateGarden } from "../api/editgarden";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -11,13 +10,13 @@ import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { toast } from "sonner";
 import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { useGetGarden } from "../api/gardens/useGetGarden";
-import { GardenCreateRequest } from "@/api/types";
 import { tagOptions } from "@/components/form/garden/create/constants";
+import { usePatchGarden } from "@/api";
 
 const MetadataEditing = () => {
   const { doi } = useParams() as { doi: string };
   const { data: currGarden, isLoading, isError } = useGetGarden(doi!);
-  const { mutate: updateGarden } = useUpdateGarden();
+  const { mutate: patchGarden } = usePatchGarden();
   const auth = useGlobusAuth();
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -72,7 +71,7 @@ const MetadataEditing = () => {
       tags: updatedGardenData.tags?.map((tag: Option) => tag.value),
     };
 
-    updateGarden(
+    patchGarden(
       { doi, garden: dataToSend },
       {
         onSuccess: () => {

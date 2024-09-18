@@ -38,4 +38,4 @@ export const formSchema = z.object({
   ),
 });
 
-export type EntrypointEditFormData = z.infer<typeof formSchema>;
+export type EntrypointPatchFormData = z.infer<typeof formSchema>;
