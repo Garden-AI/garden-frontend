@@ -1,5 +1,4 @@
 import { useBlocker } from "react-router-dom";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { usePatchEntrypoint } from "@/api";
 import { useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,17 +9,7 @@ import { EntrypointPatchFormData, formSchema } from "./schemas";
 import { UnsavedChangesDialog } from "../../UnsavedChangesDialog";
 import FormFields from "./FormFields";
 import { getDirtyValues } from "@/lib/utils";
-
-const getEntrypointValues = (entrypoint: Entrypoint) => ({
-  title: entrypoint.title || "",
-  description: entrypoint.description || "",
-  year: entrypoint.year || "",
-  authors: entrypoint.authors?.map((author) => ({ value: author, label: author })) || [],
-  tags: entrypoint.tags?.map((tag) => ({ value: tag, label: tag })) || [],
-  repositories: entrypoint.repositories || [],
-  datasets: entrypoint.datasets || [],
-  papers: entrypoint.papers || [],
-});
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export const EditEntrypointForm = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   const { mutateAsync: patchEntrypoint } = usePatchEntrypoint();
@@ -29,19 +18,16 @@ export const EditEntrypointForm = ({ entrypoint }: { entrypoint: Entrypoint }) =
     resolver: zodResolver(formSchema),
     mode: "onTouched",
     defaultValues: React.useMemo(
-      () =>
-        entrypoint
-          ? getEntrypointValues(entrypoint)
-          : {
-              title: "",
-              description: "",
-              year: "",
-              authors: [],
-              tags: [],
-              repositories: [],
-              datasets: [],
-              papers: [],
-            },
+      () => ({
+        title: entrypoint.title || "",
+        description: entrypoint.description || "",
+        year: entrypoint.year || "",
+        authors: entrypoint.authors || [],
+        tags: entrypoint.tags || [],
+        repositories: entrypoint.repositories || [],
+        datasets: entrypoint.datasets || [],
+        papers: entrypoint.papers || [],
+      }),
       [entrypoint],
     ),
   });
@@ -50,25 +36,12 @@ export const EditEntrypointForm = ({ entrypoint }: { entrypoint: Entrypoint }) =
     () => !form?.formState.isSubmitting && Object.keys(form.formState.touchedFields).length > 0,
   );
 
-  React.useEffect(() => {
-    if (entrypoint) {
-      form.reset(getEntrypointValues(entrypoint));
-    }
-  }, [entrypoint, form]);
-
   const onSubmit = React.useCallback(
     async (values: EntrypointPatchFormData) => {
-      const { dirtyFields } = form.formState;
-
-      const entrypointPatchRequest: EntrypointPatchRequest = {
-        ...getDirtyValues(values, dirtyFields),
-        ...(values.authors && {
-          authors: values.authors.map((author) => author.value),
-        }),
-        ...(values.tags && {
-          tags: values.tags.map((tag) => tag.value),
-        }),
-      } as EntrypointPatchRequest;
+      const entrypointPatchRequest: EntrypointPatchRequest = getDirtyValues(
+        values,
+        form.formState.dirtyFields,
+      ) as EntrypointPatchRequest;
 
       await patchEntrypoint({
         doi: entrypoint.doi,
@@ -88,7 +61,6 @@ export const EditEntrypointForm = ({ entrypoint }: { entrypoint: Entrypoint }) =
     </form>
   );
 };
-
 const LoadingOverlay = () => {
   const form = useFormContext();
   const { isSubmitting } = form.formState;
