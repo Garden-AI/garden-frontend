@@ -1,15 +1,13 @@
 import { Button } from "../ui/button";
-import { useSearchParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
-import { GlobusSearchResult, useSearchResults } from "@/hooks/useSearchResults";
+import { GardenSearchResult } from "@/hooks/useSearchResults";
 
 export function SearchResultsPagination({
   searchResult,
   page,
   setPage,
 }: {
-  searchResult: GlobusSearchResult;
+  searchResult: GardenSearchResult;
   page: number;
   setPage: (page: number) => void;
 }) {

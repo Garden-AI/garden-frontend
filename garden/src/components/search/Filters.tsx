@@ -1,40 +1,23 @@
 import { useState, useEffect, useMemo } from "react";
 import { Filter, Settings, XIcon } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { GlobusSearchResult } from "@/hooks/useSearchResults";
+import { GardenSearchResult } from "@/hooks/useSearchResults";
 
 export function SearchFilters({
   searchResult,
   selectedFilters,
   setSelectedFilters,
 }: {
-  searchResult: GlobusSearchResult;
+  searchResult: GardenSearchResult;
   selectedFilters: Record<string, string[]>;
   setSelectedFilters: (filters: Record<string, string[]>) => void;
 }) {
-  const allFacets = useMemo(() => {
-    return (
-      searchResult?.facetResults?.map((f) => ({
-        name: f.name,
-        values:
-          f.buckets?.map((b) => ({ value: b.value, count: b.count })) || [],
-      })) || []
-    );
-  }, [searchResult]);
-
   const updateFilter = (facet: string, bucket: string, isChecked: boolean) => {
     const selected = selectedFilters[facet] || [];
-    const updated = isChecked
-      ? [...selected, bucket]
-      : selected.filter((b: any) => b !== bucket);
+    const updated = isChecked ? [...selected, bucket] : selected.filter((b: any) => b !== bucket);
     setSelectedFilters({ ...selectedFilters, [facet]: updated });
   };
 
@@ -42,7 +25,8 @@ export function SearchFilters({
     setSelectedFilters({});
   };
 
-  if (!allFacets.length) return null;
+  const facets = searchResult.facets;
+  if (!facets.length) return null;
 
   return (
     <div className="relative h-full">
@@ -53,12 +37,8 @@ export function SearchFilters({
             Filters
           </h3>
 
-          <Accordion
-            type="multiple"
-            className="px-2"
-            defaultValue={allFacets.map((f) => f.name)}
-          >
-            {allFacets.map((facet) => {
+          <Accordion type="multiple" className="px-2" defaultValue={facets.map((f) => f.name)}>
+            {facets.map((facet) => {
               return (
                 <AccordionItem key={facet.name} value={facet.name}>
                   <AccordionTrigger>
@@ -70,16 +50,10 @@ export function SearchFilters({
                         <Checkbox
                           id={`${facet.name}-${bucket.value}`}
                           checked={
-                            selectedFilters[facet.name]?.includes(
-                              String(bucket.value),
-                            ) || false
+                            selectedFilters[facet.name]?.includes(String(bucket.value)) || false
                           }
                           onCheckedChange={(checked) =>
-                            updateFilter(
-                              facet.name,
-                              String(bucket.value),
-                              checked as boolean,
-                            )
+                            updateFilter(facet.name, String(bucket.value), checked as boolean)
                           }
                         />
                         <Label htmlFor={`${facet.name}-${bucket.value}`}>
