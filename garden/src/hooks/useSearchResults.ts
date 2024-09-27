@@ -32,7 +32,7 @@ interface SearchResultsState {
   selectedFilters: Record<string, string[]>;
   setSelectedFilters: (filters: Record<string, string[]>) => void;
   query: string;
-  setQuery: (query: string) => void;
+  setQuery: (query: string | null) => void;
   page: number;
   setPage: (page: number) => void;
 }
@@ -62,12 +62,7 @@ export const useSearchResults = (): SearchResultsState => {
     [searchParams],
   );
 
-  const {
-    data: searchResult,
-    isLoading,
-    isFetching,
-    isError,
-  } = useSearchGardens(searchRequest);
+  const { data: searchResult, isLoading, isFetching, isError } = useSearchGardens(searchRequest);
 
   const gardens: Garden[] = useMemo(
     () => transformSearchResultToGardens(searchResult),
@@ -95,7 +90,7 @@ export const useSearchResults = (): SearchResultsState => {
   );
 
   const setQuery = useCallback(
-    (newQuery: string) => updateSearchParams({ q: newQuery, page: 1 }),
+    (newQuery: string | null) => updateSearchParams({ q: newQuery, page: 1 }),
     [updateSearchParams],
   );
 
