@@ -17,6 +17,7 @@ export const EditGardenForm = ({ garden }: { garden: Garden }) => {
   const form = useForm<GardenPatchFormData>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
+
     defaultValues: React.useMemo(
       () => ({
         title: garden.title || "",
@@ -26,6 +27,9 @@ export const EditGardenForm = ({ garden }: { garden: Garden }) => {
         version: garden.version || "",
         contributors: garden.contributors || [],
         tags: garden.tags || [],
+        entrypoint_ids: garden.entrypoints?.map((entrypoint) => entrypoint.doi) || [],
+        is_archived: garden.is_archived,
+        doi_is_draft: garden.doi_is_draft,
       }),
       [garden],
     ),
@@ -41,7 +45,6 @@ export const EditGardenForm = ({ garden }: { garden: Garden }) => {
         values,
         form.formState.dirtyFields,
       ) as GardenPatchRequest;
-
       await patchGarden({
         doi: garden.doi,
         garden: gardenPatchRequest,

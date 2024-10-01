@@ -1,4 +1,5 @@
-import EntrypointBox from "@/components/EntrypointBox";
+import { useNavigate } from "react-router-dom";
+import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   FormField,
@@ -9,159 +10,175 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import MultipleSelector from "@/components/ui/multiple-select";
 import { Textarea } from "@/components/ui/textarea";
-import { useFormContext } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import MultipleSelector from "@/components/ui/multiple-select";
+import { SelectEntrypointsTable } from "../SelectEntrypointsTable";
 
 export default function FormFields() {
   const navigate = useNavigate();
   const form = useFormContext();
+  console.log(form.getValues("doi_is_draft"));
+
   return (
-    <div className="space-y-8 rounded-lg border-0 bg-gray-100 p-10 text-sm text-gray-700">
-      <FormField
-        control={form.control}
-        name="title"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Garden Title *</FormLabel>
-            <FormControl>
-              <Input placeholder="My Garden" {...field} />
-            </FormControl>
-            <FormDescription>This is your Garden's public display name.</FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Description *</FormLabel>
-            <FormControl>
-              <Textarea
-                placeholder="Tell us about your garden"
-                className="resize-none"
-                {...field}
-              />
-            </FormControl>
-            <FormDescription>
-              A high level overview of your Garden, its purpose, and its contents. This will be
-              displayed on the Garden page and appear in search results.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+    <div className="space-y-12 rounded-xl bg-white p-8 shadow-lg">
+      <h1 className=" text-2xl font-bold sm:text-3xl">Edit Garden</h1>
 
-      <FormField
-        control={form.control}
-        name="authors"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Authors *</FormLabel>
-            <FormControl>
-              <MultipleSelector
-                {...field}
-                placeholder="Add authors"
-                creatable
-                onChange={(value) => {
-                  field.onChange(value.map((v: any) => v.value));
-                }}
-                value={field.value.map((v: any) => ({ value: v, label: v }))}
-              />
-            </FormControl>
-            <FormDescription>
-              The main researchers involved in producing the Garden. At least one author is required
-              in order to register a DOI.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <section>
+        <h2 className="mb-6 border-b pb-2 text-2xl font-bold text-gray-800">General</h2>
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold text-gray-700">Garden Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="My Garden" {...field} className="w-full" />
+                </FormControl>
+                <FormDescription>Your Garden's public display name.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <FormField
-        control={form.control}
-        name="contributors"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              Contributors <span className="text-gray-500">(optional)</span>
-            </FormLabel>
-            <FormControl>
-              <MultipleSelector
-                {...field}
-                placeholder="Add contributors"
-                creatable
-                onChange={(value) => {
-                  field.onChange(value.map((v: any) => v.value));
-                }}
-                value={field.value.map((v: any) => ({ value: v, label: v }))}
-              />
-            </FormControl>
-            <FormDescription>
-              Acknowledge contributors to the development of this Garden, outside of those listed as
-              authors.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold text-gray-700">Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Tell us about your garden"
+                    className="resize-vertical min-h-[100px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Provide a high-level overview of your Garden, its purpose, and contents. This will
+                  be displayed on the Garden page and in search results.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </section>
 
-      <FormField
-        control={form.control}
-        name="tags"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Tags</FormLabel>
-            <FormControl>
-              <MultipleSelector
-                {...field}
-                className="bg-white"
-                placeholder="Add tags"
-                creatable
-                onChange={(value) => {
-                  field.onChange(value.map((v: any) => v.value));
-                }}
-                value={field.value.map((v: any) => ({ value: v, label: v }))}
-              />
-            </FormControl>
-            <FormDescription>Add tags to help others find your entrypoint.</FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <section>
+        <h2 className="mb-6 border-b pb-2 text-2xl font-bold text-gray-800">Contributors</h2>
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="authors"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold text-gray-700">Authors</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    {...field}
+                    placeholder="Add authors"
+                    creatable
+                    onChange={(value) => {
+                      field.onChange(value.map((v: any) => v.value));
+                    }}
+                    value={field.value.map((v: any) => ({ value: v, label: v }))}
+                    className="w-full"
+                  />
+                </FormControl>
+                <FormDescription>
+                  List the main researchers involved in producing the Garden. At least one author is
+                  required for DOI registration.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <FormField
-        control={form.control}
-        name="version"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Version</FormLabel>
-            <FormControl>
-              <Input placeholder="1.0.0" {...field} />
-            </FormControl>
-            <FormDescription>The version of your garden.</FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+          <FormField
+            control={form.control}
+            name="contributors"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold text-gray-700">Contributors</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    {...field}
+                    placeholder="Add contributors"
+                    creatable
+                    onChange={(value) => {
+                      field.onChange(value.map((v: any) => v.value));
+                    }}
+                    value={field.value.map((v: any) => ({ value: v, label: v }))}
+                    className="w-full"
+                  />
+                </FormControl>
+                <FormDescription>
+                  Acknowledge additional contributors to the Garden's development.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </section>
 
-      {/* <div className="space-y-2">
-        <p className="text-gray-600">Entrypoints</p>
-        {garden?.entrypoints && garden.entrypoints.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {garden.entrypoints.map((entrypoint: any) => (
-              <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} garden={garden} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">No Entrypoints created yet.</p>
-        )}
-      </div> */}
+      <section>
+        <h2 className="mb-6 border-b  text-2xl font-bold text-gray-800">Entrypoints</h2>
+        <p className="mb-4 text-sm text-gray-700">
+          Select the entrypoints that are part of your garden. These entrypoints will be displayed
+          on the Garden page. Only unpublished gardens can modify their entrypoints.
+        </p>
+        <SelectEntrypointsTable />
+      </section>
 
-      <div className="flex justify-end gap-x-4">
+      <section>
+        <h2 className="mb-6 border-b pb-2 text-2xl font-bold text-gray-800">Misc</h2>
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold text-gray-700">Tags</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    {...field}
+                    className="w-full"
+                    placeholder="Add tags"
+                    creatable
+                    onChange={(value) => {
+                      field.onChange(value.map((v: any) => v.value));
+                    }}
+                    value={field.value.map((v: any) => ({ value: v, label: v }))}
+                  />
+                </FormControl>
+                <FormDescription>Add relevant tags to improve discoverability.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="version"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold text-gray-700">Version</FormLabel>
+                <FormControl>
+                  <Input placeholder="1.0.0" {...field} className="w-full max-w-xs" />
+                </FormControl>
+                <FormDescription>
+                  Specify the current version of your garden (e.g., 1.0.0).
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </section>
+
+      <div className="mt-8 flex justify-end gap-x-4">
         <Button type="button" variant="outline" onClick={() => navigate(`/user`)}>
           Cancel
         </Button>

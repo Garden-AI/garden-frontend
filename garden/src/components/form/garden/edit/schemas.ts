@@ -22,7 +22,7 @@ export const formSchema = z.object({
   authors: z.array(z.string()).min(1, { message: "Please add at least one author." }),
   contributors: z.array(z.string()),
   tags: z.array(z.string()),
-  entrypoint_aliases: z.record(z.string()).optional(),
+  entrypoint_ids: z.array(z.string()),
 });
 
 export type GardenPatchFormData = z.infer<typeof formSchema>;

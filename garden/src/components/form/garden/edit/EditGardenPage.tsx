@@ -38,7 +38,6 @@ const EditGardenPage = () => {
         ]}
       />
 
-      <h1 className="mb-4 text-2xl sm:text-3xl">Edit {garden.title}</h1>
       <EditGardenForm garden={garden} />
     </div>
   );

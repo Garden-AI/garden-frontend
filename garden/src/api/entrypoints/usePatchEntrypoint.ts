@@ -24,7 +24,6 @@ export const usePatchEntrypoint = () => {
     mutationFn: patchEntrypoint,
     onSuccess: (data) => {
       queryClient.setQueryData(["entrypoint", data.doi], (oldData: Entrypoint) => data);
-
       navigate(`/entrypoint/${encodeURIComponent(data.doi)}`);
       toast.success("Entrypoint updated successfully!");
     },
