@@ -48,7 +48,6 @@ export default function EditEntrypointPage() {
         ]}
       />
 
-      <h1 className="mb-8 text-4xl font-medium sm:text-3xl">Edit Entrypoint</h1>
       <EditEntrypointForm entrypoint={entrypoint} />
     </div>
   );
