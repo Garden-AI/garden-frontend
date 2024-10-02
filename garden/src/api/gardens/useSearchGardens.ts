@@ -43,16 +43,14 @@ export const transformSearchParamsToSearchRequest = (searchParams: URLSearchPara
       }) || [];
 
   const defaultFilters: GardenSearchFilter[] = [
-    // {
-    //   field_name: "doi_is_draft",
-    //   values: ["false"],
-    //   // type: "match_all",
-    // },
-    // {
-    //   field_name: "is_archived",
-    //   values: ["false"],
-    //   // type: "match_all",
-    // },
+    {
+      field_name: "doi_is_draft",
+      values: ["false"],
+    },
+    {
+      field_name: "is_archived",
+      values: ["false"],
+    },
   ];
 
   const filters = [...defaultFilters, ...userFilters];
@@ -70,6 +68,6 @@ export const transformSearchParamsToSearchRequest = (searchParams: URLSearchPara
     limit: size,
     offset,
     filters,
-    // sort: order ? [{ field_name: "title", order }] : undefined,
+    sort: order ? [{ field_name: "title", order }] : undefined,
   };
 };
