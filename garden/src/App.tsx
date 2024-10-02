@@ -22,6 +22,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
 /* Lib */
+import { ModalUploadPage } from "./components/form/modal/create/ModalUploadPage";
 
 export default function App() {
   return (
@@ -57,6 +58,13 @@ function Root() {
           <Route path=":doi" element={<EntrypointPage />} />
           <Route element={<PrivateRoutes />}>
             <Route path=":doi/edit" element={<EditEntrypointPage />} />
+          </Route>
+        </Route>
+
+        {/* Modal Routes */}
+        <Route path="modal">
+          <Route element={<PrivateRoutes />}>
+            <Route path="upload" element={<ModalUploadPage />} />
           </Route>
         </Route>
 
