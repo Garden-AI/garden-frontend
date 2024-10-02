@@ -1,11 +1,5 @@
 import { z } from "zod";
 
-const optionSchema = z.object({
-  value: z.string(),
-  label: z.string(),
-  disabled: z.boolean().optional(),
-  group: z.string().optional(),
-});
 
 export const formSchema = z.object({
   title: z
@@ -28,19 +22,11 @@ export const formSchema = z.object({
   version: z.string().regex(/^\d+\.\d+(\.\d+)?$/, {
     message: "Version must be in the format x.y or x.y.z",
   }),
-  authors: z
-    .array(optionSchema)
-    .min(1, { message: "Please add at least one author." }),
-  contributors: z.array(optionSchema),
-  tags: z.array(optionSchema),
+  authors: z.array(z.string()).min(1, { message: "Please add at least one author." }),
+  contributors: z.array(z.string()),
+  tags: z.array(z.string()),
 
-  entrypoint_ids: z.array(
-    z.object({
-      doi: z.string(),
-      title: z.string(),
-      description: z.string().optional().nullable(),
-    }),
-  ),
+  entrypoint_ids: z.array(z.string()),
   entrypoint_aliases: z.record(z.string()).optional(),
 });
 

@@ -125,7 +125,7 @@ export default function FormFields() {
 
       <section>
         <h2 className="mb-6 border-b  text-2xl font-bold text-gray-800">Entrypoints</h2>
-        <p className="mb-4 text-sm text-gray-700">
+        <p className="mb-8 text-sm text-muted-foreground">
           Select the entrypoints that are part of your garden. These entrypoints will be displayed
           on the Garden page. Only unpublished gardens can modify their entrypoints.
         </p>

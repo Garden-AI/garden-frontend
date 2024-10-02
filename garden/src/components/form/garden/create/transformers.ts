@@ -8,12 +8,6 @@ export function transformFormToRequest(
 ): GardenCreateRequest {
   return {
     ...formData,
-    authors: formData.authors.map((author) => author.label),
-    contributors: formData.contributors?.map(
-      (contributor) => contributor.label,
-    ),
-    tags: formData.tags.map((tag) => tag.label),
-    entrypoint_ids: formData.entrypoint_ids.map((entrypoint) => entrypoint.doi),
     owner_identity_id: ownerId,
     doi,
     publisher: "Gardens-AI",
