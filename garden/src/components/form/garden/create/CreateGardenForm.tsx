@@ -1,23 +1,20 @@
 import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker, useNavigate } from "react-router-dom";
-import { useCreateGarden, useCreateDOI, useUpdateDOI } from "@/api";
+import { useCreateGardenAndDOI } from "@/api";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { formSchema, GardenCreateFormData } from "./schemas";
-import { transformFormToRequest } from "./transformers";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "../../UnsavedChangesDialog";
 import { FormFields } from "./FormFields";
-import { Garden, GardenCreateRequest } from "@/api/types";
 
 export const CreateGardenForm = () => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
-  const { mutateAsync: createDOI } = useCreateDOI();
-  const { mutateAsync: createGarden } = useCreateGarden();
-  const { mutateAsync: updateDOI } = useUpdateDOI();
+
+  const { createGardenAndDOI } = useCreateGardenAndDOI();
 
   const form = useForm<GardenCreateFormData>({
     resolver: zodResolver(formSchema),
@@ -33,6 +30,10 @@ export const CreateGardenForm = () => {
       language: "en",
       tags: [],
       version: "1.0.0",
+      owner_identity_id: auth?.authorization?.user?.sub,
+      doi: "",
+      publisher: "Gardens-AI",
+      is_archived: false,
     },
   });
 
@@ -42,25 +43,12 @@ export const CreateGardenForm = () => {
 
   const onSubmit = async (values: GardenCreateFormData) => {
     try {
-      const ownerId = auth?.authorization?.user?.sub;
-      if (!ownerId) {
-        throw new Error("User not authenticated");
-      }
-
-      const { doi } = await createDOI();
-
-      const requestData: GardenCreateRequest = transformFormToRequest(values, doi, ownerId);
-
-      const res = await createGarden(requestData);
-      const garden: Garden = res.data;
-      await updateDOI({
-        resource: garden,
-      });
+      const { garden } = await createGardenAndDOI(values);
 
       toast.success("Garden created successfully!");
-      navigate(`/garden/${encodeURIComponent(requestData.doi)}`);
+      navigate(`/garden/${encodeURIComponent(garden.doi)}`);
     } catch (error) {
-      toast.warning("Error creating garden. Please fix errors.");
+      toast.warning("Error creating garden.");
     }
   };
 

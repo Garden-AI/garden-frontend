@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export const formSchema = z.object({
   title: z
     .string()
@@ -28,6 +27,10 @@ export const formSchema = z.object({
 
   entrypoint_ids: z.array(z.string()),
   entrypoint_aliases: z.record(z.string()).optional(),
+  owner_identity_id: z.string(),
+  publisher: z.string(),
+  doi: z.string(),
+  is_archived: z.boolean(),
 });
 
 export type GardenCreateFormData = z.infer<typeof formSchema>;

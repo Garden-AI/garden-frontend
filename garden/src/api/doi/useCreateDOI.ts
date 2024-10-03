@@ -14,6 +14,7 @@ const createDOI = async (): Promise<CreateDOIResponse> => {
         attributes: {},
       },
     };
+    console.log("Creating DOI with request");
     const response = await axios.post<CreateDOIResponse>(`/doi`, request);
     return response.data;
   } catch (error) {
@@ -21,12 +22,7 @@ const createDOI = async (): Promise<CreateDOIResponse> => {
   }
 };
 
-export const useCreateDOI = (): UseMutationResult<
-  CreateDOIResponse,
-  Error,
-  void,
-  unknown
-> => {
+export const useCreateDOI = (): UseMutationResult<CreateDOIResponse, Error, void, unknown> => {
   return useMutation<CreateDOIResponse, Error, void, unknown>({
     mutationFn: createDOI,
   });
