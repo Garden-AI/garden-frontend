@@ -14,7 +14,6 @@ const createDOI = async (): Promise<CreateDOIResponse> => {
         attributes: {},
       },
     };
-    console.log("Creating DOI with request");
     const response = await axios.post<CreateDOIResponse>(`/doi`, request);
     return response.data;
   } catch (error) {
