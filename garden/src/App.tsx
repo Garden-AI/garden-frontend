@@ -68,6 +68,13 @@ function Root() {
           </Route>
         </Route>
 
+        {/* Modal Routes */}
+        <Route path="modal">
+          <Route element={<PrivateRoutes />}>
+            <Route path="upload" element={<ModalUploadPage />} />
+          </Route>
+        </Route>
+
         {/* Misc Routes */}
         <Route path="team" element={<TeamsPage />} />
         <Route path="terms" element={<TermsPage />} />
