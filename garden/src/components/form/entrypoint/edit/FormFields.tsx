@@ -20,7 +20,7 @@ export default function FormFields() {
   const form = useFormContext();
 
   return (
-    <div className="space-y-12 rounded-xl bg-white p-8 shadow-lg">
+    <div className="my-16 space-y-12 rounded-xl bg-white p-8 shadow-lg">
       <h1 className="text-2xl font-bold sm:text-3xl">Edit Entrypoint</h1>
 
       <section>
@@ -102,7 +102,7 @@ export default function FormFields() {
             name="authors"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold text-gray-700">Authors *</FormLabel>
+                <FormLabel className="font-bold text-gray-700">Authors</FormLabel>
                 <FormControl>
                   <MultipleSelector
                     {...field}

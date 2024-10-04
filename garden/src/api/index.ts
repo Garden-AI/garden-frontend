@@ -1,5 +1,6 @@
 /* Garden */
 import { useCreateGarden } from "./gardens/useCreateGarden";
+import { useCreateGardenAndDOI } from "./gardens/useCreateGardenAndDOI";
 import { useGetGarden } from "./gardens/useGetGarden";
 import { useUpdateGarden } from "./gardens/useUpdateGarden";
 import { useDeleteGarden } from "./gardens/useDeleteGarden";
@@ -35,6 +36,7 @@ import { useUpdateDOI } from "./doi/useUpdateDOI";
 
 export {
   useCreateGarden,
+  useCreateGardenAndDOI,
   useGetGarden,
   useUpdateGarden,
   usePatchGarden,

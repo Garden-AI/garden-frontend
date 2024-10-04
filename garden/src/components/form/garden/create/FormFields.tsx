@@ -7,23 +7,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UseFormReturn, useFieldArray, useFormContext } from "react-hook-form";
+import { UseFormReturn, useFormContext } from "react-hook-form";
 import { GardenCreateFormData } from "./schemas";
 import { Textarea } from "@/components/ui/textarea";
-import MultipleSelector, { Option } from "@/components/ui/multiple-select";
+import MultipleSelector from "@/components/ui/multiple-select";
 import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Link } from "react-router-dom";
-import { ExternalLink, RefreshCcwIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -33,13 +21,8 @@ import {
 } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { FormNavigation } from "./FormNavigation";
-import { tagOptions, initialEntrypoints } from "./constants";
-import WithTooltip from "@/components/WithTooltip";
-import { useGetEntrypoints } from "@/api";
-import { cn } from "@/lib/utils";
-import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import { tagOptions } from "./constants";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
-import CopyButton from "@/components/CopyButton";
 import { SelectEntrypointsTable } from "../SelectEntrypointsTable";
 
 const Step1 = () => {
@@ -56,7 +39,7 @@ const Step1 = () => {
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Garden Title *</FormLabel>
+            <FormLabel className="font-bold">Title</FormLabel>
             <FormControl>
               <Input placeholder="My Garden" {...field} />
             </FormControl>
@@ -70,7 +53,7 @@ const Step1 = () => {
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Description *</FormLabel>
+            <FormLabel className="font-bold">Description</FormLabel>
             <FormControl>
               <Textarea
                 placeholder="Tell us about your garden"
@@ -92,9 +75,7 @@ const Step1 = () => {
         name="tags"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>
-              Tags <span className="text-gray-500">(optional)</span>
-            </FormLabel>
+            <FormLabel className="font-bold">Tags</FormLabel>
             <FormControl>
               <MultipleSelector
                 {...field}
@@ -106,8 +87,10 @@ const Step1 = () => {
                 maxSelected={5}
                 hidePlaceholderWhenSelected
                 inputProps={{ maxLength: 32 }}
-                onChange={field.onChange}
-                value={field.value}
+                onChange={(value) => {
+                  field.onChange(value.map((v: any) => v.value));
+                }}
+                value={field.value.map((v: any) => ({ value: v, label: v }))}
               />
             </FormControl>
             <FormDescription>
@@ -121,36 +104,6 @@ const Step1 = () => {
   );
 };
 const Step2 = () => {
-  const auth = useGlobusAuth();
-  const form = useFormContext();
-  const { fields, replace } = useFieldArray({
-    control: form.control,
-    name: "entrypoint_ids",
-  });
-
-  const {
-    data: availableEntrypoints,
-    isFetching,
-    refetch,
-  } = useGetEntrypoints({
-    owner_uuid: auth?.authorization?.user?.sub,
-  });
-
-  const [selectedEntrypoints, setSelectedEntrypoints] = useState<string[]>(
-    fields.map((field: any) => field.doi),
-  );
-
-  const handleEntrypointToggle = (doi: string) => {
-    setSelectedEntrypoints((prev) => {
-      const newSelection = prev.includes(doi) ? prev.filter((id) => id !== doi) : [...prev, doi];
-
-      const newFields = availableEntrypoints?.filter((ep) => newSelection.includes(ep.doi));
-      replace(newFields);
-
-      return newSelection;
-    });
-  };
-
   return (
     <div className="space-y-8">
       <div className="space-y-4">
@@ -168,33 +121,7 @@ const Step2 = () => {
         <p className="text-sm text-gray-700"></p>
       </div>
 
-      <div>
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="mb-4 text-xl font-bold">Available Entrypoints</h3>
-          <div className="flex items-center pr-4 text-sm">
-            <span className="text-gray-300">{isFetching && "Refreshing..."}</span>
-            <WithTooltip hint="Refresh">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  refetch();
-                }}
-                type="button"
-                disabled={isFetching}
-                className={cn(
-                  "border-none bg-transparent p-2 hover:bg-transparent",
-                  isFetching && "cursor-not-allowed opacity-50",
-                )}
-              >
-                <RefreshCcwIcon className={cn("h-5 w-5", isFetching && "animate-spin")} />
-              </Button>
-            </WithTooltip>
-          </div>
-        </div>
-
-        <SelectEntrypointsTable />
-      </div>
+      <SelectEntrypointsTable />
 
       <EntrypointCreateInstructions />
     </div>
@@ -206,7 +133,7 @@ const EntrypointCreateInstructions = () => {
     <div className="text-sm text-gray-500">
       Not seeing the Entrypoint you're looking for? You can create a new one by following{" "}
       <Dialog>
-        <DialogTrigger className="text-primary transition hover:text-primary/80">
+        <DialogTrigger className="font-bold text-primary transition hover:text-primary/80">
           {" "}
           these instructions.
         </DialogTrigger>
@@ -346,9 +273,17 @@ const Step3 = () => {
         name="authors"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Authors *</FormLabel>
+            <FormLabel className="font-bold">Authors</FormLabel>
             <FormControl>
-              <MultipleSelector {...field} placeholder="Add authors" creatable />
+              <MultipleSelector
+                {...field}
+                placeholder="Add authors"
+                creatable
+                onChange={(value) => {
+                  field.onChange(value.map((v: any) => v.value));
+                }}
+                value={field.value.map((v: any) => ({ value: v, label: v }))}
+              />
             </FormControl>
             <FormDescription>
               The main researchers involved in producing the Garden. At least one author is required
@@ -364,11 +299,17 @@ const Step3 = () => {
         name="contributors"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>
-              Contributors <span className="text-gray-500">(optional)</span>
-            </FormLabel>
+            <FormLabel className="font-bold">Contributors</FormLabel>
             <FormControl>
-              <MultipleSelector {...field} placeholder="Add contributors" creatable />
+              <MultipleSelector
+                {...field}
+                placeholder="Add contributors"
+                creatable
+                onChange={(value) => {
+                  field.onChange(value.map((v: any) => v.value));
+                }}
+                value={field.value.map((v: any) => ({ value: v, label: v }))}
+              />
             </FormControl>
             <FormDescription>
               Acknowledge contributors to the development of this Garden, outside of those listed as
@@ -393,7 +334,7 @@ const Step4 = () => {
         name="language"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Language</FormLabel>
+            <FormLabel className="font-bold">Language</FormLabel>
             <FormControl>
               <Input placeholder="en" {...field} />
             </FormControl>
@@ -407,7 +348,7 @@ const Step4 = () => {
         name="version"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Version</FormLabel>
+            <FormLabel className="font-bold">Version</FormLabel>
             <FormControl>
               <Input placeholder="1.0.0" {...field} />
             </FormControl>
