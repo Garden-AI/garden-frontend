@@ -16,24 +16,17 @@ import { Input } from "@/components/ui/input";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateGarden } from "@/api";
-
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
+import { useState } from "react";
 
 export const ModalUploadForm = () => {
   const auth = useGlobusAuth();
   const { mutateAsync: createModalApp } = useCreateModalApp();
-  const { mutateAsync: createGarden } = useCreateGarden();
+  const [isParsingFile, setIsParsingFile] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(
       z.object({
-        // file: z
-        //   .instanceof(File)
-        //   .refine((file) => {
-        //     return !file || file.size <= MAX_UPLOAD_SIZE;
-        //   }, "File size must be less than 3MB")
-        //   .refine((file) => {
-        //     return file.type === "text/x-python";
-        //   }, "File must be a Python file"),
+        fileContents: z.string().min(1, { message: "A file is required" }),
 
         modal_functions: z
           .array(
@@ -43,6 +36,9 @@ export const ModalUploadForm = () => {
               function_name: z.string().min(1, { message: "Function name is required" }),
               year: z.string().min(4, { message: "Year must be 4 digits" }),
               is_archived: z.boolean(),
+              doi: z.string().min(1, {
+                message: "DOI is required",
+              }),
             }),
           )
           .min(1, { message: "At least one function is required." }),
@@ -50,30 +46,27 @@ export const ModalUploadForm = () => {
     ),
     mode: "onSubmit",
     defaultValues: {
-      file: undefined,
+      fileContents: "",
       modal_functions: [],
     },
   });
 
-  const onSubmit = async ({ file, modal_functions }: any) => {
+  const onSubmit = async (values: any) => {
     if (!auth.authorization?.user?.sub) {
       throw new Error("Must be authenticated");
     }
     try {
-      createModalApp(
-        {
-          owner_identity_id: auth.authorization?.user?.sub,
-          modal_functions,
-        },
-        {
-          onSuccess(data, variables, context) {
-            console.log(data);
-            createGarden({
-              owner_identity_id: auth.authorization.user.sub!,
-            });
-          },
-        },
-      );
+      createModalApp({
+        file_contents: values.fileContents,
+        requirements: [], // Will ultimately be handled by backend
+        app_name: "example-get-started",
+        version: "1.0.0",
+        base_image_name: "python:3.8", // Will ultimately be handled by backend (I think)
+        is_archived: false,
+        modal_function_names: values.modal_functions.map((func: any) => func.function_name), // Will ultimately be handled by backend
+        modal_functions: values.modal_functions,
+        owner_identity_id: Number(auth.authorization.user.sub), // Right now backend expects int, should be a string ultimately but for now this is fine as it's not saving to DB
+      });
     } catch (error) {
       console.log(error);
     }
@@ -85,7 +78,7 @@ export const ModalUploadForm = () => {
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <FormField
             control={form.control}
-            name="file"
+            name="fileContents"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="font-bold">File</FormLabel>
@@ -94,8 +87,16 @@ export const ModalUploadForm = () => {
                     id="file"
                     type="file"
                     accept=".py"
-                    onChange={(event) => {
-                      if (event.target.files) return field.onChange(event.target.files[0]);
+                    onChange={async (event) => {
+                      const file = event.target.files?.[0];
+                      if (file) {
+                        try {
+                          const fileContents = await fileToString(file);
+                          field.onChange(fileContents);
+                        } catch (error) {
+                          console.error("Error reading file:", error);
+                        }
+                      }
                     }}
                   />
                 </FormControl>
@@ -120,8 +121,6 @@ const ModalFunctions = () => {
     control,
   });
 
-  // console.log(fields);
-
   return (
     <div className="space-y-8">
       {fields.map((func, index) => (
@@ -135,6 +134,8 @@ const ModalFunctions = () => {
             description: "",
             year: "2024",
             is_archived: false,
+            doi: "fake_doi",
+            title: "",
           });
         }}
       >
@@ -203,3 +204,23 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
     </div>
   );
 };
+
+function fileToString(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event: ProgressEvent<FileReader>) => {
+      if (event.target?.result) {
+        resolve(event.target.result as string);
+      } else {
+        reject(new Error("Failed to read file: result is null"));
+      }
+    };
+
+    reader.onerror = (error: ProgressEvent<FileReader>) => {
+      reject(new Error(`Failed to read file: ${error.target?.error?.message || "Unknown error"}`));
+    };
+
+    reader.readAsText(file);
+  });
+}
