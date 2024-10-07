@@ -1,4 +1,5 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
+import SyntaxHighlighterComponent from "@/components/SyntaxHighlighter";
 import { Button } from "@/components/ui/button";
 import {
   FormLabel,
@@ -34,6 +35,10 @@ const ModalFunctions = () => {
             is_archived: false,
             doi: "fake_doi",
             title: "",
+            function_text: "def example_function():\n    return 'Hello, World!'\n",
+            authors: [],
+            tags: [],
+            test_functions: [],
           });
         }}
       >
@@ -44,7 +49,9 @@ const ModalFunctions = () => {
 };
 
 const ModalFunction = ({ index, remove }: { index: number; remove: () => void }) => {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
+
+  const functionText = watch(`modal_functions.${index}.function_text`);
 
   return (
     <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
@@ -104,7 +111,10 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
               <Input {...field} type="text" className="w-full" placeholder="my_function" />
             </FormControl>
             <FormMessage />
-            <FormDescription className="text-xs">The Python name of your function.</FormDescription>
+            <FormDescription className="text-xs">
+              The Python name of your function. This must match the function name in your uploaded
+              file.
+            </FormDescription>
           </FormItem>
         )}
       />
@@ -130,6 +140,10 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
           </FormItem>
         )}
       />
+      <div className="mt-4">
+        <h2 className="mb-4 text-sm font-semibold">Function Text</h2>
+        <SyntaxHighlighterComponent>{functionText}</SyntaxHighlighterComponent>
+      </div>
     </div>
   );
 };

@@ -13,6 +13,10 @@ export const formSchema = z.object({
         doi: z.string().min(1, {
           message: "DOI is required",
         }),
+        function_text: z.string().min(1, { message: "Function text is required" }),
+        authors: z.array(z.string()),
+        tags: z.array(z.string()),
+        test_functions: z.array(z.string()),
       }),
     )
     .min(1, { message: "At least one function is required." }),

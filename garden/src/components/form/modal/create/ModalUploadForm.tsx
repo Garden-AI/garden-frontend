@@ -10,6 +10,27 @@ import { useState } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ModalUploadFormData, formSchema } from "./schemas";
 import { FormFields } from "./FormFields";
+import { toast } from "sonner";
+
+const defaultValues = {
+  // This is just a placeholder so I don't have to type out the whole object for testing
+  title: "Garden Title",
+  description: "Garden Description",
+  fileContents: "file contents",
+  modal_functions: [
+    {
+      title: "Function Title",
+      description: "Function Description",
+      function_name: "square",
+      year: "2024",
+      doi: "fake_doi",
+      function_text: "def example_function():\n    return 'Hello, World!'\n",
+      authors: [],
+      tags: [],
+      test_functions: [],
+    },
+  ],
+};
 
 export const ModalUploadForm = () => {
   const auth = useGlobusAuth();
@@ -23,6 +44,7 @@ export const ModalUploadForm = () => {
     resolver: zodResolver(formSchema),
     mode: "onSubmit",
     defaultValues: {
+      // ...defaultValues,
       title: "",
       description: "",
       fileContents: "",
@@ -33,6 +55,10 @@ export const ModalUploadForm = () => {
           function_name: "",
           year: "2024",
           doi: "fake-doi",
+          function_text: "def example_function():\n    return 'Hello, World!'\n",
+          authors: [],
+          tags: [],
+          test_functions: [],
         },
       ],
     },
@@ -49,12 +75,10 @@ export const ModalUploadForm = () => {
         file_contents: values.fileContents,
         requirements: [], // Will ultimately be handled by backend
         app_name: "example-get-started", // Will ultimately be determined by backend
-        version: "1.0.0",
         base_image_name: "python:3.8", // Will ultimately be handled by backend (I think)
-        is_archived: false,
         modal_function_names: values.modal_functions.map((func: any) => func.function_name), // Will ultimately be handled by backend
         modal_functions: values.modal_functions,
-        owner_identity_id: Number(auth.authorization.user.sub), // Right now backend expects int, should be a string ultimately but for now this is fine as it's not saving to DB
+        owner_identity_id: auth.authorization.user.sub,
       });
 
       // Create the Garden
@@ -76,6 +100,8 @@ export const ModalUploadForm = () => {
         });
     } catch (error) {
       console.log(error);
+      setLoadingMessage(() => "");
+      toast.error("Error creating modal app.");
     }
   };
 
