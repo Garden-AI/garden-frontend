@@ -8,7 +8,7 @@ export const useCreateGardenAndDOI = () => {
   const { mutateAsync: createGarden } = useCreateGarden();
   const { mutateAsync: updateDOI } = useUpdateDOI();
 
-  const createGardenAndDOI = async (values: GardenCreateRequest) => {
+  const createGardenAndDOI = async (values: Omit<GardenCreateRequest, "doi">) => {
     const { doi } = await createDOI();
     const { data: garden } = await createGarden({ ...values, doi });
     await updateDOI({

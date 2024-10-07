@@ -284,6 +284,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/modal-invocations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Invoke Modal Fn */
+    post: operations["invoke_modal_fn_modal_invocations_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/modal-apps": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Add Modal App */
+    post: operations["add_modal_app_modal_apps_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/modal-apps/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Modal Apps */
+    get: operations["get_modal_apps_modal_apps__id__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/mdf/search": {
     parameters: {
       query?: never;
@@ -1250,6 +1301,8 @@ export interface components {
       is_archived: boolean;
       /** Entrypoint Ids */
       entrypoint_ids?: string[];
+      /** Modal Function Ids */
+      modal_function_ids?: number[];
       /** Owner Identity Id */
       owner_identity_id?: string | null;
     };
@@ -1304,8 +1357,12 @@ export interface components {
       id: number;
       /** Entrypoints */
       entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
+      /** Modal Functions */
+      modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
       /** Entrypoint Ids */
       readonly entrypoint_ids: string[];
+      /** Modal Function Ids */
+      readonly modal_function_ids: string[];
     };
     /** GardenPatchRequest */
     GardenPatchRequest: {
@@ -1335,6 +1392,8 @@ export interface components {
       };
       /** Is Archived */
       is_archived?: boolean | null;
+      /** Entrypoint Ids */
+      entrypoint_ids?: string[] | null;
     };
     /** GeoLocation */
     GeoLocation: {
@@ -1498,6 +1557,141 @@ export interface components {
       name?: string | null;
       /** Value */
       value?: number | null;
+    };
+    /** ModalAppCreateRequest */
+    ModalAppCreateRequest: {
+      /** App Name */
+      app_name: string;
+      /** Modal Function Names */
+      modal_function_names?: string[];
+      /** File Contents */
+      file_contents: string;
+      /** Requirements */
+      requirements?: string[];
+      /** Base Image Name */
+      base_image_name: string;
+      /** Owner Identity Id */
+      owner_identity_id?: string | null;
+      /** Modal Functions */
+      modal_functions?: components["schemas"]["ModalFunctionMetadata"][];
+    };
+    /** ModalAppMetadataResponse */
+    ModalAppMetadataResponse: {
+      /** App Name */
+      app_name: string;
+      /** Modal Function Names */
+      modal_function_names?: string[];
+      /** File Contents */
+      file_contents: string;
+      /** Requirements */
+      requirements?: string[];
+      /** Base Image Name */
+      base_image_name: string;
+      /**
+       * Owner Identity Id
+       * Format: uuid
+       */
+      owner_identity_id: string;
+      /** Id */
+      id: number;
+      /** Modal Functions */
+      modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
+      /** Modal Function Ids */
+      readonly modal_function_ids: string[];
+    };
+    /** ModalFunctionMetadata */
+    ModalFunctionMetadata: {
+      /** Doi */
+      doi: string | null;
+      /** Title */
+      title: string;
+      /** Description */
+      description: string | null;
+      /** Year */
+      year: string;
+      /**
+       * Is Archived
+       * @default false
+       */
+      is_archived: boolean;
+      /** Function Name */
+      function_name: string;
+      /** Function Text */
+      function_text: string;
+      /** Authors */
+      authors?: string[];
+      /** Tags */
+      tags?: string[];
+      /** Test Functions */
+      test_functions?: string[];
+      /** Requirements */
+      requirements?: string[];
+      /** Models */
+      models?: components["schemas"]["src__api__schemas__modal__modal_function___ModelMetadata"][];
+      /** Repositories */
+      repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
+      /** Papers */
+      papers?: components["schemas"]["_PaperMetadata"][];
+      /** Datasets */
+      datasets?: components["schemas"]["_DatasetMetadata-Input"][];
+    };
+    /** ModalFunctionMetadataResponse */
+    ModalFunctionMetadataResponse: {
+      /** Doi */
+      doi: string | null;
+      /** Title */
+      title: string;
+      /** Description */
+      description: string | null;
+      /** Year */
+      year: string;
+      /**
+       * Is Archived
+       * @default false
+       */
+      is_archived: boolean;
+      /** Function Name */
+      function_name: string;
+      /** Function Text */
+      function_text: string;
+      /** Authors */
+      authors?: string[];
+      /** Tags */
+      tags?: string[];
+      /** Test Functions */
+      test_functions?: string[];
+      /** Requirements */
+      requirements?: string[];
+      /** Models */
+      models?: components["schemas"]["_ModelMetadata-Output"][];
+      /** Repositories */
+      repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
+      /** Papers */
+      papers?: components["schemas"]["_PaperMetadata"][];
+      /** Datasets */
+      datasets?: components["schemas"]["_DatasetMetadata-Output"][];
+      /** Id */
+      id: number;
+      /** Modal App Id */
+      modal_app_id: number;
+    };
+    /** ModalInvocationRequest */
+    ModalInvocationRequest: {
+      /** App Name */
+      app_name: string;
+      /** Function Name */
+      function_name: string;
+      /**
+       * Args Kwargs Serialized
+       * Format: binary
+       */
+      args_kwargs_serialized: string;
+    };
+    /** ModalInvocationResponse */
+    ModalInvocationResponse: {
+      result: components["schemas"]["_ModalGenericResult"];
+      /** Data Format */
+      data_format: number;
     };
     /** NameIdentifier */
     NameIdentifier: {
@@ -1990,6 +2184,41 @@ export interface components {
       /** Repository */
       repository: string;
     };
+    /** _ModalGenericResult */
+    _ModalGenericResult: {
+      /** Status */
+      status: number;
+      /**
+       * Exception
+       * @default
+       */
+      exception: string;
+      /**
+       * Traceback
+       * @default
+       */
+      traceback: string;
+      /**
+       * Serialized Tb
+       * @default
+       */
+      serialized_tb: string;
+      /**
+       * Tb Line Cache
+       * @default
+       */
+      tb_line_cache: string;
+      /**
+       * Data
+       * @default
+       */
+      data: string;
+      /**
+       * Data Blob Id
+       * @default
+       */
+      data_blob_id: string;
+    };
     /** _ModelMetadata */
     "_ModelMetadata-Output": {
       /** Model Identifier */
@@ -2150,6 +2379,15 @@ export interface components {
     };
     /** _ModelMetadata */
     src__api__schemas__entrypoint___ModelMetadata: {
+      /** Model Identifier */
+      model_identifier: string;
+      /** Model Repository */
+      model_repository: string;
+      /** Model Version */
+      model_version: string | null;
+    };
+    /** _ModelMetadata */
+    src__api__schemas__modal__modal_function___ModelMetadata: {
       /** Model Identifier */
       model_identifier: string;
       /** Model Repository */
@@ -2971,6 +3209,103 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["FailedSearchIndexUpdateResponse"][];
+        };
+      };
+    };
+  };
+  invoke_modal_fn_modal_invocations_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ModalInvocationRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModalInvocationResponse"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  add_modal_app_modal_apps_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ModalAppCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModalAppMetadataResponse"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_modal_apps_modal_apps__id__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModalAppMetadataResponse"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };
