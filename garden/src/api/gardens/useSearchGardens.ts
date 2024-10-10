@@ -1,4 +1,3 @@
-import { search } from "@globus/sdk/cjs";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Garden, GardenSearchFilter, GardenSearchRequest, GardenSearchResponse } from "../types";
 import axios from "../axios";

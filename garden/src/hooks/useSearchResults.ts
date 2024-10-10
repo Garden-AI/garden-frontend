@@ -128,16 +128,32 @@ export const useSearchResults = (): SearchResultsState => {
 
   const facets = useMemo(() => {
     if (!searchResult?.facets) return [];
+
+    const facetComparator = (
+      a: { value: string; count: number },
+      b: { value: string; count: number },
+      name: string,
+    ) => {
+      const filterIsAppliedToA = selectedFilters[name]?.includes(a.value);
+      const filterIsAppliedToB = selectedFilters[name]?.includes(b.value);
+
+      // If the filter is applied to A but not B, A should rank higher, and vice versa
+      if (filterIsAppliedToA && !filterIsAppliedToB) {
+        return -1;
+      }
+      if (!filterIsAppliedToA && filterIsAppliedToB) {
+        return 1;
+      }
+      // If the filter is applied to both, the one with the higher count should rank higher
+      return b.count - a.count;
+    };
+
     return Object.entries(searchResult.facets).map(
       ([name, values]: [string, Record<string, number>]) => ({
         name,
         values: Object.entries(values)
           .map(([value, count]: [string, number]) => ({ value, count }))
-          .sort((a, b) => {
-            return (
-              2 * (b.count - a.count) - (Number(selectedFilters[name]?.includes(a.value)) || -1)
-            );
-          }),
+          .sort((a, b) => facetComparator(a, b, name)),
       }),
     );
   }, [searchResult]);
