@@ -1,5 +1,6 @@
 /* Garden */
 import { useCreateGarden } from "./gardens/useCreateGarden";
+import { useCreateGardenAndDOI } from "./gardens/useCreateGardenAndDOI";
 import { useGetGarden } from "./gardens/useGetGarden";
 import { useUpdateGarden } from "./gardens/useUpdateGarden";
 import { useDeleteGarden } from "./gardens/useDeleteGarden";
@@ -11,7 +12,7 @@ import { usePatchGarden } from "./gardens/usePatchGarden";
 import { useCreateEntrypoint } from "./entrypoints/useCreateEntrypoint";
 import { useGetEntrypoint } from "./entrypoints/useGetEntrypoint";
 import { useGetEntrypoints } from "./entrypoints/useGetEntrypoints";
-import { usePatchEntrypoint } from "./entrypoints/useEditEntrypoint";
+import { usePatchEntrypoint } from "./entrypoints/usePatchEntrypoint";
 // import { useUpdateEntrypoint } from "./entrypoint/useUpdateEntrypoint";
 // import { useDeleteEntrypoint } from "./entrypoint/useDeleteEntrypoint";
 
@@ -35,6 +36,7 @@ import { useUpdateDOI } from "./doi/useUpdateDOI";
 
 export {
   useCreateGarden,
+  useCreateGardenAndDOI,
   useGetGarden,
   useUpdateGarden,
   usePatchGarden,

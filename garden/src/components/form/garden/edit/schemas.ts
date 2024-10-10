@@ -7,7 +7,6 @@ export const formSchema = z.object({
     .min(8, { message: "Title must be at least 8 characters" })
     .max(100, { message: "Title must not exceed 100 characters" }),
 
-  doi_is_draft: z.boolean(),
   description: z
     .string()
     .min(1, { message: "Description is required" })
@@ -17,20 +16,13 @@ export const formSchema = z.object({
     .string()
     .regex(/^\d{4}$/, { message: "Invalid year" })
     .optional(),
-  language: z.string(),
   version: z.string().regex(/^\d+\.\d+(\.\d+)?$/, {
     message: "Version must be in the format x.y or x.y.z",
   }),
   authors: z.array(z.string()).min(1, { message: "Please add at least one author." }),
   contributors: z.array(z.string()),
   tags: z.array(z.string()),
-
   entrypoint_ids: z.array(z.string()),
-  entrypoint_aliases: z.record(z.string()).optional(),
-  owner_identity_id: z.string(),
-  publisher: z.string(),
-  doi: z.string(),
-  is_archived: z.boolean(),
 });
 
-export type GardenCreateFormData = z.infer<typeof formSchema>;
+export type GardenPatchFormData = z.infer<typeof formSchema>;

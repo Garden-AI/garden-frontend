@@ -61,6 +61,7 @@
   },
   "scripts": {
     "start": "vite",
+    "start:local": "set VITE_BACKEND_URL=http://localhost:5500&& vite",
     "build": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "build:production": "npm run build",

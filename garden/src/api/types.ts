@@ -4,9 +4,13 @@ type Garden = components["schemas"]["GardenMetadataResponse"];
 type GardenCreateRequest = components["schemas"]["GardenCreateRequest"];
 type GardenCreateResponse = components["schemas"]["GardenMetadataResponse"];
 type GardenPatchRequest = components["schemas"]["GardenPatchRequest"];
+
 type Entrypoint = components["schemas"]["EntrypointMetadataResponse"];
 type EntrypointCreateRequest = components["schemas"]["EntrypointCreateRequest"];
 type EntrypointPatchRequest = components["schemas"]["EntrypointPatchRequest"];
+
+type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
+type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
 
 type User = components["schemas"]["UserMetadataResponse"];
 type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
@@ -31,6 +35,8 @@ export type {
   Entrypoint,
   EntrypointCreateRequest,
   EntrypointPatchRequest,
+  ModalAppCreateRequest,
+  ModalAppMetadataResponse,
   User,
   UpdateUserSchema,
   Dataset,

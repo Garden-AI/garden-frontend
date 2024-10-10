@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useSearchResults } from "@/hooks/useSearchResults";
 
 export const SearchForm = ({
   query,
   setQuery,
 }: {
   query: string;
-  setQuery: (query: string) => void;
+  setQuery: (query: string | null) => void;
 }) => {
-  let [searchParams, setSearchParams] = useSearchParams();
-  const [queryValue, setQueryValue] = useState(searchParams.get("q") || "");
+  const [queryInputValue, setQueryInputValue] = useState(query || "");
 
   useEffect(() => {
     const handleKeyDown = (e: any) => {
@@ -24,14 +21,15 @@ export const SearchForm = ({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [queryValue]);
+  }, [queryInputValue]);
 
   const handleSearch = () => {
-    setQuery(queryValue);
+    setQuery(queryInputValue);
   };
 
   const handleClear = () => {
-    setQuery("");
+    setQuery(null);
+    setQueryInputValue("");
   };
 
   return (
@@ -42,11 +40,11 @@ export const SearchForm = ({
           <Input
             type="text"
             placeholder="Search for a garden or entrypoint (e.g. Digit Classifier)"
-            value={queryValue}
-            onChange={(e) => setQueryValue(e.target.value)}
+            value={queryInputValue}
+            onChange={(e) => setQueryInputValue(e.target.value)}
             className="w-full rounded-l-full py-2 pl-10 pr-12 outline-none transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-0"
           />
-          {queryValue && (
+          {queryInputValue && (
             <Button
               type="button"
               variant="ghost"
@@ -59,11 +57,7 @@ export const SearchForm = ({
         </div>
 
         <div className="flex">
-          <Button
-            onClick={handleSearch}
-            className="rounded-l-none border-l-0 "
-            variant="default"
-          >
+          <Button onClick={handleSearch} className="rounded-l-none border-l-0 " variant="default">
             <Search className="mr-2 h-4 w-4" />
             Search
           </Button>

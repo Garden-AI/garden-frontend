@@ -1,33 +1,28 @@
 import { Entrypoint } from "@/api/types";
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useGetCurrUserEntrypoints } from "../api/entrypoints/getCurrUserEntrypoints";
-import { useGetUserInfo } from "@/api";
+import { useGetEntrypoints } from "@/api";
+import { useGlobusAuth } from "./auth/useGlobusAuth";
 
-const EntrypointBox = ({ entrypoint, garden }: { entrypoint: any; garden?: any }) => {
+const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   const navigate = useNavigate();
   const text = entrypoint?.doi ? entrypoint.doi.replace("/", "%2f") : "";
-  const { data: currUser } = useGetUserInfo();
-  const { data: currUserEntrypoints } = useGetCurrUserEntrypoints({
-    owner_uuid: currUser?.identity_id,
+  const auth = useGlobusAuth();
+  const { data: entrypoints } = useGetEntrypoints({
+    owner_uuid: auth.authorization?.user?.sub,
   });
 
   if (!entrypoint) {
     return null;
   }
 
-  const canEditEntrypoint = currUserEntrypoints?.some(
-    (userEntrypoint) => userEntrypoint.doi === entrypoint.doi,
-  );
+  const canEditEntrypoint =
+    auth.authorization?.user && entrypoints?.some((e: Entrypoint) => e.doi === entrypoint.doi);
 
   const handleEditEntrypointClick = (e: any) => {
     e.stopPropagation();
-    navigate(`/entrypoint/${encodeURIComponent(entrypoint?.doi)}/edit`, {
-      state: { entrypoint, garden },
-    });
+    navigate(`/entrypoint/${encodeURIComponent(entrypoint?.doi)}/edit`);
   };
 
   return (

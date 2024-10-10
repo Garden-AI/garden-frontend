@@ -1,9 +1,5 @@
 import { Dataset, Paper, Repository } from "@/api/types";
-import {
-  DatasetCard,
-  PaperCard,
-  RepositoryCard,
-} from "./AssociatedMaterialCards";
+import { DatasetCard, PaperCard, RepositoryCard } from "./AssociatedMaterialCards";
 
 interface Resource {
   [key: string]: any;
@@ -21,16 +17,9 @@ const AssociatedMaterialsGrid: React.FC<AssociatedMaterialsGridProps> = ({
   onDelete,
 }) => {
   if (!fields || fields.length === 0)
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-gray-500">None added</p>
-      </div>
-    );
+    return <div className="flex min-h-24 items-center justify-center"></div>;
 
-  const renderCard = (
-    resource: Paper | Repository | Dataset,
-    index: number,
-  ) => {
+  const renderCard = (resource: Paper | Repository | Dataset, index: number) => {
     return isDataset(resource) ? (
       <DatasetCard
         key={index}
@@ -59,9 +48,7 @@ const AssociatedMaterialsGrid: React.FC<AssociatedMaterialsGridProps> = ({
   };
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {fields.map((resource: any, index: number) =>
-        renderCard(resource, index),
-      )}
+      {fields.map((resource: any, index: number) => renderCard(resource, index))}
     </div>
   );
 };

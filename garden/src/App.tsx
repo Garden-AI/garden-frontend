@@ -12,15 +12,17 @@ import TeamsPage from "./pages/TeamsPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
-import MetadataEditing from "./pages/MetadataEditing";
+
+import CreateGardenPage from "./components/form/garden/create/CreateGardenPage";
+import EditEntrypointPage from "./components/form/entrypoint/edit/EditEntrypointPage";
+import EditGardenPage from "./components/form/garden/edit/EditGardenPage";
 
 /* Components */
-import CreateGardenPage from "./components/form/garden/create/CreateGardenPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
 /* Lib */
-import EditEntrypointPage from "./components/form/entrypoint/edit/EditEntrypointPage";
+import { ModalUploadPage } from "./components/form/modal/create/ModalUploadPage";
 
 export default function App() {
   return (
@@ -46,6 +48,7 @@ function Root() {
         <Route path="garden">
           <Route element={<PrivateRoutes />}>
             <Route path="create" element={<CreateGardenPage />} />
+            <Route path=":doi/edit" element={<EditGardenPage />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>
@@ -55,6 +58,20 @@ function Root() {
           <Route path=":doi" element={<EntrypointPage />} />
           <Route element={<PrivateRoutes />}>
             <Route path=":doi/edit" element={<EditEntrypointPage />} />
+          </Route>
+        </Route>
+
+        {/* Modal Routes */}
+        <Route path="modal">
+          <Route element={<PrivateRoutes />}>
+            <Route path="upload" element={<ModalUploadPage />} />
+          </Route>
+        </Route>
+
+        {/* Modal Routes */}
+        <Route path="modal">
+          <Route element={<PrivateRoutes />}>
+            <Route path="upload" element={<ModalUploadPage />} />
           </Route>
         </Route>
 

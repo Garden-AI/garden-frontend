@@ -21,12 +21,7 @@ const createDOI = async (): Promise<CreateDOIResponse> => {
   }
 };
 
-export const useCreateDOI = (): UseMutationResult<
-  CreateDOIResponse,
-  Error,
-  void,
-  unknown
-> => {
+export const useCreateDOI = (): UseMutationResult<CreateDOIResponse, Error, void, unknown> => {
   return useMutation<CreateDOIResponse, Error, void, unknown>({
     mutationFn: createDOI,
   });

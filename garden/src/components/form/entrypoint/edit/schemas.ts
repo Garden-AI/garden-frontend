@@ -1,17 +1,11 @@
 import { z } from "zod";
-const optionSchema = z.object({
-  value: z.string(),
-  label: z.string(),
-  disabled: z.boolean().optional(),
-  group: z.string().optional(),
-});
 
 export const formSchema = z.object({
   title: z.string(),
   description: z.string(),
   year: z.string(),
-  authors: z.array(optionSchema),
-  tags: z.array(optionSchema),
+  authors: z.array(z.string()),
+  tags: z.array(z.string()),
   repositories: z.array(
     z.object({
       repo_name: z.string(),
@@ -38,4 +32,4 @@ export const formSchema = z.object({
   ),
 });
 
-export type EntrypointEditFormData = z.infer<typeof formSchema>;
+export type EntrypointPatchFormData = z.infer<typeof formSchema>;
