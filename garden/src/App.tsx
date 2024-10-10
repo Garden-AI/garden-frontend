@@ -46,8 +46,6 @@ function Root() {
         <Route path="garden">
           <Route element={<PrivateRoutes />}>
             <Route path="create" element={<CreateGardenPage />} />
-            <Route path=":doi/edit" element={<CreateGardenPage />} />
-            <Route path=":doi/metadataEditing" element={<MetadataEditing />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
         </Route>

@@ -60,6 +60,7 @@ const HomePage = () => {
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
       id: 100,
+      modal_function_ids: [],
     },
     {
       title: "Atom segmentation deep learning models",
@@ -73,6 +74,7 @@ const HomePage = () => {
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
       id: 100,
+      modal_function_ids: [],
     },
     {
       title: "Transmission electron microscopy (TEM) video analysis models",
@@ -86,6 +88,7 @@ const HomePage = () => {
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
       id: 100,
+      modal_function_ids: [],
     },
     {
       title: "Models for processing position-averaged convergent beam electron diffraction images",
@@ -99,6 +102,7 @@ const HomePage = () => {
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
       id: 100,
+      modal_function_ids: [],
     },
     {
       title: "Semiconductor property prediction models",
@@ -111,6 +115,7 @@ const HomePage = () => {
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
       id: 100,
+      modal_function_ids: [],
     },
     {
       title: "Materials Screening Performance Tests",
@@ -123,6 +128,7 @@ const HomePage = () => {
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
       id: 100,
+      modal_function_ids: [],
     },
     {
       title: "Framework example garden",
@@ -136,6 +142,7 @@ const HomePage = () => {
       entrypoint_ids: ["entrypoint1", "entrypoint2"],
       owner_identity_id: "100",
       id: 100,
+      modal_function_ids: [],
     },
   ];
 

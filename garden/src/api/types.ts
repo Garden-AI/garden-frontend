@@ -18,32 +18,10 @@ type Repository = components["schemas"]["_Repository"];
 
 type DOIRequest = components["schemas"]["Doi"];
 
-// Temporary until backend schema is merged
-interface GardenSearchFilter {
-  field_name: string;
-  values: string[];
-}
-
-interface Facets {
-  tags: Record<string, number>;
-  authors: Record<string, number>;
-  year: Record<string, number>;
-}
-
-interface GardenSearchRequest {
-  q: string;
-  limit?: number;
-  offset?: number;
-  filters?: GardenSearchFilter[];
-}
-
-interface GardenSearchResponse {
-  count: number;
-  total: number;
-  offset: number;
-  garden_meta: Garden[];
-  facets: Facets;
-}
+type GardenSearchRequest = components["schemas"]["GardenSearchRequest"];
+type GardenSearchResponse = components["schemas"]["GardenSearchResponse"];
+type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
+type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
 
 export type {
   Garden,
@@ -61,6 +39,6 @@ export type {
   DOIRequest,
   GardenSearchRequest,
   GardenSearchResponse,
-  Facets,
+  GardenSearchFacets,
   GardenSearchFilter,
 };

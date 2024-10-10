@@ -8,8 +8,9 @@ import { useEffect, useState } from "react";
 
 export default function RelatedGardens({ doi }: { doi: string }) {
   const { data, isLoading, isError } = useSearchGardens({
-    q: "*",
+    q: "",
     limit: 10,
+    offset: 0,
   });
 
   const [gardens, setGardens] = useState<Garden[] | null>(null);

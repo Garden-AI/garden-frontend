@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Garden, GardenSearchFilter, GardenSearchRequest, GardenSearchResponse } from "../types";
 import axios from "../axios";
 
-const searchGlobus = async (searchOptions: GardenSearchRequest): Promise<any> => {
+const searchGardens = async (searchOptions: GardenSearchRequest): Promise<GardenSearchResponse> => {
   try {
     const response = await axios.post("/gardens/search", searchOptions);
     return response.data;
@@ -20,13 +20,14 @@ export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
       searchOptions.limit,
       searchOptions.offset,
       searchOptions.filters,
+      searchOptions.sort,
     ],
-    queryFn: async () => searchGlobus(searchOptions),
+    queryFn: async () => searchGardens(searchOptions),
     placeholderData: keepPreviousData,
   });
 };
 
-export const transformSearchResultToGardens = (searchResult?: any): Garden[] => {
+export const transformSearchResultToGardens = (searchResult?: GardenSearchResponse): Garden[] => {
   return searchResult?.garden_meta || [];
 };
 
@@ -55,6 +56,7 @@ export const transformSearchParamsToSearchRequest = (searchParams: URLSearchPara
 
   const filters = [...defaultFilters, ...userFilters];
 
+  const q = searchParams.get("q") || "";
   const size = Number(searchParams.get("size")) || 10;
   const page = Number(searchParams.get("page")) || 1;
   const sort = searchParams.get("sort");
@@ -64,10 +66,10 @@ export const transformSearchParamsToSearchRequest = (searchParams: URLSearchPara
   const order = sort === "asc" ? "asc" : sort === "desc" ? "desc" : undefined;
 
   return {
-    q: searchParams.get("q") || "",
+    q,
     limit: size,
     offset,
     filters,
-    sort: order ? [{ field_name: "title", order }] : undefined,
+    sort: order ? { field_name: "title", order } : undefined,
   };
 };
