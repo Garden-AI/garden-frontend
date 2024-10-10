@@ -3,23 +3,20 @@ import { RocketIcon } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
 import RelatedGardenBox from "./RelatedGardenBox";
 import { useSearchGardens } from "@/api";
-import { transformSearchResultToGardens } from "@/api/search/useSearchGardens";
+import { transformSearchResultToGardens } from "@/api/gardens/useSearchGardens";
 import { useEffect, useState } from "react";
 
 export default function RelatedGardens({ doi }: { doi: string }) {
   const { data, isLoading, isError } = useSearchGardens({
-    q: "*",
+    q: "",
     limit: 10,
+    offset: 0,
   });
 
   const [gardens, setGardens] = useState<Garden[] | null>(null);
 
   useEffect(() => {
-    setGardens(
-      transformSearchResultToGardens(data).filter(
-        (garden) => garden.doi !== doi,
-      ),
-    );
+    setGardens(transformSearchResultToGardens(data).filter((garden) => garden.doi !== doi));
   }, [data]);
 
   if (isLoading) {

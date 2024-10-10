@@ -2,24 +2,30 @@ import { useMemo, useCallback, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSearchGardens } from "@/api";
 import {
-  transformSearchParamsToGSearchRequest,
+  transformSearchParamsToSearchRequest,
   transformSearchResultToGardens,
-} from "@/api/search/useSearchGardens";
-import { Garden } from "@/api/types";
+} from "@/api/gardens/useSearchGardens";
+import { Garden, GardenSearchRequest } from "@/api/types";
 
 type SortOrder = "asc" | "desc" | "relevance" | null;
 const filterKeys = ["tags", "authors", "year"];
 
-interface GlobusSearchResult {
+interface GardenSearchResult {
   total: number;
   hasNextPage: boolean;
   gardens: Garden[];
   totalPages: number;
-  facetResults?: Globus.Search.GFacetResult[];
+  facets: Array<{
+    name: string;
+    values: Array<{
+      value: string;
+      count: number;
+    }>;
+  }>;
 }
 
 interface SearchResultsState {
-  searchResult: GlobusSearchResult;
+  searchResult: GardenSearchResult;
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -57,8 +63,8 @@ export const useSearchResults = (): SearchResultsState => {
     return filters;
   }, [searchParams]);
 
-  const searchRequest: Globus.Search.GSearchRequest = useMemo(
-    () => transformSearchParamsToGSearchRequest(searchParams),
+  const searchRequest: GardenSearchRequest = useMemo(
+    () => transformSearchParamsToSearchRequest(searchParams),
     [searchParams],
   );
 
@@ -120,13 +126,45 @@ export const useSearchResults = (): SearchResultsState => {
     [updateSearchParams],
   );
 
+  const facets = useMemo(() => {
+    if (!searchResult?.facets) return [];
+
+    const facetComparator = (
+      a: { value: string; count: number },
+      b: { value: string; count: number },
+      name: string,
+    ) => {
+      const filterIsAppliedToA = selectedFilters[name]?.includes(a.value);
+      const filterIsAppliedToB = selectedFilters[name]?.includes(b.value);
+
+      // If the filter is applied to A but not B, A should rank higher, and vice versa
+      if (filterIsAppliedToA && !filterIsAppliedToB) {
+        return -1;
+      }
+      if (!filterIsAppliedToA && filterIsAppliedToB) {
+        return 1;
+      }
+      // If the filter is applied to both, the one with the higher count should rank higher
+      return b.count - a.count;
+    };
+
+    return Object.entries(searchResult.facets).map(
+      ([name, values]: [string, Record<string, number>]) => ({
+        name,
+        values: Object.entries(values)
+          .map(([value, count]: [string, number]) => ({ value, count }))
+          .sort((a, b) => facetComparator(a, b, name)),
+      }),
+    );
+  }, [searchResult]);
+
   return {
     searchResult: {
       total: searchResult?.total || 0,
-      hasNextPage: searchResult?.has_next_page || false,
+      hasNextPage: page < totalPages,
       gardens,
       totalPages,
-      facetResults: searchResult?.facet_results,
+      facets,
     },
     isLoading,
     isFetching,
@@ -146,4 +184,4 @@ export const useSearchResults = (): SearchResultsState => {
   };
 };
 
-export type { GlobusSearchResult, SortOrder };
+export type { GardenSearchResult, SortOrder };

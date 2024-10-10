@@ -22,6 +22,11 @@ type Repository = components["schemas"]["_Repository"];
 
 type DOIRequest = components["schemas"]["Doi"];
 
+type GardenSearchRequest = components["schemas"]["GardenSearchRequest"];
+type GardenSearchResponse = components["schemas"]["GardenSearchResponse"];
+type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
+type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
+
 export type {
   Garden,
   GardenCreateRequest,
@@ -38,4 +43,8 @@ export type {
   Paper,
   Repository,
   DOIRequest,
+  GardenSearchRequest,
+  GardenSearchResponse,
+  GardenSearchFacets,
+  GardenSearchFilter,
 };

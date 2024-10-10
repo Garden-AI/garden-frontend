@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSearchGardens } from "@/api/search/useSearchGardens";
 import {
   Accordion,
   AccordionContent,
@@ -47,8 +46,6 @@ const HomePage = () => {
     }
     getToken();
   }, [auth]);
-
-  // const { data: gardens } = useSearchGardens("*", "6");
 
   const gardens: Garden[] = [
     {
