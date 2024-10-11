@@ -23,6 +23,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 
 /* Lib */
 import { ModalUploadPage } from "./components/form/modal/create/ModalUploadPage";
+import ModalFunctionPage from "./pages/ModalFunctionPage";
 
 export default function App() {
   return (
@@ -73,6 +74,7 @@ function Root() {
           <Route element={<PrivateRoutes />}>
             <Route path="upload" element={<ModalUploadPage />} />
           </Route>
+          <Route path=":id" element={<ModalFunctionPage />} />
         </Route>
 
         {/* Misc Routes */}

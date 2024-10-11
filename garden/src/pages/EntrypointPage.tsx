@@ -44,7 +44,7 @@ const EntrypointPage = () => {
       <EntrypointHeader entrypoint={entrypoint} doi={doi} />
       <EntrypointBody garden={garden} entrypoint={entrypoint} />
       <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} />
-      <AssociatedMaterials entrypoint={entrypoint} />
+      <AssociatedMaterials resource={entrypoint} />
       <EntrypointTabs entrypoint={entrypoint} />
     </div>
   );

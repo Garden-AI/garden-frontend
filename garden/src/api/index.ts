@@ -16,6 +16,10 @@ import { usePatchEntrypoint } from "./entrypoints/usePatchEntrypoint";
 // import { useUpdateEntrypoint } from "./entrypoint/useUpdateEntrypoint";
 // import { useDeleteEntrypoint } from "./entrypoint/useDeleteEntrypoint";
 
+/* Modal */
+// import { useCreateModalApp } from "./modal/useCreateModalApp";
+import { useGetModalFunction } from "./modal/useGetModalFunction";
+
 /* User */
 import { useGetUserInfo } from "./user/useGetUserInfo";
 
@@ -49,6 +53,7 @@ export {
   usePatchEntrypoint,
   //   useUpdateEntrypoint,
   //   useDeleteEntrypoint,
+  useGetModalFunction,
   useGetUserInfo,
   //   useCreateNotebook,
   useGetNotebook,

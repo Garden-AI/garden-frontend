@@ -4,17 +4,9 @@ import "../syntaxHighlighter.css";
 
 SyntaxHighlighter.registerLanguage("python", python);
 
-export default function SyntaxHighlighterComponent({
-  children,
-}: {
-  children: string;
-}) {
+export default function SyntaxHighlighterComponent({ children }: { children: string }) {
   return (
-    <SyntaxHighlighter
-      language={"python"}
-      useInlineStyles={false}
-      wrapLongLines
-    >
+    <SyntaxHighlighter language={"python"} useInlineStyles={false} wrapLongLines>
       {children}
     </SyntaxHighlighter>
   );
