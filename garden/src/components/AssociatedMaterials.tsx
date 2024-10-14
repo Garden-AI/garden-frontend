@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 
 function AssociatedMaterials({ resource }: { resource: Entrypoint | ModalFunction }) {
-  console.log(resource);
   return (
     <Accordion type="single" collapsible className="mb-10 border-y" defaultValue="materials">
       <AccordionItem value="materials">
