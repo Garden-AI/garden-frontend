@@ -23,10 +23,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 
 /* Lib */
 import { ModalUploadPage } from "./components/form/modal/create/ModalUploadPage";
-<<<<<<< HEAD
 import ModalFunctionPage from "./pages/ModalFunctionPage";
-=======
->>>>>>> staging
 
 export default function App() {
   return (
