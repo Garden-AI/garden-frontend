@@ -21,6 +21,7 @@ export const formSchema = z.object({
     )
     .min(1, { message: "At least one function is required." }),
   title: z.string().min(1, { message: "Garden Title is required" }),
+  app_name: z.string().min(1, { message: "App name is required" }),
   description: z.string().min(1, { message: "Garden Description is required" }),
 });
 

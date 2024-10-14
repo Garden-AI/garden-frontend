@@ -8,6 +8,7 @@ import { LinkIcon } from "lucide-react";
 import Breadcrumb from "../components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
 import EntrypointBox from "../components/EntrypointBox";
+import ModalFunctionBox from "../components/ModalFunctionBox";
 import GardenDropdownOptions from "@/components/GardenDropdownOptions";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "./NotFoundPage";
@@ -157,8 +158,17 @@ function GardenAccordion({ garden }: { garden: Garden }) {
 }
 
 function EntrypointsTab({ garden }: { garden: Garden }) {
-  const entrypoints = garden.entrypoints;
-  if (!entrypoints || entrypoints.length === 0) {
+  const entrypoints = garden.entrypoints || [];
+  const modalFunctions = garden.modal_functions || [];
+  const entrypointBoxes = entrypoints.map((entrypoint: any) => (
+    <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
+  ))
+  const modalFunctionBoxes = modalFunctions.map((modalFunction: any) => (
+    <ModalFunctionBox key={modalFunction.id} modalFunction={modalFunction} />
+  ))
+  const functionBoxes = entrypointBoxes.concat(modalFunctionBoxes)
+
+  if (!functionBoxes || functionBoxes.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
         <h2 className="text-xl font-semibold text-gray-800">No Entrypoints Found</h2>
@@ -168,9 +178,7 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   }
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {entrypoints.map((entrypoint: any) => (
-        <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
-      ))}
+      {functionBoxes}
     </div>
   );
 }

@@ -346,7 +346,8 @@ export interface paths {
         get: operations["get_modal_app_modal_apps__id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Delete Modal App */
+        delete: operations["delete_modal_app_modal_apps__id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -366,7 +367,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update Modal Function */
+        patch: operations["update_modal_function_modal_functions__id__patch"];
         trace?: never;
     };
     "/mdf/search": {
@@ -774,16 +776,39 @@ export interface components {
         };
         /** EntrypointCreateRequest */
         EntrypointCreateRequest: {
-            /** Doi */
-            doi: string;
-            /** Doi Is Draft */
-            doi_is_draft: boolean;
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Function Text */
+            function_text: string;
             /** Title */
             title: string;
             /** Description */
             description: string | null;
             /** Year */
             year: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata-Input"][];
+            /** Doi */
+            doi: string;
+            /** Doi Is Draft */
+            doi_is_draft: boolean;
             /**
              * Func Uuid
              * Format: uuid
@@ -803,71 +828,26 @@ export interface components {
              * Format: uri
              */
             notebook_url: string;
-            /**
-             * Is Archived
-             * @default false
-             */
-            is_archived: boolean;
             /** Short Name */
-            short_name: string;
-            /** Function Text */
-            function_text: string;
-            /** Authors */
-            authors?: string[];
-            /** Tags */
-            tags?: string[];
-            /** Test Functions */
-            test_functions?: string[];
-            /** Requirements */
-            requirements?: string[];
-            /** Models */
-            models?: components["schemas"]["src__api__schemas__entrypoint___ModelMetadata"][];
-            /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
-            /** Papers */
-            papers?: components["schemas"]["_PaperMetadata"][];
-            /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Input"][];
+            short_name?: string | null;
             /** Owner Identity Id */
             owner_identity_id?: string | null;
         };
         /** EntrypointMetadataResponse */
         EntrypointMetadataResponse: {
-            /** Doi */
-            doi: string;
-            /** Doi Is Draft */
-            doi_is_draft: boolean;
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Function Text */
+            function_text: string;
             /** Title */
             title: string;
             /** Description */
             description: string | null;
             /** Year */
             year: string;
-            /**
-             * Func Uuid
-             * Format: uuid
-             */
-            func_uuid: string;
-            /**
-             * Container Uuid
-             * Format: uuid
-             */
-            container_uuid: string;
-            /** Base Image Uri */
-            base_image_uri: string;
-            /** Full Image Uri */
-            full_image_uri: string;
-            /** Notebook Url */
-            notebook_url: string;
-            /**
-             * Is Archived
-             * @default false
-             */
-            is_archived: boolean;
-            /** Short Name */
-            short_name: string;
-            /** Function Text */
-            function_text: string;
             /** Authors */
             authors?: string[];
             /** Tags */
@@ -884,6 +864,28 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata-Output"][];
+            /** Doi */
+            doi: string;
+            /** Doi Is Draft */
+            doi_is_draft: boolean;
+            /**
+             * Func Uuid
+             * Format: uuid
+             */
+            func_uuid: string;
+            /**
+             * Container Uuid
+             * Format: uuid
+             */
+            container_uuid: string;
+            /** Base Image Uri */
+            base_image_uri: string;
+            /** Full Image Uri */
+            full_image_uri: string;
+            /** Notebook Url */
+            notebook_url: string;
+            /** Short Name */
+            short_name?: string | null;
             /**
              * Owner Identity Id
              * Format: uuid
@@ -894,28 +896,14 @@ export interface components {
         };
         /** EntrypointPatchRequest */
         EntrypointPatchRequest: {
-            /** Doi Is Draft */
-            doi_is_draft?: boolean | null;
+            /** Is Archived */
+            is_archived?: boolean | null;
             /** Title */
             title?: string | null;
             /** Description */
             description?: string | null;
             /** Year */
             year?: string | null;
-            /** Func Uuid */
-            func_uuid?: string | null;
-            /** Container Uuid */
-            container_uuid?: string | null;
-            /** Base Image Uri */
-            base_image_uri?: string | null;
-            /** Full Image Uri */
-            full_image_uri?: string | null;
-            /** Notebook Url */
-            notebook_url?: string | null;
-            /** Is Archived */
-            is_archived?: boolean | null;
-            /** Short Name */
-            short_name?: string | null;
             /** Function Text */
             function_text?: string | null;
             /** Authors */
@@ -927,13 +915,27 @@ export interface components {
             /** Requirements */
             requirements?: string[] | null;
             /** Models */
-            models?: components["schemas"]["src__api__schemas__entrypoint___ModelMetadata"][] | null;
+            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][] | null;
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Input"][] | null;
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][] | null;
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata-Input"][] | null;
+            /** Doi Is Draft */
+            doi_is_draft?: boolean | null;
+            /** Func Uuid */
+            func_uuid?: string | null;
+            /** Container Uuid */
+            container_uuid?: string | null;
+            /** Base Image Uri */
+            base_image_uri?: string | null;
+            /** Full Image Uri */
+            full_image_uri?: string | null;
+            /** Notebook Url */
+            notebook_url?: string | null;
+            /** Short Name */
+            short_name?: string | null;
         };
         /**
          * Event
@@ -1345,7 +1347,7 @@ export interface components {
             /** Entrypoint Ids */
             readonly entrypoint_ids: string[];
             /** Modal Function Ids */
-            readonly modal_function_ids: string[];
+            readonly modal_function_ids: number[];
         };
         /** GardenPatchRequest */
         GardenPatchRequest: {
@@ -1633,7 +1635,10 @@ export interface components {
              * Format: uuid
              */
             owner_identity_id: string;
-            /** Id */
+            /**
+             * Id
+             * @description The unique identifier for the modal app
+             */
             id: number;
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
@@ -1642,23 +1647,19 @@ export interface components {
         };
         /** ModalFunctionMetadata */
         ModalFunctionMetadata: {
-            /** Doi */
-            doi: string | null;
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Function Text */
+            function_text: string;
             /** Title */
             title: string;
             /** Description */
             description: string | null;
             /** Year */
             year: string;
-            /**
-             * Is Archived
-             * @default false
-             */
-            is_archived: boolean;
-            /** Function Name */
-            function_name: string;
-            /** Function Text */
-            function_text: string;
             /** Authors */
             authors?: string[];
             /** Tags */
@@ -1668,33 +1669,33 @@ export interface components {
             /** Requirements */
             requirements?: string[];
             /** Models */
-            models?: components["schemas"]["src__api__schemas__modal__modal_function___ModelMetadata"][];
+            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][];
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata-Input"][];
+            /** Doi */
+            doi: string | null;
+            /** Function Name */
+            function_name: string;
         };
         /** ModalFunctionMetadataResponse */
         ModalFunctionMetadataResponse: {
-            /** Doi */
-            doi: string | null;
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Function Text */
+            function_text: string;
             /** Title */
             title: string;
             /** Description */
             description: string | null;
             /** Year */
             year: string;
-            /**
-             * Is Archived
-             * @default false
-             */
-            is_archived: boolean;
-            /** Function Name */
-            function_name: string;
-            /** Function Text */
-            function_text: string;
             /** Authors */
             authors?: string[];
             /** Tags */
@@ -1711,17 +1712,55 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata-Output"][];
-            /** Id */
+            /** Doi */
+            doi: string | null;
+            /** Function Name */
+            function_name: string;
+            /**
+             * Id
+             * @description The unique identifier for the modal function
+             */
             id: number;
             /** Modal App Id */
             modal_app_id: number;
         };
+        /** ModalFunctionPatchRequest */
+        ModalFunctionPatchRequest: {
+            /** Is Archived */
+            is_archived?: boolean | null;
+            /** Title */
+            title?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Year */
+            year?: string | null;
+            /** Function Text */
+            function_text?: string | null;
+            /** Authors */
+            authors?: string[] | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Test Functions */
+            test_functions?: string[] | null;
+            /** Requirements */
+            requirements?: string[] | null;
+            /** Models */
+            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][] | null;
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata-Input"][] | null;
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][] | null;
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata-Input"][] | null;
+            /** Doi */
+            doi?: string | null;
+            /** Function Name */
+            function_name?: string | null;
+        };
         /** ModalInvocationRequest */
         ModalInvocationRequest: {
-            /** App Name */
-            app_name: string;
-            /** Function Name */
-            function_name: string;
+            /** Function Id */
+            function_id: number;
             /**
              * Args Kwargs Serialized
              * Format: binary
@@ -2334,24 +2373,6 @@ export interface components {
             description?: string | null;
         };
         /** _ModelMetadata */
-        src__api__schemas__entrypoint___ModelMetadata: {
-            /** Model Identifier */
-            model_identifier: string;
-            /** Model Repository */
-            model_repository: string;
-            /** Model Version */
-            model_version: string | null;
-        };
-        /** _ModelMetadata */
-        src__api__schemas__modal__modal_function___ModelMetadata: {
-            /** Model Identifier */
-            model_identifier: string;
-            /** Model Repository */
-            model_repository: string;
-            /** Model Version */
-            model_version: string | null;
-        };
-        /** _ModelMetadata */
         src__api__schemas__search___garden_sdk_schema___ModelMetadata: {
             /** Model Identifier */
             model_identifier: string;
@@ -2361,6 +2382,15 @@ export interface components {
             model_version?: string | null;
             /** Datasets */
             datasets?: components["schemas"]["_DatasetConnection"][];
+        };
+        /** _ModelMetadata */
+        src__api__schemas__shared_function_schemas___ModelMetadata: {
+            /** Model Identifier */
+            model_identifier: string;
+            /** Model Repository */
+            model_repository: string;
+            /** Model Version */
+            model_version: string | null;
         };
     };
     responses: never;
@@ -3299,6 +3329,37 @@ export interface operations {
             };
         };
     };
+    delete_modal_app_modal_apps__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_modal_function_modal_functions__id__get: {
         parameters: {
             query?: never;
@@ -3309,6 +3370,41 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModalFunctionMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_modal_function_modal_functions__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModalFunctionPatchRequest"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {
