@@ -16,7 +16,7 @@ const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) =
   return (
     <div
       className="flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:cursor-pointer hover:shadow-md"
-      onClick={() => navigate(`/modal-function/${id}`)}
+      onClick={() => navigate(`/modal/${id}`)}
     >
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between">
