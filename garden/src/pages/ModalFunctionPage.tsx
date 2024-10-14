@@ -98,16 +98,21 @@ function ModalFunctionBody({ modalFunction }: { modalFunction: ModalFunction }) 
 }
 
 const ModalFunctionExample = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+  // TODO: actually use the example function text provided
+  const functionText = `from garden_ai import GardenClient
+client = GardenClient()
+garden = client.get_published_garden(my_garden_doi)
+
+input = ['Data Here']
+return garden.${modalFunction.function_name}(input)
+`;
+  
   return (
     <div className="mb-12 py-12">
       <h2 className="mb-12 text-center text-2xl sm:text-3xl">Invoke this Modal Function</h2>
       <div className=" mx-auto max-w-2xl">
         <div className="relative">
-          {/* TODO: I'm not up to speed on how you would invoke modal functions from the SDK- for now
-           I'm just rendering the modal function text itself, which obviously isn't correct. 
-           On the entrypoint page, this is where we show how a user could use the SDK to invoke that entrypoitn. 
-           */}
-          <ExampleFunction functionText={modalFunction.function_text} />
+          <ExampleFunction functionText={functionText} />
         </div>
       </div>
     </div>

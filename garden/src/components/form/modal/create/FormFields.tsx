@@ -41,6 +41,22 @@ export const FormFields = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="app_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold">App Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="text" placeholder="my-modal-app" className="w-full" />
+                  </FormControl>
+                  <FormDescription>
+                    The name of your Modal App. It is the string inside modal.App() in your Python file.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}

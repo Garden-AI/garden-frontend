@@ -23,7 +23,7 @@ const defaultValues = {
       description: "Function Description",
       function_name: "square",
       year: "2024",
-      doi: "fake_doi",
+      doi: Math.random().toString(36).substring(4),
       function_text: "def example_function():\n    return 'Hello, World!'\n",
       authors: [],
       tags: [],
@@ -54,7 +54,7 @@ export const ModalUploadForm = () => {
           description: "",
           function_name: "",
           year: "2024",
-          doi: "fake-doi",
+          doi: Math.random().toString(36).substring(4),
           function_text: "def example_function():\n    return 'Hello, World!'\n",
           authors: [],
           tags: [],
@@ -71,15 +71,16 @@ export const ModalUploadForm = () => {
     try {
       // Create the Modal App
       setLoadingMessage(() => "Creating modal app...");
-      await createModalApp({
+      const createdAppResponse = await createModalApp({
         file_contents: values.fileContents,
         requirements: [], // Will ultimately be handled by backend
-        app_name: "example-get-started", // Will ultimately be determined by backend
+        app_name: values.app_name, // Will ultimately be determined by backend
         base_image_name: "python:3.8", // Will ultimately be handled by backend (I think)
         modal_function_names: values.modal_functions.map((func: any) => func.function_name), // Will ultimately be handled by backend
         modal_functions: values.modal_functions,
         owner_identity_id: auth.authorization.user.sub,
       });
+      const createdApp = createdAppResponse.data;
 
       // Create the Garden
       setLoadingMessage(() => "Creating garden...");
@@ -87,6 +88,7 @@ export const ModalUploadForm = () => {
         title: values.title,
         description: values.description,
         owner_identity_id: auth.authorization.user.sub,
+        modal_function_ids: createdApp.modal_function_ids.map(parseInt),
         is_archived: false,
         publisher: "thegardens.ai",
         language: "en",
