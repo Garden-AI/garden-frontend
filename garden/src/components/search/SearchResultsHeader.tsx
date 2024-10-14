@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { GlobusSearchResult, SortOrder } from "@/hooks/useSearchResults";
+import { GardenSearchResult, SortOrder } from "@/hooks/useSearchResults";
 
 export const SearchResultsHeader = ({
   searchResult,
@@ -17,7 +17,7 @@ export const SearchResultsHeader = ({
   resultsPerPage,
   setResultsPerPage,
 }: {
-  searchResult: GlobusSearchResult;
+  searchResult: GardenSearchResult;
   verboseSearchResults: boolean;
   setVerboseSearchResults: (value: boolean) => void;
   sortOrder: SortOrder;

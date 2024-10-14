@@ -13,6 +13,7 @@ type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
 type ModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 
+
 type User = components["schemas"]["UserMetadataResponse"];
 type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 
@@ -22,6 +23,11 @@ type Repository = components["schemas"]["_Repository"];
 // type Notebook = components["schemas"]["_RegisteredNotebook"];
 
 type DOIRequest = components["schemas"]["Doi"];
+
+type GardenSearchRequest = components["schemas"]["GardenSearchRequest"];
+type GardenSearchResponse = components["schemas"]["GardenSearchResponse"];
+type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
+type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
 
 export type {
   Garden,
@@ -33,11 +39,18 @@ export type {
   EntrypointPatchRequest,
   ModalAppCreateRequest,
   ModalAppMetadataResponse,
+<<<<<<< HEAD
   ModalFunction,
+=======
+>>>>>>> staging
   User,
   UpdateUserSchema,
   Dataset,
   Paper,
   Repository,
   DOIRequest,
+  GardenSearchRequest,
+  GardenSearchResponse,
+  GardenSearchFacets,
+  GardenSearchFilter,
 };

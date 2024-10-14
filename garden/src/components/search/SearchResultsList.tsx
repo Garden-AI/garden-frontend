@@ -1,4 +1,4 @@
-import { GlobusSearchResult, useSearchResults } from "@/hooks/useSearchResults";
+import { GardenSearchResult } from "@/hooks/useSearchResults";
 import NotFoundPage from "@/pages/NotFoundPage";
 import LoadingSpinner from "../LoadingSpinner";
 import { SearchResult } from "./SearchResult";
@@ -10,7 +10,7 @@ export const SearchResultsList = ({
   isError,
   verboseSearchResults,
 }: {
-  searchResult: GlobusSearchResult;
+  searchResult: GardenSearchResult;
   isFetching: boolean;
   isError: boolean;
   verboseSearchResults: boolean;

@@ -31,7 +31,7 @@ import { useGetNotebook } from "./notebook/useGetNotebook";
 
 /* Search */
 import { useSearchGardenByDOI } from "./search/useSearchGardenByDOI";
-import { useSearchGardens } from "./search/useSearchGardens";
+import { useSearchGardens } from "./gardens/useSearchGardens";
 
 /* Misc */
 import { useGreetings } from "./misc/useGreetings";

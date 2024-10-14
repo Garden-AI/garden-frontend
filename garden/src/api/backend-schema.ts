@@ -1347,7 +1347,7 @@ export interface components {
             /** Entrypoint Ids */
             readonly entrypoint_ids: string[];
             /** Modal Function Ids */
-            readonly modal_function_ids: string[];
+            readonly modal_function_ids: number[];
         };
         /** GardenPatchRequest */
         GardenPatchRequest: {
@@ -1759,10 +1759,8 @@ export interface components {
         };
         /** ModalInvocationRequest */
         ModalInvocationRequest: {
-            /** App Name */
-            app_name: string;
-            /** Function Name */
-            function_name: string;
+            /** Function Id */
+            function_id: number;
             /**
              * Args Kwargs Serialized
              * Format: binary
