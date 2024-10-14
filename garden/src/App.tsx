@@ -67,13 +67,6 @@ function Root() {
           <Route element={<PrivateRoutes />}>
             <Route path="upload" element={<ModalUploadPage />} />
           </Route>
-        </Route>
-
-        {/* Modal Routes */}
-        <Route path="modal">
-          <Route element={<PrivateRoutes />}>
-            <Route path="upload" element={<ModalUploadPage />} />
-          </Route>
           <Route path=":id" element={<ModalFunctionPage />} />
         </Route>
 

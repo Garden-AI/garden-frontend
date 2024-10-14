@@ -11,7 +11,7 @@ type EntrypointPatchRequest = components["schemas"]["EntrypointPatchRequest"];
 
 type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
-type ModalFunction = components["schemas"]["ModalFunctionMetadata"];
+type ModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 
 type User = components["schemas"]["UserMetadataResponse"];
 type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
