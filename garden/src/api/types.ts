@@ -39,10 +39,7 @@ export type {
   EntrypointPatchRequest,
   ModalAppCreateRequest,
   ModalAppMetadataResponse,
-<<<<<<< HEAD
   ModalFunction,
-=======
->>>>>>> staging
   User,
   UpdateUserSchema,
   Dataset,
