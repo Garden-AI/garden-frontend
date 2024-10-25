@@ -1,10 +1,11 @@
 import { Separator } from "@/components/ui/separator";
 import { CreateGardenForm } from "./CreateGardenForm";
 import Breadcrumb from "@/components/Breadcrumb";
+import { UploadModalForm } from "./UploadModalForm";
 
 export default function CreateGardenPage() {
   return (
-    <div className="mx-auto max-w-7xl px-8 py-16 font-display">
+    <div className="mx-auto max-w-6xl px-8 py-16 font-display">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },

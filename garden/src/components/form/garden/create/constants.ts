@@ -41,29 +41,3 @@ export const tagOptions: Option[] = [
   },
   { value: "manufacturing", label: "Manufacturing", group: "Applied Sciences" },
 ];
-
-export const initialEntrypoints: {
-  doi: string;
-  title: string;
-  description: string;
-}[] = [
-  {
-    doi: "10.26311/3p8f-se33",
-    title: "Bandgap model",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-  {
-    doi: "10.26311/mk1a-ve41",
-    title:
-      "Lithium solid state electrolyte conductivity model. Lithium solid state electrolyte conductivity model",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-  {
-    doi: "10.26311/17nn-hj98",
-    title: "Metallic glass Rc model (LLM data)",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-];

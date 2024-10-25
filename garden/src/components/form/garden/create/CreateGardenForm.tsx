@@ -2,13 +2,13 @@ import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker, useNavigate } from "react-router-dom";
 import { useCreateGardenAndDOI } from "@/api";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
-import { formSchema, GardenCreateFormData } from "./schemas";
+import { gardenFormSchema, GardenCreateFormData } from "./schemas";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "../../UnsavedChangesDialog";
-import { FormFields } from "./FormFields";
+import { CreateGardenFormFields } from "./CreateGardenFormFields";
 
 export const CreateGardenForm = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export const CreateGardenForm = () => {
   const { createGardenAndDOI } = useCreateGardenAndDOI();
 
   const form = useForm<GardenCreateFormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(gardenFormSchema),
     mode: "onTouched",
     defaultValues: {
       title: "",
@@ -34,6 +34,24 @@ export const CreateGardenForm = () => {
       doi: "",
       publisher: "Gardens-AI",
       is_archived: false,
+      modal: {
+        app_name: "",
+        file_contents: "",
+        modal_functions: [
+          {
+            function_name: "",
+            description: "",
+            year: "2024",
+            is_archived: false,
+            doi: "fake_doi",
+            title: "",
+            function_text: "def example_function():\n    return 'Hello, World!'\n",
+            authors: [],
+            tags: [],
+            test_functions: [],
+          },
+        ],
+      },
     },
   });
 
@@ -55,7 +73,7 @@ export const CreateGardenForm = () => {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <Form {...form}>
-        <FormFields />
+        <CreateGardenFormFields />
         <LoadingOverlay />
         <UnsavedChangesDialog blocker={blocker} />
       </Form>

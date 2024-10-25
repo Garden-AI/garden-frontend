@@ -8,31 +8,31 @@ import { useCreateGardenAndDOI } from "@/api";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { ModalUploadFormData, formSchema } from "./schemas";
-import { FormFields } from "./FormFields";
+import { ModalUploadFormData, modalFormSchema } from "./schemas";
+import { UploadModalFormFields } from "./UploadModalFormFields";
 import { toast } from "sonner";
 
-const defaultValues = {
-  // This is just a placeholder so I don't have to type out the whole object for testing
-  title: "Garden Title",
-  description: "Garden Description",
-  fileContents: "file contents",
-  modal_functions: [
-    {
-      title: "Function Title",
-      description: "Function Description",
-      function_name: "square",
-      year: "2024",
-      doi: Math.random().toString(36).substring(4),
-      function_text: "def example_function():\n    return 'Hello, World!'\n",
-      authors: [],
-      tags: [],
-      test_functions: [],
-    },
-  ],
-};
+// const defaultValues = {
+//   // This is just a placeholder so I don't have to type out the whole object for testing
+//   title: "Garden Title",
+//   description: "Garden Description",
+//   fileContents: "file contents",
+//   modal_functions: [
+//     {
+//       title: "Function Title",
+//       description: "Function Description",
+//       function_name: "square",
+//       year: "2024",
+//       doi: Math.random().toString(36).substring(4),
+//       function_text: "def example_function():\n    return 'Hello, World!'\n",
+//       authors: [],
+//       tags: [],
+//       test_functions: [],
+//     },
+//   ],
+// };
 
-export const ModalUploadForm = () => {
+export const UploadModalForm = () => {
   const auth = useGlobusAuth();
   const { mutateAsync: createModalApp } = useCreateModalApp();
   const { createGardenAndDOI } = useCreateGardenAndDOI();
@@ -41,7 +41,7 @@ export const ModalUploadForm = () => {
   const [loadingMessage, setLoadingMessage] = useState<string>("");
 
   const form = useForm<ModalUploadFormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(modalFormSchema),
     mode: "onSubmit",
     defaultValues: {
       // ...defaultValues,
@@ -49,17 +49,17 @@ export const ModalUploadForm = () => {
       description: "",
       fileContents: "",
       modal_functions: [
-        {
-          title: "",
-          description: "",
-          function_name: "",
-          year: "2024",
-          doi: Math.random().toString(36).substring(4),
-          function_text: "def example_function():\n    return 'Hello, World!'\n",
-          authors: [],
-          tags: [],
-          test_functions: [],
-        },
+        // {
+        //   title: "",
+        //   description: "",
+        //   function_name: "",
+        //   year: "2024",
+        //   doi: Math.random().toString(36).substring(4),
+        //   function_text: "def example_function():\n    return 'Hello, World!'\n",
+        //   authors: [],
+        //   tags: [],
+        //   test_functions: [],
+        // },
       ],
     },
   });
@@ -110,7 +110,10 @@ export const ModalUploadForm = () => {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <Form {...form}>
-        <FormFields />
+        <UploadModalFormFields />
+        <Button type="button" variant="link" onClick={() => navigate("/search")}>
+          Skip for now
+        </Button>
         <Button type="submit">Submit</Button>
         <LoadingOverlay loadingMessage={loadingMessage} />
       </Form>
