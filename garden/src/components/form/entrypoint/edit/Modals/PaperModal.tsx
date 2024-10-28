@@ -34,8 +34,8 @@ const optionSchema = z.object({
 const paperSchema = z.object({
   title: z.string().min(1, "Paper Title is required"),
   authors: z.array(optionSchema).optional(),
-  doi: z.string().optional(),
-  citation: z.string().optional(),
+  doi: z.string(),
+  citation: z.string(),
 });
 
 type PaperFormData = z.infer<typeof paperSchema>;
@@ -48,12 +48,7 @@ interface PaperModalProps {
   trigger: React.ReactNode;
 }
 
-export default function PaperModal({
-  edit,
-  onSave,
-  initialData,
-  trigger,
-}: PaperModalProps) {
+export default function PaperModal({ edit, onSave, initialData, trigger }: PaperModalProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const form = useForm<PaperFormData>({
@@ -86,9 +81,7 @@ export default function PaperModal({
         <DialogHeader>
           <DialogTitle>{edit ? "Edit Paper" : "Add New Paper"}</DialogTitle>
           <DialogDescription>
-            {edit
-              ? "Make changes to your paper here."
-              : "Enter the details of your paper here."}
+            {edit ? "Make changes to your paper here." : "Enter the details of your paper here."}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -114,11 +107,7 @@ export default function PaperModal({
                 <FormItem>
                   <FormLabel>Paper DOI</FormLabel>
                   <FormControl>
-                    <Input
-                      className="rounded-l-none"
-                      placeholder="Paper DOI"
-                      {...field}
-                    />
+                    <Input {...field} className="rounded-l-none" placeholder="Paper DOI" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,11 +135,7 @@ export default function PaperModal({
                 <FormItem>
                   <FormLabel>Citation</FormLabel>
                   <FormControl>
-                    <Input
-                      className="rounded-l-none"
-                      placeholder="Paper Citation"
-                      {...field}
-                    />
+                    <Input className="rounded-l-none" placeholder="Paper Citation" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

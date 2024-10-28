@@ -73,30 +73,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/garden-search-record": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Publish Search Record
-         * @deprecated
-         */
-        post: operations["publish_search_record_garden_search_record_post"];
-        /**
-         * Delete Search Record
-         * @deprecated
-         */
-        delete: operations["delete_search_record_garden_search_record_delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/hello-database": {
         parameters: {
             query?: never;
@@ -276,26 +252,6 @@ export interface paths {
          * @description Remove a garden from the user's list of saved gardens by doi.
          */
         delete: operations["remove_saved_garden_users__user_uuid__saved_gardens__doi__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/status/failed-updates": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Failed Updates
-         * @description Fetch Failed Search Index Updates
-         */
-        get: operations["get_failed_updates_status_failed_updates_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -613,11 +569,6 @@ export interface components {
          * @enum {string}
          */
         DateType: "Accepted" | "Available" | "Copyrighted" | "Collected" | "Created" | "Issued" | "Submitted" | "Updated" | "Valid" | "Withdrawn" | "Other";
-        /** DeleteSearchRecordRequest */
-        DeleteSearchRecordRequest: {
-            /** Doi */
-            doi: string;
-        };
         /** Description */
         Description: {
             /** Description */
@@ -798,7 +749,7 @@ export interface components {
             /** Requirements */
             requirements?: string[];
             /** Models */
-            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][];
+            models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
             /** Papers */
@@ -857,7 +808,7 @@ export interface components {
             /** Requirements */
             requirements?: string[];
             /** Models */
-            models?: components["schemas"]["_ModelMetadata-Output"][];
+            models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
             /** Papers */
@@ -915,7 +866,7 @@ export interface components {
             /** Requirements */
             requirements?: string[] | null;
             /** Models */
-            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][] | null;
+            models?: components["schemas"]["_ModelMetadata"][] | null;
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Input"][] | null;
             /** Papers */
@@ -942,22 +893,6 @@ export interface components {
          * @enum {string}
          */
         Event: "publish" | "register" | "hide";
-        /** FailedSearchIndexUpdateResponse */
-        FailedSearchIndexUpdateResponse: {
-            /** Doi */
-            doi: string;
-            /** Operation Type */
-            operation_type: string;
-            /** Error Message */
-            error_message: string;
-            /** Retry Count */
-            retry_count: number;
-            /**
-             * Last Attempt
-             * Format: date-time
-             */
-            last_attempt: string;
-        };
         /**
          * FilterPrincipalSet
          * @description The name of a 'principal_set' for use in principal set filtering.
@@ -1669,7 +1604,7 @@ export interface components {
             /** Requirements */
             requirements?: string[];
             /** Models */
-            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][];
+            models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
             /** Papers */
@@ -1705,7 +1640,7 @@ export interface components {
             /** Requirements */
             requirements?: string[];
             /** Models */
-            models?: components["schemas"]["_ModelMetadata-Output"][];
+            models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
             /** Papers */
@@ -1745,7 +1680,7 @@ export interface components {
             /** Requirements */
             requirements?: string[] | null;
             /** Models */
-            models?: components["schemas"]["src__api__schemas__shared_function_schemas___ModelMetadata"][] | null;
+            models?: components["schemas"]["_ModelMetadata"][] | null;
             /** Repositories */
             repositories?: components["schemas"]["_RepositoryMetadata-Input"][] | null;
             /** Papers */
@@ -2137,19 +2072,6 @@ export interface components {
             /** Total */
             total?: number | null;
         };
-        /** _DatasetConnection */
-        _DatasetConnection: {
-            /** Title */
-            title: string;
-            /** Doi */
-            doi?: string | null;
-            /** Url */
-            url: string;
-            /** Data Type */
-            data_type?: string | null;
-            /** Repository */
-            repository: string;
-        };
         /** _DatasetMetadata */
         "_DatasetMetadata-Input": {
             /** Title */
@@ -2215,24 +2137,13 @@ export interface components {
             data_blob_id: string;
         };
         /** _ModelMetadata */
-        "_ModelMetadata-Output": {
+        _ModelMetadata: {
             /** Model Identifier */
             model_identifier: string;
             /** Model Repository */
             model_repository: string;
             /** Model Version */
             model_version: string | null;
-        };
-        /** _Paper */
-        _Paper: {
-            /** Title */
-            title: string;
-            /** Authors */
-            authors?: string[];
-            /** Doi */
-            doi?: string | null;
-            /** Citation */
-            citation?: string | null;
         };
         /** _PaperMetadata */
         _PaperMetadata: {
@@ -2244,103 +2155,6 @@ export interface components {
             doi: string | null;
             /** Citation */
             citation: string | null;
-        };
-        /** _PublishedGarden */
-        _PublishedGarden: {
-            /** Title */
-            title: string;
-            /** Authors */
-            authors: string[];
-            /** Contributors */
-            contributors?: unknown[];
-            /** Doi */
-            doi: string;
-            /** Description */
-            description?: string | null;
-            /**
-             * Publisher
-             * @default Garden-AI
-             */
-            publisher: string;
-            /** Year */
-            year?: string;
-            /**
-             * Language
-             * @default en
-             */
-            language: string;
-            /** Tags */
-            tags?: unknown[];
-            /**
-             * Version
-             * @default 0.0.1
-             */
-            version: string;
-            /** Entrypoints */
-            entrypoints: components["schemas"]["_RegisteredEntrypoint"][];
-            /** Entrypoint Aliases */
-            entrypoint_aliases?: {
-                [key: string]: string;
-            };
-        };
-        /** _RegisteredEntrypoint */
-        _RegisteredEntrypoint: {
-            /** Doi */
-            doi: string;
-            /** Title */
-            title: string;
-            /** Authors */
-            authors: string[];
-            /** Short Name */
-            short_name?: string | null;
-            /** Description */
-            description?: string | null;
-            /** Year */
-            year?: string;
-            /** Tags */
-            tags?: string[];
-            /** Models */
-            models?: components["schemas"]["src__api__schemas__search___garden_sdk_schema___ModelMetadata"][];
-            /** Repositories */
-            repositories?: components["schemas"]["_Repository"][];
-            /** Papers */
-            papers?: components["schemas"]["_Paper"][];
-            /** Datasets */
-            datasets?: components["schemas"]["_DatasetConnection"][];
-            /**
-             * Doi Is Draft
-             * @default true
-             */
-            doi_is_draft: boolean;
-            /**
-             * Func Uuid
-             * Format: uuid
-             */
-            func_uuid: string;
-            /**
-             * Container Uuid
-             * Format: uuid
-             */
-            container_uuid: string;
-            /** Base Image Uri */
-            base_image_uri?: string | null;
-            /** Full Image Uri */
-            full_image_uri?: string | null;
-            /** Notebook Url */
-            notebook_url?: string | null;
-            /** Steps */
-            steps?: components["schemas"]["_Step"][];
-            /** Test Functions */
-            test_functions?: string[];
-        };
-        /** _Repository */
-        _Repository: {
-            /** Repo Name */
-            repo_name: string;
-            /** Url */
-            url: string;
-            /** Contributors */
-            contributors?: string[];
         };
         /** _RepositoryMetadata */
         "_RepositoryMetadata-Input": {
@@ -2362,35 +2176,6 @@ export interface components {
             url: string;
             /** Contributors */
             contributors?: string[];
-        };
-        /** _Step */
-        _Step: {
-            /** Function Name */
-            function_name: string;
-            /** Function Text */
-            function_text: string;
-            /** Description */
-            description?: string | null;
-        };
-        /** _ModelMetadata */
-        src__api__schemas__search___garden_sdk_schema___ModelMetadata: {
-            /** Model Identifier */
-            model_identifier: string;
-            /** Model Repository */
-            model_repository: string;
-            /** Model Version */
-            model_version?: string | null;
-            /** Datasets */
-            datasets?: components["schemas"]["_DatasetConnection"][];
-        };
-        /** _ModelMetadata */
-        src__api__schemas__shared_function_schemas___ModelMetadata: {
-            /** Model Identifier */
-            model_identifier: string;
-            /** Model Repository */
-            model_repository: string;
-            /** Model Version */
-            model_version: string | null;
         };
     };
     responses: never;
@@ -2527,72 +2312,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadNotebookResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    publish_search_record_garden_search_record_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["_PublishedGarden"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_search_record_garden_search_record_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteSearchRecordRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */
@@ -3208,26 +2927,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_failed_updates_status_failed_updates_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FailedSearchIndexUpdateResponse"][];
                 };
             };
         };

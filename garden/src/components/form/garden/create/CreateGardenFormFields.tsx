@@ -23,10 +23,13 @@ import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { SelectEntrypointsTable } from "../SelectEntrypointsTable";
 import { Button } from "@/components/ui/button";
 import { UploadModalFormFields } from "./UploadModalFormFields";
+import { useSearchParams } from "react-router-dom";
 
 export const CreateGardenFormFields = () => {
   const form = useFormContext() as UseFormReturn<GardenCreateFormData>;
   const { isSubmitting } = form.formState;
+
+  const [searchParams, setSearchParams] = useSearchParams();
   return (
     <div className="space-y-12">
       <div className="space-y-8">
@@ -102,23 +105,25 @@ export const CreateGardenFormFields = () => {
         />
       </div>
 
-      <UploadModalFormFields />
+      {searchParams.get("type") === "modal" ? (
+        <UploadModalFormFields />
+      ) : (
+        <div className="space-y-8">
+          <div className="space-y-4">
+            <h2 className="mb-2 text-2xl font-bold">Entrypoints</h2>
+            <p className="text-sm text-gray-700">
+              Select the Entrypoints you want to include in your Garden. You can add or remove
+              Entrypoints at any time.
+            </p>
 
-      <div className="space-y-8">
-        <div className="space-y-4">
-          <h2 className="mb-2 text-2xl font-bold">Entrypoints</h2>
-          <p className="text-sm text-gray-700">
-            Select the Entrypoints you want to include in your Garden. You can add or remove
-            Entrypoints at any time.
-          </p>
+            <p className="text-sm text-gray-700"></p>
+          </div>
 
-          <p className="text-sm text-gray-700"></p>
+          <SelectEntrypointsTable />
+
+          <EntrypointCreateInstructions />
         </div>
-
-        <SelectEntrypointsTable />
-
-        <EntrypointCreateInstructions />
-      </div>
+      )}
 
       <div className="space-y-8">
         <h2 className="text-2xl font-bold">Contributors</h2>
