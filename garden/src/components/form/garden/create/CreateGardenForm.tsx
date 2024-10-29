@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "../../UnsavedChangesDialog";
 import { CreateGardenFormFields } from "./CreateGardenFormFields";
 import { useCreateModalApp } from "@/api/modal/useCreateModalApp";
+import { GardenCreateRequest } from "@/api/types";
 
 export const CreateGardenForm = () => {
   const navigate = useNavigate();
@@ -49,9 +50,10 @@ export const CreateGardenForm = () => {
   const blocker = useBlocker(
     () => !form?.formState.isSubmitting && Object.keys(form.formState.touchedFields).length > 0,
   );
-  console.log(form.formState);
+
   const onSubmit = async (values: GardenCreateFormData) => {
     try {
+      let gardenCreateRequest: GardenCreateRequest = values;
       const formType = searchParams.get("type");
       if (formType === "modal") {
         const doiValues = await Promise.all(
@@ -60,8 +62,8 @@ export const CreateGardenForm = () => {
             return doi;
           }),
         );
-        console.log(doiValues);
-        const createdAppResponse = await createModalApp({
+
+        const modalAppResponse = await createModalApp({
           file_contents: values.modal.file_contents,
           requirements: [], // Will ultimately be handled by backend
           app_name: values.modal.app_name, // Will ultimately be determined by backend
@@ -73,22 +75,18 @@ export const CreateGardenForm = () => {
           })),
           owner_identity_id: auth?.authorization?.user?.sub,
         });
-        console.log(createdAppResponse);
 
-        const { garden } = await createGardenAndDOI({
-          ...values,
-          modal_function_ids: createdAppResponse.data.modal_function_ids.map(parseInt),
-        });
-        toast.success("Modal App and Garden created successfully!");
-        navigate(`/garden/${encodeURIComponent(garden.doi)}`);
-      } else {
-        const { garden } = await createGardenAndDOI(values);
-
-        toast.success("Garden created successfully!");
-        navigate(`/garden/${encodeURIComponent(garden.doi)}`);
+        gardenCreateRequest.modal_function_ids =
+          modalAppResponse.data.modal_function_ids.map(parseInt);
       }
+
+      const { garden } = await createGardenAndDOI(gardenCreateRequest);
+
+      toast.success("Garden created successfully!");
+      navigate(`/garden/${encodeURIComponent(garden.doi)}`);
     } catch (error) {
       toast.warning("Error creating garden.");
+      console.error("Error creating garden:", error);
     }
   };
 
