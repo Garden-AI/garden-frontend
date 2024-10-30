@@ -1,4 +1,3 @@
-import LoadingSpinner from "@/components/LoadingSpinner";
 import SyntaxHighlighterComponent from "@/components/SyntaxHighlighter";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +15,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 const ModalFunctions = () => {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
-    name: "modal_functions",
+    name: "modal.modal_functions",
     control,
   });
 
@@ -33,7 +32,7 @@ const ModalFunctions = () => {
             description: "",
             year: "2024",
             is_archived: false,
-            doi: "fake_doi",
+            doi: null,
             title: "",
             function_text: "def example_function():\n    return 'Hello, World!'\n",
             authors: [],
@@ -49,10 +48,9 @@ const ModalFunctions = () => {
 };
 
 const ModalFunction = ({ index, remove }: { index: number; remove: () => void }) => {
-  const { control, watch } = useFormContext();
+  const { getValues, control, watch } = useFormContext();
 
-  const functionText = watch(`modal_functions.${index}.function_text`);
-
+  const functionText = watch(`modal.modal_functions.${index}.function_text`);
   return (
     <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
       <div className="mb-4 flex items-center justify-between">
@@ -67,7 +65,7 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormField
           control={control}
-          name={`modal_functions.${index}.title`}
+          name={`modal.modal_functions.${index}.title`}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="font-bold text-gray-700">Title</FormLabel>
@@ -85,7 +83,7 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
 
         <FormField
           control={control}
-          name={`modal_functions.${index}.year`}
+          name={`modal.modal_functions.${index}.year`}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="font-bold text-gray-700">Year</FormLabel>
@@ -103,7 +101,7 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
 
       <FormField
         control={control}
-        name={`modal_functions.${index}.function_name`}
+        name={`modal.modal_functions.${index}.function_name`}
         render={({ field }) => (
           <FormItem className="mb-4">
             <FormLabel className="font-bold text-gray-700">Function Name</FormLabel>
@@ -121,7 +119,7 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
 
       <FormField
         control={control}
-        name={`modal_functions.${index}.description`}
+        name={`modal.modal_functions.${index}.description`}
         render={({ field }) => (
           <FormItem>
             <FormLabel className="font-bold text-gray-700">Description</FormLabel>

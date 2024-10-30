@@ -13,13 +13,12 @@ type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
 type ModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 
-
 type User = components["schemas"]["UserMetadataResponse"];
 type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 
 type Dataset = components["schemas"]["_DatasetMetadata-Output"];
-type Paper = components["schemas"]["_Paper"];
-type Repository = components["schemas"]["_Repository"];
+type Paper = components["schemas"]["_PaperMetadata"];
+type Repository = components["schemas"]["_RepositoryMetadata-Output"];
 // type Notebook = components["schemas"]["_RegisteredNotebook"];
 
 type DOIRequest = components["schemas"]["Doi"];

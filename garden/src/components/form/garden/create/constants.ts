@@ -6,64 +6,38 @@ export const tagOptions: Option[] = [
     label: "Materials Science",
     group: "Physical Sciences",
   },
-  { value: "chemistry", label: "Chemistry", group: "Physical Sciences" },
+  { value: "Chemistry", label: "Chemistry", group: "Physical Sciences" },
   { value: "Physics", label: "Physics", group: "Physical Sciences" },
   { value: "Drug Discovery", label: "Drug Discovery", group: "Life Sciences" },
-  { value: "astrophysics", label: "Astrophysics", group: "Physical Sciences" },
+  { value: "Astrophysics", label: "Astrophysics", group: "Physical Sciences" },
   {
-    value: "earth-sciences",
+    value: "Earth Sciences",
     label: "Earth Sciences",
     group: "Physical Sciences",
   },
-  { value: "biology", label: "Biology", group: "Life Sciences" },
-  { value: "bioinformatics", label: "Bioinformatics", group: "Life Sciences" },
-  { value: "neuroscience", label: "Neuroscience", group: "Life Sciences" },
-  { value: "engineering", label: "Engineering", group: "Applied Sciences" },
+  { value: "Biology", label: "Biology", group: "Life Sciences" },
+  { value: "Bioinformatics", label: "Bioinformatics", group: "Life Sciences" },
+  { value: "Neuroscience", label: "Neuroscience", group: "Life Sciences" },
+  { value: "Engineering", label: "Engineering", group: "Applied Sciences" },
   {
-    value: "energy-systems",
+    value: "Energy Systems",
     label: "Energy Systems",
     group: "Applied Sciences",
   },
   {
-    value: "agricultural-science",
+    value: "Agricultural Science",
     label: "Agricultural Science",
     group: "Applied Sciences",
   },
   {
-    value: "computer-science",
+    value: "Computer Science",
     label: "Computer Science",
     group: "Computer Sciences",
   },
   {
-    value: "cybersecurity",
+    value: "Cybersecurity",
     label: "Cybersecurity",
     group: "Computer Sciences",
   },
-  { value: "manufacturing", label: "Manufacturing", group: "Applied Sciences" },
-];
-
-export const initialEntrypoints: {
-  doi: string;
-  title: string;
-  description: string;
-}[] = [
-  {
-    doi: "10.26311/3p8f-se33",
-    title: "Bandgap model",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-  {
-    doi: "10.26311/mk1a-ve41",
-    title:
-      "Lithium solid state electrolyte conductivity model. Lithium solid state electrolyte conductivity model",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
-  {
-    doi: "10.26311/17nn-hj98",
-    title: "Metallic glass Rc model (LLM data)",
-    description:
-      "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-  },
+  { value: "Manufacturing", label: "Manufacturing", group: "Applied Sciences" },
 ];

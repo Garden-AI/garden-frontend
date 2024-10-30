@@ -17,13 +17,13 @@ import CreateGardenPage from "./components/form/garden/create/CreateGardenPage";
 import EditEntrypointPage from "./components/form/entrypoint/edit/EditEntrypointPage";
 import EditGardenPage from "./components/form/garden/edit/EditGardenPage";
 
+import ModalFunctionPage from "./pages/ModalFunctionPage";
+
 /* Components */
 import LoadingSpinner from "./components/LoadingSpinner";
 import PrivateRoutes from "./components/PrivateRoutes";
 
 /* Lib */
-import { ModalUploadPage } from "./components/form/modal/create/ModalUploadPage";
-import ModalFunctionPage from "./pages/ModalFunctionPage";
 
 export default function App() {
   return (
@@ -64,9 +64,6 @@ function Root() {
 
         {/* Modal Routes */}
         <Route path="modal">
-          <Route element={<PrivateRoutes />}>
-            <Route path="upload" element={<ModalUploadPage />} />
-          </Route>
           <Route path=":id" element={<ModalFunctionPage />} />
         </Route>
 

@@ -1,3 +1,4 @@
+import { DOIRequest, Entrypoint, Garden, ModalFunction } from "@/api/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
