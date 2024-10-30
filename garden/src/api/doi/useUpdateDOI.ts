@@ -1,7 +1,7 @@
 import axios from "@/api/axios";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { DOIRequest, Entrypoint, Garden, ModalFunction } from "../types";
-import { formDOIRequest } from "@/lib/utils";
+import { formDOIRequest } from "@/utils/doi-utils";
 
 interface UpdateDOIRequest {
   resource: Garden | Entrypoint;
@@ -21,7 +21,7 @@ const updateDOI = async ({
     (<Garden>resource).entrypoints?.forEach((entrypoint) => {
       let requestBody = formDOIRequest(entrypoint, event);
       try {
-        axios.put<DOIRequest>(`doi`, requestBody);
+        axios.put(`doi`, requestBody);
       } catch (error) {
         throw new Error("Error updating DOI");
       }
@@ -29,7 +29,7 @@ const updateDOI = async ({
   }
 
   try {
-    const response = await axios.put<DOIRequest>("doi", mainRequestBody);
+    const response = await axios.put("doi", mainRequestBody);
     return response.data;
   } catch (error) {
     throw new Error("Error updating DOI");

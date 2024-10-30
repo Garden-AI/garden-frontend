@@ -42,7 +42,7 @@ export const gardenFormSchema = z
           function_name: z.string().min(1, { message: "Function name is required" }),
           is_archived: z.boolean(),
           year: z.string(),
-          doi: z.string(),
+          doi: z.string().nullable(),
           function_text: z.string(),
           authors: z.array(z.string()),
           tags: z.array(z.string()),

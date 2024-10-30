@@ -32,7 +32,7 @@ const ModalFunctions = () => {
             description: "",
             year: "2024",
             is_archived: false,
-            doi: "",
+            doi: null,
             title: "",
             function_text: "def example_function():\n    return 'Hello, World!'\n",
             authors: [],
@@ -51,8 +51,6 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
   const { getValues, control, watch } = useFormContext();
 
   const functionText = watch(`modal.modal_functions.${index}.function_text`);
-  console.log(functionText);
-  console.log(getValues());
   return (
     <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
       <div className="mb-4 flex items-center justify-between">

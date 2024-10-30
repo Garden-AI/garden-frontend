@@ -1,6 +1,6 @@
 import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker, useNavigate, useSearchParams } from "react-router-dom";
-import { useCreateDOI, useCreateGardenAndDOI } from "@/api";
+import { useCreateGardenAndDOI } from "@/api";
 import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
 import { gardenFormSchema, GardenCreateFormData } from "./schemas";
 import { toast } from "sonner";
@@ -19,7 +19,6 @@ export const CreateGardenForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { createGardenAndDOI } = useCreateGardenAndDOI();
   const { mutateAsync: createModalApp } = useCreateModalApp();
-  const { mutateAsync: createDOI } = useCreateDOI();
 
   const form = useForm<GardenCreateFormData>({
     resolver: zodResolver(gardenFormSchema),
@@ -56,26 +55,15 @@ export const CreateGardenForm = () => {
       let gardenCreateRequest: GardenCreateRequest = values;
       const formType = searchParams.get("type");
       if (formType === "modal") {
-        const doiValues = await Promise.all(
-          values.modal.modal_functions.map(async (func: any) => {
-            const { doi } = await createDOI(func);
-            return doi;
-          }),
-        );
-
         const modalAppResponse = await createModalApp({
           file_contents: values.modal.file_contents,
           requirements: [], // Will ultimately be handled by backend
           app_name: values.modal.app_name, // Will ultimately be determined by backend
           base_image_name: "python:3.8", // Will ultimately be handled by backend
           modal_function_names: values.modal.modal_functions.map((func: any) => func.function_name), // Will ultimately be handled by backend
-          modal_functions: values.modal.modal_functions.map((func: any, index: number) => ({
-            ...func,
-            doi: doiValues[index],
-          })),
+          modal_functions: values.modal.modal_functions,
           owner_identity_id: auth?.authorization?.user?.sub,
         });
-
         gardenCreateRequest.modal_function_ids =
           modalAppResponse.data.modal_function_ids.map(parseInt);
       }
