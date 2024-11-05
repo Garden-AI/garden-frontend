@@ -8,41 +8,13 @@ export default function CreateGardenPage() {
   const formType = searchParams.get("type");
 
   const { data: groups } = useGetGlobusGroups();
-  const navigate = useNavigate();
 
   if (
     formType == "modal" &&
-    !groups?.find((group) => group.id === "53952f8a-d592-11ee-9957-193531752178") //todo: Replace with correct Globus Group ID
-  ) {
-    return (
-      <div className="mx-auto max-w-4xl px-8 py-24 font-display">
-        <div className="flex h-96 items-center justify-center ">
-          <div className="space-y-12 text-center">
-            <h1 className="text-4xl font-bold">Globus Group Required</h1>
-            <p className="text-gray-700">
-              You must be a part of the Globus Group to create a Modal App. Please email{" "}
-              <a href="mailto:wengler@uchicago.edu" className="font-bold text-primary">
-                Will Engler (wengler@chicago.edu)
-              </a>{" "}
-              to be added to the group.
-            </p>
-            <div className=" flex items-center justify-center space-x-4">
-              <Button onClick={() => navigate("/")} className="font-bold">
-                Back home
-              </Button>
-              <Button
-                onClick={() => setSearchParams({ type: "entrypoint" })}
-                className="font-bold"
-                variant={"outline"}
-              >
-                Create Garden from Entrypoints instead
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    !groups?.find((group) => group.id === import.meta.env.VITE_GLOBUS_GROUP_UUID)
+  )
+    return <GlobusGroupError />;
+
   return (
     <div className="mx-auto max-w-6xl px-8 py-16 font-display">
       <CreateGardenFormHeader />
@@ -104,5 +76,38 @@ const CreateGardenFormHeader = () => {
         </div>
       </div>
     </>
+  );
+};
+
+const GlobusGroupError = () => {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  return (
+    <div className="mx-auto max-w-4xl px-8 py-24 font-display">
+      <div className="flex h-96 items-center justify-center ">
+        <div className="space-y-12 text-center">
+          <h1 className="text-4xl font-bold">Globus Group Required</h1>
+          <p className="text-gray-700">
+            You must be a part of the Globus Group to create a Modal App. Please email{" "}
+            <a href="mailto:wengler@uchicago.edu" className="font-bold text-primary">
+              Will Engler (wengler@chicago.edu)
+            </a>{" "}
+            to be added to the group.
+          </p>
+          <div className=" flex items-center justify-center space-x-4">
+            <Button onClick={() => navigate("/")} className="font-bold">
+              Back home
+            </Button>
+            <Button
+              onClick={() => setSearchParams({ type: "entrypoint" })}
+              className="font-bold"
+              variant={"outline"}
+            >
+              Create Garden from Entrypoints instead
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
