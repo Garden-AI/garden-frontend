@@ -8,32 +8,32 @@ import CopyButton from "./CopyButton";
 const socialMediaItems = [
   {
     href: "https://www.facebook.com/",
-    src: "img/facebook-logo.png",
+    src: "img/facebook.png",
     alt: "Facebook logo",
   },
   {
     href: "https://twitter.com/",
-    src: "img/twitter-logo.png",
+    src: "img/twitter.png",
     alt: "Twitter logo",
   },
   {
     href: "https://www.linkedin.com/",
-    src: "img/LinkedIn-logo.png",
+    src: "img/LinkedIn.png",
     alt: "LinkedIn logo",
   },
   {
     href: "https://www.reddit.com/",
-    src: "img/reddit-logo.png",
+    src: "img/reddit.png",
     alt: "Reddit logo",
   },
   {
     href: "https://github.com/",
-    src: "img/github-logo.png",
+    src: "img/github.png",
     alt: "Github logo",
   },
   {
     href: "https://discord.com/",
-    src: "img/discord-logo.png",
+    src: "img/discord.png",
     alt: "Discord logo",
   },
 ];

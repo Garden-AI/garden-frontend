@@ -1,19 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "./ui/card";
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
-import { Garden } from "@/api/types";
-import { useState } from "react";
-import { useGetUserInfo } from "@/api";
-import { useGetUserGardens } from "../api/getUserGardens";
-import { useGlobusAuth } from "@/components/auth/useGlobusAuth";
+import { Garden } from "@/types";
+import { useGetUserInfo } from "@/features/users/view/api/useGetUserInfo";
+import { useGetGardens } from "@/features/gardens/view/api/useGetGardens";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();
-  // const [isSaved, setIsSaved] = useState(false);
-  const auth = useGlobusAuth();
 
   const { data: currUserInfo } = useGetUserInfo();
-  const { data: userGardens } = useGetUserGardens(currUserInfo?.identity_id);
+  const { data: userGardens } = useGetGardens({ owner_uuid: currUserInfo?.identity_id });
 
   const canEditGarden =
     !!garden && !!userGardens && userGardens.some((userGarden) => userGarden.doi === garden.doi);
@@ -23,14 +19,6 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
   const handleClick = () => {
     navigate(`/garden/${encodeURIComponent(doi)}`);
   };
-
-  // const handleSaveClick = (e: any) => {
-  //   e.stopPropagation();
-  //   setIsSaved(!isSaved);
-  //   // implement logic here
-  //   // use api hook (not yet created)
-  //   console.log(isSaved);
-  // };
 
   const handleEditGardenClick = (e: any) => {
     e.stopPropagation();
@@ -85,26 +73,6 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
                 <path d="m15 5 4 4" />
               </svg>
             )}
-
-            {/* {auth.isAuthenticated && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={`lucide lucide-bookmark ml-4 cursor-pointer ${
-                  isSaved ? "fill-green stroke-green" : "stroke-black"
-                }`}
-                onClick={handleSaveClick}
-              >
-                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-              </svg>
-            )} */}
           </div>
         </CardFooter>
       </div>

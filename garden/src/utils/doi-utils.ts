@@ -1,4 +1,4 @@
-import { Garden, Entrypoint, ModalFunction, DOIRequest } from "@/api/types";
+import { Garden, Entrypoint, ModalFunction, DOIRequest } from "@/types";
 
 export const formDOIRequest = (
   resource: Garden | Entrypoint | ModalFunction,
