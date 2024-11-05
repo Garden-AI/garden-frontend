@@ -28,7 +28,7 @@ const validateModalFile = async (
   // For now just mock the response
 
   return {
-    is_valid: false,
+    is_valid: true,
     app_name: "Modal App name",
     functions: [
       {
