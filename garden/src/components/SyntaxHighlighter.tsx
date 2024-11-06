@@ -1,6 +1,6 @@
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python";
-import "../syntaxHighlighter.css";
+import "./syntaxHighlighter.css";
 
 SyntaxHighlighter.registerLanguage("python", python);
 

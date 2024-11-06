@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useReducer,
-  useEffect,
-  type PropsWithChildren,
-} from "react";
+import { useState, useReducer, useEffect, type PropsWithChildren } from "react";
 
 import Context from "./Context";
 import { initialState } from "./GlobusAuthState";
@@ -22,9 +17,9 @@ export const GlobusAuthorizationManagerProvider = ({
   client: string;
 }>) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [instance, setInstance] = useState<
-    ReturnType<typeof authorization.create> | undefined
-  >(undefined);
+  const [instance, setInstance] = useState<ReturnType<typeof authorization.create> | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     const manager = authorization.create({
@@ -48,11 +43,7 @@ export const GlobusAuthorizationManagerProvider = ({
 
     instance.events.revoke.addListener(handleRevoke);
 
-    const handleAuthenticated = ({
-      isAuthenticated,
-    }: {
-      isAuthenticated: boolean;
-    }) => {
+    const handleAuthenticated = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
       dispatch({ type: "AUTHENTICATED", payload: isAuthenticated });
     };
     instance.events.authenticated.addListener(handleAuthenticated);

@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useGlobusAuth } from "../hooks/useGlobusAuth";
 
 export default function LoginPage() {

@@ -7,7 +7,7 @@ import { forwardRef, useEffect } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/form.utils";
 
 export interface Option {
   value: string;

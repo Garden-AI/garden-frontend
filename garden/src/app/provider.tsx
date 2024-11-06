@@ -1,8 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./app";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+
 import { GlobusAuthorizationManagerProvider } from "@/features/auth/context/Provider";
+import queryClient from "@/lib/react-query";
+import App from "./app";
 
 async function enableMocking() {
   if (import.meta.env.MODE !== "development" || import.meta.env.VITE_APP_SHOULD_MOCK == "false") {
@@ -13,16 +15,6 @@ async function enableMocking() {
 
   return worker.start();
 }
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 20,
-      retry: 1,
-    },
-  },
-});
 
 enableMocking().then(() => {
   const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);

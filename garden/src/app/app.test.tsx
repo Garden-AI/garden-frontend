@@ -1,12 +1,5 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
-import App from "./router";
-
-test.skip("renders learn react link", () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+import App from "./app";
 
 test("it renders", () => {
   render(<App />);

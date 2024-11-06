@@ -1,7 +1,7 @@
 import NotFoundPage from "@/components/NotFoundPage";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { SearchResult } from "./SearchResult";
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/form.utils";
 import { GardenSearchResult } from "../hooks/useSearchResults";
 
 export const SearchResultsList = ({

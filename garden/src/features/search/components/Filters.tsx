@@ -1,11 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
-import { Filter, Settings, XIcon } from "lucide-react";
+import { Filter, XIcon } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../../../components/ui/accordion";
+} from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";

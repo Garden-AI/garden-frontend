@@ -1,8 +1,9 @@
 import { RouterProvider } from "react-router";
 import { createHashRouter } from "react-router-dom";
+
 import Router from "./router";
 
-export default function App() {
+const App = () => {
   return (
     <RouterProvider
       router={createHashRouter([
@@ -13,4 +14,6 @@ export default function App() {
       ])}
     />
   );
-}
+};
+
+export default App;

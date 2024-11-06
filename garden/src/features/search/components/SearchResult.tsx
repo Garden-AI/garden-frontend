@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 import { Garden } from "@/types";
 
-import { Badge } from "../../../components/ui/badge";
-import { ScrollArea } from "../../../components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
@@ -13,13 +13,13 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "../../../components/ui/table";
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { BookOpenIcon, CalendarIcon, TagIcon } from "lucide-react";
 import { PersonIcon } from "@radix-ui/react-icons";
 
-import SaveGardenButton from "../../gardens/save/components/SaveGardenButton";
+import SaveGardenButton from "../../gardens/components/SaveGardenButton";
 
 export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boolean }) => {
   return (

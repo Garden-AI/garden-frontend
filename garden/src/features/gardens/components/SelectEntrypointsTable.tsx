@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -14,9 +12,9 @@ import { ExternalLink, RefreshCcwIcon } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { Link } from "react-router-dom";
 import WithTooltip from "@/components/WithTooltip";
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/form.utils";
 import { useGlobusAuth } from "@/features/auth/hooks/useGlobusAuth";
-import { useGetEntrypoints } from "@/features/entrypoints/view/api/useGetEntrypoints";
+import { useGetEntrypoints } from "@/features/entrypoints/api/useGetEntrypoints";
 
 export const SelectEntrypointsTable = () => {
   const { watch, setValue } = useFormContext();

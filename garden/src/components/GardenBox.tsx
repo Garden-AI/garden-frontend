@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "./ui/card"
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "@/types";
-import { useGetUserInfo } from "@/features/users/view/api/useGetUserInfo";
-import { useGetGardens } from "@/features/gardens/view/api/useGetGardens";
+import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
+import { useGetGardens } from "@/features/gardens/api/useGetGardens";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();

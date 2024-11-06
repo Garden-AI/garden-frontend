@@ -1,11 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import {
-  Garden,
-  GardenSearchFilter,
-  GardenSearchRequest,
-  GardenSearchResponse,
-} from "../../../types";
-import axios from "../../../lib/axios";
+import { Garden, GardenSearchFilter, GardenSearchRequest, GardenSearchResponse } from "@/types";
+import axios from "@/lib/axios";
 
 const searchGardens = async (searchOptions: GardenSearchRequest): Promise<GardenSearchResponse> => {
   try {
