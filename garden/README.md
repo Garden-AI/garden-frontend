@@ -1,45 +1,36 @@
-# Getting Started with Create React App
+# garden-frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The frontend repo for thegardens.ai
 
-## Available Scripts
+## Repo Layout
 
-In the project directory, you can run:
+The frontend is currently hosted using GitHub pages with automated deployment through GitHub Actions.
 
-### `npm start`
+The `src` directory contains the bulk of the application:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `/api`: API calls that are shared across the application.
+- `/app`: The root of the application, routing, and a provider file that wraps the application with necessary providers.
+- `/components`: Shared functional components used across the application. Can be further subdivided based on commonalities, if this folder gets too unwieldy.
+- `/features`: The features folder contains all of the individual 'features' present in the Garden frontend. For example, the 'search' feature contains all of the relevant components, API calls, and hooks that the search page uses. Each feature contains the relevant subfolders for that feature: a `/components` folder, an `/api` folder, sometimes a `/utils`, `/hooks`, or `/types` folder, for utility functions, hooks, and types specific to that feature, and whatever else makes sense for that feature.
+- `hooks`: Shared hooks used across the application.
+- `lib`: Shared library setup typescript/javascript files.
+- `types`: Shared types across the application.
+- `utils`: Shared utility functions used across the application.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Scripts
 
-### `npm test`
+`npm run start`: Starts the application in dev mode for local development
+`npm run start:local`: Can be used in conjunction with locally running backend to test local changes to backend repo. (Changes the API URL to localhost:5500)
+`npm run build`: Builds the application for production, outputs build files to `/build` directory
+`npm run build:staging`: Builds the application for staging, once again outputs build files to `/build` directory
+`npm run preview`: Can be used in conjuction with the build scripts to see builds in action.
+`npm run refresh-types`: Script to synchronize types with the backend staging deployment, written to the `/types/backend-schema.ts` file. Should be run manually anytime there are major changes to the backend staging deployment.
+`npm run test`: Runs all tests for the frontend (currently just one).
 
-<!-- TODO: Implement test script -->
+## Branches and Deployment
 
-### `npm run build`
+`staging` is the default branch (make PRs against `staging`)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+A merge to `staging` will automatically deploy to the staging URL.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+A merge to `prod` will automatically deploy to the Garden production URL.
