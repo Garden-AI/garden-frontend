@@ -30,12 +30,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Garden } from "@/types";
-import { useGlobusAuth } from "../../auth/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { usePatchEntrypoint } from "@/features/entrypoints/api/usePatchEntrypoint";
 import { useDeleteGarden } from "../api/useDeleteGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
 
-export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
+const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
   const auth = useGlobusAuth();
   const navigate = useNavigate();
 
@@ -116,7 +116,7 @@ export default function GardenDropdownMenu({ garden }: { garden: Garden }) {
       />
     </>
   );
-}
+};
 
 const LoadingOverlay = () => {
   return (
@@ -434,3 +434,5 @@ const ArchiveGardenModal = ({
     </AlertDialog>
   );
 };
+
+export default GardenDropdownMenu;

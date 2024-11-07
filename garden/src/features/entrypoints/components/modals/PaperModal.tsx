@@ -32,7 +32,7 @@ interface PaperModalProps {
   trigger: React.ReactNode;
 }
 
-export default function PaperModal({ edit, onSave, initialData, trigger }: PaperModalProps) {
+const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const form = useForm<PaperFormData>({
@@ -136,4 +136,6 @@ export default function PaperModal({ edit, onSave, initialData, trigger }: Paper
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default PaperModal;

@@ -7,7 +7,7 @@ import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useSaveGarden } from "../api/useSaveGarden";
 import { useUnsaveGarden } from "../api/useUnsaveGarden";
 
-export default function SaveGardenButton({ garden }: { garden: Garden }) {
+const SaveGardenButton = ({ garden }: { garden: Garden }) => {
   const [hover, setHover] = useState(false);
   const { mutate: saveGarden, isPending: saveGardenIsPending } = useSaveGarden(garden.doi);
   const { mutate: unsaveGarden, isPending: unsaveGardenIsPending } = useUnsaveGarden(garden.doi);
@@ -67,4 +67,6 @@ export default function SaveGardenButton({ garden }: { garden: Garden }) {
       </Tooltip>
     </TooltipProvider>
   );
-}
+};
+
+export default SaveGardenButton;

@@ -48,7 +48,7 @@ const EntrypointPage = () => {
   );
 };
 
-function EntrypointHeader({ entrypoint, doi }: { entrypoint: Entrypoint; doi: string }) {
+const EntrypointHeader = ({ entrypoint, doi }: { entrypoint: Entrypoint; doi: string }) => {
   return (
     <div className="mb-4 ">
       <div className="flex flex-row justify-between">
@@ -65,9 +65,9 @@ function EntrypointHeader({ entrypoint, doi }: { entrypoint: Entrypoint; doi: st
       </div>
     </div>
   );
-}
+};
 
-function EntrypointBody({ garden, entrypoint }: { garden: Garden; entrypoint: Entrypoint }) {
+const EntrypointBody = ({ garden, entrypoint }: { garden: Garden; entrypoint: Entrypoint }) => {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
@@ -92,5 +92,5 @@ function EntrypointBody({ garden, entrypoint }: { garden: Garden; entrypoint: En
       <Separator className="mb-12" />
     </div>
   );
-}
+};
 export default EntrypointPage;

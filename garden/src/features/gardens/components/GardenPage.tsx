@@ -20,10 +20,10 @@ import { useGetGarden } from "../api/useGetGarden";
 import { Garden } from "@/types";
 
 import { cn } from "@/utils/form.utils";
-import { useGlobusAuth } from "@/features/auth/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import SaveGardenButton from "./SaveGardenButton";
 
-export default function GardenPage() {
+const GardenPage = () => {
   const { doi } = useParams();
   if (!doi) {
     return <NotFoundPage />;
@@ -60,9 +60,9 @@ export default function GardenPage() {
       <RelatedGardens doi={garden.doi} />
     </div>
   );
-}
+};
 
-function GardenHeader({ garden }: { garden: Garden }) {
+const GardenHeader = ({ garden }: { garden: Garden }) => {
   const auth = useGlobusAuth();
 
   return (
@@ -90,9 +90,9 @@ function GardenHeader({ garden }: { garden: Garden }) {
       </div>
     </div>
   );
-}
+};
 
-function GardenBody({ garden }: { garden: Garden }) {
+const GardenBody = ({ garden }: { garden: Garden }) => {
   return (
     <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex w-full flex-row justify-between">
@@ -121,9 +121,9 @@ function GardenBody({ garden }: { garden: Garden }) {
       </div>
     </div>
   );
-}
+};
 
-function GardenAccordion({ garden }: { garden: Garden }) {
+const GardenAccordion = ({ garden }: { garden: Garden }) => {
   const tabs = [
     {
       name: "Entrypoints",
@@ -155,9 +155,9 @@ function GardenAccordion({ garden }: { garden: Garden }) {
       ))}
     </Tabs>
   );
-}
+};
 
-function EntrypointsTab({ garden }: { garden: Garden }) {
+const EntrypointsTab = ({ garden }: { garden: Garden }) => {
   const entrypoints = garden.entrypoints || [];
   const modalFunctions = garden.modal_functions || [];
   const entrypointBoxes = entrypoints.map((entrypoint: any) => (
@@ -179,9 +179,9 @@ function EntrypointsTab({ garden }: { garden: Garden }) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">{functionBoxes}</div>
   );
-}
+};
 
-function DatasetsTab({ garden }: { garden: Garden }) {
+const DatasetsTab = ({ garden }: { garden: Garden }) => {
   const datasets =
     garden.entrypoints
       ?.map((entrypoint) => entrypoint.datasets || [])
@@ -273,4 +273,6 @@ function DatasetsTab({ garden }: { garden: Garden }) {
       )}
     </div>
   );
-}
+};
+
+export default GardenPage;

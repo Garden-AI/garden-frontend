@@ -7,7 +7,7 @@ import DatasetModal from "./modals/DatasetModal";
 import PaperModal from "./modals/PaperModal";
 import RepositoryModal from "./modals/RepositoryModal";
 
-export default function AssociatedMaterials() {
+const AssociatedMaterials = () => {
   return (
     <div className="space-y-8 py-6">
       <AssociatedMaterialsSection fieldName="repositories" resourceType="repository" />
@@ -15,7 +15,7 @@ export default function AssociatedMaterials() {
       <AssociatedMaterialsSection fieldName="papers" resourceType="paper" />
     </div>
   );
-}
+};
 
 interface RepositorySectionProps {
   resourceType: string;
@@ -82,3 +82,5 @@ const AssociatedMaterialsSection = ({ fieldName, resourceType }: RepositorySecti
     </div>
   );
 };
+
+export default AssociatedMaterials;

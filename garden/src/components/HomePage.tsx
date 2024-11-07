@@ -25,7 +25,7 @@ import {
   Lightbulb,
   Search,
 } from "lucide-react";
-import { useGlobusAuth } from "@/features/auth/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 
 const icons = [
   { icon: Share2Icon, text: "Boost the visibility of your work" },

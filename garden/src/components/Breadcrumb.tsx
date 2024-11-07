@@ -9,7 +9,7 @@ import {
 } from "./ui/breadcrumb";
 import React from "react";
 
-export default function Breadcrumb({ crumbs }: { crumbs: any }) {
+const Breadcrumb = ({ crumbs }: { crumbs: any }) => {
   return (
     <BreadcrumbShadcn className="mb-10 hidden md:block">
       <BreadcrumbList>
@@ -25,15 +25,11 @@ export default function Breadcrumb({ crumbs }: { crumbs: any }) {
           </React.Fragment>
         ))}
         <BreadcrumbItem>
-          <BreadcrumbPage className="bold">
-            {crumbs[crumbs.length - 1].label}
-          </BreadcrumbPage>
+          <BreadcrumbPage className="bold">{crumbs[crumbs.length - 1].label}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </BreadcrumbShadcn>
   );
-}
+};
 
-function trimString(str: string) {
-  return str.length > 40 ? str.substring(0, 50) + "..." : str;
-}
+export default Breadcrumb;

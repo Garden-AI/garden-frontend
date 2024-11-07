@@ -50,7 +50,7 @@ const ModalFunctionPage = () => {
   );
 };
 
-function ModalFunctionHeader({ modalFunction }: { modalFunction: ModalFunction }) {
+const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
     <div>
       <div className="mb-4 ">
@@ -69,9 +69,9 @@ function ModalFunctionHeader({ modalFunction }: { modalFunction: ModalFunction }
       </div>
     </div>
   );
-}
+};
 
-function ModalFunctionBody({ modalFunction }: { modalFunction: ModalFunction }) {
+const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
     <div className="space-y-6 py-6">
       <div className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
@@ -96,7 +96,7 @@ function ModalFunctionBody({ modalFunction }: { modalFunction: ModalFunction }) 
       <Separator className="my-6" />
     </div>
   );
-}
+};
 
 const ModalFunctionExample = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   // TODO: actually use the example function text provided
@@ -153,7 +153,7 @@ const ModalFunctionTabs = ({ modalFunction }: { modalFunction: ModalFunction }) 
   );
 };
 
-function DatasetsTab({ datasets }: { datasets?: any[] }) {
+const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
   if (!datasets || datasets.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
@@ -200,9 +200,9 @@ function DatasetsTab({ datasets }: { datasets?: any[] }) {
       </div>
     </>
   );
-}
+};
 
-function FunctionTab({ modalFunction }: { modalFunction: ModalFunction }) {
+const FunctionTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
     <Card className=" rounded-none bg-white p-4">
       <CardHeader className=" px-6 py-4">
@@ -218,6 +218,6 @@ function FunctionTab({ modalFunction }: { modalFunction: ModalFunction }) {
       </CardContent>
     </Card>
   );
-}
+};
 
 export default ModalFunctionPage;

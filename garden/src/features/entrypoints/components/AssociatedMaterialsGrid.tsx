@@ -53,12 +53,12 @@ const AssociatedMaterialsGrid: React.FC<AssociatedMaterialsGridProps> = ({
   );
 };
 
-function isDataset(resource: any): resource is Dataset {
+const isDataset = (resource: any): resource is Dataset => {
   return resource.data_type !== undefined;
-}
+};
 
-function isRepository(resource: any): resource is Repository {
+const isRepository = (resource: any): resource is Repository => {
   return resource.repo_name !== undefined;
-}
+};
 
 export default AssociatedMaterialsGrid;

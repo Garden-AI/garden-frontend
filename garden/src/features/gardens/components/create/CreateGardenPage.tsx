@@ -2,7 +2,7 @@ import { CreateGardenForm } from "./CreateGardenForm";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-export default function CreateGardenPage() {
+const CreateGardenPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const formType = searchParams.get("type");
 
@@ -56,7 +56,7 @@ export default function CreateGardenPage() {
       )}
     </div>
   );
-}
+};
 
 const CreateGardenFormHeader = () => {
   return (
@@ -69,3 +69,5 @@ const CreateGardenFormHeader = () => {
     </>
   );
 };
+
+export default CreateGardenPage;

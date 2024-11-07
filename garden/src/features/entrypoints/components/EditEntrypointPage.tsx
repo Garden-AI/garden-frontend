@@ -7,7 +7,7 @@ import { useSearchGardenByDOI } from "@/features/search/api/useSearchGardenByDOI
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useGetEntrypoint } from "../api/useGetEntrypoint";
 
-export default function EditEntrypointPage() {
+const EditEntrypointPage = () => {
   const { doi } = useParams<{ doi: string }>();
   const navigate = useNavigate();
   if (!doi) {
@@ -52,4 +52,6 @@ export default function EditEntrypointPage() {
       <EditEntrypointForm entrypoint={entrypoint} />
     </div>
   );
-}
+};
+
+export default EditEntrypointPage;

@@ -1,10 +1,10 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-import { SearchFilters } from "@/features/search/components/Filters";
-import { SearchForm } from "@/features/search/components/Form";
-import { SearchResultsPagination } from "@/features/search/components/Pagination";
-import { SearchResultsHeader } from "@/features/search/components/SearchResultsHeader";
-import { SearchResultsList } from "@/features/search/components/SearchResultsList";
-import { useSearchResults } from "./hooks/useSearchResults";
+import SearchFilters from "./Filters";
+import { SearchForm } from "./Form";
+import SearchResultsPagination from "./Pagination";
+import { SearchResultsHeader } from "./SearchResultsHeader";
+import { SearchResultsList } from "./SearchResultsList";
+import { useSearchResults } from "../hooks/useSearchResults";
 
 const SearchPage = () => {
   const {

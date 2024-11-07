@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useGlobusAuth } from "../hooks/useGlobusAuth";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const auth = useGlobusAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,4 +37,6 @@ export default function LoginPage() {
       </Button>
     </div>
   );
-}
+};
+
+export default LoginPage;

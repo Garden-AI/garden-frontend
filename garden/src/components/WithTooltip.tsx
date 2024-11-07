@@ -1,11 +1,6 @@
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
-export default function WithTooltip({
+const WithTooltip = ({
   hint,
   children,
   className,
@@ -13,7 +8,7 @@ export default function WithTooltip({
   children: any;
   hint: string;
   className?: string;
-}) {
+}) => {
   return (
     <TooltipProvider>
       <Tooltip delayDuration={40}>
@@ -24,4 +19,6 @@ export default function WithTooltip({
       </Tooltip>
     </TooltipProvider>
   );
-}
+};
+
+export default WithTooltip;

@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import MultipleSelector from "@/components/ui/multiple-select";
 import AssociatedMaterials from "./AssociatedMaterials";
 
-export default function FormFields() {
+const EditEntrypointFormFields = () => {
   const navigate = useNavigate();
   const form = useFormContext();
 
@@ -142,4 +142,6 @@ export default function FormFields() {
       </div>
     </div>
   );
-}
+};
+
+export default EditEntrypointFormFields;

@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { SelectEntrypointsTable } from "../SelectEntrypointsTable";
 
-export default function FormFields() {
+const EditGardenFormFields = () => {
   const navigate = useNavigate();
   const form = useFormContext();
   console.log(form.getValues("doi_is_draft"));
@@ -186,4 +186,6 @@ export default function FormFields() {
       </div>
     </div>
   );
-}
+};
+
+export default EditGardenFormFields;

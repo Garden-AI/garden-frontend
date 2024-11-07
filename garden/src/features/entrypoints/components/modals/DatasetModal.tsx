@@ -39,7 +39,7 @@ interface DatasetModalProps {
   trigger: React.ReactNode;
 }
 
-export default function DatasetModal({ edit, onSave, initialData, trigger }: DatasetModalProps) {
+const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<DatasetFormData>({
@@ -187,4 +187,6 @@ export default function DatasetModal({ edit, onSave, initialData, trigger }: Dat
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default DatasetModal;

@@ -10,7 +10,7 @@ import CopyButton from "@/components/CopyButton";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-function AssociatedMaterials({ resource }: { resource: Entrypoint | ModalFunction }) {
+const AssociatedMaterials = ({ resource }: { resource: Entrypoint | ModalFunction }) => {
   return (
     <Accordion type="single" collapsible className="mb-10 border-y" defaultValue="materials">
       <AccordionItem value="materials">
@@ -102,6 +102,6 @@ function AssociatedMaterials({ resource }: { resource: Entrypoint | ModalFunctio
       </AccordionItem>
     </Accordion>
   );
-}
+};
 
 export default AssociatedMaterials;

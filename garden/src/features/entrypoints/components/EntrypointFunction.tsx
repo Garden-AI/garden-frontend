@@ -1,13 +1,13 @@
 import { Entrypoint } from "@/types";
 import { ExampleFunction } from "./ExampleFunction";
 
-function EntrypointFunction({
+const EntrypointFunction = ({
   gardenDOI,
   entrypoint,
 }: {
   gardenDOI: string;
   entrypoint: Entrypoint;
-}) {
+}) => {
   return (
     <div className="mb-12 flex flex-col gap-8 py-12">
       <h2 className="text-center text-2xl sm:text-3xl">Run this entrypoint</h2>
@@ -18,7 +18,7 @@ function EntrypointFunction({
       </div>
     </div>
   );
-}
+};
 
 const exampleFunctionText = (gardenDOI: string, entrypoint: Entrypoint): string => {
   const prefixText = `from garden_ai import GardenClient

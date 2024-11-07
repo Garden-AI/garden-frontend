@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, RefObject } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
-import { useGlobusAuth } from "../../auth/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User, Menu, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -43,21 +43,16 @@ const Navbar = () => {
     setOpenMenuDropdown(!openMenuDropdown);
   };
 
-  function handleLogOut() {
+  const handleLogOut = () => {
     auth.authorization?.revoke();
     navigate("/");
     toast.success("Logged out successfully!");
     queryClient.removeQueries();
-  }
+  };
 
-  function handleLogin() {
+  const handleLogin = () => {
     auth.authorization?.login();
-    /*
-    if (auth.isAuthenticated) {
-      toast.success("Logged in successfully!");
-    }
-    */
-  }
+  };
 
   let Links = [{ name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" }];
 
@@ -68,7 +63,7 @@ const Navbar = () => {
       <div className="items-center justify-between bg-white px-7 py-4 md:flex md:px-10 md:py-2">
         {/* logo */}
         <Link to="/" className="py-2">
-          <div className="absolute relative inset-0 w-32">
+          <div className="absolute inset-0 w-32">
             <img src="img/garden-logo-small.png" alt="Garden AI Logo" className="" />
           </div>
         </Link>

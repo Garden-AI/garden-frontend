@@ -6,7 +6,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
-export default function RootLayout() {
+const RootLayout = () => {
   return (
     <>
       <ScrollToTop />
@@ -18,4 +18,6 @@ export default function RootLayout() {
       <Toaster />
     </>
   );
-}
+};
+
+export default RootLayout;

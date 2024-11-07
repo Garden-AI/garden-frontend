@@ -14,7 +14,7 @@ import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { Entrypoint } from "@/types";
 import { NotebookViewer } from "@/features/notebook/components/NotebookViewer";
 
-export default function EntrypointTabs({ entrypoint }: { entrypoint: Entrypoint }) {
+const EntrypointTabs = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   const tabs = [
     {
       name: "Entrypoint",
@@ -49,9 +49,9 @@ export default function EntrypointTabs({ entrypoint }: { entrypoint: Entrypoint 
       ))}
     </Tabs>
   );
-}
+};
 
-function DatasetsTab({ datasets }: { datasets?: any[] }) {
+const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
   if (!datasets || datasets.length === 0) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
@@ -135,9 +135,9 @@ function DatasetsTab({ datasets }: { datasets?: any[] }) {
       )}
     </>
   );
-}
+};
 
-function FunctionTab({ entrypoint }: { entrypoint: Entrypoint }) {
+const FunctionTab = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   return (
     <Card className=" rounded-none bg-white p-4">
       <CardHeader className=" px-6 py-4">
@@ -149,9 +149,9 @@ function FunctionTab({ entrypoint }: { entrypoint: Entrypoint }) {
       </CardContent>
     </Card>
   );
-}
+};
 
-function NotebookTab({ notebookURL }: { notebookURL?: string }) {
+const NotebookTab = ({ notebookURL }: { notebookURL?: string }) => {
   if (!notebookURL) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
@@ -163,9 +163,7 @@ function NotebookTab({ notebookURL }: { notebookURL?: string }) {
     );
   }
 
-  return (
-    <>
-      <NotebookViewer notebookURL={notebookURL} />
-    </>
-  );
-}
+  return <NotebookViewer notebookURL={notebookURL} />;
+};
+
+export default EntrypointTabs;

@@ -33,12 +33,7 @@ interface RepositoryModalProps {
   trigger: React.ReactNode;
 }
 
-export default function RepositoryModal({
-  edit,
-  onSave,
-  initialData,
-  trigger,
-}: RepositoryModalProps) {
+const RepositoryModal = ({ edit, onSave, initialData, trigger }: RepositoryModalProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const form = useForm<RepositoryFormData>({
@@ -134,4 +129,6 @@ export default function RepositoryModal({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default RepositoryModal;

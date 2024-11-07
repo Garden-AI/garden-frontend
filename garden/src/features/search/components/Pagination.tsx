@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { GardenSearchResult } from "../hooks/useSearchResults";
 
-export function SearchResultsPagination({
+const SearchResultsPagination = ({
   searchResult,
   page,
   setPage,
@@ -10,7 +10,7 @@ export function SearchResultsPagination({
   searchResult: GardenSearchResult;
   page: number;
   setPage: (page: number) => void;
-}) {
+}) => {
   const totalPages = searchResult?.totalPages;
   const hasNextPage = searchResult?.hasNextPage;
 
@@ -45,4 +45,6 @@ export function SearchResultsPagination({
       </div>
     </div>
   );
-}
+};
+
+export default SearchResultsPagination;

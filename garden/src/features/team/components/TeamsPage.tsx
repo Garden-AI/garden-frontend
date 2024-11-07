@@ -1,5 +1,5 @@
-import TeamMember from "./components/TeamMember";
-import StudentMember from "./components/StudentMember";
+import TeamMember from "./TeamMember";
+import StudentMember from "./StudentMember";
 
 const TeamsPage = () => {
   // 1. Ben Blaiszik; University of Chicago; Co-PI

@@ -1,5 +1,5 @@
 import React from "react";
-import Context, { GlobusAuthContextProps } from "../context/Context";
+import Context, { GlobusAuthContextProps } from "../features/auth/context/Context";
 
 export const useGlobusAuth = () => {
   const context = React.useContext(Context);

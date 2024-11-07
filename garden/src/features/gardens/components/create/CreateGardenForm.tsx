@@ -1,6 +1,6 @@
 import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker, useNavigate, useSearchParams } from "react-router-dom";
-import { useGlobusAuth } from "@/features/auth/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { gardenFormSchema, GardenCreateFormData } from "../../types/garden.types";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";

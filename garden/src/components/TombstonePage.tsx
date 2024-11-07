@@ -2,7 +2,7 @@ import { Garden } from "@/types";
 import GardenDropdownOptions from "@/features/gardens/components/GardenDropdownOptions";
 import { CircleAlert } from "lucide-react";
 
-export default function TombstonePage({ garden }: { garden: Garden }) {
+const TombstonePage = ({ garden }: { garden: Garden }) => {
   return (
     <div className="min-h-[80vh] bg-gray-100 px-4 py-16 font-display sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl overflow-hidden rounded-lg bg-white shadow-lg">
@@ -43,4 +43,6 @@ export default function TombstonePage({ garden }: { garden: Garden }) {
       </div>
     </div>
   );
-}
+};
+
+export default TombstonePage;

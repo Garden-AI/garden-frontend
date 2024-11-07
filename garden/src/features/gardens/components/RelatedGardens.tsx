@@ -9,7 +9,7 @@ import {
 } from "@/features/search/api/useSearchGardens";
 import { useEffect, useState } from "react";
 
-export default function RelatedGardens({ doi }: { doi: string }) {
+const RelatedGardens = ({ doi }: { doi: string }) => {
   const { data, isLoading, isError } = useSearchGardens({
     q: "",
     limit: 10,
@@ -45,4 +45,6 @@ export default function RelatedGardens({ doi }: { doi: string }) {
       </div>
     </div>
   );
-}
+};
+
+export default RelatedGardens;

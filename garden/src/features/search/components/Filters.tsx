@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { GardenSearchResult } from "../hooks/useSearchResults";
 
-export function SearchFilters({
+const SearchFilters = ({
   searchResult,
   selectedFilters,
   setSelectedFilters,
@@ -18,7 +18,7 @@ export function SearchFilters({
   searchResult: GardenSearchResult;
   selectedFilters: Record<string, string[]>;
   setSelectedFilters: (filters: Record<string, string[]>) => void;
-}) {
+}) => {
   const updateFilter = (facet: string, bucket: string, isChecked: boolean) => {
     const selected = selectedFilters[facet] || [];
     const updated = isChecked ? [...selected, bucket] : selected.filter((b: any) => b !== bucket);
@@ -87,4 +87,6 @@ export function SearchFilters({
       </div>
     </div>
   );
-}
+};
+
+export default SearchFilters;
