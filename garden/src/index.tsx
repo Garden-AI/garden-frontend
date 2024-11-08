@@ -6,10 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GardenProvider } from "./components/garden/Context";
 
 async function enableMocking() {
-  if (
-    import.meta.env.MODE !== "development" ||
-    import.meta.env.VITE_APP_SHOULD_MOCK == "false"
-  ) {
+  if (import.meta.env.MODE !== "development" || import.meta.env.VITE_APP_SHOULD_MOCK == "false") {
     return;
   }
 
@@ -29,15 +26,13 @@ const queryClient = new QueryClient({
 });
 
 enableMocking().then(() => {
-  const root = ReactDOM.createRoot(
-    document.getElementById("root") as HTMLElement,
-  );
+  const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
   root.render(
     <React.StrictMode>
       <GlobusAuthorizationManagerProvider
         client={import.meta.env.VITE_GLOBUS_CLIENT_ID}
         redirect={import.meta.env.VITE_GLOBUS_REDIRECT_URI}
-        scopes={import.meta.env.VITE_GLOBUS_GARDEN_SCOPE}
+        scopes={import.meta.env.VITE_GLOBUS_SCOPES}
       >
         <QueryClientProvider client={queryClient}>
           <GardenProvider>
