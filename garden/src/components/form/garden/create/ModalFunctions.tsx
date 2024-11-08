@@ -1,5 +1,4 @@
 import SyntaxHighlighterComponent from "@/components/SyntaxHighlighter";
-import { Button } from "@/components/ui/button";
 import {
   FormLabel,
   FormField,
@@ -14,7 +13,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 
 const ModalFunctions = () => {
   const { control } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
+  const { fields } = useFieldArray({
     name: "modal.modal_functions",
     control,
   });
@@ -22,44 +21,20 @@ const ModalFunctions = () => {
   return (
     <div className="space-y-8">
       {fields.map((func, index) => (
-        <ModalFunction key={func.id} index={index} remove={() => remove(index)} />
+        <ModalFunction key={func.id} index={index} />
       ))}
-      <Button
-        type="button"
-        onClick={() => {
-          append({
-            function_name: "",
-            description: "",
-            year: "2024",
-            is_archived: false,
-            doi: null,
-            title: "",
-            function_text: "def example_function():\n    return 'Hello, World!'\n",
-            authors: [],
-            tags: [],
-            test_functions: [],
-          });
-        }}
-      >
-        Add Function
-      </Button>
     </div>
   );
 };
 
-const ModalFunction = ({ index, remove }: { index: number; remove: () => void }) => {
-  const { getValues, control, watch } = useFormContext();
+const ModalFunction = ({ index }: { index: number }) => {
+  const { control, watch } = useFormContext();
 
   const functionText = watch(`modal.modal_functions.${index}.function_text`);
   return (
     <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 ">
         <h3 className="text-xl font-semibold text-gray-800">Modal Function #{index + 1}</h3>
-        {index > 0 && (
-          <Button variant="destructive" onClick={remove} size="sm">
-            Remove
-          </Button>
-        )}
       </div>
 
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -106,7 +81,7 @@ const ModalFunction = ({ index, remove }: { index: number; remove: () => void })
           <FormItem className="mb-4">
             <FormLabel className="font-bold text-gray-700">Function Name</FormLabel>
             <FormControl>
-              <Input {...field} type="text" className="w-full" placeholder="my_function" />
+              <Input {...field} type="text" className="w-full" placeholder="my_function" disabled />
             </FormControl>
             <FormMessage />
             <FormDescription className="text-xs">
