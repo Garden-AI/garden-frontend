@@ -1,6 +1,6 @@
-import axios from "@/api/axios";
+import axios from "@/lib/axios";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import { DOIRequest, Entrypoint, Garden, ModalFunction } from "../types";
+import { DOIRequest, Entrypoint, Garden, ModalFunction } from "../../types";
 import { formDOIRequest } from "@/utils/doi-utils";
 
 interface UpdateDOIRequest {

@@ -1,6 +1,6 @@
-import axios from "@/api/axios";
+import axios from "@/lib/axios";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import { DOIRequest } from "../types";
+import { DOIRequest } from "../../types";
 
 interface CreateDOIResponse {
   doi: string;

@@ -1,0 +1,19 @@
+import { useNavigate } from "react-router-dom";
+import { Garden } from "@/types";
+
+const RelatedGardenBox = ({ garden }: { garden: Garden }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      className="text-display flex h-56 min-w-[275px] flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-100 px-5 shadow-sm hover:cursor-pointer hover:shadow-md"
+      onClick={() => navigate(encodeURIComponent(`/garden/${garden.doi}`))}
+    >
+      <div className="my-10 overflow-y-hidden whitespace-normal">
+        <p className="text-center text-3xl">{garden.title}</p>
+      </div>
+    </div>
+  );
+};
+
+export default RelatedGardenBox;

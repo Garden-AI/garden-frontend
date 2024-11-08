@@ -1,4 +1,4 @@
-export default function LoadingSpinner() {
+const LoadingSpinner = () => {
   return (
     <div className="flex  items-center justify-center">
       <svg
@@ -18,4 +18,6 @@ export default function LoadingSpinner() {
       </svg>
     </div>
   );
-}
+};
+
+export default LoadingSpinner;

@@ -1,7 +1,7 @@
 import { Copy } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/form.utils";
 import WithTooltip from "./WithTooltip";
 
 export default function CopyButton({

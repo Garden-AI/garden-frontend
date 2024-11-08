@@ -71,7 +71,7 @@
     "deploy-prod": "gh-pages -d build",
     "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
     "test": "vitest",
-    "refresh-types": "curl -s https://api-dev.thegardens.ai/openapi.json | npx openapi-typescript -o ./src/api/backend-schema.ts"
+    "refresh-types": "curl -s https://api-dev.thegardens.ai/openapi.json | npx openapi-typescript -o ./src/types/backend-schema.ts"
   },
   "eslintConfig": {
     "extends": [

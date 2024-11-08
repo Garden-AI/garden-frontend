@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 
-
 const Footer = () => {
   return (
     <div>
@@ -10,11 +9,7 @@ const Footer = () => {
       <div className="m-8 font-display text-black sm:mx-12 md:mx-20 lg:mx-24">
         {/* logo */}
         <Link to="/" className="flex py-10 hover:opacity-75">
-          <img
-            src="img/normalColorIcon_Garden.jpg"
-            alt="Garden AI Logo"
-            className="w-40 object-contain"
-          ></img>
+          <img src="img/garden-logo.jpg" alt="Garden AI Logo" className="w-40 object-contain"></img>
         </Link>
 
         {/* links */}
@@ -22,13 +17,11 @@ const Footer = () => {
           <div className="mr-8 md:mr-16">
             <p className="font-bold uppercase text-gray-600">Made Possible By:</p>
             <section className="">
-              <h1 className="sm:text-md pt-4 text-sm font-bold">
-                The National Science Foundation
-              </h1>
+              <h1 className="sm:text-md pt-4 text-sm font-bold">The National Science Foundation</h1>
               <p className="max-w-sm text-xs sm:text-sm">
-                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for
-                Publishing and Applying AI Models for Translational Research in
-                Science, Engineering, Education, and Industry”
+                Award Abstract #2209892: “Frameworks: Garden: A FAIR Framework for Publishing and
+                Applying AI Models for Translational Research in Science, Engineering, Education,
+                and Industry”
               </p>
             </section>
           </div>
@@ -82,8 +75,8 @@ const Footer = () => {
                 The Materials Data Facility (MDF)
               </h1>
               <p className="max-w-sm text-xs sm:text-sm">
-                NIST-supported effort to build data services to help material
-                scientists publish and discover data.
+                NIST-supported effort to build data services to help material scientists publish and
+                discover data.
               </p>
             </section>
 
@@ -97,10 +90,9 @@ const Footer = () => {
             <section className="">
               <h1 className="sm:text-md text-sm font-bold md:pt-2">Globus</h1>
               <p className="max-w-sm text-xs sm:text-sm">
-                Research cyberinfrastructure, developed and operated as a
-                not-for-profit service by the University of Chicago to enable
-                research data transfer, sharing, access, discovery, and
-                automation.
+                Research cyberinfrastructure, developed and operated as a not-for-profit service by
+                the University of Chicago to enable research data transfer, sharing, access,
+                discovery, and automation.
               </p>
             </section>
 
@@ -108,7 +100,7 @@ const Footer = () => {
               <a target="blank" href="https://materialsdatafacility.org/">
                 <div className="grayscale">
                   <img
-                    src="img/MDF-logo.png"
+                    src="img/extern-logos/mdf.png"
                     alt="MDF logo"
                     className="max-w-[150px] hover:opacity-75"
                   />
@@ -120,7 +112,7 @@ const Footer = () => {
               <a target="blank" href="https://foundry-ml.org/#/">
                 <div className="grayscale">
                   <img
-                    src="img/foundry-logo.png"
+                    src="img/extern-logos/foundry.png"
                     alt="Foundry logo"
                     className="max-w-[150px] hover:opacity-75"
                   />
@@ -132,8 +124,8 @@ const Footer = () => {
               <a target="blank" href="https://www.globus.org/">
                 <div className="grayscale">
                   <img
-                    src="img/globus-logo.png"
-                    alt="Gloubs logo"
+                    src="img/extern-logos/globus.png"
+                    alt="Globus logo"
                     className="max-w-[100px] hover:opacity-75"
                   />
                 </div>
