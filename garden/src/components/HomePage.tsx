@@ -369,7 +369,7 @@ predictions = predict_properties()`}
                 Garden handles the complexities, so you can focus on your research.
               </p>
               <a
-                href="https://garden-ai.readthedocs.io/en/latest/user_guide/introduction/"
+                href="https://garden-ai.readthedocs.io/en/latest/"
                 target="_blank"
               >
                 <span className="group inline-flex items-center text-lg text-green">

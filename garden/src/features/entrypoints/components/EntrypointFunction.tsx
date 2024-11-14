@@ -23,7 +23,7 @@ const EntrypointFunction = ({
 const exampleFunctionText = (gardenDOI: string, entrypoint: Entrypoint): string => {
   const prefixText = `from garden_ai import GardenClient
 client = GardenClient()
-garden = client.get_published_garden("${gardenDOI}")
+garden = client.get_garden("${gardenDOI}")
 \n`;
 
   // Ideally we have a test function and we can display that.
