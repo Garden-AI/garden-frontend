@@ -102,7 +102,7 @@ const ModalFunctionExample = ({ modalFunction }: { modalFunction: ModalFunction 
   // TODO: actually use the example function text provided
   const functionText = `from garden_ai import GardenClient
 client = GardenClient()
-garden = client.get_published_garden(my_garden_doi)
+garden = client.get_garden(my_garden_doi)
 
 input = ['Data Here']
 return garden.${modalFunction.function_name}(input)
