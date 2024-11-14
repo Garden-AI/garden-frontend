@@ -351,6 +351,7 @@ const HomePage = () => {
               <SyntaxHighlighter>
                 {`from garden_ai import GardenClient
 
+garden_client = GardenClient()
 garden = garden_client.get_garden("10.26311/ep98-br79")
 
 def predict_properties():
