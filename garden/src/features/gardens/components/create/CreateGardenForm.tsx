@@ -15,8 +15,9 @@ import { GardenCreateRequest } from "@/types";
 export const CreateGardenForm = () => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
+  const uuid = auth?.authorization?.user?.sub;
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { createGardenAndDOI } = useCreateGardenAndDOI();
   const { mutateAsync: createModalApp } = useCreateModalApp();
 
@@ -25,19 +26,19 @@ export const CreateGardenForm = () => {
     mode: "onTouched",
     defaultValues: {
       title: "",
+      description: "",
       authors: [],
       contributors: [],
-      entrypoint_ids: [],
-      doi_is_draft: true,
-      description: "",
+      entrypoint_ids: [], // Required
+      doi: "", // Will be generated
+      doi_is_draft: true, // Required
       year: "2024",
       language: "en",
       tags: [],
       version: "1.0.0",
-      owner_identity_id: auth?.authorization?.user?.sub,
-      doi: "",
-      publisher: "Gardens-AI",
-      is_archived: false,
+      owner_identity_id: uuid || "", // Required - from auth
+      publisher: "Garden-AI", // Required
+      is_archived: false, // Required
       modal: {
         app_name: "",
         file_contents: "",
@@ -52,20 +53,26 @@ export const CreateGardenForm = () => {
 
   const onSubmit = async (values: GardenCreateFormData) => {
     try {
-      let gardenCreateRequest: GardenCreateRequest = values;
+      let gardenCreateRequest: GardenCreateRequest = {
+        ...values,
+        doi_is_draft: true, // Ensure this is set
+        is_archived: false, // Ensure this is set
+        publisher: "Garden-AI", // Ensure this is set
+        owner_identity_id: uuid || "", // Ensure this is set
+      };
+
       const formType = searchParams.get("type");
       if (formType === "modal") {
         const modalAppResponse = await createModalApp({
           file_contents: values.modal.file_contents,
-          requirements: [], // Will ultimately be handled by backend
-          app_name: values.modal.app_name, // Will ultimately be determined by backend
-          base_image_name: "python:3.8", // Will ultimately be handled by backend
-          modal_function_names: values.modal.modal_functions.map((func: any) => func.function_name), // Will ultimately be handled by backend
+          requirements: [],
+          app_name: values.modal.app_name,
+          base_image_name: values.modal.base_image_name,
           modal_functions: values.modal.modal_functions,
-          owner_identity_id: auth?.authorization?.user?.sub,
+          owner_identity_id: uuid,
+          overwrite_existing: true,
         });
-        gardenCreateRequest.modal_function_ids =
-          modalAppResponse.data.modal_function_ids.map(parseInt);
+        gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids.map(parseInt);
       }
 
       const { garden } = await createGardenAndDOI(gardenCreateRequest);
@@ -73,19 +80,19 @@ export const CreateGardenForm = () => {
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(garden.doi)}`);
     } catch (error) {
-      toast.warning("Error creating garden.");
       console.error("Error creating garden:", error);
+      toast.error("Error creating garden. Please check the form and try again.");
     }
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <Form {...form}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <CreateGardenFormFields />
         <LoadingOverlay />
         <UnsavedChangesDialog blocker={blocker} />
-      </Form>
-    </form>
+      </form>
+    </Form>
   );
 };
 

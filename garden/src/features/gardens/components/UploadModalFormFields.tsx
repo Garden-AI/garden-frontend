@@ -1,3 +1,4 @@
+import React from 'react';
 import { ControllerRenderProps, FieldValues, useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -10,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import ModalFunctions from "./ModalFunctions";
 import { Link } from "react-router-dom";
-import React from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { fileToString } from "../utils/garden.utils";
 import { useValidateModalFile } from "../api/useValidateModalFile";
@@ -19,36 +19,39 @@ export const UploadModalFormFields = () => {
   const form = useFormContext();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
   const { mutateAsync: validateModalFile } = useValidateModalFile();
-
-  const fileContents = form.watch("modal.file_contents");
+  const [fileContents, setFileContents] = React.useState("");
 
   const handleFileUpload = async (
     field: ControllerRenderProps<FieldValues, "modal.file_contents">,
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setIsFileUploading(true);
-      try {
-        const { is_valid, functions, app_name, pip_requirements, base_image_requirements } =
-          await validateModalFile({ file });
+    if (!file) {
+      console.error("Could not find file");
+      return;
+    }
+    
+    setIsFileUploading(true);
+    try {
+      const contents = await fileToString(file);
+      const { modal_functions, app_name, base_image_name } = await validateModalFile({ 
+        file_contents: contents 
+      });
 
-        if (!is_valid) {
-          field.onChange("");
-          form.setError("modal.file_contents", {
-            message: "Invalid modal file. Please see our user guide if you are having issues.",
-          });
-          throw new Error("Invalid modal file");
-        }
+      if (!modal_functions) {
+        throw new Error("Invalid modal file");
+      }
 
-        form.setValue("modal.app_name", app_name);
-
-        form.reset({ modal: { modal_functions: [] } });
-        form.setValue(
-          "modal.modal_functions",
-          functions.map((func) => ({
-            function_name: func.name,
-            description: "",
+      // Set all form values in a single batch
+      form.reset((oldValues) => ({
+        ...oldValues,
+        modal: {
+          file_contents: contents,
+          app_name,
+          base_image_name,
+          modal_functions: modal_functions.map((func) => ({
+            function_name: func.function_name,
+            description: func.description,
             year: "2024",
             is_archived: false,
             doi: null,
@@ -58,15 +61,18 @@ export const UploadModalFormFields = () => {
             tags: [],
             test_functions: [],
           })),
-        );
+        }
+      }));
 
-        const fileContents = await fileToString(file);
-        field.onChange(fileContents);
-      } catch (error) {
-        console.error("Error reading file:", error);
-      } finally {
-        setIsFileUploading(false);
-      }
+      field.onChange(contents);
+      setFileContents(contents);
+    } catch (error) {
+      field.onChange("");
+      form.setError("modal.file_contents", {
+        message: "Invalid modal file. Please see our user guide if you are having issues.",
+      });
+    } finally {
+      setIsFileUploading(false);
     }
   };
 
@@ -83,7 +89,7 @@ export const UploadModalFormFields = () => {
             >
               user guide
             </Link>{" "}
-            for more information.{" "}
+            for more information.
           </p>
         </section>
 
@@ -100,17 +106,18 @@ export const UploadModalFormFields = () => {
                       id="file"
                       type="file"
                       accept=".py"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleFileUpload(field, e)
-                      }
+                      onChange={(e) => handleFileUpload(field, e)}
                       className="h-14 file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-violet-700 hover:file:bg-violet-100"
                     />
                   </FormControl>
-                  <FormDescription>Your modal file containing your app definition.</FormDescription>
+                  <FormDescription>
+                    Your modal file containing your app definition.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            
             {isFileUploading ? (
               <div className="flex flex-col items-center justify-center space-x-2">
                 <span>Uploading...</span>
@@ -120,7 +127,7 @@ export const UploadModalFormFields = () => {
               </div>
             ) : (
               fileContents && (
-                <div className="">
+                <div>
                   <FormField
                     control={form.control}
                     name="modal.app_name"
@@ -131,9 +138,8 @@ export const UploadModalFormFields = () => {
                           <Input
                             {...field}
                             type="text"
-                            placeholder="my-modal-app"
+                            placeholder="my-app-name"
                             className="w-full"
-                            disabled
                           />
                         </FormControl>
                         <FormDescription>
@@ -144,8 +150,30 @@ export const UploadModalFormFields = () => {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="modal.base_image_name"
+                    render={({ field }) => (
+                      <FormItem className="mb-8">
+                        <FormLabel className="font-bold">Base Image Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="text"
+                            placeholder="python3.11"
+                            className="w-full"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The base image used by your Modal App.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <ModalFunctions />
                 </div>
+                
               )
             )}
           </div>
@@ -154,3 +182,5 @@ export const UploadModalFormFields = () => {
     </div>
   );
 };
+
+export default UploadModalFormFields;

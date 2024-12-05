@@ -34,6 +34,7 @@ export const gardenFormSchema = z
     is_archived: z.boolean(),
     modal: z.object({
       app_name: z.string(),
+      base_image_name: z.string(),
       file_contents: z.string(),
       modal_functions: z.array(
         z.object({

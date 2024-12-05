@@ -274,6 +274,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/modal-invocations/async": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Invoke Modal Fn Async */
+        post: operations["invoke_modal_fn_async_modal_invocations_async_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/modal-invocations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Modal Invocation Output */
+        get: operations["get_modal_invocation_output_modal_invocations__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/modal-apps": {
         parameters: {
             query?: never;
@@ -285,6 +319,23 @@ export interface paths {
         put?: never;
         /** Add Modal App */
         post: operations["add_modal_app_modal_apps_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/modal-apps/async": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add Modal App Async */
+        post: operations["add_modal_app_async_modal_apps_async_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -325,6 +376,23 @@ export interface paths {
         head?: never;
         /** Update Modal Function */
         patch: operations["update_modal_function_modal_functions__id__patch"];
+        trace?: never;
+    };
+    "/modal-file-metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Parse Modal File Metadata */
+        post: operations["parse_modal_file_metadata_modal_file_metadata_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/mdf/search": {
@@ -403,6 +471,43 @@ export interface components {
             /** Alternateidentifier */
             alternateIdentifier?: string | null;
         };
+        /** AsyncModalAppMetadataResponse */
+        AsyncModalAppMetadataResponse: {
+            /** App Name */
+            app_name: string;
+            /** Modal Functions */
+            modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
+            /** File Contents */
+            file_contents: string;
+            /** Requirements */
+            requirements?: string[];
+            /** Conda Requirements */
+            conda_requirements?: string[];
+            /** Base Image Name */
+            base_image_name: string;
+            /**
+             * Owner Identity Id
+             * Format: uuid
+             */
+            owner_identity_id: string;
+            /**
+             * Id
+             * @description The unique identifier for the modal app
+             */
+            id: number;
+            deploy_status?: components["schemas"]["AsyncModalJobStatus"] | null;
+            /** Deploy Error */
+            deploy_error?: string | null;
+            /** Modal Function Names */
+            readonly modal_function_names: string[];
+            /** Modal Function Ids */
+            readonly modal_function_ids: string[];
+        };
+        /**
+         * AsyncModalJobStatus
+         * @enum {string}
+         */
+        AsyncModalJobStatus: "pending" | "done" | "error" | "timed_out";
         /** BucketFacetResult */
         BucketFacetResult: {
             /** Name */
@@ -1540,29 +1645,37 @@ export interface components {
         ModalAppCreateRequest: {
             /** App Name */
             app_name: string;
-            /** Modal Function Names */
-            modal_function_names?: string[];
+            /** Modal Functions */
+            modal_functions?: components["schemas"]["ModalFunctionMetadata-Input"][];
             /** File Contents */
             file_contents: string;
             /** Requirements */
             requirements?: string[];
+            /** Conda Requirements */
+            conda_requirements?: string[];
             /** Base Image Name */
             base_image_name: string;
             /** Owner Identity Id */
             owner_identity_id?: string | null;
-            /** Modal Functions */
-            modal_functions?: components["schemas"]["ModalFunctionMetadata"][];
+            /**
+             * Overwrite Existing
+             * @description Overwrite an existing Modal App with the same same.
+             * @default true
+             */
+            overwrite_existing: boolean;
         };
         /** ModalAppMetadataResponse */
         ModalAppMetadataResponse: {
             /** App Name */
             app_name: string;
-            /** Modal Function Names */
-            modal_function_names?: string[];
+            /** Modal Functions */
+            modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
             /** File Contents */
             file_contents: string;
             /** Requirements */
             requirements?: string[];
+            /** Conda Requirements */
+            conda_requirements?: string[];
             /** Base Image Name */
             base_image_name: string;
             /**
@@ -1575,13 +1688,35 @@ export interface components {
              * @description The unique identifier for the modal app
              */
             id: number;
-            /** Modal Functions */
-            modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
+            /** Modal Function Names */
+            readonly modal_function_names: string[];
             /** Modal Function Ids */
             readonly modal_function_ids: string[];
         };
+        /** ModalFileMetadataRequest */
+        ModalFileMetadataRequest: {
+            /** File Contents */
+            file_contents: string;
+        };
+        /** ModalFileMetadataResponse */
+        ModalFileMetadataResponse: {
+            /** App Name */
+            app_name: string;
+            /** Modal Functions */
+            modal_functions?: components["schemas"]["ModalFunctionMetadata-Output"][];
+            /** File Contents */
+            file_contents: string;
+            /** Requirements */
+            requirements?: string[];
+            /** Conda Requirements */
+            conda_requirements?: string[];
+            /** Base Image Name */
+            base_image_name: string;
+            /** Modal Function Names */
+            readonly modal_function_names: string[];
+        };
         /** ModalFunctionMetadata */
-        ModalFunctionMetadata: {
+        "ModalFunctionMetadata-Input": {
             /**
              * Is Archived
              * @default false
@@ -1611,10 +1746,50 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata-Input"][];
-            /** Doi */
-            doi: string | null;
             /** Function Name */
             function_name: string;
+            /** Doi */
+            doi?: string | null;
+            /** Conda Requirements */
+            conda_requirements?: string[];
+        };
+        /** ModalFunctionMetadata */
+        "ModalFunctionMetadata-Output": {
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Function Text */
+            function_text: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Year */
+            year: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["_ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata-Output"][];
+            /** Function Name */
+            function_name: string;
+            /** Doi */
+            doi?: string | null;
+            /** Conda Requirements */
+            conda_requirements?: string[];
         };
         /** ModalFunctionMetadataResponse */
         ModalFunctionMetadataResponse: {
@@ -1647,10 +1822,12 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata-Output"][];
-            /** Doi */
-            doi: string | null;
             /** Function Name */
             function_name: string;
+            /** Doi */
+            doi?: string | null;
+            /** Conda Requirements */
+            conda_requirements?: string[];
             /**
              * Id
              * @description The unique identifier for the modal function
@@ -1692,6 +1869,15 @@ export interface components {
             /** Function Name */
             function_name?: string | null;
         };
+        /** ModalInvocationOutputsResponse */
+        ModalInvocationOutputsResponse: {
+            /** Id */
+            id: number;
+            status: components["schemas"]["AsyncModalJobStatus"];
+            result?: components["schemas"]["_ModalGenericResult"] | null;
+            /** Error */
+            error?: string | null;
+        };
         /** ModalInvocationRequest */
         ModalInvocationRequest: {
             /** Function Id */
@@ -1704,9 +1890,9 @@ export interface components {
         };
         /** ModalInvocationResponse */
         ModalInvocationResponse: {
-            result: components["schemas"]["_ModalGenericResult"];
             /** Data Format */
             data_format: number;
+            result: components["schemas"]["_ModalGenericResult"];
         };
         /** NameIdentifier */
         NameIdentifier: {
@@ -2964,6 +3150,70 @@ export interface operations {
             };
         };
     };
+    invoke_modal_fn_async_modal_invocations_async_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModalInvocationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_modal_invocation_output_modal_invocations__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModalInvocationOutputsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     add_modal_app_modal_apps_post: {
         parameters: {
             query?: never;
@@ -2997,6 +3247,39 @@ export interface operations {
             };
         };
     };
+    add_modal_app_async_modal_apps_async_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModalAppCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AsyncModalAppMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_modal_app_modal_apps__id__get: {
         parameters: {
             query?: never;
@@ -3014,7 +3297,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ModalAppMetadataResponse"];
+                    "application/json": components["schemas"]["AsyncModalAppMetadataResponse"];
                 };
             };
             /** @description Validation Error */
@@ -3112,6 +3395,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModalFunctionMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    parse_modal_file_metadata_modal_file_metadata_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModalFileMetadataRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModalFileMetadataResponse"];
                 };
             };
             /** @description Validation Error */
