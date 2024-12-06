@@ -13,6 +13,12 @@ type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
 type ModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 
+type AsyncModalAppMetadataResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
+type AsyncModalJobStatus = components["schemas"]["AsyncModalJobStatus"];
+
+type ModalFileMetadataRequest = components["schemas"]["ModalFileMetadataRequest"];
+type ModalFileMetadataResponse = components["schemas"]["ModalFileMetadataResponse"];
+
 type User = components["schemas"]["UserMetadataResponse"];
 type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 
@@ -49,4 +55,8 @@ export type {
   GardenSearchResponse,
   GardenSearchFacets,
   GardenSearchFilter,
+  AsyncModalAppMetadataResponse,
+  AsyncModalJobStatus,
+  ModalFileMetadataRequest,
+  ModalFileMetadataResponse,
 };

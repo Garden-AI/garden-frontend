@@ -81,7 +81,7 @@ const ModalFunction = ({ index }: { index: number }) => {
           <FormItem className="mb-4">
             <FormLabel className="font-bold text-gray-700">Function Name</FormLabel>
             <FormControl>
-              <Input {...field} type="text" className="w-full" placeholder="my_function" disabled />
+              <Input {...field} type="text" className="w-full" placeholder="my_function" />
             </FormControl>
             <FormMessage />
             <FormDescription className="text-xs">
