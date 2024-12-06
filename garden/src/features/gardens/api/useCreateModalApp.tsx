@@ -31,7 +31,6 @@ const createModalApp = async (
       // TODO: Add a ... 2 minute? ... timeout
     }
 
-    return response;
   } catch (error) {
     throw new Error("Error creating modal app");
   }
