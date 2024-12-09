@@ -63,7 +63,7 @@ const Navbar = () => {
       <div className="items-center justify-between bg-white px-7 py-4 md:flex md:px-10 md:py-2">
         {/* logo */}
         <Link to="/" className="py-2">
-          <div className="absolute inset-0 w-32">
+          <div className="absolute relative inset-0 w-32">
             <img src="img/garden-logo-small.png" alt="Garden AI Logo" className="" />
           </div>
         </Link>
