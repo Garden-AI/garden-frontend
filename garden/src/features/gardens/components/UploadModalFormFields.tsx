@@ -21,6 +21,7 @@ export const UploadModalFormFields = () => {
   const { mutateAsync: validateModalFile } = useValidateModalFile();
   const [fileContents, setFileContents] = React.useState("");
 
+  const appName = form.watch("modal.app_name");
   const handleFileUpload = async (
     field: ControllerRenderProps<FieldValues, "modal.file_contents">,
     e: React.ChangeEvent<HTMLInputElement>
@@ -30,7 +31,6 @@ export const UploadModalFormFields = () => {
       console.error("Could not find file");
       return;
     }
-    
     setIsFileUploading(true);
     try {
       const contents = await fileToString(file);
@@ -43,6 +43,7 @@ export const UploadModalFormFields = () => {
       }
 
       // Set all form values in a single batch
+      const currentYear = new Date().getFullYear().toString();
       form.reset((oldValues) => ({
         ...oldValues,
         modal: {
@@ -52,7 +53,9 @@ export const UploadModalFormFields = () => {
           modal_functions: modal_functions.map((func) => ({
             function_name: func.function_name,
             description: func.description,
-            year: "2024",
+            pip_requirements: func.requirements,
+            conda_requirements: func.conda_requirements,
+            year: currentYear,
             is_archived: false,
             doi: null,
             title: "",
@@ -76,11 +79,16 @@ export const UploadModalFormFields = () => {
     }
   };
 
+  let sectionTitle = "Modal App";
+  if (appName) {
+    sectionTitle += `: ${appName}`;
+  }  
+
   return (
     <div className="py-8">
       <div className="space-y-8">
         <section>
-          <h2 className="mb-2 text-2xl font-bold">Modal App</h2>
+          <h2 className="mb-2 text-2xl font-bold">{sectionTitle}</h2>
           <p className="mb-4 text-sm text-gray-500">
             Upload a Python file that defines your Modal App. Please see our{" "}
             <Link
@@ -128,52 +136,8 @@ export const UploadModalFormFields = () => {
             ) : (
               fileContents && (
                 <div>
-                  <FormField
-                    control={form.control}
-                    name="modal.app_name"
-                    render={({ field }) => (
-                      <FormItem className="mb-8">
-                        <FormLabel className="font-bold">App Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="text"
-                            placeholder="my-app-name"
-                            className="w-full"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          The name of your Modal App. It is the string inside modal.App() in your
-                          Python file.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="modal.base_image_name"
-                    render={({ field }) => (
-                      <FormItem className="mb-8">
-                        <FormLabel className="font-bold">Base Image Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="text"
-                            placeholder="python3.11"
-                            className="w-full"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          The base image used by your Modal App.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                   <ModalFunctions />
                 </div>
-                
               )
             )}
           </div>
