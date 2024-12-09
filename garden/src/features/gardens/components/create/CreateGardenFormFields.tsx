@@ -174,39 +174,6 @@ export const CreateGardenFormFields = () => {
         />
       </div>
 
-      <div className="space-y-8">
-        <h2 className="text-2xl font-bold">Miscellaneous</h2>
-
-        <FormField
-          control={form.control}
-          name="language"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-bold">Language</FormLabel>
-              <FormControl>
-                <Input placeholder="en" {...field} />
-              </FormControl>
-              <FormDescription>The language of your Garden.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="version"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-bold">Version</FormLabel>
-              <FormControl>
-                <Input placeholder="1.0.0" {...field} />
-              </FormControl>
-              <FormDescription>The version of your Garden.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-
       <div className="mt-8 flex justify-end gap-2">
         <Button type="submit" className={"inline-block"}>
           {isSubmitting ? "Creating Garden..." : "Create Garden"}

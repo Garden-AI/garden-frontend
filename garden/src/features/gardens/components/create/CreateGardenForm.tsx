@@ -55,10 +55,10 @@ export const CreateGardenForm = () => {
     try {
       let gardenCreateRequest: GardenCreateRequest = {
         ...values,
-        doi_is_draft: true, // Ensure this is set
-        is_archived: false, // Ensure this is set
-        publisher: "Garden-AI", // Ensure this is set
-        owner_identity_id: uuid || "", // Ensure this is set
+        doi_is_draft: true,
+        is_archived: false,
+        publisher: "Garden-AI",
+        owner_identity_id: uuid || "",
       };
 
       const formType = searchParams.get("type");
@@ -72,7 +72,7 @@ export const CreateGardenForm = () => {
           owner_identity_id: uuid,
           overwrite_existing: true,
         });
-        gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids.map(parseInt);
+        gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids.map(id => parseInt(id));
       }
 
       const { garden } = await createGardenAndDOI(gardenCreateRequest);

@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { GardenCreateFormData } from "../types/garden.types";
 import { useFormContext, useFieldArray } from "react-hook-form";
 
 const ModalFunctions = () => {
-  const { control } = useFormContext();
+  const { control } = useFormContext<GardenCreateFormData>();
   const { fields } = useFieldArray({
     name: "modal.modal_functions",
     control,
@@ -21,20 +22,24 @@ const ModalFunctions = () => {
   return (
     <div className="space-y-8">
       {fields.map((func, index) => (
-        <ModalFunction key={func.id} index={index} />
+        <ModalFunction 
+          key={func.id} 
+          index={index} 
+          functionName={func.function_name as string}
+        />
       ))}
     </div>
   );
 };
 
-const ModalFunction = ({ index }: { index: number }) => {
+const ModalFunction = ({ index, functionName }: { index: number, functionName: string }) => {
   const { control, watch } = useFormContext();
 
   const functionText = watch(`modal.modal_functions.${index}.function_text`);
   return (
     <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
       <div className="mb-4 ">
-        <h3 className="text-xl font-semibold text-gray-800">Modal Function #{index + 1}</h3>
+        <h3 className="text-xl font-semibold text-gray-800">{functionName}</h3>
       </div>
 
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -48,50 +53,14 @@ const ModalFunction = ({ index }: { index: number }) => {
                 <Input {...field} type="text" className="w-full" placeholder="My Modal Function" />
               </FormControl>
               <FormDescription className="text-xs">
-                The title of your modal function. This will be displayed on the modal function page
+                The title of your function. This will be displayed on the function page
                 and appear in search results.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        <FormField
-          control={control}
-          name={`modal.modal_functions.${index}.year`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-bold text-gray-700">Year</FormLabel>
-              <FormControl>
-                <Input {...field} type="text" className="w-full" placeholder="2024" />
-              </FormControl>
-              <FormMessage />
-              <FormDescription className="text-xs">
-                The year this modal function was created.
-              </FormDescription>
-            </FormItem>
-          )}
-        />
       </div>
-
-      <FormField
-        control={control}
-        name={`modal.modal_functions.${index}.function_name`}
-        render={({ field }) => (
-          <FormItem className="mb-4">
-            <FormLabel className="font-bold text-gray-700">Function Name</FormLabel>
-            <FormControl>
-              <Input {...field} type="text" className="w-full" placeholder="my_function" />
-            </FormControl>
-            <FormMessage />
-            <FormDescription className="text-xs">
-              The Python name of your function. This must match the function name in your uploaded
-              file.
-            </FormDescription>
-          </FormItem>
-        )}
-      />
-
       <FormField
         control={control}
         name={`modal.modal_functions.${index}.description`}
@@ -101,13 +70,13 @@ const ModalFunction = ({ index }: { index: number }) => {
             <FormControl>
               <Textarea
                 {...field}
-                placeholder="A function that does something cool"
+                placeholder="This function takes X kind of input and returns Y kind of output in roughly Z seconds."
                 className="h-32 w-full resize-none"
               />
             </FormControl>
             <FormDescription className="text-xs">
-              A high level overview of your modal function, its purpose, and its contents. This will
-              be displayed on the modal function page and appear in search results.
+              A high level overview of your function, its purpose, and its contents. This will
+              be displayed on the function page and appear in search results.
             </FormDescription>
             <FormMessage />
           </FormItem>
