@@ -1,7 +1,10 @@
 import { UseFormReturn, useFormContext } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 
+import { FlaskConicalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+
 import {
   FormControl,
   FormDescription,
@@ -25,6 +28,9 @@ export const CreateGardenFormFields = () => {
   const { isSubmitting } = form.formState;
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const isTestGarden = form.watch("is_test");
+
   return (
     <div className="space-y-12">
       <div className="space-y-8">
@@ -120,6 +126,36 @@ export const CreateGardenFormFields = () => {
       )}
 
       <div className="space-y-8">
+        <h2 className="text-2xl font-semibold">Visibility Settings</h2>
+        <div className="mt-8">
+          <FormField
+              control={form.control}
+              name="is_test"
+              render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <div className="flex items-center justify-between rounded-lg border border-gray-100 bg-white p-4">
+                    <div className="flex items-center gap-2">
+                      <FlaskConicalIcon className="h-5 w-5 text-gray-500" />
+                      <div>
+                        <h3 className="text-base font-medium text-gray-900">Make this a test Garden</h3>
+                        <p className="text-sm text-gray-500">If checked, this Garden will not be visible in search results. (You can change this later)</p>
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-primary"
+                      />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
+        </div>
+      </div>
+
+      <div className="space-y-8">
         <h2 className="text-2xl font-bold">Contributors</h2>
         <FormField
           control={form.control}
@@ -176,7 +212,7 @@ export const CreateGardenFormFields = () => {
 
       <div className="mt-8 flex justify-end gap-2">
         <Button type="submit" className={"inline-block"}>
-          {isSubmitting ? "Creating Garden..." : "Create Garden"}
+          {isSubmitting ? "Creating Garden..." : `Create ${isTestGarden ? "Test": ""} Garden`}
         </Button>
       </div>
     </div>

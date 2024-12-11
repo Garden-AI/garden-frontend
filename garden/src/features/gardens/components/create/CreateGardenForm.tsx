@@ -29,16 +29,17 @@ export const CreateGardenForm = () => {
       description: "",
       authors: [],
       contributors: [],
-      entrypoint_ids: [], // Required
+      entrypoint_ids: [],
       doi: "", // Will be generated
-      doi_is_draft: true, // Required
+      doi_is_draft: true,
+      is_test: true,
       year: "2024",
       language: "en",
       tags: [],
       version: "1.0.0",
-      owner_identity_id: uuid || "", // Required - from auth
-      publisher: "Garden-AI", // Required
-      is_archived: false, // Required
+      owner_identity_id: uuid || "",
+      publisher: "Garden-AI",
+      is_archived: false,
       modal: {
         app_name: "",
         file_contents: "",
