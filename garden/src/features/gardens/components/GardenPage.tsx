@@ -146,6 +146,10 @@ const VisibilityWarning = ({ garden, updateGarden }: { garden: Garden; updateGar
         garden: { is_test: false }
       },
       {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["gardens"] });
+          queryClient.invalidateQueries({ queryKey: ["search"] });
+        },
         onError: () => {
           toast.error("Failed to make garden public. Please try again.");
         },
