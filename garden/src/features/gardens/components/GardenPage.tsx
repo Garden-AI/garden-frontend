@@ -34,6 +34,7 @@ const GardenPage = () => {
     return <NotFoundPage />;
   }
 
+  const auth = useGlobusAuth();
   const { data: garden, isLoading, isError } = useGetGarden(doi);
   const { mutate: updateGarden } = usePatchGarden();
 
@@ -47,6 +48,7 @@ const GardenPage = () => {
   if (garden.is_archived) {
     return <TombstonePage garden={garden} />;
   }
+  const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
 
   return (
     <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
@@ -60,19 +62,16 @@ const GardenPage = () => {
           },
         ]}
       />
-      <GardenHeader garden={garden} />
+      <GardenHeader garden={garden} ownsThisGarden={ownsThisGarden} />
       <GardenBody garden={garden} />
-      {garden.is_test && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
+      {ownsThisGarden && garden.is_test && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
   );
 };
 
-const GardenHeader = ({ garden }: { garden: Garden }) => {
-  const auth = useGlobusAuth();
-  const ownsThisGarden = garden.owner_identity_id === auth?.authorization?.user?.sub;
-
+const GardenHeader = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
   return (
     <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
       <div className="flex items-center">
@@ -135,6 +134,9 @@ const GardenBody = ({ garden }: { garden: Garden }) => {
 };
 
 const VisibilityWarning = ({ garden, updateGarden }: { garden: Garden; updateGarden: Function }) => {
+  if (!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) {
+    return null;
+  }
   const [isUpdating, setIsUpdating] = React.useState(false);
   const queryClient = useQueryClient();
 
