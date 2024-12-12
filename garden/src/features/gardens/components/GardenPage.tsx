@@ -1,9 +1,12 @@
+import React from "react";
+
 import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LinkIcon } from "lucide-react";
+import { LinkIcon, FlaskConicalIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import Breadcrumb from "@/components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
@@ -15,11 +18,13 @@ import NotFoundPage from "@/components/NotFoundPage";
 import RelatedGardens from "@/features/gardens/components/RelatedGardens";
 import ShareModal from "@/components/ShareModal";
 import TombstonePage from "@/components/TombstonePage";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 import { useGetGarden } from "../api/useGetGarden";
+import { usePatchGarden } from "../api/usePatchGarden";
+import { useQueryClient } from "@tanstack/react-query";
 import { Garden } from "@/types";
 
-import { cn } from "@/utils/form.utils";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import SaveGardenButton from "./SaveGardenButton";
 
@@ -30,6 +35,7 @@ const GardenPage = () => {
   }
 
   const { data: garden, isLoading, isError } = useGetGarden(doi);
+  const { mutate: updateGarden } = usePatchGarden();
 
   if (isLoading) {
     return <LoadingOverlay />;
@@ -56,6 +62,7 @@ const GardenPage = () => {
       />
       <GardenHeader garden={garden} />
       <GardenBody garden={garden} />
+      {garden.is_test && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
       <GardenAccordion garden={garden} />
       <RelatedGardens doi={garden.doi} />
     </div>
@@ -64,17 +71,15 @@ const GardenPage = () => {
 
 const GardenHeader = ({ garden }: { garden: Garden }) => {
   const auth = useGlobusAuth();
+  const ownsThisGarden = garden.owner_identity_id === auth?.authorization?.user?.sub;
 
   return (
     <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
       <div className="flex items-center">
         <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
-        {garden.owner_identity_id === auth?.authorization?.user?.sub && (
-          <Badge
-            className="ml-4 mt-1 px-3 text-sm"
-            variant={cn(garden.doi_is_draft ? "outline" : "default") as "default" | "outline"}
-          >
-            {garden.doi_is_draft ? "Draft" : garden.is_archived ? "Archived" : "Published"}
+        {ownsThisGarden && garden.is_archived && (
+          <Badge className="ml-4 mt-1 px-3 text-sm" variant={"default"}>
+            {"Archived"}
           </Badge>
         )}
       </div>
@@ -94,7 +99,7 @@ const GardenHeader = ({ garden }: { garden: Garden }) => {
 
 const GardenBody = ({ garden }: { garden: Garden }) => {
   return (
-    <div className="mb-20 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
+    <div className="mb-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
       <div className="flex w-full flex-row justify-between">
         <div className="mb-4">
           <h2 className="font-semibold">Contributors</h2>
@@ -113,11 +118,70 @@ const GardenBody = ({ garden }: { garden: Garden }) => {
             {garden.doi}
           </a>
           <CopyButton content={garden.doi} hint="Copy DOI" className="h-8 w-8 p-0.5" />
+          <Badge 
+            variant={garden.doi_is_draft ? "outline" : "default"}
+            className="text-xs font-medium"
+          >
+            {garden.doi_is_draft ? "Draft" : "Registered"}
+          </Badge>
         </div>
       </div>
       <div>
         <h2 className="font-semibold">Description</h2>
         <p>{garden.description}</p>
+      </div>
+    </div>
+  );
+};
+
+const VisibilityWarning = ({ garden, updateGarden }: { garden: Garden; updateGarden: Function }) => {
+  const [isUpdating, setIsUpdating] = React.useState(false);
+  const queryClient = useQueryClient();
+
+  const handleMakePublic = () => {
+    setIsUpdating(true);
+    updateGarden(
+      {
+        doi: garden.doi,
+        garden: { is_test: false }
+      },
+      {
+        onError: () => {
+          toast.error("Failed to make garden public. Please try again.");
+        },
+        onSettled: () => {
+          setIsUpdating(false);
+        }
+      }
+    );
+  };
+
+  return (
+    <div className="mb-6 rounded-lg border-2 border-yellow-200 bg-yellow-50 p-4">
+      <div className="flex items-start gap-3">
+        <FlaskConicalIcon className="mt-1 h-5 w-5 text-yellow-600" />
+        <div>
+          <h3 className="font-medium text-yellow-900">This is a Test Garden</h3>
+          <p className="mt-1 text-sm text-yellow-700">
+            This garden won't show up in search results. Other users can still access it directly if you share the link.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-3 border-yellow-300 text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800"
+            onClick={handleMakePublic}
+            disabled={isUpdating}
+          >
+            {isUpdating ? (
+              <>
+                <LoadingSpinner/>
+                Making Public...
+              </>
+            ) : (
+              "Make Garden Public"
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -136,7 +200,7 @@ const GardenAccordion = ({ garden }: { garden: Garden }) => {
     },
   ];
   return (
-    <Tabs defaultValue="entrypoints" className="mb-12 min-h-[400px] w-full">
+    <Tabs defaultValue="entrypoints" className="mb-12 mt-10 min-h-[400px] w-full">
       <TabsList className="m-0 grid w-full grid-cols-2 rounded-none bg-transparent p-0 ">
         {tabs.map(({ name }) => (
           <TabsTrigger
