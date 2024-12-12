@@ -59,6 +59,7 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      is_test: false,
     },
     {
       title: "Atom segmentation deep learning models",
@@ -73,6 +74,7 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      is_test: false,
     },
     {
       title: "Transmission electron microscopy (TEM) video analysis models",
@@ -101,6 +103,7 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      is_test: false,
     },
     {
       title: "Semiconductor property prediction models",
@@ -114,6 +117,7 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      is_test: false,
     },
     {
       title: "Materials Screening Performance Tests",
@@ -127,6 +131,7 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      is_test: false,
     },
     {
       title: "Framework example garden",
@@ -141,6 +146,7 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      is_test: false,
     },
   ];
 
