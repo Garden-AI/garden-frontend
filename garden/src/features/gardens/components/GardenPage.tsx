@@ -134,9 +134,6 @@ const GardenBody = ({ garden }: { garden: Garden }) => {
 };
 
 const VisibilityWarning = ({ garden, updateGarden }: { garden: Garden; updateGarden: Function }) => {
-  if (!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) {
-    return null;
-  }
   const [isUpdating, setIsUpdating] = React.useState(false);
   const queryClient = useQueryClient();
 
