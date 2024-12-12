@@ -89,6 +89,7 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      is_test: false,
     },
     {
       title: "Models for processing position-averaged convergent beam electron diffraction images",
