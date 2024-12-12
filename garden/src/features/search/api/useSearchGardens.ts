@@ -44,7 +44,7 @@ export const transformSearchParamsToSearchRequest = (searchParams: URLSearchPara
 
   const defaultFilters: GardenSearchFilter[] = [
     {
-      field_name: "doi_is_draft",
+      field_name: "is_test",
       values: ["false"],
     },
     {
