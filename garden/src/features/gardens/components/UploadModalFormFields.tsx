@@ -22,6 +22,7 @@ export const UploadModalFormFields = () => {
   const [fileContents, setFileContents] = React.useState("");
 
   const appName = form.watch("modal.app_name");
+
   const handleFileUpload = async (
     field: ControllerRenderProps<FieldValues, "modal.file_contents">,
     e: React.ChangeEvent<HTMLInputElement>
@@ -32,6 +33,8 @@ export const UploadModalFormFields = () => {
       return;
     }
     setIsFileUploading(true);
+    form.clearErrors("modal.file_contents");
+    
     try {
       const contents = await fileToString(file);
       const { modal_functions, app_name, base_image_name } = await validateModalFile({ 
@@ -71,8 +74,18 @@ export const UploadModalFormFields = () => {
       setFileContents(contents);
     } catch (error) {
       field.onChange("");
+      setFileContents("");
+      let msg = `${error.message}`
+      if (error.suggested_fix) msg += ` Suggested Fix: ${error.suggested_fix}`
+      msg += ` Please see our user guide if you are having issues.`
+      // Set error on both the specific field and the modal object
       form.setError("modal.file_contents", {
-        message: `${error.message} Please see our user guide if you are having issues.`,
+        type: "validate",
+        message: msg,
+      });
+      form.setError("modal", {
+        type: "validate",
+        message: "Invalid modal file"
       });
     } finally {
       setIsFileUploading(false);
@@ -106,6 +119,16 @@ export const UploadModalFormFields = () => {
             <FormField
               control={form.control}
               name="modal.file_contents"
+              rules={{
+                validate: (value) => {
+                  // Prevent form submission if no file contents
+                  if (!value) return "Please upload a valid modal file";
+                  // Check if there are any existing errors for this field
+                  const fieldError = form.formState.errors.modal?.file_contents;
+                  if (fieldError) return fieldError.message;
+                  return true;
+                }
+              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-bold">File</FormLabel>

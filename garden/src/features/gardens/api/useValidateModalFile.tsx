@@ -10,7 +10,11 @@ const validateModalFile = async (
     return response.data;
   } catch (error) {
     console.log(error);
-    throw new Error(`File was invalid: ${error.response.data.detail}`);
+    const e = new Error(`File was invalid: ${error.response.data.detail}`);
+    if (error.response.data.suggested_fix) {
+      e.suggested_fix = error.response.data.suggested_fix;
+    }
+    throw e;
   }
 };
 
