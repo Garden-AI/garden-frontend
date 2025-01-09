@@ -72,7 +72,7 @@ export const UploadModalFormFields = () => {
     } catch (error) {
       field.onChange("");
       form.setError("modal.file_contents", {
-        message: "Invalid modal file. Please see our user guide if you are having issues.",
+        message: `${error.message} Please see our user guide if you are having issues.`,
       });
     } finally {
       setIsFileUploading(false);
