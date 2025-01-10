@@ -34,11 +34,11 @@ export const UploadModalFormFields = () => {
     }
     setIsFileUploading(true);
     form.clearErrors("modal.file_contents");
-    
+
     try {
       const contents = await fileToString(file);
-      const { modal_functions, app_name, base_image_name } = await validateModalFile({ 
-        file_contents: contents 
+      const { modal_functions, app_name, base_image_name } = await validateModalFile({
+        file_contents: contents
       });
 
       if (!modal_functions) {
@@ -77,7 +77,7 @@ export const UploadModalFormFields = () => {
       setFileContents("");
       const msg = `${error} Please see our user guide if you are having issues.`
       const fields = ['modal.file_contents', 'modal'];
-      fields.forEach((n) => form.setError(n, {type: "validate", message: msg}));
+      fields.forEach((n) => form.setError(n, { type: "validate", message: msg }));
     } finally {
       setIsFileUploading(false);
     }
@@ -86,7 +86,7 @@ export const UploadModalFormFields = () => {
   let sectionTitle = "Modal App";
   if (appName) {
     sectionTitle += `: ${appName}`;
-  }  
+  }
 
   return (
     <div className="py-8">
@@ -114,6 +114,7 @@ export const UploadModalFormFields = () => {
                 validate: (value) => {
                   // Prevent form submission if no file contents
                   if (!value) return "Please upload a valid modal file";
+                  // @ts-ignore
                   // Check if there are any existing errors for this field
                   const fieldError = form.formState.errors.modal?.file_contents;
                   if (fieldError) return fieldError.message;
@@ -139,7 +140,7 @@ export const UploadModalFormFields = () => {
                 </FormItem>
               )}
             />
-            
+
             {isFileUploading ? (
               <div className="flex flex-col items-center justify-center space-x-2">
                 <span>Uploading...</span>

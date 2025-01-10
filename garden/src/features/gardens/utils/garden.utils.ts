@@ -82,7 +82,11 @@ export class ApiError extends Error {
   }
 
   static fromAxiosError(error: AxiosError): ApiError {
-    const { detail, suggestedFix } = error.response?.data ?? {};
+    interface ApiErrorInfo {
+      detail: string,
+      suggestedFix: string,
+    }
+    const { detail, suggestedFix } = error.response?.data as ApiErrorInfo ?? {};
     return new ApiError(
       detail || 'Unknown API Error',
       error.response?.status,
