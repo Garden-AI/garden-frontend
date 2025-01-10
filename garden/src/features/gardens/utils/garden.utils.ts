@@ -1,4 +1,5 @@
 import { Option } from "@/components/ui/multiple-select";
+import { AxiosError } from "axios";
 
 // Converts file to string for backend processing
 export const fileToString = (file: File): Promise<string> => {
@@ -62,3 +63,37 @@ export const tagOptions: Option[] = [
   },
   { value: "Manufacturing", label: "Manufacturing", group: "Applied Sciences" },
 ];
+
+
+export class ApiError extends Error {
+  readonly statusCode?: number;
+  readonly suggestedFix?: string;
+
+  constructor(
+    message: string,
+    statusCode?: number,
+    suggestedFix?: string,
+  ) {
+    super(message);
+    Object.setPrototypeOf(this, ApiError.prototype);
+    this.name = 'ApiError';
+    this.statusCode = statusCode;
+    this.suggestedFix = suggestedFix;
+  }
+
+  static fromAxiosError(error: AxiosError): ApiError {
+    const { detail, suggestedFix } = error.response?.data ?? {};
+    return new ApiError(
+      detail || 'Unknown API Error',
+      error.response?.status,
+      suggestedFix,
+    );
+  }
+
+  toString(): string {
+    let str = `Error: ${this.message}`;
+    let suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix}` : '';
+    let statusCode = this.statusCode ? `, status_code: ${this.statusCode}` : '';
+    return str + statusCode + suggestedFix;
+  }
+}

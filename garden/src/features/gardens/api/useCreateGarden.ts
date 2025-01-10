@@ -2,7 +2,8 @@ import { GardenCreateResponse } from "@/types";
 import axios from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GardenCreateRequest } from "@/types";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
+import { ApiError } from "../utils/garden.utils";
 
 const createGarden = async (
   garden: GardenCreateRequest,
@@ -10,8 +11,11 @@ const createGarden = async (
   try {
     const response = await axios.post(`/gardens`, garden);
     return response;
-  } catch (error) {
-    throw new Error("Error creating Garden");
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+     throw ApiError.fromAxiosError(error);
+    }
+    throw error;
   }
 };
 

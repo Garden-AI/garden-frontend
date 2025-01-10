@@ -1,7 +1,8 @@
 import axios from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
+import { AxiosResponse, AxiosError } from "axios";
 import { ModalAppCreateRequest, ModalAppMetadataResponse } from "@/types";
+import { ApiError } from "../utils/garden.utils";
 
 export const useCreateModalApp = () => {
   return useMutation<AxiosResponse<ModalAppMetadataResponse>, Error, ModalAppCreateRequest>({
@@ -22,7 +23,7 @@ const createModalApp = async (
     while (true) {
       const pollResponse = await axios.get(`/modal-apps/${appId}`);
       if (pollResponse.data.deploy_status === "error") {
-        throw new Error(pollResponse.data.deploy_error);
+        throw new ApiError(pollResponse.data.deploy_error);
       }
       if (pollResponse.data.deploy_status === "done") {
         return pollResponse;
@@ -31,7 +32,10 @@ const createModalApp = async (
       // TODO: Add a ... 2 minute? ... timeout
     }
 
-  } catch (error) {
-    throw new Error("Error creating modal app");
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      throw ApiError.fromAxiosError(error);
+    }
+    throw error;
   }
 };

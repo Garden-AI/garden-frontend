@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import ModalFunctions from "./ModalFunctions";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { fileToString } from "../utils/garden.utils";
+import { ApiError, fileToString } from "../utils/garden.utils";
 import { useValidateModalFile } from "../api/useValidateModalFile";
 
 export const UploadModalFormFields = () => {
@@ -72,21 +72,12 @@ export const UploadModalFormFields = () => {
 
       field.onChange(contents);
       setFileContents(contents);
-    } catch (error) {
+    } catch (error: unknown) {
       field.onChange("");
       setFileContents("");
-      let msg = `${error.message}`
-      if (error.suggested_fix) msg += ` Suggested Fix: ${error.suggested_fix}`
-      msg += ` Please see our user guide if you are having issues.`
-      // Set error on both the specific field and the modal object
-      form.setError("modal.file_contents", {
-        type: "validate",
-        message: msg,
-      });
-      form.setError("modal", {
-        type: "validate",
-        message: "Invalid modal file"
-      });
+      const msg = `${error} Please see our user guide if you are having issues.`
+      const fields = ['modal.file_contents', 'modal'];
+      fields.forEach((n) => form.setError(n, {type: "validate", message: msg}));
     } finally {
       setIsFileUploading(false);
     }
