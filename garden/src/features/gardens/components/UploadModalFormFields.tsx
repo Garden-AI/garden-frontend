@@ -14,9 +14,10 @@ import { Link } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError, fileToString } from "../utils/garden.utils";
 import { useValidateModalFile } from "../api/useValidateModalFile";
+import { GardenCreateFormData } from '../types/garden.types';
 
 export const UploadModalFormFields = () => {
-  const form = useFormContext();
+  const form = useFormContext<GardenCreateFormData>();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
   const { mutateAsync: validateModalFile } = useValidateModalFile();
   const [fileContents, setFileContents] = React.useState("");
@@ -24,7 +25,7 @@ export const UploadModalFormFields = () => {
   const appName = form.watch("modal.app_name");
 
   const handleFileUpload = async (
-    field: ControllerRenderProps<FieldValues, "modal.file_contents">,
+    field: ControllerRenderProps<GardenCreateFormData, "modal.file_contents">,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
@@ -55,7 +56,7 @@ export const UploadModalFormFields = () => {
           base_image_name,
           modal_functions: modal_functions.map((func) => ({
             function_name: func.function_name,
-            description: func.description,
+            description: func.description || "",
             pip_requirements: func.requirements,
             conda_requirements: func.conda_requirements,
             year: currentYear,
@@ -76,8 +77,8 @@ export const UploadModalFormFields = () => {
       field.onChange("");
       setFileContents("");
       const msg = `${error} Please see our user guide if you are having issues.`
-      const fields = ['modal.file_contents', 'modal'];
-      fields.forEach((n) => form.setError(n, { type: "validate", message: msg }));
+      form.setError("modal.file_contents", { type: "validate", message: msg });
+      form.setError("modal", { type: "validate", message: msg });
     } finally {
       setIsFileUploading(false);
     }
@@ -114,7 +115,6 @@ export const UploadModalFormFields = () => {
                 validate: (value) => {
                   // Prevent form submission if no file contents
                   if (!value) return "Please upload a valid modal file";
-                  // @ts-ignore
                   // Check if there are any existing errors for this field
                   const fieldError = form.formState.errors.modal?.file_contents;
                   if (fieldError) return fieldError.message;
