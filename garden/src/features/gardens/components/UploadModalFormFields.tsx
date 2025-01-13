@@ -12,18 +12,21 @@ import { Input } from "@/components/ui/input";
 import ModalFunctions from "./ModalFunctions";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { fileToString } from "../utils/garden.utils";
+import { ApiError, fileToString } from "../utils/garden.utils";
 import { useValidateModalFile } from "../api/useValidateModalFile";
+import { GardenCreateFormData } from '../types/garden.types';
+import { AxiosError } from 'axios';
 
 export const UploadModalFormFields = () => {
-  const form = useFormContext();
+  const form = useFormContext<GardenCreateFormData>();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
   const { mutateAsync: validateModalFile } = useValidateModalFile();
   const [fileContents, setFileContents] = React.useState("");
 
   const appName = form.watch("modal.app_name");
+
   const handleFileUpload = async (
-    field: ControllerRenderProps<FieldValues, "modal.file_contents">,
+    field: ControllerRenderProps<GardenCreateFormData, "modal.file_contents">,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
@@ -32,10 +35,12 @@ export const UploadModalFormFields = () => {
       return;
     }
     setIsFileUploading(true);
+    form.clearErrors("modal.file_contents");
+
     try {
       const contents = await fileToString(file);
-      const { modal_functions, app_name, base_image_name } = await validateModalFile({ 
-        file_contents: contents 
+      const { modal_functions, app_name, base_image_name } = await validateModalFile({
+        file_contents: contents
       });
 
       if (!modal_functions) {
@@ -52,7 +57,7 @@ export const UploadModalFormFields = () => {
           base_image_name,
           modal_functions: modal_functions.map((func) => ({
             function_name: func.function_name,
-            description: func.description,
+            description: func.description || "",
             pip_requirements: func.requirements,
             conda_requirements: func.conda_requirements,
             year: currentYear,
@@ -69,11 +74,14 @@ export const UploadModalFormFields = () => {
 
       field.onChange(contents);
       setFileContents(contents);
-    } catch (error) {
-      field.onChange("");
-      form.setError("modal.file_contents", {
-        message: "Invalid modal file. Please see our user guide if you are having issues.",
-      });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        error = ApiError.fromAxiosError(error);
+      }
+      console.log(`Error validating modal file: ${error}`);
+      const msg = `${error} Please see our user guide if you are having issues.`
+      form.setError("modal.file_contents", {type: "validate", message: msg});
+      form.setError("modal", {type: "validate", message: msg});
     } finally {
       setIsFileUploading(false);
     }
@@ -82,7 +90,7 @@ export const UploadModalFormFields = () => {
   let sectionTitle = "Modal App";
   if (appName) {
     sectionTitle += `: ${appName}`;
-  }  
+  }
 
   return (
     <div className="py-8">
@@ -125,7 +133,7 @@ export const UploadModalFormFields = () => {
                 </FormItem>
               )}
             />
-            
+
             {isFileUploading ? (
               <div className="flex flex-col items-center justify-center space-x-2">
                 <span>Uploading...</span>

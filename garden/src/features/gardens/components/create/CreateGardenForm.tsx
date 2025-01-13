@@ -11,6 +11,8 @@ import { CreateGardenFormFields } from "./CreateGardenFormFields";
 import { useCreateModalApp } from "../../api/useCreateModalApp";
 import { useCreateGardenAndDOI } from "../../api/useCreateGardenAndDOI";
 import { GardenCreateRequest } from "@/types";
+import { ApiError } from "../../utils/garden.utils";
+import { AxiosError } from "axios";
 
 export const CreateGardenForm = () => {
   const navigate = useNavigate();
@@ -80,9 +82,12 @@ export const CreateGardenForm = () => {
 
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(garden.doi)}`);
-    } catch (error) {
-      console.error("Error creating garden:", error);
-      toast.error("Error creating garden. Please check the form and try again.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+         error = ApiError.fromAxiosError(error);
+      }
+      console.error(error);
+      toast.error(`${error} Please check the form and and try again.`);
     }
   };
 

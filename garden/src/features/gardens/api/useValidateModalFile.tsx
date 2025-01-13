@@ -1,6 +1,8 @@
 import axios from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 import {ModalFileMetadataRequest, ModalFileMetadataResponse} from "@/types";
+import { AxiosError } from "axios";
+import { ApiError } from "../utils/garden.utils";
 
 const validateModalFile = async (
   req: ModalFileMetadataRequest,
@@ -8,9 +10,12 @@ const validateModalFile = async (
   try {
     const response = await axios.post(`/modal-file-metadata`, req);
     return response.data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.log(error);
-    throw new Error("File was invalid. [TODO: share detailed reasons why]");
+    if (error instanceof AxiosError) {
+      throw ApiError.fromAxiosError(error);
+    }
+    throw error;
   }
 };
 
