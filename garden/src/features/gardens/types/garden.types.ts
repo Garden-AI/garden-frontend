@@ -81,7 +81,8 @@ export const gardenFormSchema = z
           message: "Could not find any functions. Please re-upload a valid file.",
           code: "custom",
           path: ["modal", "modal_functions"],
-        }); }
+        });
+      }
     }
   });
 
