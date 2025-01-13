@@ -15,6 +15,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError, fileToString } from "../utils/garden.utils";
 import { useValidateModalFile } from "../api/useValidateModalFile";
 import { GardenCreateFormData } from '../types/garden.types';
+import { AxiosError } from 'axios';
 
 export const UploadModalFormFields = () => {
   const form = useFormContext<GardenCreateFormData>();
@@ -74,11 +75,13 @@ export const UploadModalFormFields = () => {
       field.onChange(contents);
       setFileContents(contents);
     } catch (error: unknown) {
-      field.onChange("");
-      setFileContents("");
+      if (error instanceof AxiosError) {
+        error = ApiError.fromAxiosError(error);
+      }
+      console.log(`Error validating modal file: ${error}`);
       const msg = `${error} Please see our user guide if you are having issues.`
-      form.setError("modal.file_contents", { type: "validate", message: msg });
-      form.setError("modal", { type: "validate", message: msg });
+      form.setError("modal.file_contents", {type: "validate", message: msg});
+      form.setError("modal", {type: "validate", message: msg});
     } finally {
       setIsFileUploading(false);
     }
@@ -111,16 +114,6 @@ export const UploadModalFormFields = () => {
             <FormField
               control={form.control}
               name="modal.file_contents"
-              rules={{
-                validate: (value) => {
-                  // Prevent form submission if no file contents
-                  if (!value) return "Please upload a valid modal file";
-                  // Check if there are any existing errors for this field
-                  const fieldError = form.formState.errors.modal?.file_contents;
-                  if (fieldError) return fieldError.message;
-                  return true;
-                }
-              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-bold">File</FormLabel>

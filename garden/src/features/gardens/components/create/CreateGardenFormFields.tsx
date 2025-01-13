@@ -211,10 +211,7 @@ export const CreateGardenFormFields = () => {
       </div>
 
       <div className="mt-8 flex justify-end gap-2">
-        <Button type="submit" className={"inline-block"} disabled={
-          isSubmitting || (searchParams.get("type") === "modal" &&
-            (!!form.formState.errors.modal || !form.getValues("modal.file_contents")))
-        }>
+        <Button type="submit" className={"inline-block"}>
           {isSubmitting ? "Creating Garden..." : `Create ${isTestGarden ? "Test" : ""} Garden`}
         </Button>
       </div>

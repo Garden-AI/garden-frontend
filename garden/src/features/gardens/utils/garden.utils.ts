@@ -71,13 +71,11 @@ export class ApiError extends Error {
 
   constructor(
     message: string,
-    statusCode?: number,
     suggestedFix?: string,
   ) {
     super(message);
     Object.setPrototypeOf(this, ApiError.prototype);
     this.name = 'ApiError';
-    this.statusCode = statusCode;
     this.suggestedFix = suggestedFix;
   }
 
@@ -89,7 +87,6 @@ export class ApiError extends Error {
     const { detail, suggestedFix } = error.response?.data as ApiErrorInfo ?? {};
     return new ApiError(
       detail || 'Unknown API Error',
-      error.response?.status,
       suggestedFix,
     );
   }
@@ -97,7 +94,6 @@ export class ApiError extends Error {
   toString(): string {
     let str = `Error: ${this.message}`;
     let suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix}` : '';
-    let statusCode = this.statusCode ? `, status_code: ${this.statusCode}` : '';
-    return str + statusCode + suggestedFix;
+    return str + suggestedFix;
   }
 }
