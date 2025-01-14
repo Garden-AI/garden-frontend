@@ -46,7 +46,7 @@ const Footer = () => {
                 href="https://github.com/Garden-AI/garden/issues"
                 className="no-underline hover:underline"
               >
-                Github
+                GitHub
               </a>
             </p>
             <p>
