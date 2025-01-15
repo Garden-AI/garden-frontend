@@ -22,6 +22,7 @@ import { PersonIcon } from "@radix-ui/react-icons";
 import SaveGardenButton from "../../gardens/components/SaveGardenButton";
 
 export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boolean }) => {
+  const entrypoints = [...(garden.entrypoints ?? []), ...(garden.modal_functions ?? [])];
   return (
     <Card className="transition-colors hover:bg-gray-50 hover:shadow-lg">
       <CardHeader>
@@ -46,8 +47,8 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
           <span>{garden.year}</span>
           <BookOpenIcon className="ml-2 h-4 w-4" />
           <span>
-            {garden.entrypoints?.length} entrypoint
-            {garden.entrypoints?.length !== 1 && <span>s</span>}
+            {entrypoints?.length} entrypoint
+            {entrypoints?.length !== 1 && <span>s</span>}
           </span>
         </CardDescription>
       </CardHeader>
@@ -55,7 +56,7 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
         <p className="mb-6 line-clamp-3 text-gray-700">
           {garden.description || <span className="italic">No description available</span>}
         </p>
-        {verbose && garden.entrypoints && garden.entrypoints.length > 0 && (
+        {verbose && entrypoints?.length > 0 && (
           <div>
             <h3 className="pb-4 font-semibold">Entrypoints</h3>
 
