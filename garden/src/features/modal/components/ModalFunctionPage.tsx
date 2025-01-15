@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
 
@@ -53,18 +53,20 @@ const ModalFunctionPage = () => {
 const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
     <div>
-      <div className="mb-4 ">
+      <div className="mb-4">
         <div className="flex flex-row justify-between">
           <h1 className="text-xl md:text-3xl">{modalFunction.title}</h1>
-          <div className="hidden flex-col items-center md:flex md:flex-row">
-            <CopyButton
-              hint="Copy Link"
-              content={`https://doi.org/${modalFunction.doi}`}
-              icon={<LinkIcon />}
-              className="border-none bg-transparent"
-            />
-            <ShareModal doi={modalFunction.doi!} />
-          </div>
+          {modalFunction.doi && (
+            <div className="hidden flex-col items-center md:flex md:flex-row">
+              <CopyButton
+                hint="Copy Link"
+                content={`https://doi.org/${modalFunction.doi}`}
+                icon={<LinkIcon />}
+                className="border-none bg-transparent"
+              />
+              <ShareModal doi={modalFunction.doi} />
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -76,7 +78,7 @@ const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) 
     <div className="space-y-6 py-6">
       <div className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
         <span>
-          DOI: {modalFunction.doi} | {modalFunction.year} |{" "}
+          {modalFunction.doi ? `DOI: ${modalFunction.doi} | ` : ""} {modalFunction.year} |{" "}
         </span>
         <TagIcon className="h-4 w-4" />
         <span>{modalFunction.tags?.join(", ")}</span>
