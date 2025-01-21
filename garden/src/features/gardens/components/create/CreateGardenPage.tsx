@@ -88,11 +88,17 @@ const GlobusGroupError = () => {
         <div className="space-y-12 text-center">
           <h1 className="text-4xl font-bold">Globus Group Required</h1>
           <p className="text-gray-700">
-            You must be a part of the Globus Group to create a Modal App. Please email{" "}
-            <a href="mailto:wengler@uchicago.edu" className="font-bold text-primary">
-              Will Engler (wengler@chicago.edu)
+            You must be a part of the publishing Globus Group to publish a Garden via a Modal App. Please email{" "}
+            <a href="mailto:willengler@uchicago.edu" className="font-bold text-primary">
+              Will Engler (willengler@uchicago.edu)
             </a>{" "}
-            to be added to the group.
+            or{" "}
+            <a href="mailto:owenpriceskelly@uchicago.edu" className="font-bold text-primary">
+              Owen Price Skelly (owenpriceskelly@uchicago.edu)
+            </a>{" "} to be added to the group. Include the email address linked to your Globus account.
+          </p>
+          <p className="text-gray-700">
+            If you are already a member of the group and are seeing this message, please try logging out and logging back in.
           </p>
           <div className=" flex items-center justify-center space-x-4">
             <Button onClick={() => navigate("/")} className="font-bold">

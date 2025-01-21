@@ -10,17 +10,39 @@ export const useCreateModalApp = () => {
   });
 };
 
+export class DeployTimeoutError extends Error {
+  constructor() {
+    const timeoutMsg = `This Garden is taking a long time to deploy. 
+          If your Modal App downloads large files or installs large libraries, this may be expected.
+          The installation is still happening in the background. 
+          Leave the form as it is, wait a few minutes, and try submitting again.`
+    super(timeoutMsg);
+    this.name = "DeployTimeoutError";
+  }
+}
+
 const createModalApp = async (
   req: ModalAppCreateRequest,
 ): Promise<AxiosResponse<ModalAppMetadataResponse>> => {
   try {
     // Make the initial request
     const response = await axios.post(`/modal-apps/async`, req);
+    
     // Extract the job id from the response
-    // const status = response.data.deploy_status
     const appId = response.data.id
+
+    // Set a timeout that is slightly shorter than the backend Lambda timeout
+    // 4 minutes + 55 seconds
+    const timeoutDuration = (4 * 60 * 1000) + (55 * 1000);
+    const startTime = Date.now();
+
     // Poll the job status
     while (true) {
+      // Check if we've exceeded the timeout
+      if (Date.now() - startTime > timeoutDuration) {
+        throw new DeployTimeoutError();
+      }
+
       const pollResponse = await axios.get(`/modal-apps/${appId}`);
       if (pollResponse.data.deploy_status === "error") {
         throw new ApiError(pollResponse.data.deploy_error);
@@ -29,7 +51,6 @@ const createModalApp = async (
         return pollResponse;
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // TODO: Add a ... 2 minute? ... timeout
     }
 
   } catch (error: unknown) {
