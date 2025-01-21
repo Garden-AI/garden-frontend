@@ -8,7 +8,7 @@ import { Form } from "@/components/ui/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import { CreateGardenFormFields } from "./CreateGardenFormFields";
-import { useCreateModalApp } from "../../api/useCreateModalApp";
+import { useCreateModalApp, DeployTimeoutError } from "../../api/useCreateModalApp";
 import { useCreateGardenAndDOI } from "../../api/useCreateGardenAndDOI";
 import { GardenCreateRequest } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
@@ -83,6 +83,10 @@ export const CreateGardenForm = () => {
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(garden.doi)}`);
     } catch (error: unknown) {
+      if (error instanceof DeployTimeoutError) {
+        toast.warning(error.message, {closeButton: true, duration: 15000})
+        return;
+      }
       if (error instanceof AxiosError) {
          error = ApiError.fromAxiosError(error);
       }
