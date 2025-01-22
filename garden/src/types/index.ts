@@ -22,9 +22,9 @@ type ModalFileMetadataResponse = components["schemas"]["ModalFileMetadataRespons
 type User = components["schemas"]["UserMetadataResponse"];
 type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 
-type Dataset = components["schemas"]["_DatasetMetadata-Output"];
+type Dataset = components["schemas"]["_DatasetMetadata"];
 type Paper = components["schemas"]["_PaperMetadata"];
-type Repository = components["schemas"]["_RepositoryMetadata-Output"];
+type Repository = components["schemas"]["_RepositoryMetadata"];
 // type Notebook = components["schemas"]["_RegisteredNotebook"];
 
 type DOIRequest = components["schemas"]["Doi"];
