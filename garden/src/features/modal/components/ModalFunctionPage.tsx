@@ -129,13 +129,17 @@ const ModalFunctionTabs = ({ modalFunction }: { modalFunction: ModalFunction }) 
       content: (modalFunction: ModalFunction) => <FunctionTab modalFunction={modalFunction} />,
     },
     {
+      name: "App Text",
+      content: (modalFunction: ModalFunction) => <FullTextTab modalFunction={modalFunction} />,
+    },
+    {
       name: "Datasets",
       content: (modalFunction: ModalFunction) => <DatasetsTab datasets={modalFunction.datasets} />,
     },
   ];
   return (
     <Tabs defaultValue="function" className="min-h-[400px] w-full">
-      <TabsList className="m-0 grid w-full grid-cols-2 rounded-none bg-transparent p-0 ">
+      <TabsList className="m-0 grid w-full grid-cols-3 rounded-none bg-transparent p-0 ">
         {tabs?.map(({ name }) => (
           <TabsTrigger
             key={name}
@@ -152,6 +156,37 @@ const ModalFunctionTabs = ({ modalFunction }: { modalFunction: ModalFunction }) 
         </TabsContent>
       ))}
     </Tabs>
+  );
+};
+
+const FullTextTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+  if (!modalFunction.file_contents) {
+    return (
+      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
+        <h2 className="text-xl font-semibold text-gray-800">No Full Text Available</h2>
+        <p className="mt-2 text-gray-600">The complete source code for this modal function is not available.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="prose prose-sm mx-auto mt-8 lg:prose-base 2xl:prose-xl">
+      <div className="py-8">
+        <p className="text-gray-700">
+          This is the complete source code for this Modal function, including imports and any helper functions.
+        </p>
+      </div>
+      <div className="relative">
+        <div className="absolute right-4 top-4 z-10">
+          <CopyButton
+            hint="Copy full source"
+            content={modalFunction.file_contents}
+            className="bg-white shadow-md hover:bg-gray-50"
+          />
+        </div>
+        <SyntaxHighlighter>{modalFunction.file_contents}</SyntaxHighlighter>
+      </div>
+    </div>
   );
 };
 

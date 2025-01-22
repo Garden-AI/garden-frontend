@@ -73,7 +73,6 @@ export const CreateGardenForm = () => {
           base_image_name: values.modal.base_image_name,
           modal_functions: values.modal.modal_functions,
           owner_identity_id: uuid,
-          overwrite_existing: true,
         });
         gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids.map(id => parseInt(id));
       }
@@ -84,11 +83,11 @@ export const CreateGardenForm = () => {
       navigate(`/garden/${encodeURIComponent(garden.doi)}`);
     } catch (error: unknown) {
       if (error instanceof DeployTimeoutError) {
-        toast.warning(error.message, {closeButton: true, duration: 15000})
+        toast.warning(error.message, { closeButton: true, duration: 15000 })
         return;
       }
       if (error instanceof AxiosError) {
-         error = ApiError.fromAxiosError(error);
+        error = ApiError.fromAxiosError(error);
       }
       console.error(error);
       toast.error(`${error} Please check the form and and try again.`);

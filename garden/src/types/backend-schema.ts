@@ -257,6 +257,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/modal-invocations/blob-uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Make Blob Upload Url
+         * @description Get pre-signed URLs for uploading blobs to Modal's blob storage.
+         *
+         *     This proxies the Modal BlobCreate RPC to get upload URLs that the Garden SDK
+         *     can use directly to upload large arguments to Modal's blob storage.
+         */
+        post: operations["make_blob_upload_url_modal_invocations_blob_uploads_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/modal-invocations": {
         parameters: {
             query?: never;
@@ -856,11 +879,11 @@ export interface components {
             /** Models */
             models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Input"][];
+            datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Doi */
             doi: string;
             /** Doi Is Draft */
@@ -915,11 +938,11 @@ export interface components {
             /** Models */
             models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Output"][];
+            datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Doi */
             doi: string;
             /** Doi Is Draft */
@@ -938,7 +961,10 @@ export interface components {
             base_image_uri: string;
             /** Full Image Uri */
             full_image_uri: string;
-            /** Notebook Url */
+            /**
+             * Notebook Url
+             * Format: uri
+             */
             notebook_url: string;
             /** Short Name */
             short_name?: string | null;
@@ -973,11 +999,11 @@ export interface components {
             /** Models */
             models?: components["schemas"]["_ModelMetadata"][] | null;
             /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Input"][] | null;
+            repositories?: components["schemas"]["_RepositoryMetadata"][] | null;
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][] | null;
             /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Input"][] | null;
+            datasets?: components["schemas"]["_DatasetMetadata"][] | null;
             /** Doi Is Draft */
             doi_is_draft?: boolean | null;
             /** Func Uuid */
@@ -1658,7 +1684,7 @@ export interface components {
             /** App Name */
             app_name: string;
             /** Modal Functions */
-            modal_functions?: components["schemas"]["ModalFunctionMetadata-Input"][];
+            modal_functions?: components["schemas"]["ModalFunctionMetadata"][];
             /** File Contents */
             file_contents: string;
             /** Requirements */
@@ -1669,12 +1695,6 @@ export interface components {
             base_image_name: string;
             /** Owner Identity Id */
             owner_identity_id?: string | null;
-            /**
-             * Overwrite Existing
-             * @description Overwrite an existing Modal App with the same same.
-             * @default true
-             */
-            overwrite_existing: boolean;
         };
         /** ModalAppMetadataResponse */
         ModalAppMetadataResponse: {
@@ -1705,6 +1725,15 @@ export interface components {
             /** Modal Function Ids */
             readonly modal_function_ids: string[];
         };
+        /** ModalBlobUploadURLRequest */
+        ModalBlobUploadURLRequest: {
+            /** Content Length */
+            content_length: number;
+            /** Content Md5 */
+            content_md5: string;
+            /** Content Sha256 Base64 */
+            content_sha256_base64: string;
+        };
         /** ModalFileMetadataRequest */
         ModalFileMetadataRequest: {
             /** File Contents */
@@ -1715,7 +1744,7 @@ export interface components {
             /** App Name */
             app_name: string;
             /** Modal Functions */
-            modal_functions?: components["schemas"]["ModalFunctionMetadata-Output"][];
+            modal_functions?: components["schemas"]["ModalFunctionMetadata"][];
             /** File Contents */
             file_contents: string;
             /** Requirements */
@@ -1728,7 +1757,7 @@ export interface components {
             readonly modal_function_names: string[];
         };
         /** ModalFunctionMetadata */
-        "ModalFunctionMetadata-Input": {
+        ModalFunctionMetadata: {
             /**
              * Is Archived
              * @default false
@@ -1753,51 +1782,15 @@ export interface components {
             /** Models */
             models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Input"][];
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Input"][];
+            datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Function Name */
             function_name: string;
-            /** Doi */
-            doi?: string | null;
-            /** Conda Requirements */
-            conda_requirements?: string[];
-        };
-        /** ModalFunctionMetadata */
-        "ModalFunctionMetadata-Output": {
-            /**
-             * Is Archived
-             * @default false
-             */
-            is_archived: boolean;
-            /** Function Text */
-            function_text: string;
-            /** Title */
-            title: string;
-            /** Description */
-            description: string | null;
-            /** Year */
-            year: string;
-            /** Authors */
-            authors?: string[];
-            /** Tags */
-            tags?: string[];
-            /** Test Functions */
-            test_functions?: string[];
-            /** Requirements */
-            requirements?: string[];
-            /** Models */
-            models?: components["schemas"]["_ModelMetadata"][];
-            /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
-            /** Papers */
-            papers?: components["schemas"]["_PaperMetadata"][];
-            /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Output"][];
-            /** Function Name */
-            function_name: string;
+            /** File Contents */
+            file_contents?: string | null;
             /** Doi */
             doi?: string | null;
             /** Conda Requirements */
@@ -1829,13 +1822,15 @@ export interface components {
             /** Models */
             models?: components["schemas"]["_ModelMetadata"][];
             /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Output"][];
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Output"][];
+            datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Function Name */
             function_name: string;
+            /** File Contents */
+            file_contents?: string | null;
             /** Doi */
             doi?: string | null;
             /** Conda Requirements */
@@ -1871,11 +1866,11 @@ export interface components {
             /** Models */
             models?: components["schemas"]["_ModelMetadata"][] | null;
             /** Repositories */
-            repositories?: components["schemas"]["_RepositoryMetadata-Input"][] | null;
+            repositories?: components["schemas"]["_RepositoryMetadata"][] | null;
             /** Papers */
             papers?: components["schemas"]["_PaperMetadata"][] | null;
             /** Datasets */
-            datasets?: components["schemas"]["_DatasetMetadata-Input"][] | null;
+            datasets?: components["schemas"]["_DatasetMetadata"][] | null;
             /** Doi */
             doi?: string | null;
             /** Function Name */
@@ -1894,11 +1889,10 @@ export interface components {
         ModalInvocationRequest: {
             /** Function Id */
             function_id: number;
-            /**
-             * Args Kwargs Serialized
-             * Format: binary
-             */
-            args_kwargs_serialized: string;
+            /** Args Kwargs Serialized */
+            args_kwargs_serialized?: string | null;
+            /** Args Blob Id */
+            args_blob_id?: string | null;
         };
         /** ModalInvocationResponse */
         ModalInvocationResponse: {
@@ -2163,7 +2157,6 @@ export interface components {
         TitleType: "AlternativeTitle" | "Subtitle" | "TranslatedTitle" | "Other";
         /**
          * Type
-         * @constant
          * @enum {string}
          */
         Type: "dois";
@@ -2271,7 +2264,7 @@ export interface components {
             total?: number | null;
         };
         /** _DatasetMetadata */
-        "_DatasetMetadata-Input": {
+        _DatasetMetadata: {
             /** Title */
             title: string;
             /** Doi */
@@ -2280,19 +2273,6 @@ export interface components {
              * Url
              * Format: uri
              */
-            url: string;
-            /** Data Type */
-            data_type: string | null;
-            /** Repository */
-            repository: string;
-        };
-        /** _DatasetMetadata */
-        "_DatasetMetadata-Output": {
-            /** Title */
-            title: string;
-            /** Doi */
-            doi: string | null;
-            /** Url */
             url: string;
             /** Data Type */
             data_type: string | null;
@@ -2317,22 +2297,19 @@ export interface components {
              * Serialized Tb
              * @default
              */
-            serialized_tb: string;
+            serialized_tb: string | null;
             /**
              * Tb Line Cache
              * @default
              */
-            tb_line_cache: string;
+            tb_line_cache: string | null;
             /**
              * Data
              * @default
              */
-            data: string;
-            /**
-             * Data Blob Id
-             * @default
-             */
-            data_blob_id: string;
+            data: string | null;
+            /** Data Blob Url */
+            data_blob_url?: string | null;
         };
         /** _ModelMetadata */
         _ModelMetadata: {
@@ -2355,22 +2332,13 @@ export interface components {
             citation: string | null;
         };
         /** _RepositoryMetadata */
-        "_RepositoryMetadata-Input": {
+        _RepositoryMetadata: {
             /** Repo Name */
             repo_name: string;
             /**
              * Url
              * Format: uri
              */
-            url: string;
-            /** Contributors */
-            contributors?: string[];
-        };
-        /** _RepositoryMetadata */
-        "_RepositoryMetadata-Output": {
-            /** Repo Name */
-            repo_name: string;
-            /** Url */
             url: string;
             /** Contributors */
             contributors?: string[];
@@ -3116,6 +3084,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GardenMetadataResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    make_blob_upload_url_modal_invocations_blob_uploads_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModalBlobUploadURLRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */
