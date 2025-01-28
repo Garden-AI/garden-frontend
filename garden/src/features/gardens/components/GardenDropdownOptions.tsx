@@ -237,10 +237,6 @@ const PublishGardenModal = ({
               placeholder={`register ${doi}`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onPaste={(e) => {
-                e.preventDefault();
-                return false;
-              }}
             />
           </div>
           <div className="flex items-center space-x-2 py-4">
@@ -256,7 +252,7 @@ const PublishGardenModal = ({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleRegisterGardenDOI}
-            disabled={isPending || input !== `publish ${doi}`}
+            disabled={isPending || input !== `register ${doi}`}
             className="bg-primary hover:bg-primary/60"
           >
             I understand, register DOI for this Garden
@@ -402,10 +398,6 @@ const DeleteGardenModal = ({
               placeholder={`delete ${doi}`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onPaste={(e) => {
-                e.preventDefault();
-                return false;
-              }}
             />
           </div>
         </AlertDialogHeader>
@@ -498,10 +490,6 @@ const ArchiveGardenModal = ({
               placeholder={`archive ${doi}`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onPaste={(e) => {
-                e.preventDefault();
-                return false;
-              }}
             />
           </div>
         </AlertDialogHeader>
