@@ -49,6 +49,7 @@ export const gardenFormSchema = z
           authors: z.array(z.string()),
           tags: z.array(z.string()),
           test_functions: z.array(z.string()),
+          example_usage: z.string(),
         }),
       ),
     }),

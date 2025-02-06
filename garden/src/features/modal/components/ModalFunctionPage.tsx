@@ -101,24 +101,41 @@ const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) 
 };
 
 const ModalFunctionExample = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  // TODO: actually use the example function text provided
-  const functionText = `from garden_ai import GardenClient
-client = GardenClient()
-garden = client.get_garden(my_garden_doi)
+  const functionText = modalFunction.function_text;
 
-input = ['Data Here']
-return garden.${modalFunction.function_name}(input)
-`;
+  // Create example text with fallback to default placeholder
+  const exampleText = `from garden_ai import GardenClient
+client = GardenClient()
+my_garden = client.get_garden(my_garden_doi)
+
+${modalFunction.example_usage || `input = ['Data Here']
+return my_garden.${modalFunction.function_name}(input)`}`;
+
 
   return (
-    <div className="mb-12 py-12">
-      <h2 className="mb-12 text-center text-2xl sm:text-3xl">Invoke this Modal Function</h2>
-      <div className=" mx-auto max-w-2xl">
-        <div className="relative">
-          <ExampleFunction functionText={functionText} />
+    <Card className="rounded-none bg-white p-4">
+      <CardHeader className="px-6 py-4">
+        <CardTitle className="text-xl font-bold text-gray-800">
+          {modalFunction.function_name}
+        </CardTitle>
+        <CardDescription className="mt-1 text-gray-600">
+          {modalFunction.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6 px-6 py-4">
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Example Usage</h3>
+            <CopyButton hint="Copy example code" content={exampleText} />
+          </div>
+          <SyntaxHighlighter>{exampleText}</SyntaxHighlighter>
         </div>
-      </div>
-    </div>
+        <div>
+          <h3 className="mb-2 text-lg font-semibold">Original Function Definition</h3>
+          <SyntaxHighlighter>{functionText}</SyntaxHighlighter>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -222,9 +239,9 @@ const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
                   className="text-blue-600 hover:underline"
                 >
                   {dataset.doi}
-                </a>
-              </div>
-            </CardContent>
+                </a >
+              </div >
+            </CardContent >
             <CardFooter className="flex justify-start ">
               <Button variant="default" size={"sm"} asChild className="text-xs">
                 <a href={dataset.url} target="_blank" rel="noopener noreferrer">
@@ -232,9 +249,9 @@ const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
                 </a>
               </Button>
             </CardFooter>
-          </Card>
+          </Card >
         ))}
-      </div>
+      </div >
     </>
   );
 };

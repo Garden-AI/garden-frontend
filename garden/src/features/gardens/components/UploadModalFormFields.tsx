@@ -67,7 +67,8 @@ export const UploadModalFormFields = () => {
             function_text: func.function_text,
             authors: [],
             tags: [],
-            test_functions: [],
+            test_functions: func.test_functions || [],
+            example_usage: func.example_usage || "",
           })),
         }
       }));
@@ -80,8 +81,8 @@ export const UploadModalFormFields = () => {
       }
       console.log(`Error validating modal file: ${error}`);
       const msg = `${error} Please see our user guide if you are having issues.`
-      form.setError("modal.file_contents", {type: "validate", message: msg});
-      form.setError("modal", {type: "validate", message: msg});
+      form.setError("modal.file_contents", { type: "validate", message: msg });
+      form.setError("modal", { type: "validate", message: msg });
     } finally {
       setIsFileUploading(false);
     }
