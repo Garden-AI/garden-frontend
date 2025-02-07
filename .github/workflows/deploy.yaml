@@ -36,7 +36,7 @@ jobs:
           npm run remove-mock-service-worker
 
       - name: Share artifact inside workflow
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: react-github-actions-build
           path: ./garden/build
