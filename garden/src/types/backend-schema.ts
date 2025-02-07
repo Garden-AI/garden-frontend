@@ -460,6 +460,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/load-test/{sleep_seconds}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Load Test
+         * @description Simulate a route that passes jobs to a background task
+         */
+        get: operations["load_test_load_test__sleep_seconds__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -524,7 +544,7 @@ export interface components {
             /** Modal Function Names */
             readonly modal_function_names: string[];
             /** Modal Function Ids */
-            readonly modal_function_ids: string[];
+            readonly modal_function_ids: number[];
         };
         /**
          * AsyncModalJobStatus
@@ -1723,7 +1743,7 @@ export interface components {
             /** Modal Function Names */
             readonly modal_function_names: string[];
             /** Modal Function Ids */
-            readonly modal_function_ids: string[];
+            readonly modal_function_ids: number[];
         };
         /** ModalBlobUploadURLRequest */
         ModalBlobUploadURLRequest: {
@@ -1795,6 +1815,11 @@ export interface components {
             doi?: string | null;
             /** Conda Requirements */
             conda_requirements?: string[];
+            /**
+             * Example Usage
+             * @default
+             */
+            example_usage: string;
         };
         /** ModalFunctionMetadataResponse */
         ModalFunctionMetadataResponse: {
@@ -1835,6 +1860,11 @@ export interface components {
             doi?: string | null;
             /** Conda Requirements */
             conda_requirements?: string[];
+            /**
+             * Example Usage
+             * @default
+             */
+            example_usage: string;
             /**
              * Id
              * @description The unique identifier for the modal function
@@ -3503,6 +3533,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    load_test_load_test__sleep_seconds__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sleep_seconds: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
