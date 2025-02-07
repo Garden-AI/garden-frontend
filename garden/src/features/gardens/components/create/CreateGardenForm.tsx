@@ -74,7 +74,7 @@ export const CreateGardenForm = () => {
           modal_functions: values.modal.modal_functions,
           owner_identity_id: uuid,
         });
-        gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids.map(id => parseInt(id));
+        gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids;
       }
 
       const { garden } = await createGardenAndDOI(gardenCreateRequest);
