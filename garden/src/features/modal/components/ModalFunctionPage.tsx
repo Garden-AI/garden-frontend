@@ -119,10 +119,6 @@ return my_garden.${modalFunction.function_name}(input)`}`;
         <CardTitle className="text-xl font-bold text-gray-800">
           {modalFunction.function_name}
         </CardTitle>
-        <MarkdownCardContent 
-          className="mt-1 text-gray-600"
-          content={modalFunction.description || ""}
-        />
       </CardHeader>
       <CardContent className="space-y-6 px-6 py-4">
         <div>
@@ -131,10 +127,6 @@ return my_garden.${modalFunction.function_name}(input)`}`;
             <CopyButton hint="Copy example code" content={exampleText} />
           </div>
           <SyntaxHighlighter>{exampleText}</SyntaxHighlighter>
-        </div>
-        <div>
-          <h3 className="mb-2 text-lg font-semibold">Original Function Definition</h3>
-          <SyntaxHighlighter>{functionText}</SyntaxHighlighter>
         </div>
       </CardContent>
     </Card>
