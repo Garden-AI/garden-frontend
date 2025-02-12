@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "../../../components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "@/types";
@@ -35,14 +35,10 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
         <CardHeader className="">
           <CardTitle className="text-ellipsis text-xl">{title}</CardTitle>
         </CardHeader>
-        <CardContent className="flex-grow overflow-hidden">
-          <div className="relative h-[125px] overflow-hidden">
-            <div className="opacity-60">
-              <Markdown content={description || ""} />
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent"></div>
-          </div>
-        </CardContent>
+        <MarkdownCardContent 
+          className="flex-grow overflow-hidden"
+          content={description || ""}
+        />
         <CardFooter className="relative mt-auto flex flex-wrap gap-1">
           {tags && tags.length > 0 && (
             <div>

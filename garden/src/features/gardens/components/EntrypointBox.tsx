@@ -4,7 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/utils/form.utils";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { useGetEntrypoints } from "@/features/entrypoints/api/useGetEntrypoints";
-import Markdown from "@/components/Markdown";
+import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/ui/card";
 
 const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   const navigate = useNavigate();
@@ -27,13 +27,13 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   };
 
   return (
-    <div
-      className="flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:cursor-pointer hover:shadow-md"
+    <Card
+      className="cursor-pointer shadow-sm hover:shadow-md"
       onClick={() => navigate(`/entrypoint/${text}`)}
     >
-      <div className="flex flex-col gap-2">
+      <CardHeader>
         <div className="flex flex-row justify-between">
-          <h2 className="text-xl">{entrypoint.title || "Untitled"}</h2>
+          <CardTitle className="text-xl">{entrypoint.title || "Untitled"}</CardTitle>
           <div className="flex-end flex">
             {canEditEntrypoint && (
               <button
@@ -48,14 +48,13 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
             )}
           </div>
         </div>
-        <div className="max-h-[120px] overflow-y-hidden">
-          <div className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
-            <Markdown content={entrypoint.description || "No description available"} />
-          </div>
-        </div>
-      </div>
-      {entrypoint.tags && entrypoint.tags.length > 0 ? (
-        <div className="flex gap-2 text-black">
+      </CardHeader>
+      <MarkdownCardContent 
+        className="max-h-[120px] overflow-hidden"
+        content={entrypoint.description || "No description available"}
+      />
+      {entrypoint.tags && entrypoint.tags.length > 0 && (
+        <CardFooter className="flex gap-2 text-black">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -74,9 +73,9 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
           <div>
             <span>{entrypoint.tags?.join(", ")}</span>
           </div>
-        </div>
-      ) : null}
-    </div>
+        </CardFooter>
+      )}
+    </Card>
   );
 };
 

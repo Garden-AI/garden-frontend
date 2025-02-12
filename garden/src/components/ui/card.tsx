@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import Markdown from "@/components/Markdown";
 import { cn } from "@/utils/form.utils";
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
@@ -46,6 +46,19 @@ const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
 );
 CardContent.displayName = "CardContent";
 
+interface MarkdownCardContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  content: string;
+}
+
+const MarkdownCardContent = React.forwardRef<HTMLDivElement, MarkdownCardContentProps>(
+  ({ className, content, ...props }, ref) => (
+    <div ref={ref} className={cn("p-6 pt-0", className)} {...props}>
+      <Markdown content={content} />
+    </div>
+  ),
+);
+MarkdownCardContent.displayName = "MarkdownCardContent";
+
 const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />
@@ -53,4 +66,4 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 );
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, MarkdownCardContent };

@@ -1,6 +1,6 @@
 import { ModalFunction } from "@/types";
 import { useNavigate } from "react-router-dom";
-import Markdown from "@/components/Markdown";
+import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/ui/card";
 
 const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   const navigate = useNavigate();
@@ -11,22 +11,19 @@ const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) =
   }
 
   return (
-    <div
-      className="flex flex-col justify-between rounded-lg border border-gray-200 p-5 shadow-sm hover:cursor-pointer hover:shadow-md"
+    <Card
+      className="cursor-pointer shadow-sm hover:shadow-md"
       onClick={() => navigate(`/modal/${id}`)}
     >
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-row justify-between">
-          <h2 className="text-xl">{modalFunction.title || "Untitled"}</h2>
-        </div>
-        <div className="max-h-[120px] overflow-y-hidden">
-          <div className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
-            <Markdown content={modalFunction.description || "No description available"} />
-          </div>
-        </div>
-      </div>
-      {modalFunction.tags && modalFunction.tags.length > 0 ? (
-        <div className="flex gap-2 text-black">
+      <CardHeader>
+        <CardTitle className="text-xl">{modalFunction.title || "Untitled"}</CardTitle>
+      </CardHeader>
+      <MarkdownCardContent 
+        className="max-h-[120px] overflow-hidden"
+        content={modalFunction.description || "No description available"}
+      />
+      {modalFunction.tags && modalFunction.tags.length > 0 && (
+        <CardFooter className="flex gap-2 text-black">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -45,10 +42,10 @@ const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) =
           <div>
             <span>{modalFunction.tags?.join(", ")}</span>
           </div>
-        </div>
-      ) : null}
-    </div>
+        </CardFooter>
+      )}
+    </Card>
   );
-};
+}
 
 export default ModalFunctionBox;
