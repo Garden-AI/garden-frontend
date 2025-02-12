@@ -12,7 +12,7 @@ import { Garden } from "@/types";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
 import { Separator } from "@/components/ui/separator";
-import GardenBox from "@/components/GardenBox";
+import GardenBox from "@/features/gardens/components/GardenBox";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   SquareStack,

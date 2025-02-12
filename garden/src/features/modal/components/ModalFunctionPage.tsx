@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
 import { ExampleFunction } from "@/features/entrypoints/components/ExampleFunction";
+import Markdown from "@/components/Markdown";
 
 const ModalFunctionPage = () => {
   const { id } = useParams() as { id: string };
@@ -93,7 +94,7 @@ const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) 
         <Eye />
         <h2>At a glance</h2>
       </div>
-      <p className="mb-6">{modalFunction.description}</p>
+      <Markdown content={modalFunction.description || ""} className="mb-6" />
 
       <Separator className="my-6" />
     </div>

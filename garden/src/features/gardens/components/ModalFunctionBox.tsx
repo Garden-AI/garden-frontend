@@ -1,5 +1,6 @@
 import { ModalFunction } from "@/types";
 import { useNavigate } from "react-router-dom";
+import Markdown from "@/components/Markdown";
 
 const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   const navigate = useNavigate();
@@ -19,9 +20,9 @@ const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) =
           <h2 className="text-xl">{modalFunction.title || "Untitled"}</h2>
         </div>
         <div className="max-h-[120px] overflow-y-hidden">
-          <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
-            {modalFunction.description || "No description available"}
-          </p>
+          <div className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
+            <Markdown content={modalFunction.description || "No description available"} />
+          </div>
         </div>
       </div>
       {modalFunction.tags && modalFunction.tags.length > 0 ? (

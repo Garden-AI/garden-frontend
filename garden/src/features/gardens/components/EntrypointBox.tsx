@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/utils/form.utils";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { useGetEntrypoints } from "@/features/entrypoints/api/useGetEntrypoints";
+import Markdown from "@/components/Markdown";
 
 const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   const navigate = useNavigate();
@@ -48,9 +49,9 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
           </div>
         </div>
         <div className="max-h-[120px] overflow-y-hidden">
-          <p className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
-            {entrypoint.description || "No description available"}
-          </p>
+          <div className="h-[160px] overflow-y-hidden bg-gradient-to-b from-black to-white bg-clip-text text-transparent">
+            <Markdown content={entrypoint.description || "No description available"} />
+          </div>
         </div>
       </div>
       {entrypoint.tags && entrypoint.tags.length > 0 ? (

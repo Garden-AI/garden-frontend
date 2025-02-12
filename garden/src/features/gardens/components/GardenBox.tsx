@@ -1,9 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../../../components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "@/types";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useGetGardens } from "@/features/gardens/api/useGetGardens";
+import Markdown from "@/components/Markdown";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();
@@ -36,7 +37,9 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
         </CardHeader>
         <CardContent className="flex-grow overflow-hidden">
           <div className="relative h-[125px] overflow-hidden">
-            <p className="opacity-60">{description}</p>
+            <div className="opacity-60">
+              <Markdown content={description || ""} />
+            </div>
             <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent"></div>
           </div>
         </CardContent>

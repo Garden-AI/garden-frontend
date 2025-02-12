@@ -19,6 +19,7 @@ import RelatedGardens from "@/features/gardens/components/RelatedGardens";
 import ShareModal from "@/components/ShareModal";
 import TombstonePage from "@/components/TombstonePage";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Markdown from "@/components/Markdown";
 
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
@@ -127,7 +128,7 @@ const GardenBody = ({ garden }: { garden: Garden }) => {
       </div>
       <div>
         <h2 className="font-semibold">Description</h2>
-        <p>{garden.description}</p>
+        <Markdown content={garden.description ?? ""} />
       </div>
     </div>
   );

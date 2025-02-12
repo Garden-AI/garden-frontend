@@ -13,6 +13,7 @@ import { useSearchGardenByDOI } from "@/features/search/api/useSearchGardenByDOI
 import EntrypointTabs from "@/features/entrypoints/components/EntrypointTabs";
 import EntrypointFunction from "@/features/entrypoints/components/EntrypointFunction";
 import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
+import Markdown from "@/components/Markdown";
 
 const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
@@ -87,7 +88,7 @@ const EntrypointBody = ({ garden, entrypoint }: { garden: Garden; entrypoint: En
         <Eye />
         <h2>At a glance</h2>
       </div>
-      <p className="mb-6">{entrypoint.description}</p>
+      <Markdown content={entrypoint.description || ""} className="mb-6" />
 
       <Separator className="mb-12" />
     </div>
