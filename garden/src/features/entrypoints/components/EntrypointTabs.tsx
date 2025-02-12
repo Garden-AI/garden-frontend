@@ -8,6 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  MarkdownCardContent,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -139,10 +140,13 @@ const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
 
 const FunctionTab = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   return (
-    <Card className=" rounded-none bg-white p-4">
-      <CardHeader className=" px-6 py-4">
+    <Card className="rounded-none bg-white p-4">
+      <CardHeader className="px-6 py-4">
         <CardTitle className="text-xl font-bold text-gray-800">{entrypoint.short_name}</CardTitle>
-        <CardDescription className="mt-1 text-gray-600">{entrypoint.description}</CardDescription>
+        <MarkdownCardContent 
+          className="mt-1 text-gray-600"
+          content={entrypoint.description || ""}
+        />
       </CardHeader>
       <CardContent className="px-6 py-4">
         <SyntaxHighlighter>{entrypoint.function_text}</SyntaxHighlighter>

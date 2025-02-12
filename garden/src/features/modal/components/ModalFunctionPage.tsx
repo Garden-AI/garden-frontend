@@ -22,6 +22,7 @@ import {
   CardDescription,
   CardFooter,
   CardTitle,
+  MarkdownCardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -112,16 +113,16 @@ my_garden = client.get_garden(my_garden_doi)
 ${modalFunction.example_usage || `input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`}`;
 
-
   return (
     <Card className="rounded-none bg-white p-4">
       <CardHeader className="px-6 py-4">
         <CardTitle className="text-xl font-bold text-gray-800">
           {modalFunction.function_name}
         </CardTitle>
-        <CardDescription className="mt-1 text-gray-600">
-          {modalFunction.description}
-        </CardDescription>
+        <MarkdownCardContent 
+          className="mt-1 text-gray-600"
+          content={modalFunction.description || ""}
+        />
       </CardHeader>
       <CardContent className="space-y-6 px-6 py-4">
         <div>
@@ -259,14 +260,15 @@ const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
 
 const FunctionTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
-    <Card className=" rounded-none bg-white p-4">
-      <CardHeader className=" px-6 py-4">
+    <Card className="rounded-none bg-white p-4">
+      <CardHeader className="px-6 py-4">
         <CardTitle className="text-xl font-bold text-gray-800">
           {modalFunction.function_name}
         </CardTitle>
-        <CardDescription className="mt-1 text-gray-600">
-          {modalFunction.description}
-        </CardDescription>
+        <MarkdownCardContent 
+          className="mt-1 text-gray-600"
+          content={modalFunction.description || ""}
+        />
       </CardHeader>
       <CardContent className="px-6 py-4">
         <SyntaxHighlighter>{modalFunction.function_text}</SyntaxHighlighter>
