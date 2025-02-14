@@ -22,11 +22,13 @@ import {
   CardDescription,
   CardFooter,
   CardTitle,
+  MarkdownCardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
 import { ExampleFunction } from "@/features/entrypoints/components/ExampleFunction";
+import Markdown from "@/components/Markdown";
 
 const ModalFunctionPage = () => {
   const { id } = useParams() as { id: string };
@@ -93,7 +95,7 @@ const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) 
         <Eye />
         <h2>At a glance</h2>
       </div>
-      <p className="mb-6">{modalFunction.description}</p>
+      <Markdown content={modalFunction.description || ""} className="mb-6" />
 
       <Separator className="my-6" />
     </div>
@@ -111,16 +113,12 @@ my_garden = client.get_garden(my_garden_doi)
 ${modalFunction.example_usage || `input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`}`;
 
-
   return (
     <Card className="rounded-none bg-white p-4">
       <CardHeader className="px-6 py-4">
         <CardTitle className="text-xl font-bold text-gray-800">
           {modalFunction.function_name}
         </CardTitle>
-        <CardDescription className="mt-1 text-gray-600">
-          {modalFunction.description}
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6 px-6 py-4">
         <div>
@@ -129,10 +127,6 @@ return my_garden.${modalFunction.function_name}(input)`}`;
             <CopyButton hint="Copy example code" content={exampleText} />
           </div>
           <SyntaxHighlighter>{exampleText}</SyntaxHighlighter>
-        </div>
-        <div>
-          <h3 className="mb-2 text-lg font-semibold">Original Function Definition</h3>
-          <SyntaxHighlighter>{functionText}</SyntaxHighlighter>
         </div>
       </CardContent>
     </Card>
@@ -258,14 +252,15 @@ const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
 
 const FunctionTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
-    <Card className=" rounded-none bg-white p-4">
-      <CardHeader className=" px-6 py-4">
+    <Card className="rounded-none bg-white p-4">
+      <CardHeader className="px-6 py-4">
         <CardTitle className="text-xl font-bold text-gray-800">
           {modalFunction.function_name}
         </CardTitle>
-        <CardDescription className="mt-1 text-gray-600">
-          {modalFunction.description}
-        </CardDescription>
+        <MarkdownCardContent 
+          className="mt-1 text-gray-600"
+          content={modalFunction.description || ""}
+        />
       </CardHeader>
       <CardContent className="px-6 py-4">
         <SyntaxHighlighter>{modalFunction.function_text}</SyntaxHighlighter>

@@ -12,6 +12,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
+  MarkdownCardContent,
 } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -52,14 +53,16 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
           </span>
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <p className="mb-6 line-clamp-3 text-gray-700">
-          {garden.description || <span className="italic">No description available</span>}
-        </p>
-        {verbose && entrypoints?.length > 0 && (
+      
+      <MarkdownCardContent 
+        className="line-clamp-3"
+        content={garden.description || "*No description available*"}
+      />
+      
+      {verbose && entrypoints?.length > 0 && (
+        <CardContent>
           <div>
             <h3 className="pb-4 font-semibold">Entrypoints</h3>
-
             <ScrollArea className="h-[250px] rounded border p-2">
               <Table className="relative w-full">
                 <TableHeader className="sticky top-0 font-semibold">
@@ -100,8 +103,8 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
               </Table>
             </ScrollArea>
           </div>
-        )}
-      </CardContent>
+        </CardContent>
+      )}
       <CardFooter className="flex-col items-start gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <PersonIcon className="mr-1 h-5 w-5" />
