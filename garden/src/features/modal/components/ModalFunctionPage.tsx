@@ -32,6 +32,11 @@ import AssociatedMaterials from "@/features/gardens/components/AssociatedMateria
 import { ExampleFunction } from "@/features/entrypoints/components/ExampleFunction";
 import Markdown from "@/components/Markdown";
 
+// Extend ModalFunction type to include owner_identity_id
+type ModalFunctionWithOwner = ModalFunction & {
+  owner_identity_id: string;
+};
+
 const ModalFunctionPage = () => {
   const { id } = useParams() as { id: string };
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
@@ -45,7 +50,7 @@ const ModalFunctionPage = () => {
       {/* TODO: I'm not really sure what makes sense to render for the Breadcrumbs component, since we don't really have a way
        for a user to land on this page currently. Maybe the parent garden?  */}
       <Breadcrumb crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} />
-      <ModalFunctionHeader modalFunction={modalFunction} />
+      <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
       <ModalFunctionBody modalFunction={modalFunction} />
       <ModalFunctionExample modalFunction={modalFunction} />
       <AssociatedMaterials resource={modalFunction} />
@@ -54,7 +59,7 @@ const ModalFunctionPage = () => {
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWithOwner }) => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
   const isOwner = auth.isAuthenticated && modalFunction.owner_identity_id === auth?.authorization?.user?.sub;
