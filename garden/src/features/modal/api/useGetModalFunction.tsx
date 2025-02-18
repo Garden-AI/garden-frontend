@@ -12,8 +12,18 @@ const getModalFunction = async (id: string): Promise<ModalFunction> => {
 };
 
 export const useGetModalFunction = (id: string) => {
-  return useQuery<ModalFunction, Error>({
-    queryKey: ["modal-apps", id],
-    queryFn: () => getModalFunction(id),
+  return useQuery({
+    queryKey: ["modalFunction", id],
+    queryFn: async () => {
+      const response = await axios.get(`/modal-functions/${id}`);
+      const modalFunction = response.data as ModalFunction;
+      
+      // Get the parent modal app to get ownership information
+      const modalAppResponse = await axios.get(`/modal-apps/${modalFunction.modal_app_id}`);
+      return {
+        ...modalFunction,
+        owner_identity_id: modalAppResponse.data.owner_identity_id
+      };
+    },
   });
 };

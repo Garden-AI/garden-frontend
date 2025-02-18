@@ -1,6 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 
 import NotFoundPage from "@/components/NotFoundPage";
 
@@ -8,7 +9,7 @@ import NotFoundPage from "@/components/NotFoundPage";
 import { Separator } from "@/components/ui/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 
-import { Eye, LinkIcon, TagIcon } from "lucide-react";
+import { Eye, LinkIcon, TagIcon, PencilIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -53,22 +54,38 @@ const ModalFunctionPage = () => {
 };
 
 const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+  const navigate = useNavigate();
+  const auth = useGlobusAuth();
+  const isOwner = auth.isAuthenticated && modalFunction.owner_identity_id === auth?.authorization?.user?.sub;
+
   return (
     <div>
       <div className="mb-4">
         <div className="flex flex-row justify-between">
           <h1 className="text-xl md:text-3xl">{modalFunction.title}</h1>
-          {modalFunction.doi && (
-            <div className="hidden flex-col items-center md:flex md:flex-row">
-              <CopyButton
-                hint="Copy Link"
-                content={`https://doi.org/${modalFunction.doi}`}
-                icon={<LinkIcon />}
-                className="border-none bg-transparent"
-              />
-              <ShareModal doi={modalFunction.doi} />
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {isOwner && (
+              <Button
+                variant="outline"
+                onClick={() => navigate(`/modal-functions/${modalFunction.id}/edit`)}
+                className="hidden md:flex"
+              >
+                <PencilIcon className="mr-2 h-4 w-4" />
+                Edit
+              </Button>
+            )}
+            {modalFunction.doi && (
+              <div className="hidden flex-col items-center md:flex md:flex-row">
+                <CopyButton
+                  hint="Copy Link"
+                  content={`https://doi.org/${modalFunction.doi}`}
+                  icon={<LinkIcon />}
+                  className="border-none bg-transparent"
+                />
+                <ShareModal doi={modalFunction.doi} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

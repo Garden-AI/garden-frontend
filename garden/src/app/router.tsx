@@ -17,6 +17,8 @@ import SearchPage from "@/features/search/components/SearchPage";
 import TeamsPage from "@/features/team/components/TeamsPage";
 import UserProfilePage from "@/features/users/components/UserProfilePage";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { EditModalFunctionForm } from "@/features/modal/components/edit/EditModalFunctionForm";
+import EditModalFunctionPage from "@/features/modal/components/edit/EditModalFunctionPage";
 
 const Router: React.FC = () => {
   return (
@@ -43,8 +45,11 @@ const Router: React.FC = () => {
         </Route>
 
         {/* Modal Routes */}
-        <Route path="modal">
+        <Route path="modal-functions">
           <Route path=":id" element={<ModalFunctionPage />} />
+          <Route element={<PrivateRoutes />}>
+            <Route path=":id/edit" element={<EditModalFunctionPage />} />
+          </Route>
         </Route>
 
         {/* Misc Routes */}

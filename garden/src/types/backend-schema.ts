@@ -1885,6 +1885,8 @@ export interface components {
             year?: string | null;
             /** Function Text */
             function_text?: string | null;
+            /** Example Usage */
+            example_usage?: string | null;
             /** Authors */
             authors?: string[] | null;
             /** Tags */

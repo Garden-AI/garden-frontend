@@ -13,7 +13,7 @@ const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) =
   return (
     <Card
       className="cursor-pointer shadow-sm hover:shadow-md"
-      onClick={() => navigate(`/modal/${id}`)}
+      onClick={() => navigate(`/modal-functions/${id}`)}
     >
       <CardHeader>
         <CardTitle className="text-xl">{modalFunction.title || "Untitled"}</CardTitle>
