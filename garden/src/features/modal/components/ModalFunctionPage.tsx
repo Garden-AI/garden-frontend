@@ -8,6 +8,7 @@ import NotFoundPage from "@/components/NotFoundPage";
 // import ModalFunctionTabs from "@/components/ModalFunctionTabs";
 import { Separator } from "@/components/ui/separator";
 import Breadcrumb from "@/components/Breadcrumb";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { Eye, LinkIcon, TagIcon, PencilIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
@@ -59,34 +60,35 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunction }
   const isOwner = auth.isAuthenticated && modalFunction.owner_identity_id === auth?.authorization?.user?.sub;
 
   return (
-    <div>
-      <div className="mb-4">
-        <div className="flex flex-row justify-between">
-          <h1 className="text-xl md:text-3xl">{modalFunction.title}</h1>
-          <div className="flex items-center gap-2">
-            {isOwner && (
-              <Button
-                variant="outline"
-                onClick={() => navigate(`/modal-functions/${modalFunction.id}/edit`)}
-                className="hidden md:flex"
-              >
-                <PencilIcon className="mr-2 h-4 w-4" />
-                Edit
-              </Button>
-            )}
-            {modalFunction.doi && (
-              <div className="hidden flex-col items-center md:flex md:flex-row">
-                <CopyButton
-                  hint="Copy Link"
-                  content={`https://doi.org/${modalFunction.doi}`}
-                  icon={<LinkIcon />}
-                  className="border-none bg-transparent"
-                />
-                <ShareModal doi={modalFunction.doi} />
-              </div>
-            )}
-          </div>
-        </div>
+    <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
+      <h1 className="text-xl md:text-3xl">{modalFunction.title}</h1>
+      <div className="flex items-center gap-2">
+        <CopyButton
+          icon={<LinkIcon />}
+          content={`${window.location.origin}/modal-functions/${modalFunction.id}`}
+          hint="Copy Link"
+          className="border-none bg-transparent"
+        />
+        {modalFunction.doi && <ShareModal doi={modalFunction.doi} />}
+        {isOwner && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate(`/modal-functions/${modalFunction.id}/edit`)}
+                  className="h-9 w-9"
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit Function</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
     </div>
   );

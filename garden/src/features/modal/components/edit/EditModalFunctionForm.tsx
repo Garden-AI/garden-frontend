@@ -60,27 +60,29 @@ export const EditModalFunctionForm = ({ modalFunction }: { modalFunction: ModalF
   );
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <Form {...form}>
-        <div className="space-y-8">
-          <div className="rounded-lg border bg-white p-8 shadow-sm">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="rounded-lg border bg-white shadow-sm">
+          <div className="p-6">
             <EditModalFunctionFormFields />
           </div>
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate(`/modal-functions/${modalFunction.id}`)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit">Save Changes</Button>
-          </div>
         </div>
+        
+        <div className="flex justify-end gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate(`/modal-functions/${modalFunction.id}`)}
+          >
+            Cancel
+          </Button>
+          <Button type="submit">Save Changes</Button>
+        </div>
+
         <LoadingOverlay />
         <UnsavedChangesDialog blocker={blocker} />
-      </Form>
-    </form>
+      </form>
+    </Form>
   );
 };
 

@@ -17,7 +17,7 @@ const EditModalFunctionPage = () => {
   if (!isOwner) return <Navigate to={`/modal-functions/${id}`} replace />;
 
   return (
-    <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
+    <div className="mx-auto max-w-7xl px-8 py-4 font-display md:py-16">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
@@ -25,10 +25,13 @@ const EditModalFunctionPage = () => {
           { label: "Edit" },
         ]}
       />
-      <div className="my-8">
-        <h1 className="text-2xl sm:text-3xl">Edit Modal Function Metadata</h1>
+      <div className="mb-8 mt-4">
+        <h1 className="text-2xl font-semibold text-gray-900 sm:text-3xl">Edit Modal Function</h1>
       </div>
-      <EditModalFunctionForm modalFunction={modalFunction} />
+
+      <div className="pb-8">
+        <EditModalFunctionForm modalFunction={modalFunction} />
+      </div>
     </div>
   );
 };
