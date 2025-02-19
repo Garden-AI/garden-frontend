@@ -1,14 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
+import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 
 import NotFoundPage from "@/components/NotFoundPage";
 
 // import ModalFunctionTabs from "@/components/ModalFunctionTabs";
 import { Separator } from "@/components/ui/separator";
 import Breadcrumb from "@/components/Breadcrumb";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { Eye, LinkIcon, TagIcon } from "lucide-react";
+import { Eye, LinkIcon, TagIcon, PencilIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -30,6 +32,11 @@ import AssociatedMaterials from "@/features/gardens/components/AssociatedMateria
 import { ExampleFunction } from "@/features/entrypoints/components/ExampleFunction";
 import Markdown from "@/components/Markdown";
 
+// Extend ModalFunction type to include owner_identity_id
+type ModalFunctionWithOwner = ModalFunction & {
+  owner_identity_id: string;
+};
+
 const ModalFunctionPage = () => {
   const { id } = useParams() as { id: string };
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
@@ -43,7 +50,7 @@ const ModalFunctionPage = () => {
       {/* TODO: I'm not really sure what makes sense to render for the Breadcrumbs component, since we don't really have a way
        for a user to land on this page currently. Maybe the parent garden?  */}
       <Breadcrumb crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} />
-      <ModalFunctionHeader modalFunction={modalFunction} />
+      <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
       <ModalFunctionBody modalFunction={modalFunction} />
       <ModalFunctionExample modalFunction={modalFunction} />
       <AssociatedMaterials resource={modalFunction} />
@@ -52,24 +59,41 @@ const ModalFunctionPage = () => {
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWithOwner }) => {
+  const navigate = useNavigate();
+  const auth = useGlobusAuth();
+  const isOwner = auth.isAuthenticated && modalFunction.owner_identity_id === auth?.authorization?.user?.sub;
+
   return (
-    <div>
-      <div className="mb-4">
-        <div className="flex flex-row justify-between">
-          <h1 className="text-xl md:text-3xl">{modalFunction.title}</h1>
-          {modalFunction.doi && (
-            <div className="hidden flex-col items-center md:flex md:flex-row">
-              <CopyButton
-                hint="Copy Link"
-                content={`https://doi.org/${modalFunction.doi}`}
-                icon={<LinkIcon />}
-                className="border-none bg-transparent"
-              />
-              <ShareModal doi={modalFunction.doi} />
-            </div>
-          )}
-        </div>
+    <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
+      <h1 className="text-xl md:text-3xl">{modalFunction.title}</h1>
+      <div className="flex items-center gap-2">
+        <CopyButton
+          icon={<LinkIcon />}
+          content={`${window.location.origin}/modal-functions/${modalFunction.id}`}
+          hint="Copy Link"
+          className="border-none bg-transparent"
+        />
+        {modalFunction.doi && <ShareModal doi={modalFunction.doi} />}
+        {isOwner && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate(`/modal-functions/${modalFunction.id}/edit`)}
+                  className="h-9 w-9"
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit Function</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
     </div>
   );

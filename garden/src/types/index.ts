@@ -12,6 +12,7 @@ type EntrypointPatchRequest = components["schemas"]["EntrypointPatchRequest"];
 type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
 type ModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
+type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchRequest"];
 
 type AsyncModalAppMetadataResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
 type AsyncModalJobStatus = components["schemas"]["AsyncModalJobStatus"];
@@ -45,6 +46,7 @@ export type {
   ModalAppCreateRequest,
   ModalAppMetadataResponse,
   ModalFunction,
+  ModalFunctionPatchRequest,
   User,
   UpdateUserSchema,
   Dataset,
