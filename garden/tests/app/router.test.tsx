@@ -1,42 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import { MemoryRouter, useLocation } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Router from "@/app/router";
 import * as authHook from "@/hooks/useGlobusAuth";
+import { createMockAuthState, renderWithProviders } from "@tests/setupTests";
+import { MemoryRouter, useLocation } from "react-router-dom";
 
-// Mock the auth hook
-vi.mock("@/hooks/useGlobusAuth");
-const createMockAuthState = (overrides?: Partial<ReturnType<typeof authHook.useGlobusAuth>>) => ({
-    isLoading: false,
-    isAuthenticated: false,
-    authorization: undefined,
-    error: undefined,
-    events: {} as any,
-    ...overrides
-});
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false,
-        },
-    },
-});
-
-// Test component to capture current location
+// Helper component to capture current location
 const LocationDisplay = () => {
     const location = useLocation();
     return <div data-testid="location-display">{location.pathname}</div>;
-};
-
-const renderWithProviders = (ui: React.ReactElement) => {
-    return render(
-        <QueryClientProvider client={queryClient}>
-            {ui}
-        </QueryClientProvider>
-    );
 };
 
 describe("Router", () => {
@@ -75,5 +48,23 @@ describe("Router", () => {
             // Verify loading state is shown
             expect(screen.getByRole("status", { name: "loading" })).toBeInTheDocument();
         });
+
+        it("should show the private route content if the user is authenticated", () => {
+            // Mock the auth hook to return authenticated state
+            vi.spyOn(authHook, "useGlobusAuth").mockReturnValue(createMockAuthState({
+                authorization: { authenticated: true } as any
+            }));
+
+            // Render router with a private route path
+            renderWithProviders(
+                <MemoryRouter initialEntries={["/garden/create"]}>
+                    <Router />
+                    <LocationDisplay />
+                </MemoryRouter>
+            );
+
+            expect(screen.getByTestId("location-display")).toHaveTextContent("/garden/create");
+        });
+
     });
 });
