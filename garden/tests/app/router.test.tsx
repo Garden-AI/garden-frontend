@@ -29,7 +29,8 @@ describe("Router", () => {
             );
 
             // Verify we're redirected to login
-            expect(screen.getByTestId("location-display")).toHaveTextContent("/login");
+            const locationDisplay = screen.getByTestId("location-display");
+            expect(locationDisplay).toHaveTextContent("/login");
         });
 
         it("should show loading state while auth is being checked", () => {
@@ -44,9 +45,9 @@ describe("Router", () => {
                     <Router />
                 </MemoryRouter>
             );
-
+            const loadingElement = screen.getByRole("status", { name: "loading" });
             // Verify loading state is shown
-            expect(screen.getByRole("status", { name: "loading" })).toBeInTheDocument();
+            expect(loadingElement).toBeInTheDocument();
         });
 
         it("should show the private route content if the user is authenticated", () => {
@@ -62,8 +63,8 @@ describe("Router", () => {
                     <LocationDisplay />
                 </MemoryRouter>
             );
-
-            expect(screen.getByTestId("location-display")).toHaveTextContent("/garden/create");
+            const locationDisplay = screen.getByTestId("location-display"); 
+            expect(locationDisplay).toHaveTextContent("/garden/create");
         });
 
     });
