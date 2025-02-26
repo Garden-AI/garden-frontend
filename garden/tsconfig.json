@@ -18,7 +18,8 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@tests/*": ["tests/*"],
     }
   },
   "include": [
@@ -28,6 +29,8 @@
     "src/**/*.js",
     "vite-env.d.ts",
     "postcss.config.js",
-    "tailwind.config.js"
+    "tailwind.config.js",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
   ]
 }
