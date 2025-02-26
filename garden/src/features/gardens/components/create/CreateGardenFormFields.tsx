@@ -20,11 +20,16 @@ import { UploadModalFormFields } from "../UploadModalFormFields";
 import { GardenCreateFormData } from "../../types/garden.types";
 import { tagOptions } from "../../utils/garden.utils";
 
-export const CreateGardenFormFields = () => {
+interface CreateGardenFormFieldsProps {
+  hideModalUpload?: boolean;
+}
+
+export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGardenFormFieldsProps) => {
   const form = useFormContext() as UseFormReturn<GardenCreateFormData>;
   const { isSubmitting } = form.formState;
 
   const isTestGarden = form.watch("is_test");
+  const formType = searchParams.get("type");
 
   return (
     <div className="space-y-12">
@@ -101,35 +106,57 @@ export const CreateGardenFormFields = () => {
         />
       </div>
 
-      <UploadModalFormFields />      
+      hideModalUpload ? (
+      <div className="rounded-lg border bg-gray-50 p-4">
+        <h2 className="text-xl font-bold">Modal App</h2>
+        <p className="mt-2 text-sm text-gray-700">
+          Your Modal app has been deployed successfully. You can now create a Garden with it.
+        </p>
+
+        {form.watch("modal.modal_functions")?.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-md font-semibold">Functions</h3>
+            <ul className="mt-2 list-inside list-disc">
+              {form.watch("modal.modal_functions").map((func: any, index: number) => (
+                <li key={index} className="text-sm">
+                  {func.function_name}: {func.title || "Untitled"}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      ) : (
+      <UploadModalFormFields />
+      )
 
       <div className="space-y-8">
         <h2 className="text-2xl font-semibold">Visibility Settings</h2>
         <div className="mt-8">
           <FormField
-              control={form.control}
-              name="is_test"
-              render={({ field }) => (
-                <FormItem className="space-y-1">
-                  <div className="flex items-center justify-between rounded-lg border border-gray-100 bg-white p-4">
-                    <div className="flex items-center gap-2">
-                      <FlaskConicalIcon className="h-5 w-5 text-gray-500" />
-                      <div>
-                        <h3 className="text-base font-medium text-gray-900">Make this a test Garden</h3>
-                        <p className="text-sm text-gray-500">If checked, this Garden will not be visible in search results. (You can change this later)</p>
-                      </div>
+            control={form.control}
+            name="is_test"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <div className="flex items-center justify-between rounded-lg border border-gray-100 bg-white p-4">
+                  <div className="flex items-center gap-2">
+                    <FlaskConicalIcon className="h-5 w-5 text-gray-500" />
+                    <div>
+                      <h3 className="text-base font-medium text-gray-900">Make this a test Garden</h3>
+                      <p className="text-sm text-gray-500">If checked, this Garden will not be visible in search results. (You can change this later)</p>
                     </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-primary"
-                      />
-                    </FormControl>
                   </div>
-                </FormItem>
-              )}
-            />
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="data-[state=checked]:bg-primary"
+                    />
+                  </FormControl>
+                </div>
+              </FormItem>
+            )}
+          />
         </div>
       </div>
 
@@ -190,7 +217,7 @@ export const CreateGardenFormFields = () => {
 
       <div className="mt-8 flex justify-end gap-2">
         <Button type="submit" className={"inline-block"}>
-          {isSubmitting ? "Creating Garden..." : `Create ${isTestGarden ? "Test": ""} Garden`}
+          {isSubmitting ? "Creating Garden..." : `Create ${isTestGarden ? "Test" : ""} Garden`}
         </Button>
       </div>
     </div>
