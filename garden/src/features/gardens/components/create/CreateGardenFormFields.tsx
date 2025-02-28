@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { Textarea } from "@/components/ui/textarea";
 
+import { SelectModalFunctionsTable } from "../SelectModalFunctionsTable";
 import { UploadModalFormFields } from "../UploadModalFormFields";
 import { GardenCreateFormData } from "../../types/garden.types";
 import { tagOptions } from "../../utils/garden.utils";
@@ -30,6 +31,11 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
 
   const isTestGarden = form.watch("is_test");
   const formType = searchParams.get("type");
+  const modalApp = form.watch("modal");
+  const currentModalFunctionIds = form.watch("modal_function_ids") || [];
+  
+  // Check if garden is published to disable modal function selection
+  const isPublished = form.watch("doi_is_draft") === false && form.watch("is_archived") === false;
 
   return (
     <div className="space-y-12">
@@ -106,29 +112,39 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
         />
       </div>
 
-      hideModalUpload ? (
-      <div className="rounded-lg border bg-gray-50 p-4">
-        <h2 className="text-xl font-bold">Modal App</h2>
-        <p className="mt-2 text-sm text-gray-700">
-          Your Modal app has been deployed successfully. You can now create a Garden with it.
-        </p>
-
-        {form.watch("modal.modal_functions")?.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-md font-semibold">Functions</h3>
-            <ul className="mt-2 list-inside list-disc">
-              {form.watch("modal.modal_functions").map((func: any, index: number) => (
-                <li key={index} className="text-sm">
-                  {func.function_name}: {func.title || "Untitled"}
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="space-y-8">
+          {hideModalUpload ? (
+        <div className="rounded-lg border bg-gray-50 p-4">
+          <h2 className="text-xl font-bold">Modal App</h2>
+          <p className="mt-2 text-sm text-gray-700">
+            Your Modal app has been deployed successfully. You can now create a Garden with it.
+          </p>
+  
+          {modalApp.modal_functions?.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-md font-semibold">Functions</h3>
+              <ul className="mt-2 list-inside list-disc">
+                {modalApp.modal_functions.map((func: any, index: number) => (
+                  <li key={index} className="text-sm">
+                    {func.function_name}: {func.title || "Untitled"}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+              
+              {/* Add the ability to select other modal functions the user owns */}
+              <div className="mt-8">
+                <SelectModalFunctionsTable 
+                  currentFunctionIds={currentModalFunctionIds}
+                  published={isPublished}
+                />
+              </div>
+        </div>
+        ) : (
+        <UploadModalFormFields />
         )}
-      </div>
-      ) : (
-      <UploadModalFormFields />
-      )
+        </div>
 
       <div className="space-y-8">
         <h2 className="text-2xl font-semibold">Visibility Settings</h2>

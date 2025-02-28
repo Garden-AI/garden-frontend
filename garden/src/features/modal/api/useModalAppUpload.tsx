@@ -1,7 +1,22 @@
 import { useState } from "react";
 import { useValidateModalFile } from "../../gardens/api/useValidateModalFile";
-import { useCreateModalApp } from "../../gardens/api/useCreateModalApp";
+import { useCreateModalApp, DeployTimeoutError } from "../../gardens/api/useCreateModalApp";
 import { ModalFileMetadataResponse } from "@/types";
+import { ApiError } from "../../gardens/utils/garden.utils";
+import { AxiosError } from "axios";
+
+export interface ValidationError {
+  message: string;
+  suggestedFix?: string;
+  isApiError: boolean;
+}
+
+export interface DeploymentError {
+  message: string;
+  suggestedFix?: string;
+  isTimeout: boolean;
+  isApiError: boolean;
+}
 
 export interface UseModalAppUploadReturn {
   validateModalFile: (fileContents: string) => Promise<ModalFileMetadataResponse | null>;
@@ -9,8 +24,9 @@ export interface UseModalAppUploadReturn {
   modalMetadata: ModalFileMetadataResponse | null;
   isValidating: boolean;
   isDeploying: boolean;
-  validationError: string | null;
-  deploymentError: string | null;
+  validationError: ValidationError | null;
+  deploymentError: DeploymentError | null;
+  clearErrors: () => void;
 }
 
 /**
@@ -19,11 +35,16 @@ export interface UseModalAppUploadReturn {
  */
 export const useModalAppUpload = (): UseModalAppUploadReturn => {
   const [modalMetadata, setModalMetadata] = useState<ModalFileMetadataResponse | null>(null);
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const [deploymentError, setDeploymentError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<ValidationError | null>(null);
+  const [deploymentError, setDeploymentError] = useState<DeploymentError | null>(null);
   
   const { mutateAsync: validateFile, isPending: isValidating } = useValidateModalFile();
   const { mutateAsync: createApp, isPending: isDeploying } = useCreateModalApp();
+
+  const clearErrors = () => {
+    setValidationError(null);
+    setDeploymentError(null);
+  };
 
   const validateModalFile = async (fileContents: string): Promise<ModalFileMetadataResponse | null> => {
     setValidationError(null);
@@ -33,8 +54,24 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
       setModalMetadata(metadata);
       return metadata;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown validation error";
-      setValidationError(errorMessage);
+      let errorMessage = "Unknown validation error";
+      let suggestedFix: string | undefined = undefined;
+      let isApiError = false;
+      
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+        suggestedFix = error.suggestedFix;
+        isApiError = true;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setValidationError({
+        message: errorMessage,
+        suggestedFix,
+        isApiError
+      });
+      
       return null;
     }
   };
@@ -43,7 +80,8 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
     setDeploymentError(null);
     
     try {
-      const response = await createApp({
+      // Ensure modal_functions are included with any user edits
+      const appRequest = {
         file_contents: fileContents,
         app_name: metadata.app_name,
         modal_functions: metadata.modal_functions || [],
@@ -51,12 +89,46 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
         conda_requirements: metadata.conda_requirements || [],
         base_image_name: metadata.base_image_name,
         owner_identity_id: ownerIdentityId,
-      });
+      };
+      
+      const response = await createApp(appRequest);
+      
+      // Update the stored metadata with the latest version
+      if (modalMetadata) {
+        setModalMetadata({
+          ...modalMetadata,
+          ...metadata,
+          id: response.data.id,
+        });
+      }
       
       return response.data.id;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown deployment error";
-      setDeploymentError(errorMessage);
+      const isTimeout = error instanceof DeployTimeoutError;
+      let errorMessage = "Failed to deploy Modal app";
+      let suggestedFix: string | undefined = undefined;
+      let isApiError = false;
+      
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+        suggestedFix = error.suggestedFix;
+        isApiError = true;
+      } else if (error instanceof AxiosError) {
+        const apiError = ApiError.fromAxiosError(error);
+        errorMessage = apiError.message;
+        suggestedFix = apiError.suggestedFix;
+        isApiError = true;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setDeploymentError({
+        message: errorMessage,
+        suggestedFix,
+        isTimeout,
+        isApiError
+      });
+      
       throw error;
     }
   };
@@ -68,6 +140,7 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
     isValidating,
     isDeploying,
     validationError,
-    deploymentError
+    deploymentError,
+    clearErrors
   };
 }; 
