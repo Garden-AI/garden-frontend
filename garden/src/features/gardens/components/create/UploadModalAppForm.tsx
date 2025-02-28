@@ -491,14 +491,23 @@ const DeploymentNotice = ({ isVisible }: DeploymentNoticeProps) => {
 // Interface for the overall progress indicator
 interface OverallProgressProps {
   currentPhase: number;
+  isCompleted?: boolean;
 }
 
 // Overall progress component to show the main phases of garden creation
-const OverallProgress = ({ currentPhase }: OverallProgressProps) => {
+const OverallProgress = ({ currentPhase, isCompleted = false }: OverallProgressProps) => {
   const phases = [
-    { number: 1, label: "Deploy Modal App" },
+    { number: 1, label: "Upload Modal App" },
     { number: 2, label: "Configure Garden" }
   ];
+
+  // Calculate progress percentage - stop just before next point until completed
+  const getProgressPercentage = () => {
+    if (currentPhase <= 1 && !isCompleted) return 85; // Stop just before first point completes
+    if (currentPhase === 1 && isCompleted) return 100; // Phase 1 complete
+    if (currentPhase >= 2) return 100; // Phase 2 or beyond
+    return 0; // Shouldn't reach here
+  };
 
   return (
     <div className="mb-6">
@@ -512,7 +521,7 @@ const OverallProgress = ({ currentPhase }: OverallProgressProps) => {
         {/* Progress Bar Fill - This shows completed steps */}
         <div 
           className="absolute left-0 top-5 h-1 rounded-full bg-primary transition-all duration-300 ease-in-out"
-          style={{ width: `${(currentPhase - 1) / (phases.length - 1) * 100}%` }}
+          style={{ width: `${getProgressPercentage()}%` }}
         ></div>
         
         {/* Phases - Using a max-width container with better spacing */}
@@ -663,7 +672,10 @@ export const UploadModalAppForm = () => {
   return (
     <>
       {/* Overall Progress - Moved outside the card to connect with page heading */}
-      <OverallProgress currentPhase={currentPhase} />
+      <OverallProgress 
+        currentPhase={currentPhase} 
+        isCompleted={isDeploying || isValidated} 
+      />
       
       <div className="rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-bold">Upload and Deploy Modal App</h2>

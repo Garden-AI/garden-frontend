@@ -1,6 +1,6 @@
 import { UseFormReturn, useFormContext } from "react-hook-form";
 
-import { FlaskConicalIcon } from "lucide-react";
+import { FlaskConicalIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
@@ -15,6 +15,11 @@ import {
 import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { Textarea } from "@/components/ui/textarea";
+import { 
+  Collapsible, 
+  CollapsibleContent, 
+  CollapsibleTrigger 
+} from "@/components/ui/collapsible";
 
 import { SelectModalFunctionsTable } from "../SelectModalFunctionsTable";
 import { UploadModalFormFields } from "../UploadModalFormFields";
@@ -39,6 +44,25 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
 
   return (
     <div className="space-y-12">
+      {/* Informational Banner - All fields are editable later */}
+      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5 flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-info">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+          </div>
+          <div>
+            <h4 className="font-semibold">All metadata can be edited later</h4>
+            <p className="mt-1">
+              Don't worry about getting everything perfect now. You can update all Garden metadata after publishing.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-8">
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold">General</h2>
@@ -63,17 +87,29 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold">Description</FormLabel>
+              <div className="flex items-center gap-2">
+                <FormLabel className="font-bold">Description</FormLabel>
+                {formType === "modal" && field.value && (
+                  <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                    Auto-generated
+                  </span>
+                )}
+              </div>
               <FormControl>
                 <Textarea
                   placeholder="Tell us about your garden"
-                  className="resize-none"
+                  className="resize-vertical min-h-[200px]"
                   {...field}
                 />
               </FormControl>
               <FormDescription>
                 A high level overview of your Garden, its purpose, and its contents. This will be
                 displayed on the Garden page and appear in search results.
+                {formType === "modal" && (
+                  <span className="mt-1 block text-xs italic text-gray-500">
+                    We've auto-generated a description based on your Modal app. Feel free to customize it.
+                  </span>
+                )}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -85,7 +121,14 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
           name="tags"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold">Tags</FormLabel>
+              <div className="flex items-center gap-2">
+                <FormLabel className="font-bold">Tags</FormLabel>
+                {formType === "modal" && field.value.length > 0 && (
+                  <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                    Auto-suggested
+                  </span>
+                )}
+              </div>
               <FormControl>
                 <MultipleSelector
                   {...field}
@@ -105,6 +148,11 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
               </FormControl>
               <FormDescription>
                 Tags to help categorize and improve the discoverability your Garden.
+                {formType === "modal" && field.value.length > 0 && (
+                  <span className="mt-1 block text-xs italic text-gray-500">
+                    We've suggested tags based on your Modal app. You can add more or remove these suggestions.
+                  </span>
+                )}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -114,31 +162,48 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
 
       <div className="space-y-8">
           {hideModalUpload ? (
-        <div className="rounded-lg border bg-gray-50 p-4">
-          <h2 className="text-xl font-bold">Modal App</h2>
-          <p className="mt-2 text-sm text-gray-700">
-            Your Modal app has been deployed successfully. You can now create a Garden with it.
-          </p>
-  
-          {modalApp.modal_functions?.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-md font-semibold">Functions</h3>
-              <ul className="mt-2 list-inside list-disc">
-                {modalApp.modal_functions.map((func: any, index: number) => (
-                  <li key={index} className="text-sm">
-                    {func.function_name}: {func.title || "Untitled"}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+            <div className="space-y-4 rounded-lg border bg-gray-50 p-4">
+              <h2 className="text-xl font-bold">Modal App</h2>
+              <p className="mt-2 text-sm text-gray-700">
+                Your Modal app has been deployed successfully. You can now create a Garden with it.
+              </p>
               
-              {/* Add the ability to select other modal functions the user owns */}
-              <div className="mt-8">
-                <SelectModalFunctionsTable 
-                  currentFunctionIds={currentModalFunctionIds}
-                  published={isPublished}
-                />
+              {modalApp.modal_functions?.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="text-md font-semibold">Functions</h3>
+                  <ul className="mt-2 list-inside list-disc">
+                    {modalApp.modal_functions.map((func: any, index: number) => (
+                      <li key={index} className="text-sm">
+                        {func.function_name}: {func.title || "Untitled"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {/* Wrap the modal functions selector in a Collapsible component */}
+              <div className="mt-6">
+                <Collapsible className="w-full">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Add Additional Functions</h3>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="p-1 hover:bg-gray-100">
+                        <ChevronDown className="h-5 w-5" />
+                        <span className="sr-only">Toggle</span>
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Optionally add other Modal functions you've created to this Garden.
+                  </p>
+                  
+                  <CollapsibleContent className="mt-2">
+                    <SelectModalFunctionsTable 
+                      currentFunctionIds={currentModalFunctionIds}
+                      published={isPublished}
+                    />
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
         </div>
         ) : (
