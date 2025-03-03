@@ -35,7 +35,7 @@ export const SearchResultsHeader = ({
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-foreground-primary whitespace-nowrap text-sm">
-            Show Entrypoints
+            Show Functions
           </span>
           <Switch
             checked={verboseSearchResults}
