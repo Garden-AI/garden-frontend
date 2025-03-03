@@ -15,7 +15,7 @@ const patchEntrypoint = async ({ doi, entrypoint }: PatchEntrypointProps): Promi
     const response = await axios.patch<Entrypoint>(`/entrypoints/${doi}`, entrypoint);
     return response.data;
   } catch (error) {
-    throw new Error("Error patching entrypoint");
+    throw new Error("Error patching function");
   }
 };
 
@@ -28,7 +28,7 @@ export const usePatchEntrypoint = () => {
     onSuccess: (data) => {
       queryClient.setQueryData<Entrypoint>(["entrypoint", data.doi], data);
       navigate(`/entrypoint/${encodeURIComponent(data.doi)}`);
-      toast.success("Entrypoint updated successfully!");
+      toast.success("Function updated successfully!");
     },
   });
 };

@@ -1,5 +1,4 @@
 import { UseFormReturn, useFormContext } from "react-hook-form";
-import { useSearchParams } from "react-router-dom";
 
 import { FlaskConicalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,8 +16,6 @@ import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { Textarea } from "@/components/ui/textarea";
 
-import EntrypointCreateInstructions from "../EntrypointCreateInstructions";
-import { SelectEntrypointsTable } from "../SelectEntrypointsTable";
 import { UploadModalFormFields } from "../UploadModalFormFields";
 import { GardenCreateFormData } from "../../types/garden.types";
 import { tagOptions } from "../../utils/garden.utils";
@@ -26,8 +23,6 @@ import { tagOptions } from "../../utils/garden.utils";
 export const CreateGardenFormFields = () => {
   const form = useFormContext() as UseFormReturn<GardenCreateFormData>;
   const { isSubmitting } = form.formState;
-
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const isTestGarden = form.watch("is_test");
 
@@ -106,24 +101,7 @@ export const CreateGardenFormFields = () => {
         />
       </div>
 
-      {searchParams.get("type") === "modal" ? (
-        <UploadModalFormFields />
-      ) : (
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <h2 className="mb-2 text-2xl font-bold">Entrypoints</h2>
-            <p className="text-sm text-gray-700">
-              Select the Entrypoints you want to include in your Garden. You can add or remove
-              Entrypoints at any time.
-            </p>
-
-            <p className="text-sm text-gray-700"></p>
-          </div>
-
-          <SelectEntrypointsTable />
-          <EntrypointCreateInstructions />
-        </div>
-      )}
+      <UploadModalFormFields />      
 
       <div className="space-y-8">
         <h2 className="text-2xl font-semibold">Visibility Settings</h2>

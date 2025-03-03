@@ -57,12 +57,12 @@ export const gardenFormSchema = z
   .superRefine(({ modal: { file_contents, app_name, modal_functions }, entrypoint_ids }, ctx) => {
     if (file_contents === "" && entrypoint_ids.length === 0) {
       ctx.addIssue({
-        message: "Garden must have either a modal app or entrypoints.",
+        message: "Garden must have either a modal app or functions.",
         code: "custom",
         path: ["modal", "file_contents"],
       });
       ctx.addIssue({
-        message: "Garden must have either a modal app or entrypoints.",
+        message: "Garden must have either a modal app or functions.",
         code: "custom",
         path: ["entrypoint_ids"],
       });

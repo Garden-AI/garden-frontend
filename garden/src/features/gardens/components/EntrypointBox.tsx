@@ -1,5 +1,5 @@
 import { Entrypoint } from "@/types";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/utils/form.utils";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
@@ -43,7 +43,7 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
                   "flex flex-row items-center gap-2 rounded-lg border border-gray-200 px-2 py-1 text-sm",
                 )}
               >
-                Edit Entrypoint
+                Edit Function
               </button>
             )}
           </div>

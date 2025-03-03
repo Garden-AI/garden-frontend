@@ -194,7 +194,7 @@ const VisibilityWarning = ({ garden, updateGarden }: { garden: Garden; updateGar
 const GardenAccordion = ({ garden }: { garden: Garden }) => {
   const tabs = [
     {
-      name: "Entrypoints",
+      name: "Functions",
       content: <EntrypointsTab garden={garden} />,
     },
 

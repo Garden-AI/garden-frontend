@@ -350,7 +350,7 @@ const HomePage = () => {
       <div className="mx-auto mt-20 max-w-5xl px-4">
         <h2 className="text-3xl font-semibold">Get Started in Minutes</h2>
         <p className="mt-4 text-lg">
-          You can publish your first garden and start growing entrypoints within 15 minutes!
+          You can publish your first garden within 15 minutes!
         </p>
         <div className="mx-auto max-w-6xl pt-4">
           <div className="flex flex-col items-center space-y-8 md:flex-row md:space-x-12 md:space-y-0">

@@ -20,7 +20,7 @@ const EditEntrypointFormFields = () => {
 
   return (
     <div className="my-16 space-y-12 rounded-xl bg-white p-8 shadow-lg">
-      <h1 className="text-2xl font-bold sm:text-3xl">Edit Entrypoint</h1>
+      <h1 className="text-2xl font-bold sm:text-3xl">Edit Function</h1>
 
       <section>
         <h2 className="mb-6 border-b pb-2 text-2xl font-bold text-gray-800">General</h2>
@@ -32,10 +32,10 @@ const EditEntrypointFormFields = () => {
               <FormItem>
                 <FormLabel className="font-bold text-gray-700">Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter entrypoint title" {...field} className="w-full" />
+                  <Input placeholder="Enter function title" {...field} className="w-full" />
                 </FormControl>
                 <FormDescription>
-                  Provide a concise, descriptive title for your entrypoint. This will be displayed
+                  Provide a concise, descriptive title for your function. This will be displayed
                   and used in search results.
                 </FormDescription>
                 <FormMessage />
@@ -51,13 +51,13 @@ const EditEntrypointFormFields = () => {
                 <FormLabel className="font-bold text-gray-700">Description</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Describe your entrypoint..."
+                    placeholder="Describe your function..."
                     className="resize-vertical min-h-[100px]"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription className="text-sm text-gray-600">
-                  Provide a clear, informative description of your entrypoint. This will help users
+                  Provide a clear, informative description of your function. This will help users
                   understand its purpose and content.
                 </FormDescription>
                 <FormMessage />
@@ -84,7 +84,7 @@ const EditEntrypointFormFields = () => {
                 </FormControl>
                 <FormDescription>
                   Add descriptive tags to improve discoverability and categorization of your
-                  entrypoint.
+                  function.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -115,7 +115,7 @@ const EditEntrypointFormFields = () => {
                   />
                 </FormControl>
                 <FormDescription>
-                  List the primary contributors to this entrypoint. Include at least one author to
+                  List the primary contributors to this function. Include at least one author to
                   properly attribute the work.
                 </FormDescription>
                 <FormMessage />

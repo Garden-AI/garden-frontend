@@ -39,7 +39,7 @@ export const SearchForm = ({
           <Search className="absolute left-3 h-5 w-5 text-gray-400" />
           <Input
             type="text"
-            placeholder="Search for a garden or entrypoint (e.g. Digit Classifier)"
+            placeholder="Search for a garden or function (e.g. Digit Classifier)"
             value={queryInputValue}
             onChange={(e) => setQueryInputValue(e.target.value)}
             className="w-full rounded-l-full py-2 pl-10 pr-12 outline-none transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-0"
