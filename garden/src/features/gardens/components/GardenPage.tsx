@@ -15,7 +15,6 @@ import ModalFunctionBox from "./ModalFunctionBox";
 import GardenDropdownOptions from "@/features/gardens/components/GardenDropdownOptions";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
-import RelatedGardens from "@/features/gardens/components/RelatedGardens";
 import ShareModal from "@/components/ShareModal";
 import TombstonePage from "@/components/TombstonePage";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -67,7 +66,10 @@ const GardenPage = () => {
       <GardenBody garden={garden} />
       {ownsThisGarden && garden.is_test && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
       <GardenAccordion garden={garden} />
-      <RelatedGardens doi={garden.doi} />
+      {/*
+        Removed for now - wasn't relevant to the selected garden and it was 404'ing 
+        <RelatedGardens doi={garden.doi} /> 
+      */}
     </div>
   );
 };
@@ -204,7 +206,7 @@ const GardenAccordion = ({ garden }: { garden: Garden }) => {
     },
   ];
   return (
-    <Tabs defaultValue="entrypoints" className="mb-12 mt-10 min-h-[400px] w-full">
+    <Tabs defaultValue="functions" className="mb-12 mt-10 min-h-[400px] w-full">
       <TabsList className="m-0 grid w-full grid-cols-2 rounded-none bg-transparent p-0 ">
         {tabs.map(({ name }) => (
           <TabsTrigger
