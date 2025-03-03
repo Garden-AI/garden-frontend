@@ -28,9 +28,27 @@ export const EditModalFunctionForm = ({ modalFunction }: { modalFunction: ModalF
         authors: modalFunction.authors || [],
         tags: modalFunction.tags || [],
         example_usage: modalFunction.example_usage || "",
-        repositories: modalFunction.repositories || [],
-        datasets: modalFunction.datasets || [],
-        papers: modalFunction.papers || [],
+        repositories: modalFunction.repositories?.map(repo => ({
+          repo_name: repo.repo_name || "",
+          url: repo.url || "",
+          contributors: repo.contributors || []
+        })) || [],
+        datasets: modalFunction.datasets?.map(dataset => ({
+          title: dataset.title || "",
+          doi: dataset.doi || undefined,
+          url: dataset.url || "",
+          data_type: dataset.data_type || undefined,
+          repository: dataset.repository || "",
+          description: dataset.description || undefined
+        })) || [],
+        papers: modalFunction.papers?.map(paper => ({
+          title: paper.title || "",
+          authors: paper.authors || [],
+          doi: paper.doi || undefined,
+          citation: paper.citation || undefined,
+          url: paper.url || undefined,
+          description: paper.description || undefined
+        })) || []
       }),
       [modalFunction],
     ),
