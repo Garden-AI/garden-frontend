@@ -71,6 +71,9 @@ export const useModalAppForm = () => {
       toast.info("New file selected. Validating...");
     }
     
+    // Reset modalMetadata when a new file is selected
+    setModalMetadata(null);
+    
     setFile(selectedFile);
     setIsValidating(true);
     setValidationError(null);
@@ -92,9 +95,40 @@ export const useModalAppForm = () => {
         
         setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
+      } else {
+        // If validateModalFile returns null but didn't throw an error,
+        // we may have validation errors from useModalAppUpload
+        if (useModalAppUploadValidationError) {
+          setValidationError(useModalAppUploadValidationError);
+        } else {
+          // Generic error if no specific error was set
+          setValidationError({
+            message: "Failed to validate the Modal file. Please check the file format.",
+            isApiError: false
+          });
+        }
+        toast.error("Validation failed. Please check the file.");
       }
     } catch (error) {
-      setValidationError(error as ValidationError);
+      // Ensure we properly capture and format the error
+      let errorMessage = "Unknown validation error";
+      let suggestedFix: string | undefined = undefined;
+      let isApiError = false;
+      
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+        suggestedFix = error.suggestedFix;
+        isApiError = true;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setValidationError({
+        message: errorMessage,
+        suggestedFix,
+        isApiError
+      });
+      toast.error("Error validating file");
     } finally {
       setIsValidating(false);
     }
@@ -167,9 +201,40 @@ export const useModalAppForm = () => {
         
         setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
+      } else {
+        // If validateModalFile returns null but didn't throw an error,
+        // we may have validation errors from useModalAppUpload
+        if (useModalAppUploadValidationError) {
+          setValidationError(useModalAppUploadValidationError);
+        } else {
+          // Generic error if no specific error was set
+          setValidationError({
+            message: "Failed to validate the Modal file. Please check the file format.",
+            isApiError: false
+          });
+        }
+        toast.error("Validation failed. Please check the file.");
       }
     } catch (error) {
-      setValidationError(error as ValidationError);
+      // Ensure we properly capture and format the error
+      let errorMessage = "Unknown validation error";
+      let suggestedFix: string | undefined = undefined;
+      let isApiError = false;
+      
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+        suggestedFix = error.suggestedFix;
+        isApiError = true;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setValidationError({
+        message: errorMessage,
+        suggestedFix,
+        isApiError
+      });
+      toast.error("Error validating file");
     } finally {
       setIsValidating(false);
     }
