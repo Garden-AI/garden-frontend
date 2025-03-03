@@ -197,8 +197,8 @@ export const useModalAppForm = () => {
       const appId = await deployModalApp(data.file_contents, updatedMetadata, uuid);
       toast.success("Modal app deployed successfully!");
       
-      // Navigate to the garden creation form with the modal app ID
-      setSearchParams({ type: "modal", step: "create", modalAppId: appId.toString() });
+      // Navigate to the garden creation form with just the modal app ID
+      setSearchParams({ modalAppId: appId.toString() });
     } catch (error: any) {
       setDeploymentError(error as DeploymentError);
     } finally {

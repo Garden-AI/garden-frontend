@@ -19,8 +19,7 @@ import { CheckCircle2 } from "lucide-react";
 
 /**
  * Component for creating a new garden
- * Handles both entrypoint-based gardens and modal-based gardens
- * For modal-based gardens, can use a pre-deployed modal app
+ * Handles garden creation with a pre-deployed modal app
  */
 interface CreateGardenFormProps {
   modalAppId?: string | null;
@@ -31,8 +30,6 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
   const auth = useGlobusAuth();
   const uuid = auth?.authorization?.user?.sub;
 
-  const [searchParams] = useSearchParams();
-  const formType = searchParams.get("type");
   const { createGardenAndDOI } = useCreateGardenAndDOI();
 
   const form = useForm<GardenCreateFormData>({
@@ -63,7 +60,7 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
   });
 
   // Use the modal app metadata hook to pre-populate the form
-  const { modalApp } = useModalAppMetadata(modalAppId, form, formType);
+  const { modalApp } = useModalAppMetadata(modalAppId, form, "modal");
 
   const blocker = useBlocker(
     () => !form?.formState.isSubmitting && Object.keys(form.formState.touchedFields).length > 0,

@@ -1,4 +1,5 @@
 import { UseFormReturn, useFormContext } from "react-hook-form";
+import { useSearchParams } from "react-router-dom";
 
 import { FlaskConicalIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,6 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
   const { isSubmitting } = form.formState;
 
   const isTestGarden = form.watch("is_test");
-  const formType = searchParams.get("type");
   const modalApp = form.watch("modal");
   const currentModalFunctionIds = form.watch("modal_function_ids") || [];
   
@@ -89,7 +89,7 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
             <FormItem>
               <div className="flex items-center gap-2">
                 <FormLabel className="font-bold">Description</FormLabel>
-                {formType === "modal" && field.value && (
+                {field.value && (
                   <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
                     Auto-generated
                   </span>
@@ -105,11 +105,9 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
               <FormDescription>
                 A high level overview of your Garden, its purpose, and its contents. This will be
                 displayed on the Garden page and appear in search results.
-                {formType === "modal" && (
-                  <span className="mt-1 block text-xs italic text-gray-500">
-                    We've auto-generated a description based on your Modal app. Feel free to customize it.
-                  </span>
-                )}
+                <span className="mt-1 block text-xs italic text-gray-500">
+                  We've auto-generated a description based on your Modal app. Feel free to customize it.
+                </span>
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -123,7 +121,7 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
             <FormItem>
               <div className="flex items-center gap-2">
                 <FormLabel className="font-bold">Tags</FormLabel>
-                {formType === "modal" && field.value.length > 0 && (
+                {field.value.length > 0 && (
                   <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
                     Auto-suggested
                   </span>
@@ -148,7 +146,7 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
               </FormControl>
               <FormDescription>
                 Tags to help categorize and improve the discoverability your Garden.
-                {formType === "modal" && field.value.length > 0 && (
+                {field.value.length > 0 && (
                   <span className="mt-1 block text-xs italic text-gray-500">
                     We've suggested tags based on your Modal app. You can add more or remove these suggestions.
                   </span>
