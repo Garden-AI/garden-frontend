@@ -126,8 +126,8 @@ const EditGardenFormFields = () => {
       <section>
         <h2 className="mb-6 border-b  text-2xl font-bold text-gray-800">Entrypoints</h2>
         <p className="mb-8 text-sm text-muted-foreground">
-          Select the entrypoints that are part of your garden. These entrypoints will be displayed
-          on the Garden page. Only unpublished gardens can modify their entrypoints.
+          Select the functions that are part of your garden. These functions will be displayed
+          on the Garden page. Only unpublished gardens can modify their functions.
         </p>
         <SelectEntrypointsTable />
       </section>

@@ -64,18 +64,16 @@ export const CreateGardenForm = () => {
         owner_identity_id: uuid || "",
       };
 
-      const formType = searchParams.get("type");
-      if (formType === "modal") {
-        const modalAppResponse = await createModalApp({
-          file_contents: values.modal.file_contents,
-          requirements: [],
-          app_name: values.modal.app_name,
-          base_image_name: values.modal.base_image_name,
-          modal_functions: values.modal.modal_functions,
-          owner_identity_id: uuid,
-        });
-        gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids;
-      }
+      const modalAppResponse = await createModalApp({
+        file_contents: values.modal.file_contents,
+        requirements: [],
+        app_name: values.modal.app_name,
+        base_image_name: values.modal.base_image_name,
+        modal_functions: values.modal.modal_functions,
+        owner_identity_id: uuid,
+      });
+      gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids;
+      
 
       const { garden } = await createGardenAndDOI(gardenCreateRequest);
 

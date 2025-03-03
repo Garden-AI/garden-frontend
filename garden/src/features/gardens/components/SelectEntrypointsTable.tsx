@@ -43,7 +43,7 @@ export const SelectEntrypointsTable = () => {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="mb-4 text-xl font-bold">Available Entrypoints</h3>
+        <h3 className="mb-4 text-xl font-bold">Available Functions</h3>
         <div className="flex items-center pr-4 text-sm">
           <span className="text-gray-300">{isFetching && "Refreshing..."}</span>
           <WithTooltip hint="Refresh">
@@ -79,7 +79,7 @@ export const SelectEntrypointsTable = () => {
             {entrypoints?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center text-gray-500">
-                  No entrypoints available
+                  No functions available
                 </TableCell>
               </TableRow>
             ) : (
@@ -120,7 +120,7 @@ export const SelectEntrypointsTable = () => {
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 backdrop-blur-sm">
             <div className="max-w-md rounded-lg bg-white p-6 text-center shadow-lg">
               <h3 className="mb-2 text-xl font-semibold text-gray-900">Garden is Published</h3>
-              <p className="text-gray-600">Entrypoints cannot be edited in a published garden.</p>
+              <p className="text-gray-600">Functions cannot be edited in a published garden.</p>
             </div>
           </div>
         )}

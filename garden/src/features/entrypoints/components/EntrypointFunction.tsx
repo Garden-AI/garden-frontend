@@ -10,7 +10,7 @@ const EntrypointFunction = ({
 }) => {
   return (
     <div className="mb-12 flex flex-col gap-8 py-12">
-      <h2 className="text-center text-2xl sm:text-3xl">Run this entrypoint</h2>
+      <h2 className="text-center text-2xl sm:text-3xl">Run this function</h2>
       <div className="justify-center pt-2 sm:flex">
         <div className="relative">
           <ExampleFunction functionText={exampleFunctionText(gardenDOI, entrypoint)} />

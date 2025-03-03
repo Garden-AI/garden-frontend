@@ -8,7 +8,7 @@ const getEntrypoint = async (doi: string): Promise<Entrypoint> => {
     const response = await axios.get<Entrypoint>(`/entrypoints/${doi}`);
     return response.data;
   } catch (error) {
-    throw new Error("Error fetching entrypoint");
+    throw new Error("Error fetching function");
   }
 };
 
