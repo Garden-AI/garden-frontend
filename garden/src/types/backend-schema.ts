@@ -1008,6 +1008,8 @@ export interface components {
             year?: string | null;
             /** Function Text */
             function_text?: string | null;
+            /** Example Usage */
+            example_usage?: string | null;
             /** Authors */
             authors?: string[] | null;
             /** Tags */
@@ -2310,6 +2312,8 @@ export interface components {
             data_type: string | null;
             /** Repository */
             repository: string;
+        } & {
+            [key: string]: unknown;
         };
         /** _ModalGenericResult */
         _ModalGenericResult: {
@@ -2351,17 +2355,25 @@ export interface components {
             model_repository: string;
             /** Model Version */
             model_version: string | null;
+        } & {
+            [key: string]: unknown;
         };
         /** _PaperMetadata */
         _PaperMetadata: {
             /** Title */
-            title: string;
+            title?: string | null;
             /** Authors */
             authors?: string[];
             /** Doi */
-            doi: string | null;
+            doi?: string | null;
+            /** Description */
+            description?: string | null;
             /** Citation */
-            citation: string | null;
+            citation?: string | null;
+            /** Url */
+            url?: string | null;
+        } & {
+            [key: string]: unknown;
         };
         /** _RepositoryMetadata */
         _RepositoryMetadata: {
@@ -2374,6 +2386,8 @@ export interface components {
             url: string;
             /** Contributors */
             contributors?: string[];
+        } & {
+            [key: string]: unknown;
         };
     };
     responses: never;
