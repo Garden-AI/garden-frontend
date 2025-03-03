@@ -69,7 +69,3 @@
 :root:has(.no-doc-scroll) {
   overflow: hidden;
 }
-
-/* .svg-white {
-  filter: brightness(0) invert(1);
-} */
