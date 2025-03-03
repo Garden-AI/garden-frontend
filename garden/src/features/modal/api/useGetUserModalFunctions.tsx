@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/lib/axios";
-import { ModalFunctionMetadataResponse } from "@/types";
+import { ModalFunction } from "@/types";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 
 interface UseGetUserModalFunctionsOptions {
@@ -19,7 +19,7 @@ export const useGetUserModalFunctions = (options: UseGetUserModalFunctionsOption
   const userUuid = auth?.authorization?.user?.sub;
 
   // Fetch the user's modal apps and their functions
-  return useQuery<ModalFunctionMetadataResponse[]>({
+  return useQuery<ModalFunction[]>({
     queryKey: ["userModalFunctions", userUuid, excludeFunctionIds],
     queryFn: async () => {
       // First fetch the user's modal apps
@@ -30,7 +30,7 @@ export const useGetUserModalFunctions = (options: UseGetUserModalFunctionsOption
       const apps = appsResponse.data || [];
       
       // Then fetch the details of each function
-      let allFunctions: ModalFunctionMetadataResponse[] = [];
+      let allFunctions: ModalFunction[] = [];
       
       for (const app of apps) {
         // Skip if the app has no functions

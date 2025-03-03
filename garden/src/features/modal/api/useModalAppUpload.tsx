@@ -18,10 +18,15 @@ export interface DeploymentError {
   isApiError: boolean;
 }
 
+// Extended type that includes id field returned from the API
+interface ExtendedModalFileMetadata extends ModalFileMetadataResponse {
+  id?: number;
+}
+
 export interface UseModalAppUploadReturn {
   validateModalFile: (fileContents: string) => Promise<ModalFileMetadataResponse | null>;
   deployModalApp: (fileContents: string, modalMetadata: ModalFileMetadataResponse, ownerIdentityId?: string) => Promise<number>;
-  modalMetadata: ModalFileMetadataResponse | null;
+  modalMetadata: ExtendedModalFileMetadata | null;
   isValidating: boolean;
   isDeploying: boolean;
   validationError: ValidationError | null;
@@ -34,7 +39,7 @@ export interface UseModalAppUploadReturn {
  * Separates the API logic from the component rendering
  */
 export const useModalAppUpload = (): UseModalAppUploadReturn => {
-  const [modalMetadata, setModalMetadata] = useState<ModalFileMetadataResponse | null>(null);
+  const [modalMetadata, setModalMetadata] = useState<ExtendedModalFileMetadata | null>(null);
   const [validationError, setValidationError] = useState<ValidationError | null>(null);
   const [deploymentError, setDeploymentError] = useState<DeploymentError | null>(null);
   

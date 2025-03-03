@@ -97,38 +97,39 @@ export const useModalAppForm = () => {
         toast.success("Modal file validated successfully");
       } else {
         // If validateModalFile returns null but didn't throw an error,
-        // we may have validation errors from useModalAppUpload
+        // check if useModalAppUpload has a validation error
         if (useModalAppUploadValidationError) {
+          // Use the actual backend error with its specific message and suggested fix
           setValidationError(useModalAppUploadValidationError);
-        } else {
-          // Generic error if no specific error was set
-          setValidationError({
-            message: "Failed to validate the Modal file. Please check the file format.",
-            isApiError: false
-          });
+          toast.error("Validation failed");
         }
-        toast.error("Validation failed. Please check the file.");
       }
     } catch (error) {
-      // Ensure we properly capture and format the error
-      let errorMessage = "Unknown validation error";
-      let suggestedFix: string | undefined = undefined;
-      let isApiError = false;
-      
-      if (error instanceof ApiError) {
-        errorMessage = error.message;
-        suggestedFix = error.suggestedFix;
-        isApiError = true;
+      // Don't create a new error object - use what's already in useModalAppUploadValidationError
+      // which should have the proper error information from the backend
+      if (useModalAppUploadValidationError) {
+        setValidationError(useModalAppUploadValidationError);
+      } else if (error instanceof ApiError) {
+        // If it's an ApiError, it will have the specific error information from the backend
+        setValidationError({
+          message: error.message,
+          suggestedFix: error.suggestedFix,
+          isApiError: true
+        });
       } else if (error instanceof Error) {
-        errorMessage = error.message;
+        // For generic errors
+        setValidationError({
+          message: error.message,
+          isApiError: false
+        });
+      } else {
+        // Last resort fallback
+        setValidationError({
+          message: "Unknown error occurred during validation",
+          isApiError: false
+        });
       }
-      
-      setValidationError({
-        message: errorMessage,
-        suggestedFix,
-        isApiError
-      });
-      toast.error("Error validating file");
+      toast.error("Validation failed");
     } finally {
       setIsValidating(false);
     }
@@ -203,38 +204,39 @@ export const useModalAppForm = () => {
         toast.success("Modal file validated successfully");
       } else {
         // If validateModalFile returns null but didn't throw an error,
-        // we may have validation errors from useModalAppUpload
+        // check if useModalAppUpload has a validation error
         if (useModalAppUploadValidationError) {
+          // Use the actual backend error with its specific message and suggested fix
           setValidationError(useModalAppUploadValidationError);
-        } else {
-          // Generic error if no specific error was set
-          setValidationError({
-            message: "Failed to validate the Modal file. Please check the file format.",
-            isApiError: false
-          });
+          toast.error("Validation failed");
         }
-        toast.error("Validation failed. Please check the file.");
       }
     } catch (error) {
-      // Ensure we properly capture and format the error
-      let errorMessage = "Unknown validation error";
-      let suggestedFix: string | undefined = undefined;
-      let isApiError = false;
-      
-      if (error instanceof ApiError) {
-        errorMessage = error.message;
-        suggestedFix = error.suggestedFix;
-        isApiError = true;
+      // Don't create a new error object - use what's already in useModalAppUploadValidationError
+      // which should have the proper error information from the backend
+      if (useModalAppUploadValidationError) {
+        setValidationError(useModalAppUploadValidationError);
+      } else if (error instanceof ApiError) {
+        // If it's an ApiError, it will have the specific error information from the backend
+        setValidationError({
+          message: error.message,
+          suggestedFix: error.suggestedFix,
+          isApiError: true
+        });
       } else if (error instanceof Error) {
-        errorMessage = error.message;
+        // For generic errors
+        setValidationError({
+          message: error.message,
+          isApiError: false
+        });
+      } else {
+        // Last resort fallback
+        setValidationError({
+          message: "Unknown error occurred during validation",
+          isApiError: false
+        });
       }
-      
-      setValidationError({
-        message: errorMessage,
-        suggestedFix,
-        isApiError
-      });
-      toast.error("Error validating file");
+      toast.error("Validation failed");
     } finally {
       setIsValidating(false);
     }
