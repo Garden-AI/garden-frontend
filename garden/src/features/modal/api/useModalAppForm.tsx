@@ -6,7 +6,9 @@ import { useModalAppUpload } from "./useModalAppUpload";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
-import { ApiError } from "../../gardens/utils/garden.utils";
+import { ApiError } from "@/features/gardens/utils/garden.utils";
+import { ModalFileMetadataResponse } from "@/types";
+import { ValidationError, DeploymentError } from "./useModalAppUpload";
 
 export const modalAppFormSchema = z.object({
   file_contents: z.string().min(1, "Modal file is required"),
@@ -26,16 +28,19 @@ export const useModalAppForm = () => {
   const uuid = auth?.authorization?.user?.sub;
   const [, setSearchParams] = useSearchParams();
   const [file, setFile] = useState<File | null>(null);
+  const [modalMetadata, setModalMetadata] = useState<ModalFileMetadataResponse | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+  const [isDeploying, setIsDeploying] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
+  const [validationError, setValidationError] = useState<ValidationError | null>(null);
+  const [deploymentError, setDeploymentError] = useState<DeploymentError | null>(null);
 
   const {
     validateModalFile,
     deployModalApp,
-    modalMetadata,
-    isValidating,
-    isDeploying,
-    validationError,
-    deploymentError,
+    isValidating: useModalAppUploadIsValidating,
+    validationError: useModalAppUploadValidationError,
+    deploymentError: useModalAppUploadDeploymentError,
     clearErrors
   } = useModalAppUpload();
 
@@ -67,35 +72,32 @@ export const useModalAppForm = () => {
     }
     
     setFile(selectedFile);
-    const reader = new FileReader();
+    setIsValidating(true);
+    setValidationError(null);
+    setDeploymentError(null);
     
-    reader.onload = async (event) => {
-      const contents = event.target?.result as string;
-      form.setValue("file_contents", contents);
+    try {
+      const fileContents = await selectedFile.text();
+      form.setValue("file_contents", fileContents);
       
       // Automatically validate the file after loading
-      try {
-        // Slight delay to ensure UI updates for better user feedback
-        setTimeout(async () => {
-          const metadata = await validateModalFile(contents);
-          
-          if (metadata) {
-            setIsValidated(true);
-            
-            // Initialize the modal_functions field with the validated metadata
-            const functions = metadata.modal_functions || [];
-            form.setValue("modal.modal_functions", functions as any);
-            
-            toast.success("Modal file validated successfully");
-          }
-        }, 100);
-      } catch (error) {
-        // Error handling is done in the useModalAppUpload hook
-        setIsValidated(false);
+      const metadata = await validateModalFile(fileContents);
+      
+      if (metadata) {
+        setIsValidated(true);
+        
+        // Initialize the modal_functions field with the validated metadata
+        const functions = metadata.modal_functions || [];
+        form.setValue("modal.modal_functions", functions as any);
+        
+        setModalMetadata(metadata);
+        toast.success("Modal file validated successfully");
       }
-    };
-    
-    reader.readAsText(selectedFile);
+    } catch (error) {
+      setValidationError(error as ValidationError);
+    } finally {
+      setIsValidating(false);
+    }
   };
 
   // New handler for updating function metadata
@@ -144,16 +146,17 @@ export const useModalAppForm = () => {
   };
 
   const handleValidate = async () => {
+    if (!file) return;
+
+    setIsValidating(true);
+    setValidationError(null);
+
     try {
-      // Clear previous errors
-      clearErrors();
-      form.clearErrors();
+      const fileContents = await file.text();
+      form.setValue("file_contents", fileContents);
       
-      // Reset validation state at the beginning of validation
-      setIsValidated(false);
-      
-      const contents = form.getValues("file_contents");
-      const metadata = await validateModalFile(contents);
+      // Automatically validate the file after loading
+      const metadata = await validateModalFile(fileContents);
       
       if (metadata) {
         setIsValidated(true);
@@ -162,12 +165,13 @@ export const useModalAppForm = () => {
         const functions = metadata.modal_functions || [];
         form.setValue("modal.modal_functions", functions as any);
         
+        setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
       }
     } catch (error) {
-      // Error display is handled by the hook
-      // No need to show toast here as the error will be displayed in the UI
-      setIsValidated(false);
+      setValidationError(error as ValidationError);
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -177,8 +181,12 @@ export const useModalAppForm = () => {
       return;
     }
 
+    setIsDeploying(true);
+    setDeploymentError(null);
+
     try {
       clearErrors();
+      window.scrollTo(0, 0);
       
       // Update the metadata with any edited function details
       const updatedMetadata = {
@@ -192,8 +200,9 @@ export const useModalAppForm = () => {
       // Navigate to the garden creation form with the modal app ID
       setSearchParams({ type: "modal", step: "create", modalAppId: appId.toString() });
     } catch (error: any) {
-      // Error handling is now done in the useModalAppUpload hook
-      // No need to add additional toast messages here
+      setDeploymentError(error as DeploymentError);
+    } finally {
+      setIsDeploying(false);
     }
   };
 
