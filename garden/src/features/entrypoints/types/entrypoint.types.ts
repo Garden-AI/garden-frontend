@@ -33,10 +33,11 @@ export const formSchema = z.object({
 });
 export const datasetSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  doi: z.string().nullable(),
+  doi: z.string().nullable().optional(),
   url: z.string().url("Must be a valid URL"),
-  data_type: z.string().nullable(),
+  data_type: z.string().nullable().optional(),
   repository: z.string().min(1, "Repository is required"),
+  description: z.string().nullable().optional(),
 });
 const optionSchema = z.object({
   value: z.string(),
@@ -54,8 +55,10 @@ export const repositorySchema = z.object({
 export const paperSchema = z.object({
   title: z.string().min(1, "Paper Title is required"),
   authors: z.array(optionSchema).optional(),
-  doi: z.string(),
-  citation: z.string(),
+  doi: z.string().nullable().optional(),
+  citation: z.string().nullable().optional(),
+  url: z.string().url("Must be a valid URL").nullable().optional(),
+  description: z.string().nullable().optional(),
 });
 
 export type PaperFormData = z.infer<typeof paperSchema>;

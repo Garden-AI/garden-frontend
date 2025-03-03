@@ -19,8 +19,10 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import MultipleSelector from "@/components/ui/multiple-select";
+import { Link, FileType } from "lucide-react";
 import { Paper } from "@/types";
 import { PaperFormData, paperSchema } from "../../types/entrypoint.types";
 
@@ -46,6 +48,8 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
         })) || [],
       doi: initialData?.doi || "",
       citation: initialData?.citation || "",
+      url: initialData?.url || "",
+      description: initialData?.description || "",
     },
   });
 
@@ -61,7 +65,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className=" ">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{edit ? "Edit Paper" : "Add New Paper"}</DialogTitle>
           <DialogDescription>
@@ -86,13 +90,14 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
 
             <FormField
               control={form.control}
-              name="doi"
+              name="authors"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Paper DOI</FormLabel>
+                  <FormLabel>Authors</FormLabel>
                   <FormControl>
-                    <Input {...field} className="rounded-l-none" placeholder="Paper DOI" />
+                    <MultipleSelector {...field} creatable placeholder="Add authors" />
                   </FormControl>
+                  <FormDescription>Add the authors of this paper</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -100,13 +105,54 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
 
             <FormField
               control={form.control}
-              name="authors"
+              name="doi"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Authors</FormLabel>
+                  <FormLabel>Paper DOI</FormLabel>
                   <FormControl>
-                    <MultipleSelector {...field} creatable />
+                    <div className="flex">
+                      <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
+                        <FileType className="h-4 w-4" />
+                      </span>
+                      <Input className="rounded-l-none" placeholder="Paper DOI" {...field} value={field.value || ""} />
+                    </div>
                   </FormControl>
+                  <FormDescription>Digital Object Identifier for the paper (optional)</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL</FormLabel>
+                  <FormControl>
+                    <div className="flex">
+                      <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
+                        <Link className="h-4 w-4" />
+                      </span>
+                      <Input className="rounded-l-none" placeholder="Paper URL" {...field} value={field.value || ""} />
+                    </div>
+                  </FormControl>
+                  <FormDescription>Link to the paper (optional)</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Brief description of the paper" {...field} value={field.value || ""} />
+                  </FormControl>
+                  <FormDescription>Short summary of the paper (optional)</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -119,8 +165,9 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
                 <FormItem>
                   <FormLabel>Citation</FormLabel>
                   <FormControl>
-                    <Input className="rounded-l-none" placeholder="Paper Citation" {...field} />
+                    <Input placeholder="Paper Citation" {...field} value={field.value || ""} />
                   </FormControl>
+                  <FormDescription>Formatted citation for the paper (optional)</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -172,6 +173,21 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
                       />
                     </div>
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Brief description of the dataset" {...field} value={field.value || ""} />
+                  </FormControl>
+                  <FormDescription>Short summary of the dataset (optional)</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
