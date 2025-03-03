@@ -40,14 +40,11 @@ const GlobusGroupError = () => {
         <div className="space-y-12 text-center">
           <h1 className="text-4xl font-bold">Globus Group Required</h1>
           <p className="text-gray-700">
-            You must be a part of the publishing Globus Group to publish a Garden via a Modal App. Please email{" "}
-            <a href="mailto:willengler@uchicago.edu" className="font-bold text-primary">
-              Will Engler (willengler@uchicago.edu)
+            You must be a part of the publishing Globus Group to publish a Garden. Please email the Garden team at{" "}
+            <a href="mailto:garden@teams.uchicago.edu" className="font-bold text-primary">
+              garden@teams.uchicago.edu
             </a>{" "}
-            or{" "}
-            <a href="mailto:owenpriceskelly@uchicago.edu" className="font-bold text-primary">
-              Owen Price Skelly (owenpriceskelly@uchicago.edu)
-            </a>{" "} to be added to the group. Include the email address linked to your Globus account.
+            to be added to the group. Include the email address linked to your Globus account.
           </p>
           <p className="text-gray-700">
             If you are already a member of the group and are seeing this message, please try logging out and logging back in.
