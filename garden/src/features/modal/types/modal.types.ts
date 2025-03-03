@@ -24,6 +24,30 @@ export const modalFunctionFormSchema = z.object({
     .max(2000, { message: "Example usage must not exceed 2000 characters" })
     .optional()
     .default(""),
+  repositories: z.array(
+    z.object({
+      repo_name: z.string(),
+      url: z.string(),
+      contributors: z.array(z.string()).optional(),
+    }),
+  ).optional().default([]),
+  datasets: z.array(
+    z.object({
+      title: z.string().min(1, "Title is required"),
+      doi: z.string().nullable(),
+      url: z.string().url("Must be a valid URL"),
+      data_type: z.string().nullable(),
+      repository: z.string().min(1, "Repository is required"),
+    }),
+  ).optional().default([]),
+  papers: z.array(
+    z.object({
+      title: z.string(),
+      authors: z.array(z.string()),
+      doi: z.string().nullable(),
+      citation: z.string().nullable(),
+    }),
+  ).optional().default([]),
 });
 
 export type ModalFunctionPatchFormData = z.infer<typeof modalFunctionFormSchema>; 

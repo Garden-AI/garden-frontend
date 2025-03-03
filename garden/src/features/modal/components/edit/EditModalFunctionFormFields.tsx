@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultipleSelector from "@/components/ui/multiple-select";
 import SyntaxHighlighterComponent from "@/components/SyntaxHighlighter";
+import AssociatedMaterials from "@/features/entrypoints/components/AssociatedMaterials";
 
 const EditModalFunctionFormFields = () => {
   const form = useFormContext();
@@ -175,6 +176,13 @@ return my_garden.function_name(input)`}`;
             )}
           />
         </div>
+      </section>
+
+      <section>
+        <h2 className="mb-6 border-b pb-2 text-xl font-bold text-gray-800">
+          Associated Materials
+        </h2>
+        <AssociatedMaterials />
       </section>
     </div>
   );
