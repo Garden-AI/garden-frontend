@@ -1,8 +1,8 @@
 const LoadingSpinner = () => {
   return (
-    <div className="flex  items-center justify-center">
+    <div className="flex items-center justify-center">
       <svg
-        className="mr-2 h-24 w-24 animate-spin fill-green text-gray-200"
+        className="h-4 w-4 animate-spin fill-green text-gray-200"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
