@@ -1720,6 +1720,8 @@ export interface components {
         ModalAppMetadataResponse: {
             /** App Name */
             app_name: string;
+            /** Original App Name (as defined by the user in their code) */
+            original_app_name?: string | null;
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
             /** File Contents */
@@ -1763,6 +1765,8 @@ export interface components {
         ModalFileMetadataResponse: {
             /** App Name */
             app_name: string;
+            /** Original App Name (as defined by the user in their code) */
+            original_app_name?: string | null;
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadata"][];
             /** File Contents */

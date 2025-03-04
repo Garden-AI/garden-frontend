@@ -1,21 +1,27 @@
 import { CreateGardenForm } from "./CreateGardenForm";
-import { useNavigate } from "react-router-dom";
+import { UploadModalAppForm } from "@/features/modal/components/UploadModalAppForm";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useGetGlobusGroups } from "../../api/useGetGlobusGroups";
+import { useGetGlobusGroups } from "@/features/gardens/api/useGetGlobusGroups";
 
 const CreateGardenPage = () => {
+  const [searchParams] = useSearchParams();
+  const modalAppId = searchParams.get("modalAppId");
 
   const { data: groups } = useGetGlobusGroups();
 
-  if (
-    !groups?.find((group) => group.id === import.meta.env.VITE_GLOBUS_GROUP_UUID)
-  )
+  if (!groups?.find((group) => group.id === import.meta.env.VITE_GLOBUS_GROUP_UUID)) {
     return <GlobusGroupError />;
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-8 py-16 font-display">
       <CreateGardenFormHeader />
-      <CreateGardenForm />
+      {modalAppId ? (
+        <CreateGardenForm modalAppId={modalAppId} />
+      ) : (
+        <UploadModalAppForm />
+      )}
     </div>
   );
 };
@@ -49,7 +55,7 @@ const GlobusGroupError = () => {
           <p className="text-gray-700">
             If you are already a member of the group and are seeing this message, please try logging out and logging back in.
           </p>
-          <div className=" flex items-center justify-center space-x-4">
+          <div className="flex items-center justify-center space-x-4">
             <Button onClick={() => navigate("/")} className="font-bold">
               Back home
             </Button>

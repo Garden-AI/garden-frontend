@@ -8,20 +8,29 @@ import { Form } from "@/components/ui/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import { CreateGardenFormFields } from "./CreateGardenFormFields";
-import { useCreateModalApp, DeployTimeoutError } from "../../api/useCreateModalApp";
 import { useCreateGardenAndDOI } from "../../api/useCreateGardenAndDOI";
 import { GardenCreateRequest } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
+import { useModalAppMetadata } from "../../api/useModalAppMetadata";
+import { OverallProgress } from "@/components/progress/OverallProgress";
+import { cn } from "@/utils/form.utils";
+import { CheckCircle2 } from "lucide-react";
 
-export const CreateGardenForm = () => {
+/**
+ * Component for creating a new garden
+ * Handles garden creation with a pre-deployed modal app
+ */
+interface CreateGardenFormProps {
+  modalAppId?: string | null;
+}
+
+export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
   const uuid = auth?.authorization?.user?.sub;
 
-  const [searchParams] = useSearchParams();
   const { createGardenAndDOI } = useCreateGardenAndDOI();
-  const { mutateAsync: createModalApp } = useCreateModalApp();
 
   const form = useForm<GardenCreateFormData>({
     resolver: zodResolver(gardenFormSchema),
@@ -50,6 +59,9 @@ export const CreateGardenForm = () => {
     },
   });
 
+  // Use the modal app metadata hook to pre-populate the form
+  const { modalApp } = useModalAppMetadata(modalAppId, form, "modal");
+
   const blocker = useBlocker(
     () => !form?.formState.isSubmitting && Object.keys(form.formState.touchedFields).length > 0,
   );
@@ -62,44 +74,71 @@ export const CreateGardenForm = () => {
         is_archived: false,
         publisher: "Garden-AI",
         owner_identity_id: uuid || "",
+        language: values.language || "en",
       };
 
-      const modalAppResponse = await createModalApp({
-        file_contents: values.modal.file_contents,
-        requirements: [],
-        app_name: values.modal.app_name,
-        base_image_name: values.modal.base_image_name,
-        modal_functions: values.modal.modal_functions,
-        owner_identity_id: uuid,
-      });
-      gardenCreateRequest.modal_function_ids = modalAppResponse.data.modal_function_ids;
-      
+      if (modalAppId && modalApp) {
+        // Use the pre-deployed modal app
+        gardenCreateRequest.modal_function_ids = modalApp.modal_function_ids;
+      }
 
       const { garden } = await createGardenAndDOI(gardenCreateRequest);
 
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(garden.doi)}`);
     } catch (error: unknown) {
-      if (error instanceof DeployTimeoutError) {
-        toast.warning(error.message, { closeButton: true, duration: 15000 })
-        return;
-      }
       if (error instanceof AxiosError) {
-        error = ApiError.fromAxiosError(error);
+        const apiError = ApiError.fromAxiosError(error);
+        const errorMessage = apiError.message;
+        const suggestedFix = apiError.suggestedFix;
+        
+        if (suggestedFix) {
+          toast.error(<div>
+            <p>{errorMessage}</p>
+            <p className="mt-2 text-sm font-medium">Suggested Fix: {suggestedFix}</p>
+          </div>, { duration: 7000 });
+        } else {
+          toast.error(errorMessage);
+        }
+      } else if (error instanceof ApiError) {
+        const errorMessage = error.message;
+        const suggestedFix = error.suggestedFix;
+        
+        if (suggestedFix) {
+          toast.error(<div>
+            <p>{errorMessage}</p>
+            <p className="mt-2 text-sm font-medium">Suggested Fix: {suggestedFix}</p>
+          </div>, { duration: 7000 });
+        } else {
+          toast.error(errorMessage);
+        }
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred. Please check the form and try again.");
       }
+      
       console.error(error);
-      toast.error(`${error} Please check the form and and try again.`);
     }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <CreateGardenFormFields />
-        <LoadingOverlay />
-        <UnsavedChangesDialog blocker={blocker} />
-      </form>
-    </Form>
+    <>
+      {/* Pass isSubmitting state to OverallProgress */}
+      <OverallProgress currentPhase={2} isSubmitting={form.formState.isSubmitting} />
+      
+      <div className="rounded-lg border bg-white p-6 shadow-sm">
+        <h2 className="mb-6 text-xl font-bold">Create Garden</h2>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <CreateGardenFormFields hideModalUpload={!!modalAppId} />
+            <LoadingOverlay />
+            <UnsavedChangesDialog blocker={blocker} />
+          </form>
+        </Form>
+      </div>
+    </>
   );
 };
 
