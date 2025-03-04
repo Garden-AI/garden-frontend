@@ -46,10 +46,13 @@ const ModalFunctionPage = () => {
   if (isError || !modalFunction) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
-      {/* TODO: I'm not really sure what makes sense to render for the Breadcrumbs component, since we don't really have a way
-       for a user to land on this page currently. Maybe the parent garden?  */}
-      <Breadcrumb crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} />
+    <div className="mx-auto max-w-7xl px-4 md:px-6 pt-6 font-display">
+      <div>
+        <Breadcrumb 
+          className="mb-3" 
+          crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
+        />
+      </div>
       <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
       <ModalFunctionBody modalFunction={modalFunction} />
       <ModalFunctionExample modalFunction={modalFunction} />
@@ -65,11 +68,11 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
   const isOwner = auth.isAuthenticated && modalFunction.owner_identity_id === auth?.authorization?.user?.sub;
 
   return (
-    <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
-      <h1 className="text-xl md:text-3xl">{modalFunction.title}</h1>
-      <div className="flex items-center gap-2">
+    <div className="mb-3 flex items-center justify-between gap-2">
+      <h1 className="text-xl md:text-2xl font-medium">{modalFunction.title}</h1>
+      <div className="flex items-center gap-1">
         <CopyButton
-          icon={<LinkIcon />}
+          icon={<LinkIcon className="h-4 w-4" />}
           content={`${window.location.origin}/modal-functions/${modalFunction.id}`}
           hint="Copy Link"
           className="border-none bg-transparent"
@@ -83,7 +86,7 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
                   variant="ghost"
                   size="icon"
                   onClick={() => navigate(`/modal-functions/${modalFunction.id}/edit`)}
-                  className="h-9 w-9"
+                  className="h-8 w-8"
                 >
                   <PencilIcon className="h-4 w-4" />
                 </Button>
@@ -101,27 +104,25 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
 
 const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
-    <div className="space-y-6 py-6">
-      <div className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
+    <div className="space-y-3 py-2">
+      <div className="flex flex-wrap items-center gap-1 text-xs text-gray-500">
         <span>
           {modalFunction.doi ? `DOI: ${modalFunction.doi} | ` : ""} {modalFunction.year} |{" "}
         </span>
-        <TagIcon className="h-4 w-4" />
+        <TagIcon className="h-3.5 w-3.5" />
         <span>{modalFunction.tags?.join(", ")}</span>
       </div>
 
-      <div className="mb-6 flex items-center space-x-2 text-base md:text-lg ">
+      <div className="flex items-center space-x-2 text-sm">
         <span className="font-semibold">Contributors:</span>
         <span>{modalFunction.authors?.join(", ")}</span>
       </div>
 
-      <div className="mb-2 flex items-center gap-2 text-lg md:text-xl">
-        <Eye />
-        <h2>At a glance</h2>
+      <div className="mt-2 bg-gray-50 rounded-md p-3">
+        <Markdown content={modalFunction.description || ""} className="text-sm" />
       </div>
-      <Markdown content={modalFunction.description || ""} className="mb-6" />
 
-      <Separator className="my-6" />
+      <Separator className="my-3" />
     </div>
   );
 };
@@ -138,16 +139,16 @@ ${modalFunction.example_usage || `input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`}`;
 
   return (
-    <Card className="rounded-none bg-white p-4">
-      <CardHeader className="px-6 py-4">
-        <CardTitle className="text-xl font-bold text-gray-800">
+    <Card className="rounded-none bg-white p-3">
+      <CardHeader className="px-4 py-2">
+        <CardTitle className="text-lg font-bold text-gray-800">
           {modalFunction.function_name}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6 px-6 py-4">
+      <CardContent className="space-y-4 px-4 py-2">
         <div>
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Example Usage</h3>
+          <div className="mb-1 flex items-center justify-between">
+            <h3 className="text-sm font-semibold">Example Usage</h3>
             <CopyButton hint="Copy example code" content={exampleText} />
           </div>
           <SyntaxHighlighter>{exampleText}</SyntaxHighlighter>

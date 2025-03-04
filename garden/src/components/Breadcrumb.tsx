@@ -9,9 +9,9 @@ import {
 } from "./ui/breadcrumb";
 import React from "react";
 
-const Breadcrumb = ({ crumbs }: { crumbs: any }) => {
+const Breadcrumb = ({ crumbs, className = "" }: { crumbs: any; className?: string }) => {
   return (
-    <BreadcrumbShadcn className="mb-10 hidden md:block">
+    <BreadcrumbShadcn className={`hidden md:block ${className}`}>
       <BreadcrumbList>
         {crumbs.slice(0, crumbs.length - 1).map((crumb: any, index: number) => (
           <React.Fragment key={index}>
