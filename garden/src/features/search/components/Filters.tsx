@@ -4,10 +4,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+} from "@/components/shadcn/accordion";
+import { Checkbox } from "@/components/shadcn/checkbox";
+import { Label } from "@/components/shadcn/label";
+import { Button } from "@/components/shadcn/button";
 import { GardenSearchResult } from "../hooks/useSearchResults";
 
 const SearchFilters = ({

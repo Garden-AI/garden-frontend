@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/shadcn/button";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 
 const LoginPage = () => {

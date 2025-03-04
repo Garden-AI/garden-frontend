@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PfpSelectionModal from "./PfpSelectionModal";
 import { icons, IconType } from "./icons";
-import RenderTags from "@/components/ui/renderTags";
+import RenderTags from "@/components/shadcn/renderTags";
 import { useGetUserInfo } from "../api/useGetUserInfo";
 import UserProfileShareModal from "./UserProfileShareModal";
 import { useGetGardens } from "@/features/gardens/api/useGetGardens";

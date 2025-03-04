@@ -3,12 +3,12 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/shadcn/accordion";
 import { Entrypoint, ModalFunction } from "@/types";
 import { BookOpen, Paperclip } from "lucide-react";
 import CopyButton from "@/components/CopyButton";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 
 const AssociatedMaterials = ({ resource }: { resource: Entrypoint | ModalFunction }) => {
   return (

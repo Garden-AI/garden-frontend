@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Loader2, Bookmark } from "lucide-react";
 import { Garden } from "@/types";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/shadcn/tooltip";
 import { cn } from "@/utils/form.utils";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useSaveGarden } from "../api/useSaveGarden";

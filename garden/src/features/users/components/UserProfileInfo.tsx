@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/shadcn/button";
 import { cn } from "@/utils/form.utils";
 import { toast } from "sonner";
-import MultipleSelector from "@/components/ui/multiple-select";
+import MultipleSelector from "@/components/shadcn/multiple-select";
 import InputMask from "react-input-mask";
 import { UpdateUserSchema } from "@/types";
 import { useGetUserInfo } from "../api/useGetUserInfo";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import NotFoundPage from "@/components/NotFoundPage";
-import RenderTags from "@/components/ui/renderTags";
+import RenderTags from "@/components/shadcn/renderTags";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { useUpdateUserInfo } from "../api/updateUserInfo";
 

@@ -6,9 +6,9 @@ import {
   FormControl,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/shadcn/form";
+import { Input } from "@/components/shadcn/input";
+import { Textarea } from "@/components/shadcn/textarea";
 import { GardenCreateFormData } from "../types/garden.types";
 import { useFormContext, useFieldArray } from "react-hook-form";
 

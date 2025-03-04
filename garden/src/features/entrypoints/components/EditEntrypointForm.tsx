@@ -3,7 +3,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/shadcn/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import { Entrypoint, EntrypointPatchRequest } from "@/types";

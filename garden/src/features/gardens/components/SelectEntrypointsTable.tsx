@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 import {
   Table,
   TableHeader,
@@ -6,8 +6,8 @@ import {
   TableHead,
   TableBody,
   TableCell,
-} from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/components/shadcn/table";
+import { Checkbox } from "@/components/shadcn/checkbox";
 import { ExternalLink, RefreshCcwIcon } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { Link } from "react-router-dom";

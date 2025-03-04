@@ -9,9 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from "@/components/shadcn/dialog";
+import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
 import {
   Form,
   FormField,
@@ -19,9 +19,9 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/components/shadcn/form";
 import { Link } from "lucide-react";
-import MultipleSelector from "@/components/ui/multiple-select";
+import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Repository } from "@/types";
 import { RepositoryFormData, repositorySchema } from "../../types/entrypoint.types";
 

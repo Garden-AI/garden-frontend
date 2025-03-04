@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 import { Garden } from "@/types";
 
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/shadcn/badge";
+import { ScrollArea } from "@/components/shadcn/scroll-area";
+import { Avatar, AvatarFallback } from "@/components/shadcn/avatar";
 import {
   Card,
   CardHeader,
@@ -13,9 +13,9 @@ import {
   CardContent,
   CardFooter,
   MarkdownCardContent,
-} from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+} from "@/components/shadcn/card";
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/shadcn/table";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
 import { BookOpenIcon, CalendarIcon, TagIcon } from "lucide-react";
 import { PersonIcon } from "@radix-ui/react-icons";

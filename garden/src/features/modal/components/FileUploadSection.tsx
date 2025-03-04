@@ -1,5 +1,5 @@
 import { FileCode, CheckCircle2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/shadcn/badge";
 import { cn } from "@/utils/form.utils";
 
 interface FileUploadSectionProps {

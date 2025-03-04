@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useFormContext } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 import {
   FormField,
   FormItem,
@@ -8,10 +8,10 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import MultipleSelector from "@/components/ui/multiple-select";
+} from "@/components/shadcn/form";
+import { Input } from "@/components/shadcn/input";
+import { Textarea } from "@/components/shadcn/textarea";
+import MultipleSelector from "@/components/shadcn/multiple-select";
 import AssociatedMaterials from "./AssociatedMaterials";
 
 const EditEntrypointFormFields = () => {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, RefObject } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/shadcn/separator";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { ChevronDown, ChevronUp, LogOut, Plus, User, Menu, X } from "lucide-react";
 import { toast } from "sonner";

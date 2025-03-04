@@ -5,15 +5,15 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/shadcn/accordion";
 
 import { Garden } from "@/types";
 
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/shadcn/separator";
 import GardenBox from "@/features/gardens/components/GardenBox";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
 import {
   SquareStack,
   LockKeyholeOpen,

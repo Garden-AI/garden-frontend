@@ -6,9 +6,9 @@ import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import NotFoundPage from "@/components/NotFoundPage";
 
 // import ModalFunctionTabs from "@/components/ModalFunctionTabs";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
 import { Eye, LinkIcon, TagIcon, PencilIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
@@ -25,9 +25,9 @@ import {
   CardFooter,
   CardTitle,
   MarkdownCardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+} from "@/components/shadcn/card";
+import { Button } from "@/components/shadcn/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
 import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
 import { ExampleFunction } from "@/features/entrypoints/components/ExampleFunction";
 import Markdown from "@/components/Markdown";

@@ -2,8 +2,8 @@ import { UseFormReturn, useFormContext } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 
 import { FlaskConicalIcon, ChevronDown, ChevronUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/shadcn/button";
+import { Switch } from "@/components/shadcn/switch";
 
 import {
   FormControl,
@@ -12,15 +12,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import MultipleSelector from "@/components/ui/multiple-select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/shadcn/form";
+import { Input } from "@/components/shadcn/input";
+import MultipleSelector from "@/components/shadcn/multiple-select";
+import { Textarea } from "@/components/shadcn/textarea";
 import { 
   Collapsible, 
   CollapsibleContent, 
   CollapsibleTrigger 
-} from "@/components/ui/collapsible";
+} from "@/components/shadcn/collapsible";
 
 import { SelectModalFunctionsTable } from "../SelectModalFunctionsTable";
 import { UploadModalFormFields } from "../UploadModalFormFields";

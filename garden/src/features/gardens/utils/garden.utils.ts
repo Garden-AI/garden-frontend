@@ -1,4 +1,4 @@
-import { Option } from "@/components/ui/multiple-select";
+import { Option } from "@/components/shadcn/multiple-select";
 import { AxiosError } from "axios";
 
 // Converts file to string for backend processing
