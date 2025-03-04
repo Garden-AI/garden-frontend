@@ -51,7 +51,7 @@ const GardenPage = () => {
   const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
 
   return (
-    <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
+    <div className="mx-auto max-w-7xl px-4 md:px-6 pt-8 font-display">
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
@@ -76,18 +76,18 @@ const GardenPage = () => {
 
 const GardenHeader = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
   return (
-    <div className="my-8 flex items-center justify-between gap-2 sm:gap-4">
+    <div className="my-4 flex items-center justify-between gap-2 sm:gap-3">
       <div className="flex items-center">
-        <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+        <h1 className="text-xl sm:text-2xl font-medium">{garden.title}</h1>
         {ownsThisGarden && garden.is_archived && (
-          <Badge className="ml-4 mt-1 px-3 text-sm" variant={"default"}>
+          <Badge className="ml-3 mt-0.5 px-2 text-xs" variant={"default"}>
             {"Archived"}
           </Badge>
         )}
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-1">
         <CopyButton
-          icon={<LinkIcon />}
+          icon={<LinkIcon className="h-4 w-4" />}
           content={`https://doi.org/${garden.doi}`}
           hint="Copy Link"
         />
@@ -101,14 +101,14 @@ const GardenHeader = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGard
 
 const GardenBody = ({ garden }: { garden: Garden }) => {
   return (
-    <div className="mb-5 rounded-lg border-0 bg-gray-100 p-4 text-sm text-gray-700">
+    <div className="mb-4 rounded-lg border-0 bg-gray-100 p-3 text-xs text-gray-700">
       <div className="flex w-full flex-row justify-between">
-        <div className="mb-4">
+        <div className="mb-2">
           <h2 className="font-semibold">Contributors</h2>
           <p>{garden.authors?.join(", ")}</p>
         </div>
       </div>
-      <div className="mb-4">
+      <div className="mb-2">
         <h2 className="font-semibold">DOI</h2>
         <div className="flex items-center">
           <a
@@ -119,7 +119,7 @@ const GardenBody = ({ garden }: { garden: Garden }) => {
           >
             {garden.doi}
           </a>
-          <CopyButton content={garden.doi} hint="Copy DOI" className="h-8 w-8 p-0.5" />
+          <CopyButton content={garden.doi} hint="Copy DOI" className="h-6 w-6 p-0.5" />
           <Badge 
             variant={garden.doi_is_draft ? "outline" : "default"}
             className="text-xs font-medium"
@@ -163,18 +163,18 @@ const VisibilityWarning = ({ garden, updateGarden }: { garden: Garden; updateGar
   };
 
   return (
-    <div className="mb-6 rounded-lg border-2 border-yellow-200 bg-yellow-50 p-4">
-      <div className="flex items-start gap-3">
-        <FlaskConicalIcon className="mt-1 h-5 w-5 text-yellow-600" />
+    <div className="mb-4 rounded-lg border-2 border-yellow-200 bg-yellow-50 p-3">
+      <div className="flex items-start gap-2">
+        <FlaskConicalIcon className="mt-1 h-4 w-4 text-yellow-600" />
         <div>
-          <h3 className="font-medium text-yellow-900">This is a Test Garden</h3>
-          <p className="mt-1 text-sm text-yellow-700">
+          <h3 className="font-medium text-yellow-900 text-sm">This is a Test Garden</h3>
+          <p className="mt-1 text-xs text-yellow-700">
             This garden won't show up in search results. Other users can still access it directly if you share the link.
           </p>
           <Button
             variant="outline"
             size="sm"
-            className="mt-3 border-yellow-300 text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800"
+            className="mt-2 border-yellow-300 text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800 h-7 text-xs"
             onClick={handleMakePublic}
             disabled={isUpdating}
           >
