@@ -1,6 +1,6 @@
 import { ModalFunction, ModalFunctionPatchRequest } from "@/types";
 import { useForm, useFormContext } from "react-hook-form";
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/shadcn/form";
 import { modalFunctionFormSchema, ModalFunctionPatchFormData } from "../../types/modal.types";
 import { getDirtyValues } from "@/utils/form.utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import { useBlocker, useNavigate } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 
 export const EditModalFunctionForm = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();

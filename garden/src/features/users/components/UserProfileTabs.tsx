@@ -1,4 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
 import SavedGardens from "./SavedGardens";

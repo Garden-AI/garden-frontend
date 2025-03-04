@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/components/shadcn/alert-dialog";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { Blocker } from "react-router-dom";

@@ -7,8 +7,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/shadcn/form";
+import { Input } from "@/components/shadcn/input";
 import ModalFunctions from "./ModalFunctions";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";

@@ -6,7 +6,7 @@ import NotFoundPage from "@/components/NotFoundPage";
 import Breadcrumb from "@/components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
 import ShareModal from "@/components/ShareModal";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/shadcn/separator";
 import { Entrypoint, Garden } from "@/types";
 import { useGetEntrypoint } from "../api/useGetEntrypoint";
 import { useSearchGardenByDOI } from "@/features/search/api/useSearchGardenByDOI";

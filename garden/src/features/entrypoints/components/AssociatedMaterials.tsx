@@ -1,7 +1,7 @@
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { PlusCircle } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 import AssociatedMaterialsGrid from "./AssociatedMaterialsGrid";
 import DatasetModal from "./modals/DatasetModal";
 import PaperModal from "./modals/PaperModal";

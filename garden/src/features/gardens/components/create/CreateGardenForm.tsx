@@ -4,7 +4,7 @@ import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { gardenFormSchema, GardenCreateFormData } from "../../types/garden.types";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/shadcn/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import { CreateGardenFormFields } from "./CreateGardenFormFields";

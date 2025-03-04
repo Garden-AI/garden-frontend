@@ -1,6 +1,6 @@
 import { Paper, Dataset, Repository } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/shadcn/button";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/shadcn/card";
 import { Edit2, Book, FileType, Link } from "lucide-react";
 
 import DatasetModal from "./modals/DatasetModal";

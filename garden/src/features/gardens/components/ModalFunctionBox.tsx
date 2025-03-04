@@ -1,6 +1,6 @@
 import { ModalFunction } from "@/types";
 import { useNavigate } from "react-router-dom";
-import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/shadcn/card";
 
 const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   const navigate = useNavigate();

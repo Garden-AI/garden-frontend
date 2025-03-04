@@ -1,11 +1,11 @@
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@/components/shadcn/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/shadcn/select";
 import { GardenSearchResult, SortOrder } from "../hooks/useSearchResults";
 
 export const SearchResultsHeader = ({

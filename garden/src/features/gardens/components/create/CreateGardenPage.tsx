@@ -1,7 +1,7 @@
 import { CreateGardenForm } from "./CreateGardenForm";
 import { UploadModalAppForm } from "@/features/modal/components/UploadModalAppForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 import { useGetGlobusGroups } from "@/features/gardens/api/useGetGlobusGroups";
 
 const CreateGardenPage = () => {

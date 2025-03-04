@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/shadcn/alert";
 import { AlertTriangle, HelpCircleIcon, InfoIcon } from "lucide-react";
 import { DeploymentError } from "@/features/modal/api/useModalAppUpload";
 

@@ -9,9 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from "@/components/shadcn/dialog";
+import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
 import {
   Form,
   FormField,
@@ -19,8 +19,8 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import MultipleSelector from "@/components/ui/multiple-select";
+} from "@/components/shadcn/form";
+import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Paper } from "@/types";
 import { PaperFormData, paperSchema } from "../../types/entrypoint.types";
 

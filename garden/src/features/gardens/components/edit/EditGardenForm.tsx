@@ -1,6 +1,6 @@
 import { Garden, GardenPatchRequest } from "@/types";
 import { useForm, useFormContext } from "react-hook-form";
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/shadcn/form";
 import { formSchema, GardenPatchFormData } from "../EditGardenschemas";
 import { getDirtyValues } from "@/utils/form.utils";
 import { zodResolver } from "@hookform/resolvers/zod";

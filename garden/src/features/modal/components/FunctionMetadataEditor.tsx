@@ -1,8 +1,8 @@
 import { Code } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Input } from "@/components/shadcn/input";
+import { Textarea } from "@/components/shadcn/textarea";
+import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/shadcn/form";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/shadcn/accordion";
 import { UseFormReturn } from "react-hook-form";
 import { ModalFileMetadataResponse } from "@/types";
 import { ModalAppFormValues } from "@/features/modal/api/useModalAppForm";

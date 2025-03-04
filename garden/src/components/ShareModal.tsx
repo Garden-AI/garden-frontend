@@ -1,7 +1,7 @@
 import { Share2 } from "lucide-react";
-import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { Button } from "./shadcn/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./shadcn/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./shadcn/tooltip";
 import { useState } from "react";
 import CopyButton from "./CopyButton";
 

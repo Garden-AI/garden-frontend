@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Archive, Edit, EllipsisVertical, Globe, Trash, TriangleAlert, FlaskConical } from "lucide-react";
 
 import { useUpdateDOI } from "@/api/doi/useUpdateDOI";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/shadcn/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,9 +15,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/components/shadcn/alert-dialog";
+import { Button } from "@/components/shadcn/button";
+import { Checkbox } from "@/components/shadcn/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +25,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/shadcn/dropdown-menu";
+import { Input } from "@/components/shadcn/input";
+import { Label } from "@/components/shadcn/label";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Garden } from "@/types";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";

@@ -1,4 +1,4 @@
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/shadcn/form";
 import { useSearchParams } from "react-router-dom";
 import { useModalAppForm } from "@/features/modal/api/useModalAppForm";
 import { FileUploadSection } from "@/features/modal/components/FileUploadSection";

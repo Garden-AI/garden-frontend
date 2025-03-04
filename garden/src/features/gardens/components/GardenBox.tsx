@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "../../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "../../../components/shadcn/card";
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "@/types";

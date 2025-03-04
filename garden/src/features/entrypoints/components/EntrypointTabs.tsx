@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 import {
   Card,
   CardContent,
@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
   MarkdownCardContent,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/shadcn/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { Entrypoint } from "@/types";
 import { NotebookViewer } from "@/features/notebook/components/NotebookViewer";

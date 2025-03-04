@@ -1,5 +1,5 @@
 import { Copy } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "./shadcn/button";
 import { toast } from "sonner";
 import { cn } from "@/utils/form.utils";
 import WithTooltip from "./WithTooltip";

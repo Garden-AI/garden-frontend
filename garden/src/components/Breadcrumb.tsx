@@ -6,7 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "./ui/breadcrumb";
+} from "./shadcn/breadcrumb";
 import React from "react";
 
 const Breadcrumb = ({ crumbs, className = "" }: { crumbs: any; className?: string }) => {

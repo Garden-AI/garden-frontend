@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button, buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./shadcn/button";
 
 const NotFoundPage = () => {
   return (
