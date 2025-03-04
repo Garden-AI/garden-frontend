@@ -19,6 +19,7 @@ import ShareModal from "@/components/ShareModal";
 import TombstonePage from "@/components/TombstonePage";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Markdown from "@/components/Markdown";
+import MetadataWarning from "./MetadataWarning";
 
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
@@ -76,25 +77,28 @@ const GardenPage = () => {
 
 const GardenHeader = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
   return (
-    <div className="my-4 flex items-center justify-between gap-2 sm:gap-3">
-      <div className="flex items-center">
-        <h1 className="text-xl sm:text-2xl font-medium">{garden.title}</h1>
-        {ownsThisGarden && garden.is_archived && (
-          <Badge className="ml-3 mt-0.5 px-2 text-xs" variant={"default"}>
-            {"Archived"}
-          </Badge>
-        )}
+    <div className="my-8 flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <h1 className="text-2xl sm:text-3xl">{garden.title}</h1>
+          {ownsThisGarden && garden.is_archived && (
+            <Badge className="ml-4 mt-1 px-3 text-sm" variant={"default"}>
+              {"Archived"}
+            </Badge>
+          )}
+        </div>
+        <div className="flex items-center">
+          <CopyButton
+            icon={<LinkIcon />}
+            content={`https://doi.org/${garden.doi}`}
+            hint="Copy Link"
+          />
+          <ShareModal doi={garden.doi} />
+          <SaveGardenButton garden={garden} />
+          <GardenDropdownOptions garden={garden} />
+        </div>
       </div>
-      <div className="flex items-center gap-1">
-        <CopyButton
-          icon={<LinkIcon className="h-4 w-4" />}
-          content={`https://doi.org/${garden.doi}`}
-          hint="Copy Link"
-        />
-        <ShareModal doi={garden.doi} />
-        <SaveGardenButton garden={garden} />
-        <GardenDropdownOptions garden={garden} />
-      </div>
+      {ownsThisGarden && <MetadataWarning garden={garden} />}
     </div>
   );
 };
