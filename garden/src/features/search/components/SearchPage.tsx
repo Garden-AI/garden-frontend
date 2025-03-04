@@ -52,24 +52,44 @@ const SearchPage = () => {
   );
 
   return (
-    <div className="mt-16 min-h-screen px-6 font-display md:px-12">
-      <h1 className="my-6 text-3xl">Search</h1>
-      <SearchForm query={query} setQuery={setQuery} />
-      <div className="relative my-8">
+    <div className="mt-8 min-h-screen px-4 font-display md:px-8">
+      <div className="flex flex-col space-y-3">
+        <h1 className="text-2xl font-medium">Search</h1>
+        <SearchForm query={query} setQuery={setQuery} />
+      </div>
+      <div className="relative mt-5 mb-6">
         {/* Mobile layout */}
-        <div className="flex flex-col gap-8 lg:hidden">
-          <SearchFilters
-            searchResult={searchResult}
-            selectedFilters={selectedFilters}
-            setSelectedFilters={setSelectedFilters}
-          />
+        <div className="flex flex-col gap-5 lg:hidden">
+          <div className="md:hidden">
+            <SearchFilters
+              searchResult={searchResult}
+              selectedFilters={selectedFilters}
+              setSelectedFilters={setSelectedFilters}
+            />
+          </div>
           <div>
             <SearchResultsInner />
           </div>
         </div>
 
+        {/* Medium layout (md but not lg) */}
+        <div className="hidden md:block lg:hidden">
+          <div className="grid grid-cols-3 gap-5">
+            <div className="col-span-2">
+              <SearchResultsInner />
+            </div>
+            <div className="col-span-1">
+              <SearchFilters
+                searchResult={searchResult}
+                selectedFilters={selectedFilters}
+                setSelectedFilters={setSelectedFilters}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Desktop layout */}
-        <div className="hidden lg:grid lg:grid-cols-3 lg:gap-8">
+        <div className="hidden lg:grid lg:grid-cols-3 lg:gap-6">
           <div className="lg:col-span-2">
             <SearchResultsInner />
           </div>

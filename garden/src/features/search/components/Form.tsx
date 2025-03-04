@@ -33,33 +33,37 @@ export const SearchForm = ({
   };
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="">
-      <div className="relative mb-4 flex w-full">
+    <form onSubmit={(e) => e.preventDefault()}>
+      <div className="relative flex w-full">
         <div className="relative flex w-full items-center">
-          <Search className="absolute left-3 h-5 w-5 text-gray-400" />
+          <Search className="absolute left-2.5 h-4 w-4 text-gray-400" />
           <Input
             type="text"
             placeholder="Search for a garden or function (e.g. Digit Classifier)"
             value={queryInputValue}
             onChange={(e) => setQueryInputValue(e.target.value)}
-            className="w-full rounded-l-full py-2 pl-10 pr-12 outline-none transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-0"
+            className="h-9 w-full rounded-l-full py-1.5 pl-8 pr-10 outline-none transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-0"
           />
           {queryInputValue && (
             <Button
               type="button"
               variant="ghost"
               onClick={handleClear}
-              className="absolute right-2 p-1 text-black"
+              className="absolute right-1 p-1 text-black"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </Button>
           )}
         </div>
 
         <div className="flex">
-          <Button onClick={handleSearch} className="rounded-l-none border-l-0 " variant="default">
-            <Search className="mr-2 h-4 w-4" />
-            Search
+          <Button 
+            onClick={handleSearch} 
+            className="h-9 rounded-l-none border-l-0 px-3 py-1.5 md:w-24" 
+            variant="default"
+          >
+            <Search className="mr-1.5 h-3.5 w-3.5 md:mr-2" />
+            <span>Search</span>
           </Button>
         </div>
       </div>
