@@ -9,7 +9,6 @@ import RepositoryModal from "./modals/RepositoryModal";
 
 interface AssociatedMaterialsSectionProps {
   fieldName: "papers" | "repositories" | "datasets";
-  title?: string;
 }
 
 const AssociatedMaterialsSection = ({ 
@@ -54,4 +53,4 @@ const AssociatedMaterialsSection = ({
   );
 };
 
-export default AssociatedMaterialsSection; 
+export default AssociatedMaterialsSection;
