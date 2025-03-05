@@ -19,15 +19,42 @@ export const PaperCard = ({
   onUpdate: (d: Paper) => void;
   onDelete: (index: number) => void;
 }) => {
+  const paperLink = paper.url || (paper.doi ? `https://doi.org/${paper.doi}` : undefined);
+
   return (
     <Card className="transition-colors hover:bg-gray-50 hover:shadow-lg">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-gray-900 transition-colors duration-300">
-          {paper.title}
+          {paperLink ? (
+            <a 
+              href={paperLink} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-blue-600 hover:underline"
+            >
+              {paper.title}
+            </a>
+          ) : (
+            paper.title
+          )}
         </CardTitle>
         {paper.doi && (
           <div className="flex space-x-3">
             <span>DOI: {paper.doi}</span>
+          </div>
+        )}
+        {paper.url && (
+          <div className="flex space-x-3 mt-1">
+            <span className="text-sm">
+              URL: <a 
+                href={paper.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline truncate max-w-[200px] inline-block align-bottom"
+              >
+                {paper.url}
+              </a>
+            </span>
           </div>
         )}
       </CardHeader>

@@ -46,6 +46,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
         })) || [],
       doi: initialData?.doi || "",
       citation: initialData?.citation || "",
+      url: initialData?.url || "",
     },
   });
 
@@ -92,6 +93,20 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
                   <FormLabel>Paper DOI</FormLabel>
                   <FormControl>
                     <Input {...field} className="rounded-l-none" placeholder="Paper DOI" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Paper URL</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="https://example.com/paper" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

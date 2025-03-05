@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from "@/components/shadcn/accordion";
 import { Entrypoint, ModalFunction } from "@/types";
-import { BookOpen, Paperclip } from "lucide-react";
+import { BookOpen, Paperclip, Link2 } from "lucide-react";
 import CopyButton from "@/components/CopyButton";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/shadcn/button";
@@ -23,14 +23,14 @@ const AssociatedMaterials = ({ resource }: { resource: Entrypoint | ModalFunctio
         <AccordionContent className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-2">
           <>
             {resource.papers?.map((paper) => (
-              <div key={paper.doi} className="rounded-md border bg-white p-6">
+              <div key={paper.doi || paper.url} className="rounded-md border bg-white p-6">
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <div className="grid grid-cols-12 items-center gap-2">
                     <BookOpen className="col-span-1 hidden h-6 w-6 text-gray-600 sm:block" />
 
                     <div className="col-span-11">
                       <Link
-                        to={`https://doi.org/${paper.doi}`}
+                        to={paper.url || (paper.doi ? `https://doi.org/${paper.doi}` : "#")}
                         className="text-lg font-bold text-gray-800 transition-colors duration-300 hover:text-gray-600"
                       >
                         {paper.title}
@@ -41,14 +41,32 @@ const AssociatedMaterials = ({ resource }: { resource: Entrypoint | ModalFunctio
                 <div className="mb-2 text-sm text-gray-600">
                   <span className="font-medium">Authors:</span> {paper.authors?.join(", ")}
                 </div>
-                <div className="mb-2 flex items-center gap-2 text-sm text-gray-600">
-                  <span className="font-medium">DOI:</span> {paper.doi}
-                  <CopyButton content={paper.doi} hint="Copy DOI" className="" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>Copy Citation</span>
-                  <CopyButton content={paper.citation} hint="Copy Citation" className="" />
-                </div>
+                {paper.doi && (
+                  <div className="mb-2 flex items-center gap-2 text-sm text-gray-600">
+                    <span className="font-medium">DOI:</span> {paper.doi}
+                    <CopyButton content={paper.doi} hint="Copy DOI" className="" />
+                  </div>
+                )}
+                {paper.url && (
+                  <div className="mb-2 flex items-center gap-2 text-sm text-gray-600">
+                    <span className="font-medium">URL:</span>
+                    <a 
+                      href={paper.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline truncate max-w-[200px]"
+                    >
+                      {paper.url}
+                    </a>
+                    <CopyButton content={paper.url} hint="Copy URL" className="" />
+                  </div>
+                )}
+                {paper.citation && (
+                  <div className="flex items-center gap-2">
+                    <span>Copy Citation</span>
+                    <CopyButton content={paper.citation} hint="Copy Citation" className="" />
+                  </div>
+                )}
               </div>
             ))}
 

@@ -38,7 +38,7 @@ export const datasetSchema = z.object({
   data_type: z.string().nullable(),
   repository: z.string().min(1, "Repository is required"),
 });
-const optionSchema = z.object({
+export const optionSchema = z.object({
   value: z.string(),
   label: z.string(),
   disabled: z.boolean().optional(),
@@ -56,6 +56,7 @@ export const paperSchema = z.object({
   authors: z.array(optionSchema).optional(),
   doi: z.string(),
   citation: z.string(),
+  url: z.string().url("Must be a valid URL").optional(),
 });
 
 export type PaperFormData = z.infer<typeof paperSchema>;
