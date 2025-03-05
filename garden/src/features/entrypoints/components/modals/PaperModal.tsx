@@ -129,8 +129,6 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
         
         if (fieldsUpdated) {
           toast.success("Paper metadata auto-filled from arXiv");
-        } else {
-          console.log("No new metadata to fill from arXiv");
         }
       } catch (error) {
         console.error("Error fetching arXiv metadata:", error);
@@ -145,7 +143,6 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
       setPreviousUrl(url);
       const arxivId = extractArxivId(url);
       if (arxivId) {
-        console.log("Extracted arXiv ID:", arxivId);
         fetchArxivData(arxivId);
       }
     }

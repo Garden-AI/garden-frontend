@@ -8,23 +8,18 @@ import { Paper } from "@/types";
 export const extractArxivId = (url: string): string | null => {
   if (!url.includes("arxiv.org")) return null;
 
-  console.log("Attempting to extract arXiv ID from:", url);
-
   // Extract ID from URLs like https://arxiv.org/abs/2101.12345 or https://arxiv.org/abs/2101.12345v1
   const absMatch = url.match(/arxiv\.org\/abs\/([0-9.]+)(v[0-9]+)?/);
   if (absMatch && absMatch[1]) {
-    console.log("Matched abs pattern:", absMatch[1]);
     return absMatch[1];
   }
 
   // Extract ID from URLs like https://arxiv.org/pdf/2101.12345.pdf or https://arxiv.org/pdf/2101.12345v1.pdf
   const pdfMatch = url.match(/arxiv\.org\/pdf\/([0-9.]+)(v[0-9]+)?(\.pdf)?/);
   if (pdfMatch && pdfMatch[1]) {
-    console.log("Matched pdf pattern:", pdfMatch[1]);
     return pdfMatch[1];
   }
 
-  console.log("No arXiv ID pattern matched");
   return null;
 };
 
@@ -42,7 +37,6 @@ export const extractDoi = (url: string): string | null => {
   
   // Extract everything after "doi.org/"
   const doi = url.substring(doiIndex + 8); // 8 is the length of "doi.org/"
-  console.log("Extracted DOI:", doi);
   return doi;
 };
 
@@ -53,8 +47,6 @@ export const extractDoi = (url: string): string | null => {
  */
 export const fetchArxivMetadata = async (arxivId: string): Promise<Partial<Paper>> => {
   try {
-    console.log("Fetching metadata for arXiv ID:", arxivId);
-    
     // arXiv API endpoint
     const apiUrl = `https://export.arxiv.org/api/query?id_list=${arxivId}`;
     const response = await fetch(apiUrl);
@@ -76,7 +68,6 @@ export const fetchArxivMetadata = async (arxivId: string): Promise<Partial<Paper
     }
 
     const title = entry.querySelector("title")?.textContent?.trim() || "";
-    console.log("Extracted title:", title);
     
     // Extract authors
     const authors: string[] = [];
@@ -84,10 +75,6 @@ export const fetchArxivMetadata = async (arxivId: string): Promise<Partial<Paper
       const name = author.querySelector("name")?.textContent?.trim();
       if (name) authors.push(name);
     });
-    console.log("Extracted authors:", authors);
-    
-    // Extract summary/abstract
-    const summary = entry.querySelector("summary")?.textContent?.trim() || "";
     
     // Extract DOI if available from links
     let doi: string | null = null;
@@ -107,14 +94,12 @@ export const fetchArxivMetadata = async (arxivId: string): Promise<Partial<Paper
         const doiMatch = journalRef.match(/doi:([\w.\/\-]+)/i);
         if (doiMatch && doiMatch[1]) {
           doi = doiMatch[1];
-          console.log("Extracted DOI from journal reference:", doi);
         }
       }
       
       // If still no DOI, use the arXiv ID as a DOI
       if (!doi) {
         doi = `10.48550/arXiv.${arxivId}`;
-        console.log("Using arXiv ID as DOI:", doi);
       }
     }
     
@@ -128,7 +113,6 @@ export const fetchArxivMetadata = async (arxivId: string): Promise<Partial<Paper
         ? `${authors[0]} et al.` 
         : authors.join(", ");
       citation = `${authorText} (${year}). ${title}. arXiv:${arxivId}`;
-      console.log("Generated citation:", citation);
     }
     
     return {
