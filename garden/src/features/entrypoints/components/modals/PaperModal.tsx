@@ -39,7 +39,7 @@ interface PaperModalProps {
 const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isLoadingMetadata, setIsLoadingMetadata] = React.useState(false);
-  const previousUrlRef = React.useRef<string>("");
+  const [previousUrl, setPreviousUrl] = React.useState("");
 
   const form = useForm<PaperFormData>({
     resolver: zodResolver(paperSchema),
@@ -84,7 +84,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
           url: "",
         });
       }
-      previousUrlRef.current = "";
+      setPreviousUrl("");
     }
   }, [isOpen, edit, initialData, form]);
 
@@ -130,7 +130,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
         if (fieldsUpdated) {
           toast.success("Paper metadata auto-filled from arXiv");
         } else {
-          toast.info("No new metadata to fill from arXiv");
+          console.log("No new metadata to fill from arXiv");
         }
       } catch (error) {
         console.error("Error fetching arXiv metadata:", error);
@@ -141,15 +141,15 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
     };
 
     // Check if URL is an arXiv link and different from the previous one
-    if (url && url !== previousUrlRef.current) {
-      previousUrlRef.current = url;
+    if (url && url !== previousUrl) {
+      setPreviousUrl(url);
       const arxivId = extractArxivId(url);
       if (arxivId) {
         console.log("Extracted arXiv ID:", arxivId);
         fetchArxivData(arxivId);
       }
     }
-  }, [url, form]);
+  }, [url, form, previousUrl]);
 
   const handleSave = (data: PaperFormData) => {
     onSave({

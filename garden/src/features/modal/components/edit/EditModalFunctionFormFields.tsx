@@ -11,13 +11,7 @@ import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import SyntaxHighlighterComponent from "@/components/SyntaxHighlighter";
-import { useFieldArray } from "react-hook-form";
-import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/shadcn/button";
-import PaperModal from "@/features/entrypoints/components/modals/PaperModal";
-import RepositoryModal from "@/features/entrypoints/components/modals/RepositoryModal";
-import DatasetModal from "@/features/entrypoints/components/modals/DatasetModal";
-import AssociatedMaterialsGrid from "@/features/entrypoints/components/AssociatedMaterialsGrid";
+import AssociatedMaterialsSection from "@/features/entrypoints/components/AssociatedMaterialsSection";
 
 const EditModalFunctionFormFields = () => {
   const form = useFormContext();
@@ -187,77 +181,11 @@ return my_garden.function_name(input)`}`;
       <section>
         <h2 className="mb-6 border-b pb-2 text-xl font-bold text-gray-800">Associated Materials</h2>
         <div className="space-y-8">
-          <AssociatedMaterialsSection fieldName="papers" resourceType="paper" />
-          <AssociatedMaterialsSection fieldName="repositories" resourceType="repository" />
-          <AssociatedMaterialsSection fieldName="datasets" resourceType="dataset" />
+          <AssociatedMaterialsSection fieldName="papers" />
+          <AssociatedMaterialsSection fieldName="repositories" />
+          <AssociatedMaterialsSection fieldName="datasets" />
         </div>
       </section>
-    </div>
-  );
-};
-
-interface AssociatedMaterialsSectionProps {
-  resourceType: string;
-  fieldName: string;
-}
-
-const AssociatedMaterialsSection = ({ fieldName, resourceType }: AssociatedMaterialsSectionProps) => {
-  const { control } = useFormContext();
-  const { fields, append, update, remove } = useFieldArray({
-    control,
-    name: fieldName,
-  });
-
-  const Modal = () => {
-    switch (resourceType) {
-      case "repository":
-        return (
-          <RepositoryModal
-            onSave={(data) => append(data)}
-            trigger={
-              <Button type="button" variant="outline">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New {resourceType}
-              </Button>
-            }
-          />
-        );
-      case "dataset":
-        return (
-          <DatasetModal
-            onSave={(data) => append(data)}
-            trigger={
-              <Button type="button" variant="outline">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New {resourceType}
-              </Button>
-            }
-          />
-        );
-      case "paper":
-        return (
-          <PaperModal
-            onSave={(data) => append(data)}
-            trigger={
-              <Button type="button" variant="outline">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New {resourceType}
-              </Button>
-            }
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold capitalize">{fieldName}</h3>
-        <Modal />
-      </div>
-      <AssociatedMaterialsGrid fields={fields} onUpdate={update} onDelete={remove} />
     </div>
   );
 };
