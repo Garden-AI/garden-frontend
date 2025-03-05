@@ -56,7 +56,7 @@ export const paperSchema = z.object({
   authors: z.array(optionSchema).optional(),
   doi: z.string(),
   citation: z.string(),
-  url: z.string().url("Must be a valid URL").optional(),
+  url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
 });
 
 export type PaperFormData = z.infer<typeof paperSchema>;
