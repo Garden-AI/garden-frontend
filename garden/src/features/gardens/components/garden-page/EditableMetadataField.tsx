@@ -8,6 +8,17 @@ import { Garden, GardenPatchRequest } from "@/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { usePatchGarden } from "../../api/usePatchGarden";
+import { z } from "zod";
+import { formSchema } from "../EditGardenschemas";
+
+// Define fallback schemas for fields not covered in formSchema
+const fallbackSchemas = {
+  // Default schema for required fields
+  required: z.string().min(1, { message: "This field is required" }),
+  
+  // Default schema for array fields
+  requiredArray: z.array(z.string()).min(1, { message: "At least one value is required" })
+};
 
 export interface EditableMetadataFieldProps {
   label: string;
@@ -41,47 +52,27 @@ const EditableMetadataField = ({
     : (value || placeholder);
   
   const handleSave = () => {
-    // Validate based on field type
-    if (fieldName === "title") {
-      const value = inputValue as string;
-      if (!value || value.length < 8) {
-        toast.error("Title must be at least 8 characters");
-        return;
-      }
-      if (value.length > 100) {
-        toast.error("Title must not exceed 100 characters");
-        return;
-      }
-    } else if (fieldName === "description") {
-      const value = inputValue as string;
-      if (!value || value.length < 10) {
-        toast.error("Description must be at least 10 characters");
-        return;
-      }
-      if (value.length > 1000) {
-        toast.error("Description must not exceed 1000 characters");
-        return;
-      }
-    } else if (fieldName === "authors") {
-      const values = inputValue as string[];
-      if (!values || values.length === 0) {
-        toast.error("Please add at least one author");
-        return;
-      }
-    } else if (fieldName === "year") {
-      const value = inputValue as string;
-      if (value && !/^\d{4}$/.test(value)) {
-        toast.error("Year must be a 4-digit number");
-        return;
-      }
-    } else if (fieldName === "version") {
-      const value = inputValue as string;
-      if (!value || !/^\d+\.\d+(\.\d+)?$/.test(value)) {
-        toast.error("Version must be in the format x.y or x.y.z");
-        return;
-      }
-    } else if (isRequired && (!inputValue || (Array.isArray(inputValue) && inputValue.length === 0))) {
-      toast.error(`${label} is required`);
+    // Get the appropriate schema for validation
+    let schema;
+    
+    if (fieldName in formSchema.shape) {
+      // Use the schema from formSchema if the field exists there
+      schema = formSchema.shape[fieldName as keyof typeof formSchema.shape];
+    } else if (isRequired) {
+      // Use fallback required schema if the field is required
+      schema = isArray ? fallbackSchemas.requiredArray : fallbackSchemas.required;
+    } else {
+      // No validation needed for optional fields
+      schema = isArray ? z.array(z.string()) : z.string().optional();
+    }
+    
+    // Validate the input value using the schema
+    const result = schema.safeParse(inputValue);
+    
+    if (!result.success) {
+      // Display the first validation error
+      const errorMessage = result.error.errors[0]?.message || `Invalid ${label}`;
+      toast.error(errorMessage);
       return;
     }
     
@@ -211,4 +202,4 @@ const EditableMetadataField = ({
   );
 };
 
-export default EditableMetadataField; 
+export default EditableMetadataField;
