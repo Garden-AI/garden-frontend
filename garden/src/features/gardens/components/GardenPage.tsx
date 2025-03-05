@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
@@ -17,7 +15,6 @@ import TombstonePage from "@/components/TombstonePage";
 
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
-import { Garden } from "@/types";
 
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import SaveGardenButton from "./SaveGardenButton";
@@ -29,7 +26,6 @@ import {
   GardenDescription,
   CitationBlock,
   VisibilityWarning,
-  MetadataCompletion,
   EditableTitle,
   ReviewNotice
 } from "./garden-page";
@@ -222,8 +218,6 @@ const GardenPage = () => {
           {/* Metadata Details */}
           <div className="lg:w-1/3 bg-gray-50 rounded-lg p-3">
             <div className="space-y-1">
-              <MetadataCompletion garden={garden} ownsThisGarden={ownsThisGarden} />
-              
               {/* DOI Field */}
               <div className="mt-2 group border border-transparent hover:border-gray-200 rounded-md py-1 px-1.5 -mx-1.5 transition-colors">
                 <p className="text-sm text-gray-500">
