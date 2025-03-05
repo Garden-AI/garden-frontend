@@ -11,6 +11,7 @@ import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import SyntaxHighlighterComponent from "@/components/SyntaxHighlighter";
+import AssociatedMaterialsSection from "@/features/entrypoints/components/AssociatedMaterialsSection";
 
 const EditModalFunctionFormFields = () => {
   const form = useFormContext();
@@ -174,6 +175,15 @@ return my_garden.function_name(input)`}`;
               </FormItem>
             )}
           />
+        </div>
+      </section>
+
+      <section>
+        <h2 className="mb-6 border-b pb-2 text-xl font-bold text-gray-800">Associated Materials</h2>
+        <div className="space-y-8">
+          <AssociatedMaterialsSection fieldName="papers" />
+          <AssociatedMaterialsSection fieldName="repositories" />
+          <AssociatedMaterialsSection fieldName="datasets" />
         </div>
       </section>
     </div>
