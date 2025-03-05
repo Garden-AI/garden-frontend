@@ -518,6 +518,8 @@ export interface components {
         AsyncModalAppMetadataResponse: {
             /** App Name */
             app_name: string;
+            /** Original App Name */
+            original_app_name?: string | null;
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
             /** File Contents */
@@ -1008,6 +1010,8 @@ export interface components {
             year?: string | null;
             /** Function Text */
             function_text?: string | null;
+            /** Example Usage */
+            example_usage?: string | null;
             /** Authors */
             authors?: string[] | null;
             /** Tags */
@@ -1703,6 +1707,8 @@ export interface components {
         ModalAppCreateRequest: {
             /** App Name */
             app_name: string;
+            /** Original App Name */
+            original_app_name?: string | null;
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadata"][];
             /** File Contents */
@@ -1720,7 +1726,7 @@ export interface components {
         ModalAppMetadataResponse: {
             /** App Name */
             app_name: string;
-            /** Original App Name (as defined by the user in their code) */
+            /** Original App Name */
             original_app_name?: string | null;
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
@@ -1765,7 +1771,7 @@ export interface components {
         ModalFileMetadataResponse: {
             /** App Name */
             app_name: string;
-            /** Original App Name (as defined by the user in their code) */
+            /** Original App Name */
             original_app_name?: string | null;
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadata"][];
@@ -2314,6 +2320,8 @@ export interface components {
             data_type: string | null;
             /** Repository */
             repository: string;
+        } & {
+            [key: string]: unknown;
         };
         /** _ModalGenericResult */
         _ModalGenericResult: {
@@ -2355,17 +2363,25 @@ export interface components {
             model_repository: string;
             /** Model Version */
             model_version: string | null;
+        } & {
+            [key: string]: unknown;
         };
         /** _PaperMetadata */
         _PaperMetadata: {
             /** Title */
-            title: string;
+            title?: string | null;
             /** Authors */
             authors?: string[];
             /** Doi */
-            doi: string | null;
+            doi?: string | null;
+            /** Description */
+            description?: string | null;
             /** Citation */
-            citation: string | null;
+            citation?: string | null;
+            /** Url */
+            url?: string | null;
+        } & {
+            [key: string]: unknown;
         };
         /** _RepositoryMetadata */
         _RepositoryMetadata: {
@@ -2378,6 +2394,8 @@ export interface components {
             url: string;
             /** Contributors */
             contributors?: string[];
+        } & {
+            [key: string]: unknown;
         };
     };
     responses: never;
