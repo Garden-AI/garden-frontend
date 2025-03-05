@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/shadcn/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { DatabaseIcon, BookIcon, ExternalLinkIcon, EditIcon, ClipboardIcon } from "lucide-react";
 
 import Breadcrumb from "@/components/Breadcrumb";

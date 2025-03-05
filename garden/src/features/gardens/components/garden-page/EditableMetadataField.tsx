@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { EditIcon, SaveIcon, XIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
+import { Textarea } from "@/components/shadcn/textarea";
 import { toast } from "sonner";
 import { Garden, GardenPatchRequest } from "@/types";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import MultipleSelector from "@/components/ui/multiple-select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import MultipleSelector from "@/components/shadcn/multiple-select";
 import { usePatchGarden } from "../../api/usePatchGarden";
 
 export interface EditableMetadataFieldProps {

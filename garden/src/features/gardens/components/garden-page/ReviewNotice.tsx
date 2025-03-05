@@ -1,4 +1,3 @@
-import React from "react";
 import { InfoIcon } from "lucide-react";
 
 interface ReviewNoticeProps {

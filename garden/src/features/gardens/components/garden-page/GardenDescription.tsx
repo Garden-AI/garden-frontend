@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { EditIcon, SaveIcon, XIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/shadcn/button";
+import { Textarea } from "@/components/shadcn/textarea";
 import { toast } from "sonner";
 import { Garden } from "@/types";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 import Markdown from "@/components/Markdown";
 import { usePatchGarden } from "../../api/usePatchGarden";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";

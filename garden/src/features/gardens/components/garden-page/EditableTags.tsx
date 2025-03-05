@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { EditIcon, SaveIcon, XIcon, PlusIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Button } from "@/components/shadcn/button";
 import { Garden } from "@/types";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import MultipleSelector, { Option } from "@/components/ui/multiple-select";
-import { usePatchGarden } from "../../api/usePatchGarden";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import MultipleSelector, { Option } from "@/components/shadcn/multiple-select";
+import { usePatchGarden } from "@/features/gardens/api/usePatchGarden";
 
 export interface EditableTagsProps {
   garden: Garden;
