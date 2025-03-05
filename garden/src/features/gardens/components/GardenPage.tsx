@@ -286,17 +286,6 @@ const GardenPage = () => {
                 </div>
                 <CitationBlock garden={garden} />
               </div>
-              
-              {!ownsThisGarden && (
-                <div className="mt-4">
-                  <Link 
-                    to={`/garden/${encodeURIComponent(garden.doi)}/edit`} 
-                    className="flex items-center text-sm text-blue-600 hover:text-blue-800"
-                  >
-                    <EditIcon className="h-4 w-4 mr-1" /> Edit Metadata
-                  </Link>
-                </div>
-              )}
             </div>
           </div>
         </div>
