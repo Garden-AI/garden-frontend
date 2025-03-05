@@ -24,7 +24,7 @@ export const formSchema = z.object({
   ),
   papers: z.array(
     z.object({
-      title: z.string(),
+      title: z.string().nullable(),
       authors: z.array(z.string()),
       doi: z.string().nullable(),
       citation: z.string().nullable(),
@@ -52,10 +52,10 @@ export const repositorySchema = z.object({
 });
 
 export const paperSchema = z.object({
-  title: z.string().min(1, "Paper Title is required"),
+  title: z.string().min(1, "Paper Title is required").nullable(),
   authors: z.array(optionSchema).optional(),
-  doi: z.string(),
-  citation: z.string(),
+  doi: z.string().nullable(),
+  citation: z.string().nullable(),
   url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
 });
 
