@@ -206,7 +206,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Paper Title" {...field} />
+                    <Input placeholder="Paper Title" {...field} value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -220,7 +220,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
                 <FormItem>
                   <FormLabel>Paper DOI</FormLabel>
                   <FormControl>
-                    <Input {...field} className="rounded-l-none" placeholder="Paper DOI" />
+                    <Input {...field} className="rounded-l-none" placeholder="Paper DOI" value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -248,7 +248,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
                 <FormItem>
                   <FormLabel>Citation</FormLabel>
                   <FormControl>
-                    <Input className="rounded-l-none" placeholder="Paper Citation" {...field} />
+                    <Input {...field} className="rounded-l-none" placeholder="Paper Citation" value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
