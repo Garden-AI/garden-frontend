@@ -40,12 +40,6 @@ const generateDescription = (
     description += '.\n\n';
   }
   
-  description += `You can use this garden to access the functionality ${
-    functionNames.length > 1 ? 'provided by these functions' : 
-    functionNames.length === 1 ? 'provided by this function' : 
-    ''
-  }.`;
-  
   return description;
 };
 
