@@ -52,7 +52,7 @@ const Navbar = () => {
 
   return (
     <div className="relative left-0 top-0 z-10 w-full shadow-md">
-      <div className="items-center justify-between bg-white px-7 py-2 md:flex md:px-10 md:py-1">
+      <div className="flex items-center justify-between bg-white px-7 py-2 md:px-10 md:py-1">
         {/* logo */}
         <Link to="/" className="py-1">
           <div className="relative w-32">
@@ -60,41 +60,16 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* menu */}
-        <div
-          onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-8 top-3 h-8 w-8 cursor-pointer md:hidden"
-        >
-          {isOpen ? <X /> : <Menu />}
-        </div>
-
-        {/* links */}
-
-        <div className={`md:flex md:items-center`}>
-          <ul
-            className={`absolute left-0 z-[-1] w-full bg-white pb-6 pl-9 pt-10 transition-all duration-300 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:pb-0 md:pl-0 md:pt-0 ${isOpen ? "top-10" : "top-[-490px]"}`}
-          >
-            <li>
-              <Link to="/search" className="my-5 no-underline hover:underline md:my-0 md:ml-8">
-                Search
-              </Link>
-            </li>
-            {Links.map((link) => (
-              <li key={link.name} className="my-5 no-underline hover:underline md:my-0 md:ml-8">
-                <a href={link.link} target="_blank">
-                  {link.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-
+        {/* This wrapper controls both the links and the auth component */}
+        <div className="flex items-center">
+          {/* Auth/user section */}
           <div
             onClick={toggleMenuDropdown}
-            className="relative text-sm transition-all duration-500"
+            className="relative text-sm transition-all duration-500 flex items-center"
             ref={dropdownRef}
           >
             {auth.isAuthenticated ? (
-              <div className="md:ml-4 absolute right-12 top-0 md:static">
+              <div className="flex items-center">
                 <button className="bg-green-500 hover:bg-green-600 px-4 py-1">
                   <div className="flex items-center space-x-2">
                     <User size={20} />
@@ -102,7 +77,7 @@ const Navbar = () => {
                   </div>
                 </button>
                 <div
-                  className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 z-50 mt-1 justify-between rounded bg-white py-3 shadow-md `}
+                  className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 justify-between rounded bg-white py-3 shadow-md`}
                 >
                   <div className="flex flex-col gap-3 p-3">
                     <p>{user?.email} </p>
@@ -126,16 +101,40 @@ const Navbar = () => {
                 </div>
               </div>
             ) : (
-              <div className={`absolute right-16 top-0 bg-white transition-all duration-300 ease-in md:static`}>
-                <button
-                  className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen md:static md:ml-8"
-                  onClick={handleLogin}
-                >
-                  Login
-                </button>
-              </div>
+              <button
+                className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen"
+                onClick={handleLogin}
+              >
+                Login
+              </button>
             )}
           </div>
+          
+          {/* menu icon for mobile */}
+          <div
+            onClick={() => setIsOpen(!isOpen)}
+            className="ml-4 flex items-center h-8 w-8 cursor-pointer md:hidden"
+          >
+            {isOpen ? <X /> : <Menu />}
+          </div>
+          
+          {/* Links menu */}
+          <ul
+            className={`absolute left-0 z-[-1] w-full bg-white pb-6 pl-9 pt-10 transition-all duration-300 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:pb-0 md:pl-0 md:pt-0 ${isOpen ? "top-10" : "top-[-490px]"}`}
+          >
+            <li>
+              <Link to="/search" className="my-5 no-underline hover:underline md:my-0 md:ml-8">
+                Search
+              </Link>
+            </li>
+            {Links.map((link) => (
+              <li key={link.name} className="my-5 no-underline hover:underline md:my-0 md:ml-8">
+                <a href={link.link} target="_blank">
+                  {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
