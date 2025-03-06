@@ -85,7 +85,7 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
       const { garden } = await createGardenAndDOI(gardenCreateRequest);
 
       toast.success("Garden created successfully!");
-      navigate(`/garden/${encodeURIComponent(garden.doi)}`);
+      navigate(`/garden/${encodeURIComponent(garden.doi)}?newlyCreated=true`);
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         const apiError = ApiError.fromAxiosError(error);

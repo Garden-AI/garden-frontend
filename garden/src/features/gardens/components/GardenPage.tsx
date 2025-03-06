@@ -1,12 +1,7 @@
-import React from "react";
-
-import { Link, useParams } from "react-router-dom";
-import { Badge } from "@/components/shadcn/badge";
-import { Button } from "@/components/shadcn/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/shadcn/card";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { LinkIcon, FlaskConicalIcon } from "lucide-react";
-import { toast } from "sonner";
+import { DatabaseIcon, BookIcon, ExternalLinkIcon, EditIcon, ClipboardIcon } from "lucide-react";
 
 import Breadcrumb from "@/components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
@@ -17,16 +12,23 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import ShareModal from "@/components/ShareModal";
 import TombstonePage from "@/components/TombstonePage";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import Markdown from "@/components/Markdown";
 
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
-import { useQueryClient } from "@tanstack/react-query";
-import { Garden } from "@/types";
 
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import SaveGardenButton from "./SaveGardenButton";
+
+// Import extracted components
+import {
+  EditableMetadataField,
+  EditableTags,
+  GardenDescription,
+  CitationBlock,
+  VisibilityWarning,
+  EditableTitle,
+  ReviewNotice
+} from "./garden-page";
 
 const GardenPage = () => {
   const { doi } = useParams();
@@ -34,6 +36,9 @@ const GardenPage = () => {
     return <NotFoundPage />;
   }
 
+  const [searchParams] = useSearchParams();
+  const isNewlyCreated = searchParams.get('newlyCreated') === 'true';
+  
   const auth = useGlobusAuth();
   const { data: garden, isLoading, isError } = useGetGarden(doi);
   const { mutate: updateGarden } = usePatchGarden();
@@ -48,299 +53,243 @@ const GardenPage = () => {
   if (garden.is_archived) {
     return <TombstonePage garden={garden} />;
   }
+
   const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
-
+  
+  // Get datasets and papers from entrypoints
+  const datasets = garden.entrypoints
+    ?.map((entrypoint) => entrypoint.datasets || [])
+    .flat()
+    .filter((dataset, index, self) => {
+      return index === self.findIndex((t) => t.doi === dataset.doi);
+    }) || [];
+  
+  const papers = garden.entrypoints
+    ?.map((entrypoint) => entrypoint.papers || [])
+    .flat()
+    .filter((paper, index, self) => {
+      return index === self.findIndex((t) => t.doi === paper.doi);
+    }) || [];
+  
   return (
-    <div className="mx-auto max-w-7xl px-4 md:px-6 pt-8 font-display">
-      <Breadcrumb
-        crumbs={[
-          { label: "Home", link: "/" },
-          { label: "Gardens", link: "/search" },
-          {
-            label: garden.title,
-            link: `/garden/${encodeURIComponent(garden.doi)}`,
-          },
-        ]}
-      />
-      <GardenHeader garden={garden} ownsThisGarden={ownsThisGarden} />
-      <GardenBody garden={garden} />
-      {ownsThisGarden && garden.is_test && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
-      <GardenAccordion garden={garden} />
-      {/*
-        Removed for now - wasn't relevant to the selected garden and it was 404'ing 
-        <RelatedGardens doi={garden.doi} /> 
-      */}
-    </div>
-  );
-};
-
-const GardenHeader = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
-  return (
-    <div className="my-4 flex items-center justify-between gap-2 sm:gap-3">
-      <div className="flex items-center">
-        <h1 className="text-xl sm:text-2xl font-medium">{garden.title}</h1>
-        {ownsThisGarden && garden.is_archived && (
-          <Badge className="ml-3 mt-0.5 px-2 text-xs" variant={"default"}>
-            {"Archived"}
-          </Badge>
-        )}
-      </div>
-      <div className="flex items-center gap-1">
-        <CopyButton
-          icon={<LinkIcon className="h-4 w-4" />}
-          content={`https://doi.org/${garden.doi}`}
-          hint="Copy Link"
+    <div className="container max-w-7xl">
+      <div className="mt-2 mb-4">
+        <Breadcrumb
+          crumbs={[
+            { label: "Home", link: "/" },
+            { label: "Gardens", link: "/gardens" },
+            { label: garden.title, link: `/garden/${garden.doi}` },
+          ]}
         />
-        <ShareModal doi={garden.doi} />
-        <SaveGardenButton garden={garden} />
-        <GardenDropdownOptions garden={garden} />
       </div>
-    </div>
-  );
-};
-
-const GardenBody = ({ garden }: { garden: Garden }) => {
-  return (
-    <div className="mb-4 rounded-lg border-0 bg-gray-100 p-3 text-xs text-gray-700">
-      <div className="flex w-full flex-row justify-between">
-        <div className="mb-2">
-          <h2 className="font-semibold">Contributors</h2>
-          <p>{garden.authors?.join(", ")}</p>
-        </div>
-      </div>
-      <div className="mb-2">
-        <h2 className="font-semibold">DOI</h2>
-        <div className="flex items-center">
-          <a
-            href={`https://doi.org/${garden.doi}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-green underline"
-          >
-            {garden.doi}
-          </a>
-          <CopyButton content={garden.doi} hint="Copy DOI" className="h-6 w-6 p-0.5" />
-          <Badge 
-            variant={garden.doi_is_draft ? "outline" : "default"}
-            className="text-xs font-medium"
-          >
-            {garden.doi_is_draft ? "Draft" : "Registered"}
-          </Badge>
-        </div>
-      </div>
-      <div>
-        <h2 className="font-semibold">Description</h2>
-        <Markdown content={garden.description ?? ""} />
-      </div>
-    </div>
-  );
-};
-
-const VisibilityWarning = ({ garden, updateGarden }: { garden: Garden; updateGarden: Function }) => {
-  const [isUpdating, setIsUpdating] = React.useState(false);
-  const queryClient = useQueryClient();
-
-  const handleMakePublic = () => {
-    setIsUpdating(true);
-    updateGarden(
-      {
-        doi: garden.doi,
-        garden: { is_test: false }
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["gardens"] });
-          queryClient.invalidateQueries({ queryKey: ["search"] });
-        },
-        onError: () => {
-          toast.error("Failed to make garden public. Please try again.");
-        },
-        onSettled: () => {
-          setIsUpdating(false);
-        }
-      }
-    );
-  };
-
-  return (
-    <div className="mb-4 rounded-lg border-2 border-yellow-200 bg-yellow-50 p-3">
-      <div className="flex items-start gap-2">
-        <FlaskConicalIcon className="mt-1 h-4 w-4 text-yellow-600" />
-        <div>
-          <h3 className="font-medium text-yellow-900 text-sm">This is a Test Garden</h3>
-          <p className="mt-1 text-xs text-yellow-700">
-            This garden won't show up in search results. Other users can still access it directly if you share the link.
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-2 border-yellow-300 text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800 h-7 text-xs"
-            onClick={handleMakePublic}
-            disabled={isUpdating}
-          >
-            {isUpdating ? (
-              <>
-                <LoadingSpinner/>
-                Making Public...
-              </>
-            ) : (
-              "Make Garden Public"
-            )}
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const GardenAccordion = ({ garden }: { garden: Garden }) => {
-  const tabs = [
-    {
-      name: "Functions",
-      content: <EntrypointsTab garden={garden} />,
-    },
-
-    {
-      name: "Datasets",
-      content: <DatasetsTab garden={garden} />,
-    },
-  ];
-  return (
-    <Tabs defaultValue="functions" className="mb-12 mt-10 min-h-[400px] w-full">
-      <TabsList className="m-0 grid w-full grid-cols-2 rounded-none bg-transparent p-0 ">
-        {tabs.map(({ name }) => (
-          <TabsTrigger
-            key={name}
-            value={name.toLowerCase()}
-            className="m-0 rounded-none border-b-4 border-transparent bg-gray-100 bg-gradient-to-b py-2 text-base text-black transition-none hover:border-primary hover:from-gray-100 hover:from-70% hover:to-primary data-[state=active]:border-green data-[state=active]:bg-primary/30 data-[state=active]:bg-none"
-          >
-            {name}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {tabs.map(({ name, content }) => (
-        <TabsContent key={name} value={name.toLowerCase()} className="px-4 py-8">
-          {content}
-        </TabsContent>
-      ))}
-    </Tabs>
-  );
-};
-
-const EntrypointsTab = ({ garden }: { garden: Garden }) => {
-  const entrypoints = garden.entrypoints || [];
-  const modalFunctions = garden.modal_functions || [];
-  const entrypointBoxes = entrypoints.map((entrypoint: any) => (
-    <EntrypointBox key={entrypoint.doi} entrypoint={entrypoint} />
-  ));
-  const modalFunctionBoxes = modalFunctions.map((modalFunction: any) => (
-    <ModalFunctionBox key={modalFunction.id} modalFunction={modalFunction} />
-  ));
-  const functionBoxes = entrypointBoxes.concat(modalFunctionBoxes);
-
-  if (!functionBoxes || functionBoxes.length === 0) {
-    return (
-      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">No Entrypoints Found</h2>
-        <p className="mt-2 text-gray-600">There are no entrypoints linked to this resource.</p>
-      </div>
-    );
-  }
-  return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">{functionBoxes}</div>
-  );
-};
-
-const DatasetsTab = ({ garden }: { garden: Garden }) => {
-  const datasets =
-    garden.entrypoints
-      ?.map((entrypoint) => entrypoint.datasets || [])
-      .flat()
-      .filter((dataset, index, self) => {
-        return index === self.findIndex((t) => t.doi === dataset.doi);
-      }) || [];
-
-  if (datasets.length === 0) {
-    return (
-      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">No Datasets Found</h2>
-        <p className="mt-2 text-gray-600">There are no datasets linked to this resource.</p>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <div className="mb-16 grid grid-cols-1 gap-2 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-4 ">
-        {datasets?.map((dataset: any) => (
-          <Card key={dataset.doi} className="rounded-lg border border-gray-200 shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold">{dataset.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <span className="font-medium text-gray-600">Data Type:</span>{" "}
-                {dataset.data_type || "N/A"}
+      
+      {/* Display review notice for newly created gardens */}
+      <ReviewNotice 
+        isNewlyCreated={isNewlyCreated} 
+        ownsThisGarden={ownsThisGarden} 
+      />
+      
+      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
+      
+      {/* Hero Metadata Section */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="flex flex-col-reverse lg:flex-row gap-6">
+          {/* Title, Description & Core Metadata */}
+          <div className="lg:w-2/3">
+            <div className="flex justify-between items-start mb-4">
+              <EditableTitle garden={garden} ownsThisGarden={ownsThisGarden} />
+              <div className="flex gap-2">
+                <SaveGardenButton garden={garden} />
+                <ShareModal
+                  doi={garden.doi}
+                />
+                <GardenDropdownOptions garden={garden} />
               </div>
-              <div>
-                <span className="font-medium text-gray-600">DOI:</span>{" "}
-                <a
-                  href={`https://doi.org/${dataset.doi}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {dataset.doi}
-                </a>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-start ">
-              <Button variant="default" size={"sm"} asChild className="text-xs">
-                <a href={dataset.url} target="_blank" rel="noopener noreferrer">
-                  View Dataset
-                </a>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-      {datasets.some((dataset) => dataset.url.toString().includes("foundry")) && (
-        <div>
-          <p className="mb-8 text-center text-lg">
-            One or more of these datasets uses Foundry, here is how you can view it:
-          </p>
-          <div className="rounded-xl bg-gray-800 py-6 pl-6 text-white sm:mx-8 lg:mx-32">
-            <code className="leading-loose">
-              <span className="text-gray-400">
-                # Make sure you've imported and instantiated foundry <br />
-              </span>
-              <span className="text-purple-600">from</span> foundry{" "}
-              <span className="text-purple-600">import</span> Foundry <br />f{" "}
-              <span className="text-indigo-400">=</span> Foundry()
-              <br />
-              <br />
-              <span className="text-gray-400">
-                # Load the data here <br />
-              </span>
-              dataset <span className="text-indigo-400">=</span> f.get_dataset(
-              <span className="text-green">'DOI goes here'</span>)
-              <br />
-              dataset.get_as_dict()
-            </code>
+            </div>
+            
+            {/* Description with Markdown */}
+            <GardenDescription garden={garden} />
+            
+            {/* Functions, Datasets, and Papers tabs */}
+            <div className="mt-6">
+              <Tabs defaultValue="functions" className="w-full">
+                <TabsList className="mb-2">
+                  <TabsTrigger value="functions">Functions</TabsTrigger>
+                  <TabsTrigger value="datasets">Datasets</TabsTrigger>
+                  <TabsTrigger value="papers">Papers</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="functions" className="mt-0">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {garden.entrypoints?.map((entrypoint, index) => (
+                          <EntrypointBox
+                            key={index}
+                            entrypoint={entrypoint}
+                          />
+                        ))}
+                        {garden.modal_functions?.map((modalFunction, index) => (
+                          <ModalFunctionBox
+                            key={index}
+                            modalFunction={modalFunction}
+                          />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="datasets" className="mt-0">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div>
+                        <h3 className="text-lg font-medium flex items-center mb-3">
+                          <DatabaseIcon className="h-5 w-5 mr-2 text-blue-500" />
+                          Datasets
+                        </h3>
+                        {datasets.length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {datasets.map((dataset, index) => (
+                              <a 
+                                key={index} 
+                                href={`https://doi.org/${dataset.doi}`}
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="block p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                <div className="flex items-start">
+                                  <div className="flex-1">
+                                    <p className="font-medium">{dataset.title}</p>
+                                    <p className="text-sm text-gray-500 mt-1 font-mono">{dataset.doi}</p>
+                                  </div>
+                                  <ExternalLinkIcon className="h-4 w-4 text-gray-400 mt-1" />
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 italic">No datasets associated with this garden</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="papers" className="mt-0">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div>
+                        <h3 className="text-lg font-medium flex items-center mb-3">
+                          <BookIcon className="h-5 w-5 mr-2 text-blue-500" />
+                          Papers
+                        </h3>
+                        {papers.length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {papers.map((paper, index) => (
+                              <a 
+                                key={index} 
+                                href={`https://doi.org/${paper.doi}`}
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="block p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                <div className="flex items-start">
+                                  <div className="flex-1">
+                                    <p className="font-medium">{paper.title}</p>
+                                    <p className="text-sm text-gray-500 mt-1 font-mono">{paper.doi}</p>
+                                  </div>
+                                  <ExternalLinkIcon className="h-4 w-4 text-gray-400 mt-1" />
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 italic">No papers associated with this garden</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
-          <p className="pt-8 text-center text-lg ">
-            New to Foundry or need a refresher? Click{" "}
-            <Link
-              target="blank"
-              to="https://ai-materials-and-chemistry.gitbook.io/foundry/"
-              className="text-blue hover:underline"
-            >
-              here
-            </Link>{" "}
-            to learn more.
-          </p>
+          
+          {/* Metadata Details */}
+          <div className="lg:w-1/3 bg-gray-50 rounded-lg p-3">
+            <div className="space-y-1">
+              {/* DOI Field */}
+              <div className="mt-2 group border border-transparent hover:border-gray-200 rounded-md py-1 px-1.5 -mx-1.5 transition-colors">
+                <p className="text-sm text-gray-500">
+                  DOI
+                </p>
+                <div className="flex items-center mt-0.5">
+                  <p className="font-medium font-mono text-gray-800 flex-1 overflow-hidden overflow-ellipsis">
+                    {garden.doi}
+                  </p>
+                  <CopyButton 
+                    content={garden.doi} 
+                    hint="Copy DOI" 
+                    className="ml-2" 
+                    icon={<ClipboardIcon className="h-4 w-4" />}
+                  />
+                </div>
+              </div>
+              
+              <EditableMetadataField
+                label="Authors"
+                value={garden.authors}
+                fieldName="authors"
+                garden={garden}
+                ownsThisGarden={ownsThisGarden}
+                isArray={true}
+              />
+              
+              <EditableMetadataField
+                label="Year"
+                value={garden.year}
+                fieldName="year"
+                garden={garden}
+                ownsThisGarden={ownsThisGarden}
+              />
+              
+              <EditableMetadataField
+                label="Version"
+                value={garden.version}
+                fieldName="version"
+                garden={garden}
+                ownsThisGarden={ownsThisGarden}
+              />
+              
+              <EditableTags
+                garden={garden}
+                ownsThisGarden={ownsThisGarden}
+              />
+              
+              {/* Citation Block - Moved from sidebar to metadata section */}
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-sm font-semibold text-gray-700 flex items-center">
+                    <BookIcon className="h-4 w-4 mr-1.5" /> Citation
+                  </h3>
+                  <CopyButton 
+                    content={`@software{${garden.doi.split('/').pop()},
+  author = {${garden.authors ? garden.authors.join(', ') : 'Authors not specified'}},
+  title = {${garden.title}},
+  year = {${garden.year || 'n.d.'}},
+  publisher = {Garden AI},
+  doi = {${garden.doi}}
+}`}
+                    hint="Copy Citation"
+                    icon={<ClipboardIcon className="h-4 w-4" />}
+                  />
+                </div>
+                <CitationBlock garden={garden} />
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
