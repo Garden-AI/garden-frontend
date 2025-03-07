@@ -45,16 +45,16 @@ const RepositoryModal = ({ edit, onSave, initialData, trigger }: RepositoryModal
   const form = useForm<RepositoryFormData>({
     resolver: zodResolver(repositorySchema),
     defaultValues: {
-      repo_name: (initialData?.repo_name as string | undefined) ?? "",
-      url: (initialData?.url as string | undefined) ?? "",
+      repo_name: initialData?.repo_name || "",
+      url: initialData?.url || "",
       contributors:
         initialData?.contributors?.map((contributor) => ({
           value: contributor,
           label: contributor,
         })) || [],
-      license: (initialData?.license as string | undefined) ?? "",
-      version: (initialData?.version as string | undefined) ?? "",
-      description: (initialData?.description as string | undefined) ?? "",
+      license: initialData?.license as string || "",
+      version: initialData?.version as string || "",
+      description: initialData?.description as string || "",
     },
   });
 
@@ -66,16 +66,16 @@ const RepositoryModal = ({ edit, onSave, initialData, trigger }: RepositoryModal
       // If we're editing, load the initial data
       if (edit && initialData) {
         form.reset({
-          repo_name: (initialData.repo_name as string | undefined) ?? "",
-          url: (initialData.url as string | undefined) ?? "",
+          repo_name: initialData.repo_name || "",
+          url: initialData.url || "",
           contributors:
             initialData.contributors?.map((contributor) => ({
               value: contributor,
               label: contributor,
             })) || [],
-          license: (initialData.license as string | undefined) ?? "",
-          version: (initialData.version as string | undefined) ?? "",
-          description: (initialData.description as string | undefined) ?? "",
+          license: initialData.license as string || "",
+          version: initialData.version as string || "",
+          description: initialData.description as string || "",
         });
       } else {
         // If we're adding a new repository, reset to empty values
