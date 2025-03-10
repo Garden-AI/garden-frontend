@@ -77,7 +77,7 @@ const GardenPage = () => {
         <Breadcrumb
           crumbs={[
             { label: "Home", link: "/" },
-            { label: "Gardens", link: "/gardens" },
+            { label: "Gardens", link: "/search" },
             { label: garden.title, link: `/garden/${garden.doi}` },
           ]}
         />

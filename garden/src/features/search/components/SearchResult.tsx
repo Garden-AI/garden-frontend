@@ -48,7 +48,7 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
           <span>{garden.year}</span>
           <BookOpenIcon className="ml-2 h-4 w-4" />
           <span>
-            {entrypoints?.length} entrypoint
+            {entrypoints?.length} function
             {entrypoints?.length !== 1 && <span>s</span>}
           </span>
         </CardDescription>
