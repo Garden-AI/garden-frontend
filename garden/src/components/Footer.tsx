@@ -104,6 +104,18 @@ const Footer = () => {
             </section>
 
             <section className="place-self-center">
+              <a target="blank" href="https://foundry-ml.org/#/">
+                <div className="grayscale">
+                  <img
+                    src="img/extern-logos/foundry.png"
+                    alt="Foundry logo"
+                    className="max-w-[150px] hover:opacity-75"
+                  />
+                </div>
+              </a>
+            </section>
+
+            <section className="place-self-center">
               <a target="blank" href="https://www.globus.org/">
                 <div className="grayscale">
                   <img
