@@ -55,29 +55,60 @@ export const fetchZenodoMetadata = async (zenodoId: string): Promise<Partial<Dat
     // Get DOI
     const doi = metadata.doi || "";
     
-    // Get repository information
-    // Use the community or publisher as repository if available
-    let repository = "";
-    if (metadata.communities && metadata.communities.length > 0) {
-      repository = metadata.communities[0].id || "";
-    } else if (metadata.publisher) {
-      repository = metadata.publisher;
-    } else {
-      repository = "Zenodo";
-    }
+    // Always use "Zenodo" as the repository for consistency
+    const repository = "Zenodo";
     
     // Get data type
-    // Try to determine data type from resource_type or keywords
+    // Extract more specific data type information
     let dataType = "";
-    if (metadata.resource_type && metadata.resource_type.type) {
-      dataType = metadata.resource_type.type.toLowerCase();
-      // Map Zenodo resource types to our data types
-      if (dataType === "dataset" || dataType === "image" || dataType === "video") {
-        dataType = "raw";
-      } else if (dataType === "software" || dataType === "lesson") {
-        dataType = "processed";
-      } else if (dataType === "publication" || dataType === "presentation") {
-        dataType = "analyzed";
+    
+    // First check if there's a specific resource type
+    if (metadata.resource_type) {
+      if (metadata.resource_type.type === "dataset") {
+        // For datasets, try to determine a more specific type from keywords or description
+        if (metadata.keywords && metadata.keywords.length > 0) {
+          const keywords = metadata.keywords.map((k: string) => k.toLowerCase());
+          
+          if (keywords.some((k: string) => k.includes("image") || k.includes("photo") || k.includes("picture"))) {
+            dataType = "Image";
+          } else if (keywords.some((k: string) => k.includes("video") || k.includes("audio") || k.includes("sound"))) {
+            dataType = "Video/Audio";
+          } else if (keywords.some((k: string) => k.includes("text") || k.includes("document"))) {
+            dataType = "Text";
+          } else if (keywords.some((k: string) => k.includes("tabular") || k.includes("csv") || k.includes("excel") || k.includes("spreadsheet"))) {
+            dataType = "Tabular";
+          } else if (keywords.some((k: string) => k.includes("code") || k.includes("software") || k.includes("program"))) {
+            dataType = "Software";
+          }
+        }
+        
+        // If we couldn't determine from keywords, check file types if available
+        if (!dataType && data.files && data.files.length > 0) {
+          const fileExtensions = data.files.map((file: any) => {
+            const parts = file.key.split('.');
+            return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+          });
+          
+          if (fileExtensions.some((ext: string) => ['jpg', 'jpeg', 'png', 'gif', 'tiff'].includes(ext))) {
+            dataType = "Image";
+          } else if (fileExtensions.some((ext: string) => ['mp4', 'avi', 'mov', 'mp3', 'wav'].includes(ext))) {
+            dataType = "Video/Audio";
+          } else if (fileExtensions.some((ext: string) => ['txt', 'pdf', 'doc', 'docx'].includes(ext))) {
+            dataType = "Text";
+          } else if (fileExtensions.some((ext: string) => ['csv', 'xlsx', 'xls', 'tsv'].includes(ext))) {
+            dataType = "Tabular";
+          } else if (fileExtensions.some((ext: string) => ['py', 'js', 'java', 'c', 'cpp', 'r', 'ipynb'].includes(ext))) {
+            dataType = "Software";
+          }
+        }
+        
+        // If still no specific type, just use "Dataset"
+        if (!dataType) {
+          dataType = "Dataset";
+        }
+      } else {
+        // For non-dataset types, use the resource type directly
+        dataType = metadata.resource_type.title || metadata.resource_type.type;
       }
     }
     

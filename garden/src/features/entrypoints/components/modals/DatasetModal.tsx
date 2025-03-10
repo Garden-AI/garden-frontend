@@ -60,6 +60,26 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
 
   const url = form.watch("url");
 
+  // Reset form when modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      // If editing, use initialData, otherwise reset to empty values
+      if (edit && initialData) {
+        form.reset(initialData);
+      } else {
+        form.reset({
+          title: "",
+          doi: "",
+          url: "",
+          data_type: "",
+          repository: "",
+        });
+      }
+      // Also reset the previousUrl state to prevent auto-fill from triggering
+      setPreviousUrl("");
+    }
+  }, [isOpen, form, edit, initialData]);
+
   // Auto-populate dataset metadata when URL changes
   useEffect(() => {
     const fetchZenodoData = async (zenodoId: string) => {
@@ -112,8 +132,6 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
   }, [url, form, previousUrl]);
 
   const handleSave = (data: DatasetFormData) => {
-    //clear form
-    form.reset();
     onSave(data);
     setIsOpen(false);
   };
@@ -132,66 +150,6 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
         </DialogHeader>
         <Form {...form}>
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Dataset title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="data_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select data type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="raw">Raw</SelectItem>
-                      <SelectItem value="processed">Processed</SelectItem>
-                      <SelectItem value="analyzed">Analyzed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="repository"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Repository</FormLabel>
-                  <FormControl>
-                    <div className="flex">
-                      <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
-                        <Book className="h-4 w-4" />
-                      </span>
-                      <Input
-                        className="rounded-l-none"
-                        placeholder="Dataset repository"
-                        {...field}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="url"
@@ -218,6 +176,65 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
                   <FormDescription>
                     Paste a Zenodo link to auto-fill dataset details
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Dataset title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="data_type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Data Type</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="e.g., Tabular, Image, Text, Video," 
+                      {...field} 
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Describe the type of data (e.g., Tabular, Image, Text, Video)
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="repository"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Repository</FormLabel>
+                  <FormControl>
+                    <div className="flex">
+                      <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
+                        <Book className="h-4 w-4" />
+                      </span>
+                      <Input
+                        className="rounded-l-none"
+                        placeholder="Dataset repository"
+                        {...field}
+                        value={field.value || ""}
+                      />
+                    </div>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
