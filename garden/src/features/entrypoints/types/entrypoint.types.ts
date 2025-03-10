@@ -49,6 +49,9 @@ export const repositorySchema = z.object({
   repo_name: z.string().min(1, "Repository Name is required"),
   contributors: z.array(optionSchema).optional(),
   url: z.string().url("Must be a valid URL"),
+  license: z.string().optional().or(z.literal("")),
+  version: z.string().optional().or(z.literal("")),
+  description: z.string().optional().or(z.literal("")),
 });
 
 export const paperSchema = z.object({

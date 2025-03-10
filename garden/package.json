@@ -10,6 +10,7 @@
     "@globus/sdk": "3.4.0",
     "@globus/types": "^0.0.7",
     "@hookform/resolvers": "^3.6.0",
+    "@octokit/rest": "^21.1.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.0",
