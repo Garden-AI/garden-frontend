@@ -28,11 +28,6 @@ const Footer = () => {
           <div className="mr-8 md:mr-16">
             <p className="font-bold uppercase text-gray-600">About</p>
             <div>
-              <Link to="/terms" className="no-underline hover:underline">
-                Terms
-              </Link>
-            </div>
-            <div>
               <Link to="/team" className="no-underline hover:underline">
                 Team
               </Link>
