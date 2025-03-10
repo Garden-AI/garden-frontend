@@ -31,7 +31,7 @@ export const PaperCard = ({
               href={paperLink} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-green hover:underline"
+              className="hover:text-blue-600 hover:underline"
             >
               {paper.title}
             </a>

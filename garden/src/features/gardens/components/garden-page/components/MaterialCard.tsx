@@ -129,7 +129,7 @@ export function BaseMaterialCard<T extends MaterialType>({
                   href={materialLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-green hover:underline transition-colors"
+                  className="hover:text-blue-600 hover:underline transition-colors"
                 >
                   {title}
                 </a>

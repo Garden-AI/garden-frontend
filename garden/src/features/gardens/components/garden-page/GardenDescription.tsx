@@ -115,7 +115,7 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
             </div>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-2 text-sm text-green hover:text-darkgreen flex items-center bg-white px-2 py-1 rounded-md shadow-sm border border-gray-100"
+              className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center"
             >
               {isExpanded ? (
                 <>
