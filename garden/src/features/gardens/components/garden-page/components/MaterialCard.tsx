@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { Edit2, Trash2 } from "lucide-react";
@@ -76,9 +76,6 @@ export function BaseMaterialCard<T extends MaterialType>({
   toggleAll: propToggleAll
 }: BaseMaterialCardProps<T>) {
   
-  // Debug logging for ownership issues
-  console.log(`BaseMaterialCard [${materialType}] - isOwner: ${isOwner}, Garden owner: ${garden.owner_identity_id}, Current user: ${garden.current_user_id}`);
-  
   // Use Material Actions hook if props aren't provided
   const hooksResult = useMaterialActions<T>({
     material,
@@ -109,11 +106,6 @@ export function BaseMaterialCard<T extends MaterialType>({
   const handleSelectiveRemove = propHandleSelectiveRemove || hooksResult.handleSelectiveRemove;
   const toggleFunction = propToggleFunction || hooksResult.toggleFunction;
   const toggleAll = propToggleAll || hooksResult.toggleAll;
-
-  // Use effect to log when isSelectiveEditing changes
-  useEffect(() => {
-    console.log(`BaseMaterialCard: isSelectiveEditing is ${isSelectiveEditing}`);
-  }, [isSelectiveEditing]);
 
   return (
     <>

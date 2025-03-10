@@ -1,7 +1,7 @@
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { DatabaseIcon, BookIcon, ExternalLinkIcon, EditIcon, ClipboardIcon, FolderGit2 } from "lucide-react";
+import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2 } from "lucide-react";
 import { useState, useCallback } from 'react';
 
 import Breadcrumb from "@/components/Breadcrumb";
@@ -124,9 +124,6 @@ const GardenPage = () => {
   const findFunctionsWithMaterial = (doi: string): ModalFunctionWithOwner[] => {
     if (!extendedGarden.modal_functions) return [];
     
-    console.log(`Looking for functions with material DOI: ${doi}`);
-    console.log(`Total functions in garden: ${extendedGarden.modal_functions.length}`);
-    
     const foundFunctions = extendedGarden.modal_functions.filter(func => {
       // Check datasets
       const hasMaterialInDataset = func.datasets?.some(
@@ -138,18 +135,8 @@ const GardenPage = () => {
         paper => paper.doi === doi
       );
       
-      const found = hasMaterialInDataset || hasMaterialInPaper;
-      
-      if (found) {
-        console.log(`Found material in function: ${func.id}, Title: ${func.title}`);
-        // Log if owner_identity_id exists
-        console.log(`Function has owner_identity_id: ${('owner_identity_id' in func) ? 'yes' : 'no'}`);
-      }
-      
-      return found;
+      return hasMaterialInDataset || hasMaterialInPaper;
     }) as ModalFunctionWithOwner[];
-    
-    console.log(`Found ${foundFunctions.length} functions with the material`);
     
     return foundFunctions;
   };
