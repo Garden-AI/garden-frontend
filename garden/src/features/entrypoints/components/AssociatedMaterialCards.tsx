@@ -31,7 +31,7 @@ export const PaperCard = ({
               href={paperLink} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-blue-600 hover:underline"
+              className="hover:text-green hover:underline"
             >
               {paper.title}
             </a>
@@ -121,7 +121,7 @@ export const DatasetCard = ({
         )}
 
         {dataset.url && (
-          <div className="flex items-center text-sm text-blue-600">
+          <div className="flex items-center text-sm text-green">
             <Link className="mr-2 h-4 w-4 flex-shrink-0" />
             <a
               href={dataset.url}

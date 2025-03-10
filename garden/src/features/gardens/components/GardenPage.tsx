@@ -1,7 +1,8 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { DatabaseIcon, BookIcon, ExternalLinkIcon, EditIcon, ClipboardIcon } from "lucide-react";
+import { DatabaseIcon, BookIcon, ExternalLinkIcon, EditIcon, ClipboardIcon, FolderGit2 } from "lucide-react";
+import { useState, useCallback } from 'react';
 
 import Breadcrumb from "@/components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
@@ -18,6 +19,8 @@ import { usePatchGarden } from "../api/usePatchGarden";
 
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import SaveGardenButton from "./SaveGardenButton";
+import { Dataset, Paper, Repository, ModalFunction } from "@/types";
+import { ExtendedGarden } from "@/types/garden.types";
 
 // Import extracted components
 import {
@@ -27,11 +30,22 @@ import {
   CitationBlock,
   VisibilityWarning,
   EditableTitle,
-  ReviewNotice
+  ReviewNotice,
+  AddMaterialWithFunctionSelect,
+  DatasetCard,
+  PaperCard,
+  RepositoryCard
 } from "./garden-page";
+
+// Extend ModalFunction type to include owner_identity_id
+type ModalFunctionWithOwner = ModalFunction & {
+  owner_identity_id: string;
+};
 
 const GardenPage = () => {
   const { doi } = useParams();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
   if (!doi) {
     return <NotFoundPage />;
   }
@@ -40,8 +54,14 @@ const GardenPage = () => {
   const isNewlyCreated = searchParams.get('newlyCreated') === 'true';
   
   const auth = useGlobusAuth();
-  const { data: garden, isLoading, isError } = useGetGarden(doi);
+  const { data: garden, isLoading, isError, refetch } = useGetGarden(doi);
   const { mutate: updateGarden } = usePatchGarden();
+
+  // Callback to refresh data after adding materials
+  const handleMaterialAdded = useCallback(() => {
+    refetch();
+    setRefreshTrigger(prev => prev + 1);
+  }, [refetch]);
 
   if (isLoading) {
     return <LoadingOverlay />;
@@ -54,22 +74,85 @@ const GardenPage = () => {
     return <TombstonePage garden={garden} />;
   }
 
+  // Cast garden to ExtendedGarden to support our type definitions
+  const extendedGarden = garden as ExtendedGarden;
+  
+  // Set current user ID on the garden object for ownership checks in material actions
+  if (auth.isAuthenticated && auth?.authorization?.user?.sub) {
+    extendedGarden.current_user_id = auth.authorization.user.sub;
+  }
+  
   const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
   
-  // Get datasets and papers from entrypoints
-  const datasets = garden.entrypoints
-    ?.map((entrypoint) => entrypoint.datasets || [])
-    .flat()
-    .filter((dataset, index, self) => {
-      return index === self.findIndex((t) => t.doi === dataset.doi);
-    }) || [];
+  // Helper function to deduplicate materials by DOI
+  const deduplicateByDOI = <T extends { doi?: string | null }>(items: T[]): T[] => {
+    return items.filter((item, index, self) => {
+      // Skip items with no DOI
+      if (!item.doi) return true;
+      
+      return index === self.findIndex((t) => t.doi === item.doi);
+    });
+  };
   
-  const papers = garden.entrypoints
-    ?.map((entrypoint) => entrypoint.papers || [])
-    .flat()
-    .filter((paper, index, self) => {
-      return index === self.findIndex((t) => t.doi === paper.doi);
-    }) || [];
+  // Helper function to deduplicate repositories by URL
+  const deduplicateRepositoriesByURL = (repos: Repository[]): Repository[] => {
+    return repos.filter((repo, index, self) => {
+      if (!repo.url) return true;
+      return index === self.findIndex((t) => t.url === repo.url);
+    });
+  };
+  
+  // Collect and deduplicate datasets from all functions
+  const allDatasets = deduplicateByDOI([
+    ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.datasets || []).flat() || []),
+    ...(extendedGarden.modal_functions?.map(func => func.datasets || []).flat() || [])
+  ]);
+  
+  // Collect and deduplicate papers from all functions
+  const allPapers = deduplicateByDOI([
+    ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.papers || []).flat() || []),
+    ...(extendedGarden.modal_functions?.map(func => func.papers || []).flat() || [])
+  ]);
+  
+  // Collect and deduplicate repositories from all functions
+  const allRepositories = deduplicateRepositoriesByURL([
+    ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.repositories || []).flat() || []),
+    ...(extendedGarden.modal_functions?.map(func => func.repositories || []).flat() || [])
+  ]);
+  
+  // Find all functions that use a specific material by its DOI
+  const findFunctionsWithMaterial = (doi: string): ModalFunctionWithOwner[] => {
+    if (!extendedGarden.modal_functions) return [];
+    
+    console.log(`Looking for functions with material DOI: ${doi}`);
+    console.log(`Total functions in garden: ${extendedGarden.modal_functions.length}`);
+    
+    const foundFunctions = extendedGarden.modal_functions.filter(func => {
+      // Check datasets
+      const hasMaterialInDataset = func.datasets?.some(
+        dataset => dataset.doi === doi
+      );
+      
+      // Check papers
+      const hasMaterialInPaper = func.papers?.some(
+        paper => paper.doi === doi
+      );
+      
+      const found = hasMaterialInDataset || hasMaterialInPaper;
+      
+      if (found) {
+        console.log(`Found material in function: ${func.id}, Title: ${func.title}`);
+        // Log if owner_identity_id exists
+        console.log(`Function has owner_identity_id: ${('owner_identity_id' in func) ? 'yes' : 'no'}`);
+      }
+      
+      return found;
+    }) as ModalFunctionWithOwner[];
+    
+    console.log(`Found ${foundFunctions.length} functions with the material`);
+    
+    return foundFunctions;
+  };
   
   return (
     <div className="container max-w-7xl">
@@ -92,7 +175,7 @@ const GardenPage = () => {
       {garden.is_test && ownsThisGarden && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
       
       {/* Hero Metadata Section */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
         <div className="flex flex-col-reverse lg:flex-row gap-6">
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">
@@ -112,24 +195,36 @@ const GardenPage = () => {
             
             {/* Functions, Datasets, and Papers tabs */}
             <div className="mt-6">
-              <Tabs defaultValue="functions" className="w-full">
-                <TabsList className="mb-2">
-                  <TabsTrigger value="functions">Functions</TabsTrigger>
-                  <TabsTrigger value="datasets">Datasets</TabsTrigger>
-                  <TabsTrigger value="papers">Papers</TabsTrigger>
+              <Tabs 
+                defaultValue={
+                  extendedGarden.modal_functions?.length ? "functions" : 
+                  allDatasets.length ? "datasets" : 
+                  allPapers.length ? "papers" : 
+                  "functions"
+                } 
+                className="w-full"
+              >
+                <TabsList className="mb-2 bg-gray-100 p-0.5">
+                  <TabsTrigger value="functions" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Functions</TabsTrigger>
+                  <TabsTrigger value="datasets" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                    Datasets {allDatasets.length > 0 && `(${allDatasets.length})`}
+                  </TabsTrigger>
+                  <TabsTrigger value="papers" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                    Papers {allPapers.length > 0 && `(${allPapers.length})`}
+                  </TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="functions" className="mt-0">
-                  <Card>
+                <TabsContent value="functions" className="mt-0 relative">
+                  <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {garden.entrypoints?.map((entrypoint, index) => (
+                        {extendedGarden.entrypoints?.map((entrypoint, index) => (
                           <EntrypointBox
                             key={index}
                             entrypoint={entrypoint}
                           />
                         ))}
-                        {garden.modal_functions?.map((modalFunction, index) => (
+                        {extendedGarden.modal_functions?.map((modalFunction, index) => (
                           <ModalFunctionBox
                             key={index}
                             modalFunction={modalFunction}
@@ -140,32 +235,38 @@ const GardenPage = () => {
                   </Card>
                 </TabsContent>
                 
-                <TabsContent value="datasets" className="mt-0">
-                  <Card>
+                <TabsContent value="datasets" className="mt-0 relative">
+                  <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
                       <div>
-                        <h3 className="text-lg font-medium flex items-center mb-3">
-                          <DatabaseIcon className="h-5 w-5 mr-2 text-blue-500" />
-                          Datasets
-                        </h3>
-                        {datasets.length > 0 ? (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {datasets.map((dataset, index) => (
-                              <a 
-                                key={index} 
-                                href={`https://doi.org/${dataset.doi}`}
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="block p-3 border rounded-lg hover:bg-gray-50 transition-colors"
-                              >
-                                <div className="flex items-start">
-                                  <div className="flex-1">
-                                    <p className="font-medium">{dataset.title}</p>
-                                    <p className="text-sm text-gray-500 mt-1 font-mono">{dataset.doi}</p>
-                                  </div>
-                                  <ExternalLinkIcon className="h-4 w-4 text-gray-400 mt-1" />
-                                </div>
-                              </a>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-lg font-medium flex items-center">
+                            <DatabaseIcon className="h-5 w-5 mr-2 text-green" />
+                            Datasets
+                          </h3>
+                          
+                          {/* Show add button for garden owners */}
+                          {ownsThisGarden && (extendedGarden.modal_functions?.length ?? 0) > 0 && (
+                            <AddMaterialWithFunctionSelect
+                              garden={extendedGarden}
+                              materialType="datasets"
+                              onSuccess={handleMaterialAdded}
+                            />
+                          )}
+                        </div>
+                        
+                        {/* Display all deduplicated datasets */}
+                        {allDatasets.length > 0 ? (
+                          <div className="grid grid-cols-1 gap-8 py-2">
+                            {allDatasets.map((dataset) => (
+                              <DatasetCard 
+                                key={dataset.doi || dataset.title} 
+                                dataset={dataset} 
+                                isOwner={ownsThisGarden}
+                                garden={extendedGarden as ExtendedGarden}
+                                findAffectedFunctions={findFunctionsWithMaterial}
+                                onUpdate={() => refetch()}
+                              />
                             ))}
                           </div>
                         ) : (
@@ -176,32 +277,38 @@ const GardenPage = () => {
                   </Card>
                 </TabsContent>
                 
-                <TabsContent value="papers" className="mt-0">
-                  <Card>
+                <TabsContent value="papers" className="mt-0 relative">
+                  <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
                       <div>
-                        <h3 className="text-lg font-medium flex items-center mb-3">
-                          <BookIcon className="h-5 w-5 mr-2 text-blue-500" />
-                          Papers
-                        </h3>
-                        {papers.length > 0 ? (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {papers.map((paper, index) => (
-                              <a 
-                                key={index} 
-                                href={`https://doi.org/${paper.doi}`}
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="block p-3 border rounded-lg hover:bg-gray-50 transition-colors"
-                              >
-                                <div className="flex items-start">
-                                  <div className="flex-1">
-                                    <p className="font-medium">{paper.title}</p>
-                                    <p className="text-sm text-gray-500 mt-1 font-mono">{paper.doi}</p>
-                                  </div>
-                                  <ExternalLinkIcon className="h-4 w-4 text-gray-400 mt-1" />
-                                </div>
-                              </a>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-lg font-medium flex items-center">
+                            <BookIcon className="h-5 w-5 mr-2 text-green" />
+                            Papers
+                          </h3>
+                          
+                          {/* Show add button for garden owners */}
+                          {ownsThisGarden && (extendedGarden.modal_functions?.length ?? 0) > 0 && (
+                            <AddMaterialWithFunctionSelect
+                              garden={extendedGarden}
+                              materialType="papers"
+                              onSuccess={handleMaterialAdded}
+                            />
+                          )}
+                        </div>
+                        
+                        {/* Display all deduplicated papers */}
+                        {allPapers.length > 0 ? (
+                          <div className="grid grid-cols-1 gap-8 py-2">
+                            {allPapers.map((paper) => (
+                              <PaperCard 
+                                key={paper.doi || paper.title} 
+                                paper={paper} 
+                                isOwner={ownsThisGarden}
+                                garden={extendedGarden as ExtendedGarden}
+                                findAffectedFunctions={findFunctionsWithMaterial}
+                                onUpdate={() => refetch()}
+                              />
                             ))}
                           </div>
                         ) : (
@@ -216,16 +323,15 @@ const GardenPage = () => {
           </div>
           
           {/* Metadata Details */}
-          <div className="lg:w-1/3 bg-gray-50 rounded-lg p-3">
-            <div className="space-y-1">
+          <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold mb-2">Metadata</h3>
+              
               {/* DOI Field */}
-              <div className="mt-2 group border border-transparent hover:border-gray-200 rounded-md py-1 px-1.5 -mx-1.5 transition-colors">
-                <p className="text-sm text-gray-500">
-                  DOI
-                </p>
-                <div className="flex items-center mt-0.5">
-                  <p className="font-medium font-mono text-gray-800 flex-1 overflow-hidden overflow-ellipsis">
-                    {garden.doi}
+              <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500 font-medium">
+                    DOI
                   </p>
                   <CopyButton 
                     content={garden.doi} 
@@ -233,6 +339,11 @@ const GardenPage = () => {
                     className="ml-2" 
                     icon={<ClipboardIcon className="h-4 w-4" />}
                   />
+                </div>
+                <div className="mt-0.5">
+                  <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
+                    {garden.doi}
+                  </p>
                 </div>
               </div>
               
@@ -266,15 +377,12 @@ const GardenPage = () => {
                 ownsThisGarden={ownsThisGarden}
               />
               
-              {/* Citation Block - Moved from sidebar to metadata section */}
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-sm font-semibold text-gray-700 flex items-center">
-                    <BookIcon className="h-4 w-4 mr-1.5" /> Citation
-                  </h3>
+              {/* Citation */}
+              <div className="mt-4 bg-white rounded-md p-3 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500 font-medium">Citation</p>
                   <CopyButton 
-                    content={`@software{${garden.doi.split('/').pop()},
-  author = {${garden.authors ? garden.authors.join(', ') : 'Authors not specified'}},
+                    content={`@software{
   title = {${garden.title}},
   year = {${garden.year || 'n.d.'}},
   publisher = {Garden AI},
@@ -290,6 +398,28 @@ const GardenPage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Repositories Section */}
+      {allRepositories.length > 0 && (
+        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mb-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center">
+            <FolderGit2 className="h-5 w-5 mr-2 text-green" />
+            Repositories
+          </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {allRepositories.map((repository) => (
+              <RepositoryCard 
+                key={repository.url || repository.repo_name} 
+                repository={repository} 
+                isOwner={ownsThisGarden}
+                garden={extendedGarden as ExtendedGarden}
+                findAffectedFunctions={findFunctionsWithMaterial}
+                onUpdate={() => refetch()}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import React from "react";
-import { Garden } from "@/types";
+import React from 'react';
+import { Garden } from '@/types';
 
 interface CitationBlockProps {
   garden: Garden;
@@ -15,8 +15,8 @@ const CitationBlock = ({ garden }: CitationBlockProps) => {
   const doi = garden.doi;
   
   return (
-    <div className="space-y-2">
-      <div className="p-3 bg-white border border-gray-200 rounded-md font-mono text-xs overflow-auto whitespace-pre-wrap">
+    <div className="mt-1 font-mono text-xs text-gray-600 bg-gray-50 p-2 rounded border border-gray-200">
+      <div className="overflow-auto whitespace-pre-wrap">
         <div className="flex">
           <div className="text-gray-500 w-20 flex-shrink-0">@software</div>
           <div>{`{${citationId},`}</div>

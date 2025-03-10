@@ -126,7 +126,7 @@ const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
             <Link
               target="blank"
               to="https://ai-materials-and-chemistry.gitbook.io/foundry/"
-              className="text-blue hover:underline"
+              className="text-blue-600 hover:underline"
             >
               here
             </Link>{" "}

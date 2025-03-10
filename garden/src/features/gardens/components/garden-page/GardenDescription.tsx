@@ -8,6 +8,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import Markdown from "@/components/Markdown";
 import { usePatchGarden } from "../../api/usePatchGarden";
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { z } from "zod";
+import { formSchema } from "../EditGardenschemas";
 
 interface GardenDescriptionProps {
   garden: Garden;
@@ -26,13 +28,14 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
   const shouldTruncate = descriptionText.length > truncateLength;
   
   const handleSave = () => {
-    // Validate description length
-    if (!inputValue || inputValue.length < 10) {
-      toast.error("Description must be at least 10 characters");
-      return;
-    }
-    if (inputValue.length > 1000) {
-      toast.error("Description must not exceed 1000 characters");
+    // Validate using the schema
+    const schema = formSchema.shape.description;
+    const result = schema.safeParse(inputValue);
+    
+    if (!result.success) {
+      // Display the first validation error
+      const errorMessage = result.error.errors[0]?.message || "Invalid description";
+      toast.error(errorMessage);
       return;
     }
     
@@ -51,20 +54,20 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
 
   if (isEditing && ownsThisGarden) {
     return (
-      <div className="mt-2 space-y-2 border border-gray-200 rounded-md p-3">
+      <div className="mt-2 space-y-2 border border-gray-200 rounded-md p-3 bg-gray-50 shadow-inner">
         <p className="text-sm font-medium text-gray-700 mb-1">Edit Description</p>
         <Textarea 
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Tell us about your garden"
-          className="w-full min-h-[120px]"
+          className="w-full min-h-[120px] bg-white"
         />
         
         <div className="flex gap-2">
           <Button 
             size="sm" 
             onClick={handleSave} 
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700"
           >
             <SaveIcon className="h-3.5 w-3.5" /> Save
           </Button>
@@ -82,7 +85,7 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
   }
   
   return (
-    <div className="relative group rounded-lg border p-3 hover:border-muted-foreground/20">
+    <div className="relative group rounded-lg border border-gray-200 p-4 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
       {ownsThisGarden && (
         <div className="absolute right-3 top-3 flex gap-1">
           <TooltipProvider delayDuration={150}>
@@ -90,7 +93,7 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
               <TooltipTrigger asChild>
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 hover:text-blue-800"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-green hover:text-darkgreen"
                   aria-label="Edit description"
                 >
                   <EditIcon className="h-4 w-4" />
@@ -104,15 +107,15 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
         </div>
       )}
       
-      <div className="mt-2">
+      <div className="mt-1">
         {garden.description && garden.description.length > 300 ? (
           <>
-            <div className={`${isExpanded ? "" : "line-clamp-3"}`}>
+            <div className={`${isExpanded ? "" : "line-clamp-3"} prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800`}>
               <Markdown content={garden.description} />
             </div>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-1 text-sm text-muted-foreground hover:text-primary flex items-center"
+              className="mt-2 text-sm text-green hover:text-darkgreen flex items-center bg-white px-2 py-1 rounded-md shadow-sm border border-gray-100"
             >
               {isExpanded ? (
                 <>
@@ -126,7 +129,9 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
             </button>
           </>
         ) : (
-          <Markdown content={garden.description || ""} />
+          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
+            <Markdown content={garden.description || ""} />
+          </div>
         )}
       </div>
     </div>

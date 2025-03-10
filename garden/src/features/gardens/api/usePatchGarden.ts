@@ -1,4 +1,5 @@
 import { Garden, GardenPatchRequest } from "@/types";
+import { ExtendedGarden, ExtendedGardenPatchRequest } from "@/types/garden.types";
 import axios from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -6,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 
 interface PatchGardenProps {
   doi: string;
-  garden: GardenPatchRequest;
+  garden: GardenPatchRequest | ExtendedGardenPatchRequest;
 }
+
 const patchGarden = async ({ doi, garden }: PatchGardenProps): Promise<Garden> => {
   try {
     const response = await axios.patch(`/gardens/${doi}`, garden);
