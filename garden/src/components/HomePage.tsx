@@ -53,11 +53,11 @@ const HomePage = () => {
 
   const gardens: Garden[] = [
     {
-      title: "Garden of assorted materials properties",
+      title: "FairChem/OpenCatalyst OC20 Models",
       description:
-        "Garden containing random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance",
-      doi: "10.26311/ep98-br79",
-      publisher: "Ryan Jacobs",
+        "This Garden contains models trained on the OC20 dataset published by FairChem and the Open Catalyst Project. The models in this Garden are full-sized and trained on the full OC20 dataset. Both S2EF and IS2RE models ...",
+      doi: "10.26311/65ez-ew73",
+      publisher: "Hayden Holbrook",
       language: "English",
       version: "1.0",
       is_archived: false,
@@ -68,11 +68,11 @@ const HomePage = () => {
       is_test: false,
     },
     {
-      title: "Atom segmentation deep learning models",
+      title: "AtomGPT Examples",
       description:
-        "A collection of models that identify atomic column coordinates in scanning transmission electron microscopy (STEM) images.",
-      doi: "10.26311/naqk-9p91",
-      publisher: "Will Engler",
+        "This garden lets you try out AtomGPT, a generative materials model developed by Kamal Choudhary at NIST.",
+      doi: "10.26311/vprp-1t41",
+      publisher: "Kamal Choudhary",
       language: "English",
       version: "1.0",
       is_archived: false,
@@ -83,11 +83,11 @@ const HomePage = () => {
       is_test: false,
     },
     {
-      title: "Transmission electron microscopy (TEM) video analysis models",
+      title: "Conservative to Primitive Conversion in Relativistic Hydrodynamics",
       description:
-        "This garden just hosts the DefectTrack model for now, and may host other TEM video processing models in the future.",
-      doi: "10.26311/frce-y203",
-      publisher: "Will Engler",
+        "This garden hosts a suite of PyTorch models (and corresponding TensorRT engines) trained for conservative-to-primitive variable recovery in numerical relativity simulations, specifically tailored ...",
+      doi: "10.26311/hhwc-0v60",
+      publisher: "Semih Kacmaz",
       language: "English",
       version: "1.0",
       is_archived: false,
@@ -98,54 +98,11 @@ const HomePage = () => {
       is_test: false,
     },
     {
-      title: "Models for processing position-averaged convergent beam electron diffraction images",
+      title: "Chemeleon Examples",
       description:
-        "This garden just hosts the PACBED-CNN model for now, and may host other position-averaged convergent beam electron diffraction models in the future.",
-      doi: "10.26311/hqgg-7m42",
-      publisher: "Will Engler",
-      language: "English",
-      version: "1.0",
-      is_archived: false,
-      entrypoint_ids: ["entrypoint1", "entrypoint2"],
-      owner_identity_id: "100",
-      id: 100,
-      modal_function_ids: [],
-      is_test: false,
-    },
-    {
-      title: "Semiconductor property prediction models",
-      description: "A collection of models for predicting properties of semiconductors",
-      doi: "10.26311/bg7s-v305",
-      publisher: "Will Engler",
-      language: "English",
-      version: "1.0",
-      is_archived: false,
-      entrypoint_ids: ["entrypoint1", "entrypoint2"],
-      owner_identity_id: "100",
-      id: 100,
-      modal_function_ids: [],
-      is_test: false,
-    },
-    {
-      title: "Materials Screening Performance Tests",
-      description: "Figuring out how to run millions of materials property predictions quickly",
-      doi: "10.23677/m4ek-bd27",
-      publisher: "Will Engler",
-      language: "English",
-      version: "1.0",
-      is_archived: false,
-      entrypoint_ids: ["entrypoint1", "entrypoint2"],
-      owner_identity_id: "100",
-      id: 100,
-      modal_function_ids: [],
-      is_test: false,
-    },
-    {
-      title: "Framework example garden",
-      description:
-        "This garden contains entrypoints showing how to use different popular AI frameworks in Garden",
-      doi: "10.26311/b74a-5c58",
-      publisher: "Will Engler",
+        "This is a Garden that runs variants of Chemeleon, a generative materials model by Hyunsoo Park and Aron Walsh at University College London.",
+      doi: "10.26311/6phn-gv02",
+      publisher: "Hyunsoo Park",
       language: "English",
       version: "1.0",
       is_archived: false,
@@ -401,7 +358,7 @@ predictions = predict_properties()`}
       </div>
 
       <div className="bg-green pt-6">
-        <div className="mx-auto max-w-5xl px-4">
+        <div className="mx-auto max-w-5xl px-4 pb-2">
           <div className="text-white">
             <h1 className="text-left text-3xl font-semibold">
               <div className="flex space-x-4">
@@ -413,7 +370,7 @@ predictions = predict_properties()`}
         </div>
 
         <ScrollArea className="w-full">
-          <div className="flex space-x-4 p-4 ">
+          <div className="flex justify-center space-x-4 p-4 ">
             {gardens?.map((res: any, index: any) => (
               <div className="h-[300px] w-[300px]" key={index}>
                 <GardenBox garden={res} />
