@@ -28,11 +28,6 @@ const Footer = () => {
           <div className="mr-8 md:mr-16">
             <p className="font-bold uppercase text-gray-600">About</p>
             <div>
-              <Link to="/terms" className="no-underline hover:underline">
-                Terms
-              </Link>
-            </div>
-            <div>
               <Link to="/team" className="no-underline hover:underline">
                 Team
               </Link>
@@ -102,18 +97,6 @@ const Footer = () => {
                   <img
                     src="img/extern-logos/mdf.png"
                     alt="MDF logo"
-                    className="max-w-[150px] hover:opacity-75"
-                  />
-                </div>
-              </a>
-            </section>
-
-            <section className="place-self-center">
-              <a target="blank" href="https://foundry-ml.org/#/">
-                <div className="grayscale">
-                  <img
-                    src="img/extern-logos/foundry.png"
-                    alt="Foundry logo"
                     className="max-w-[150px] hover:opacity-75"
                   />
                 </div>

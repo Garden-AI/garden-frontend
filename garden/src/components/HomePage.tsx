@@ -400,21 +400,15 @@ predictions = predict_properties()`}
         </div>
       </div>
 
-      <div className="bg-green pt-12">
+      <div className="bg-green pt-6">
         <div className="mx-auto max-w-5xl px-4">
           <div className="text-white">
             <h1 className="text-left text-3xl font-semibold">
               <div className="flex space-x-4">
                 <Rocket size={35} className="my-auto" />
-                <h3>Explore Featured Gardens </h3>
+                <h3>Featured Gardens </h3>
               </div>
             </h1>
-            <p className="mt-4 text-lg">
-              Take a look at some popular gardens that have been getting a lot of attention! You can
-              view the models, datasets, papers, and anything else associated with the garden.
-              Additionally, you can run the models to optimize your own workflow, gain inspiration,
-              or for any other reason you see fit.
-            </p>
           </div>
         </div>
 
