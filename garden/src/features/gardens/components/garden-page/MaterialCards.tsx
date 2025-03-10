@@ -1,5 +1,5 @@
 import { Paper, Dataset, Repository } from "@/types";
-import { BookOpen, FileType, FolderGit2, Link, Calendar, Book, Users } from "lucide-react";
+import { BookOpen, FileType, FolderGit2, Link, Calendar, Book, Users, Database } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import DatasetModal from "@/features/entrypoints/components/modals/DatasetModal";
 import PaperModal from "@/features/entrypoints/components/modals/PaperModal";
@@ -350,7 +350,7 @@ export const DatasetCard = ({
         garden={garden}
         findAffectedFunctions={findAffectedFunctions}
         onUpdate={onUpdate}
-        icon={<FileType className="h-4 w-4" />}
+        icon={<Database className="h-4 w-4" />}
         title={materialDataset.name}
         onEdit={handleEdit as any}
         onEditClick={handleEditClick}

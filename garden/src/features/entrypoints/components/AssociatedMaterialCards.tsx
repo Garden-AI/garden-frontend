@@ -1,7 +1,7 @@
 import { Paper, Dataset, Repository } from "@/types";
 import { Button } from "@/components/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/shadcn/card";
-import { Edit2, Book, FileType, Link } from "lucide-react";
+import { Edit2, Book, FileType, Link, Database } from "lucide-react";
 
 import DatasetModal from "./modals/DatasetModal";
 import DeleteConfirmationModal from "./modals/DeleteConfirmationModal";
@@ -137,7 +137,7 @@ export const DatasetCard = ({
 
         {dataset.doi && (
           <div className="flex items-center text-sm text-gray-600">
-            <FileType className="mr-2 h-4 w-4 flex-shrink-0" />
+            <Database className="mr-2 h-4 w-4 flex-shrink-0" />
             <span className="truncate" title={dataset.doi}>
               DOI: {dataset.doi}
             </span>
