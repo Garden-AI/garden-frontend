@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Book, Link, FileType } from "lucide-react";
+import { Book, Link, FileType, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/shadcn/button";
 import {
@@ -19,6 +21,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import {
@@ -28,8 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import { useState } from "react";
 import { DatasetFormData, datasetSchema } from "../../types/entrypoint.types";
+import { extractZenodoId, fetchZenodoMetadata } from "../../utils/zenodo";
 
 interface DatasetModalProps {
   edit?: boolean;
@@ -41,6 +44,8 @@ interface DatasetModalProps {
 
 const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
+  const [previousUrl, setPreviousUrl] = useState<string>("");
 
   const form = useForm<DatasetFormData>({
     resolver: zodResolver(datasetSchema),
@@ -53,9 +58,80 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
     },
   });
 
+  const url = form.watch("url");
+
+  // Reset form when modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      // If editing, use initialData, otherwise reset to empty values
+      if (edit && initialData) {
+        form.reset(initialData);
+      } else {
+        form.reset({
+          title: "",
+          doi: "",
+          url: "",
+          data_type: "",
+          repository: "",
+        });
+      }
+      // Also reset the previousUrl state to prevent auto-fill from triggering
+      setPreviousUrl("");
+    }
+  }, [isOpen, form, edit, initialData]);
+
+  // Auto-populate dataset metadata when URL changes
+  useEffect(() => {
+    const fetchZenodoData = async (zenodoId: string) => {
+      setIsLoadingMetadata(true);
+      try {
+        const metadata = await fetchZenodoMetadata(zenodoId);
+        
+        let fieldsUpdated = false;
+        
+        // Only auto-fill empty fields
+        if (metadata.title && !form.getValues("title")) {
+          form.setValue("title", metadata.title);
+          fieldsUpdated = true;
+        }
+        
+        if (metadata.doi && !form.getValues("doi")) {
+          form.setValue("doi", metadata.doi);
+          fieldsUpdated = true;
+        }
+        
+        if (metadata.data_type && !form.getValues("data_type")) {
+          form.setValue("data_type", metadata.data_type);
+          fieldsUpdated = true;
+        }
+        
+        if (metadata.repository && !form.getValues("repository")) {
+          form.setValue("repository", metadata.repository);
+          fieldsUpdated = true;
+        }
+        
+        if (fieldsUpdated) {
+          toast.success("Dataset metadata auto-filled from Zenodo");
+        }
+      } catch (error) {
+        console.error("Error fetching Zenodo metadata:", error);
+        toast.error("Failed to fetch dataset metadata from Zenodo");
+      } finally {
+        setIsLoadingMetadata(false);
+      }
+    };
+
+    // Check if URL is a Zenodo link and different from the previous one
+    if (url && url !== previousUrl) {
+      setPreviousUrl(url);
+      const zenodoId = extractZenodoId(url);
+      if (zenodoId) {
+        fetchZenodoData(zenodoId);
+      }
+    }
+  }, [url, form, previousUrl]);
+
   const handleSave = (data: DatasetFormData) => {
-    //clear form
-    form.reset();
     onSave(data);
     setIsOpen(false);
   };
@@ -76,6 +152,37 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
             <FormField
               control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL</FormLabel>
+                  <FormControl>
+                    <div className="relative flex">
+                      <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
+                        <Link className="h-4 w-4" />
+                      </span>
+                      <Input 
+                        className="rounded-l-none" 
+                        placeholder="Dataset URL" 
+                        {...field} 
+                      />
+                      {isLoadingMetadata && (
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                          <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    Paste a Zenodo link to auto-fill dataset details
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
@@ -94,18 +201,16 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Data Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select data type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="raw">Raw</SelectItem>
-                      <SelectItem value="processed">Processed</SelectItem>
-                      <SelectItem value="analyzed">Analyzed</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input 
+                      placeholder="e.g., Tabular, Image, Text, Video," 
+                      {...field} 
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Describe the type of data (e.g., Tabular, Image, Text, Video)
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -126,26 +231,8 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
                         className="rounded-l-none"
                         placeholder="Dataset repository"
                         {...field}
+                        value={field.value || ""}
                       />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>URL</FormLabel>
-                  <FormControl>
-                    <div className="flex">
-                      <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
-                        <Link className="h-4 w-4" />
-                      </span>
-                      <Input className="rounded-l-none" placeholder="Dataset URL" {...field} />
                     </div>
                   </FormControl>
                   <FormMessage />
