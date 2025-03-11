@@ -145,7 +145,9 @@ export function BaseMaterialCard<T extends MaterialType>({
                 variant="ghost"
                 size="sm"
                 className="text-xs text-gray-600 hover:text-green hover:bg-green/10 transition-colors h-7 px-2 rounded-md"
-                onClick={onEditClick}
+                onClick={async () => {
+                  if (onEditClick) await onEditClick();
+                }}
                 aria-label={`Edit ${materialType}`}
               >
                 <Edit2 className="h-3.5 w-3.5 mr-1" />
@@ -156,7 +158,9 @@ export function BaseMaterialCard<T extends MaterialType>({
                 variant="ghost"
                 size="sm"
                 className="text-xs text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors h-7 px-2 rounded-md"
-                onClick={prepareFunctionsForRemoval}
+                onClick={async () => {
+                  if (prepareFunctionsForRemoval) await prepareFunctionsForRemoval();
+                }}
                 aria-label={`Remove ${materialType}`}
               >
                 <Trash2 className="h-3.5 w-3.5 mr-1" />

@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { ExtendedGarden } from "@/types/garden.types";
 import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
 import { ModalFunction } from "@/types";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Extend ModalFunction type to include owner_identity_id
 export type ModalFunctionWithOwner = ModalFunction & {
@@ -24,7 +25,7 @@ export interface UseMaterialActionsOptions<T extends MaterialType> {
   material: T;
   garden: ExtendedGarden;
   findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
-  onUpdate?: () => void;
+  onUpdate?: () => Promise<void>;
   materialType: 'paper' | 'dataset' | 'repository';
 }
 
@@ -49,98 +50,119 @@ export function useMaterialActions<T extends MaterialType>({
   const [affectedFunctions, setAffectedFunctions] = useState<ModalFunctionWithOwner[]>([]);
   const [isSelectiveRemoval, setIsSelectiveRemoval] = useState(false);
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
+  const queryClient = useQueryClient();
   
   // Create a link from URL or DOI
   const materialLink = material.url || (material.doi ? `https://doi.org/${material.doi}` : undefined);
   
-  const prepareFunctionsForEdit = (updatedMaterial: T) => {
+  const prepareFunctionsForEdit = async (updatedMaterial: T) => {
     if (!material.doi || !findAffectedFunctions) {
       return;
     }
     
-    // Store the updated material
-    setEditingMaterial(updatedMaterial);
+    // Clear any previous state before starting the edit process
+    setEditAffectedFunctions([]);
+    setEditSelectiveFunctions({});
     
-    // Find all functions that already reference this material
-    const functionsWithMaterial = findAffectedFunctions(material.doi);
-    
-    // Get all functions in the garden (to give users the option to add the material to more functions)
-    const allFunctions = garden.modal_functions || [];
-
-    // Verify we have functions with this material
-    if (functionsWithMaterial.length === 0) {
-      toast.error(`Could not find functions referencing this ${materialType}`);
-      return;
-    }
-    
-    // Check if we have the current user ID
-    if (!garden.current_user_id) {
-      // No need to show a warning, just silently use garden owner ID
-    }
-    
-    // Check each function individually for ownership
-    const nonOwnedFunctions = functionsWithMaterial.filter(func => {
-      const hasOwnerField = 'owner_identity_id' in func;
-      const hasId = 'id' in func && typeof func.id !== 'undefined';
-      const funcId = hasId ? String(func.id) : 'unknown';
-      
-      if (BYPASS_MISSING_OWNER_CHECK && !hasOwnerField) {
-        return false; // Don't add to nonOwnedFunctions (consider it owned)
+    try {
+      // Ensure we have the latest data before proceeding
+      if (garden.doi) {
+        // Explicitly invalidate the garden cache to force fresh data
+        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+        
+        // Optionally wait for data refetch if you have a refetch method
+        if (onUpdate) {
+          await onUpdate();
+        }
       }
       
-      // Check if current user is the owner of the function
-      // Use either the current_user_id or the garden owner ID for comparison
-      const currentUserId = garden.current_user_id || garden.owner_identity_id;
-      const isOwner = hasOwnerField && func.owner_identity_id === currentUserId;
+      // Store the updated material
+      setEditingMaterial(updatedMaterial);
       
-      return !isOwner;
-    });
-    
-    // Check if user owns all affected functions
-    const userOwnsAllFunctions = nonOwnedFunctions.length === 0;
-    
-    if (!userOwnsAllFunctions) {
-      toast.error(`Cannot edit - you don't own ${nonOwnedFunctions.length} function(s) that use this ${materialType}.`);
-      return;
+      // Now get fresh data - Find all functions that already reference this material
+      const functionsWithMaterial = findAffectedFunctions(material.doi);
+      
+      // Get all functions in the garden (to give users the option to add the material to more functions)
+      const allFunctions = garden.modal_functions || [];
+  
+      // Verify we have functions with this material
+      if (functionsWithMaterial.length === 0) {
+        toast.error(`Could not find functions referencing this ${materialType}`);
+        return;
+      }
+      
+      // Check if we have the current user ID
+      if (!garden.current_user_id) {
+        // No need to show a warning, just silently use garden owner ID
+      }
+      
+      // Check each function individually for ownership
+      const nonOwnedFunctions = functionsWithMaterial.filter(func => {
+        const hasOwnerField = 'owner_identity_id' in func;
+        const hasId = 'id' in func && typeof func.id !== 'undefined';
+        const funcId = hasId ? String(func.id) : 'unknown';
+        
+        if (BYPASS_MISSING_OWNER_CHECK && !hasOwnerField) {
+          return false; // Don't add to nonOwnedFunctions (consider it owned)
+        }
+        
+        // Check if current user is the owner of the function
+        // Use either the current_user_id or the garden owner ID for comparison
+        const currentUserId = garden.current_user_id || garden.owner_identity_id;
+        const isOwner = hasOwnerField && func.owner_identity_id === currentUserId;
+        
+        return !isOwner;
+      });
+      
+      // Check if user owns all affected functions
+      const userOwnsAllFunctions = nonOwnedFunctions.length === 0;
+      
+      if (!userOwnsAllFunctions) {
+        toast.error(`Cannot edit - you don't own ${nonOwnedFunctions.length} function(s) that use this ${materialType}.`);
+        return;
+      }
+      
+      // Create a set of function IDs that already have this material for quick lookup
+      const functionIdsWithMaterial = new Set(
+        functionsWithMaterial.map(func => func.id)
+      );
+      
+      // Filter allFunctions to only include functions the user owns
+      const ownedFunctions = allFunctions.filter(func => {
+        const hasOwnerField = 'owner_identity_id' in func;
+        if (BYPASS_MISSING_OWNER_CHECK && !hasOwnerField) {
+          return true; // Consider it owned if field is missing and bypass is enabled
+        }
+        
+        const currentUserId = garden.current_user_id || garden.owner_identity_id;
+        return hasOwnerField && func.owner_identity_id === currentUserId;
+      }) as ModalFunctionWithOwner[];
+      
+      // Store all eligible functions, annotated with whether they already have the material
+      const allEligibleFunctions = ownedFunctions.map(func => ({
+        ...func,
+        already_has_material: functionIdsWithMaterial.has(func.id)
+      }));
+      
+      // Store the affected functions including annotation
+      setEditAffectedFunctions(allEligibleFunctions);
+      
+      // Initialize the selective functions object with ONLY functions that already have the material selected by default
+      const initialSelections: Record<number, boolean> = {};
+      allEligibleFunctions.forEach(func => {
+        if (typeof func.id === 'number') {
+          // Only auto-select functions that already have this material
+          initialSelections[func.id] = func.already_has_material || false;
+        }
+      });
+      setEditSelectiveFunctions(initialSelections);
+      
+      // Show the function selection dialog
+      setIsSelectiveEditing(true);
+    } catch (error) {
+      console.error("Error preparing functions for edit:", error);
+      toast.error(`Failed to prepare functions for edit: ${error}`);
     }
-    
-    // Create a set of function IDs that already have this material for quick lookup
-    const functionIdsWithMaterial = new Set(
-      functionsWithMaterial.map(func => func.id)
-    );
-    
-    // Filter allFunctions to only include functions the user owns
-    const ownedFunctions = allFunctions.filter(func => {
-      const hasOwnerField = 'owner_identity_id' in func;
-      if (BYPASS_MISSING_OWNER_CHECK && !hasOwnerField) {
-        return true; // Consider it owned if field is missing and bypass is enabled
-      }
-      
-      const currentUserId = garden.current_user_id || garden.owner_identity_id;
-      return hasOwnerField && func.owner_identity_id === currentUserId;
-    }) as ModalFunctionWithOwner[];
-    
-    // Store all eligible functions, annotated with whether they already have the material
-    const allEligibleFunctions = ownedFunctions.map(func => ({
-      ...func,
-      already_has_material: functionIdsWithMaterial.has(func.id)
-    }));
-    
-    // Store the affected functions including annotation
-    setEditAffectedFunctions(allEligibleFunctions);
-    
-    // Initialize the selective functions object with ONLY functions that already have the material selected by default
-    const initialSelections: Record<number, boolean> = {};
-    allEligibleFunctions.forEach(func => {
-      if (typeof func.id === 'number') {
-        // Only auto-select functions that already have this material
-        initialSelections[func.id] = func.already_has_material || false;
-      }
-    });
-    setEditSelectiveFunctions(initialSelections);
-    
-    // Show the function selection dialog
-    setIsSelectiveEditing(true);
   };
   
   const handleEdit = async (updatedMaterial: T) => {
@@ -179,22 +201,43 @@ export function useMaterialActions<T extends MaterialType>({
             [materialType === 'repository' ? 'repositories' : `${materialType}s`]: updatedMaterials
           }
         });
-      }).filter(Boolean); // Filter out any undefined promises
+      }).filter(Boolean);
       
       // Wait for all updates to complete
       await Promise.all(updatePromises);
       
       toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} updated across ${updatePromises.length} function(s)`);
+      
+      // Reset all state completely to avoid stale references
+      setEditingMaterial(null);
+      setEditAffectedFunctions([]);
+      setEditSelectiveFunctions({});
       setIsSelectiveEditing(false);
+      
+      // Explicitly invalidate queries for the affected functions and garden
+      editAffectedFunctions.forEach(func => {
+        if (func.id) {
+          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+        }
+      });
+      
+      if (garden.doi) {
+        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+      }
       
       // Call the onUpdate callback to refresh the garden data
       if (onUpdate) {
-        onUpdate();
+        await onUpdate();
       }
       
     } catch (error) {
       toast.error(`Failed to update ${materialType}`);
       console.error(`Error updating ${materialType}:`, error);
+      
+      // Reset state even on error
+      setEditingMaterial(null);
+      setEditAffectedFunctions([]);
+      setEditSelectiveFunctions({});
       setIsSelectiveEditing(false);
     }
   };
@@ -251,22 +294,43 @@ export function useMaterialActions<T extends MaterialType>({
             [materialType === 'repository' ? 'repositories' : `${materialType}s`]: updatedMaterials
           }
         });
-      }).filter(Boolean); // Filter out any undefined promises
+      }).filter(Boolean);
       
       // Wait for all updates to complete
       await Promise.all(updatePromises);
       
       toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} updated in ${updatePromises.length} function(s)`);
+      
+      // Reset all state completely to avoid stale references
+      setEditingMaterial(null);
+      setEditAffectedFunctions([]);
+      setEditSelectiveFunctions({});
       setIsSelectiveEditing(false);
+      
+      // Explicitly invalidate queries for the affected functions and garden
+      functionsToUpdate.forEach(func => {
+        if (func.id) {
+          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+        }
+      });
+      
+      if (garden.doi) {
+        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+      }
       
       // Call the onUpdate callback to refresh the garden data
       if (onUpdate) {
-        onUpdate();
+        await onUpdate();
       }
       
     } catch (error) {
       toast.error(`Failed to update ${materialType}`);
       console.error(`Error updating ${materialType}:`, error);
+      
+      // Reset state even on error
+      setEditingMaterial(null);
+      setEditAffectedFunctions([]);
+      setEditSelectiveFunctions({});
       setIsSelectiveEditing(false);
     }
   };
@@ -288,75 +352,95 @@ export function useMaterialActions<T extends MaterialType>({
     setEditSelectiveFunctions(newSelections);
   };
   
-  const prepareFunctionsForRemoval = () => {
+  const prepareFunctionsForRemoval = async () => {
     if (!material.doi || !findAffectedFunctions) {
       return;
     }
     
-    // Find all functions that already reference this material
-    const functionsWithMaterial = findAffectedFunctions(material.doi);
+    // Clear any previous state before starting the removal process
+    setAffectedFunctions([]);
+    setSelectiveFunctions({});
     
-    if (functionsWithMaterial.length === 0) {
-      toast.error(`Could not find functions referencing this ${materialType}`);
-      return;
-    }
-    
-    // Check if we have the current user ID
-    if (!garden.current_user_id) {
-      // No need to show a warning, just silently use garden owner ID
-    }
-    
-    // Check each function individually for ownership
-    const nonOwnedFunctions = functionsWithMaterial.filter(func => {
-      const hasOwnerField = 'owner_identity_id' in func;
-      const hasId = 'id' in func && typeof func.id !== 'undefined';
-      const funcId = hasId ? String(func.id) : 'unknown';
-      
-      if (BYPASS_MISSING_OWNER_CHECK && !hasOwnerField) {
-        return false; // Don't add to nonOwnedFunctions (consider it owned)
+    try {
+      // Ensure we have the latest data before proceeding
+      if (garden.doi) {
+        // Explicitly invalidate the garden cache to force fresh data
+        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+        
+        // Optionally wait for data refetch if you have a refetch method
+        if (onUpdate) {
+          await onUpdate();
+        }
       }
       
-      // Check if current user is the owner of the function
-      // Use either the current_user_id or the garden owner ID for comparison
-      const currentUserId = garden.current_user_id || garden.owner_identity_id;
-      const isOwner = hasOwnerField && func.owner_identity_id === currentUserId;
+      // Now get fresh data - Find all functions that already reference this material
+      const functionsWithMaterial = findAffectedFunctions(material.doi);
       
-      return !isOwner;
-    });
-    
-    // Check if user owns all affected functions
-    const userOwnsAllFunctions = nonOwnedFunctions.length === 0;
-    
-    if (!userOwnsAllFunctions) {
-      toast.error(`Cannot remove - you don't own ${nonOwnedFunctions.length} function(s) that use this ${materialType}.`);
-      return;
-    }
-    
-    // Mark all functions as having the material
-    // For removal, we only want to show functions that already have the material
-    const functionsWithMaterialMarked = functionsWithMaterial.map(func => ({
-      ...func,
-      already_has_material: true
-    }));
-    
-    // Store the affected functions with already_has_material flag
-    setAffectedFunctions(functionsWithMaterialMarked);
-    
-    // Initialize the selective functions object with all functions selected by default
-    const initialSelections: Record<number, boolean> = {};
-    functionsWithMaterialMarked.forEach(func => {
-      if (typeof func.id === 'number') {
-        // All functions shown already have the material, so select them all by default
-        initialSelections[func.id] = true;
+      if (functionsWithMaterial.length === 0) {
+        toast.error(`Could not find functions referencing this ${materialType}`);
+        return;
       }
-    });
-    setSelectiveFunctions(initialSelections);
-    
-    // Always go directly to selective removal mode
-    setIsSelectiveRemoval(true);
-    
-    // Open the confirmation dialog
-    setConfirmRemove(true);
+      
+      // Check if we have the current user ID
+      if (!garden.current_user_id) {
+        // No need to show a warning, just silently use garden owner ID
+      }
+      
+      // Check each function individually for ownership
+      const nonOwnedFunctions = functionsWithMaterial.filter(func => {
+        const hasOwnerField = 'owner_identity_id' in func;
+        const hasId = 'id' in func && typeof func.id !== 'undefined';
+        const funcId = hasId ? String(func.id) : 'unknown';
+        
+        if (BYPASS_MISSING_OWNER_CHECK && !hasOwnerField) {
+          return false; // Don't add to nonOwnedFunctions (consider it owned)
+        }
+        
+        // Check if current user is the owner of the function
+        // Use either the current_user_id or the garden owner ID for comparison
+        const currentUserId = garden.current_user_id || garden.owner_identity_id;
+        const isOwner = hasOwnerField && func.owner_identity_id === currentUserId;
+        
+        return !isOwner;
+      });
+      
+      // Check if user owns all affected functions
+      const userOwnsAllFunctions = nonOwnedFunctions.length === 0;
+      
+      if (!userOwnsAllFunctions) {
+        toast.error(`Cannot remove - you don't own ${nonOwnedFunctions.length} function(s) that use this ${materialType}.`);
+        return;
+      }
+      
+      // Mark all functions as having the material
+      // For removal, we only want to show functions that already have the material
+      const functionsWithMaterialMarked = functionsWithMaterial.map(func => ({
+        ...func,
+        already_has_material: true
+      }));
+      
+      // Store the affected functions with already_has_material flag
+      setAffectedFunctions(functionsWithMaterialMarked);
+      
+      // Initialize the selective functions object with all functions selected by default
+      const initialSelections: Record<number, boolean> = {};
+      functionsWithMaterialMarked.forEach(func => {
+        if (typeof func.id === 'number') {
+          // All functions shown already have the material, so select them all by default
+          initialSelections[func.id] = true;
+        }
+      });
+      setSelectiveFunctions(initialSelections);
+      
+      // Always go directly to selective removal mode
+      setIsSelectiveRemoval(true);
+      
+      // Open the confirmation dialog
+      setConfirmRemove(true);
+    } catch (error) {
+      console.error("Error preparing functions for removal:", error);
+      toast.error(`Failed to prepare functions for removal: ${error}`);
+    }
   };
   
   const handleRemoveAll = async () => {
@@ -389,16 +473,34 @@ export function useMaterialActions<T extends MaterialType>({
       await Promise.all(updatePromises);
       
       toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} removed from ${affectedFunctions.length} function(s)`);
+      
+      // Reset all state completely to avoid stale references
+      setAffectedFunctions([]);
+      setSelectiveFunctions({});
       setConfirmRemove(false);
+      
+      // Explicitly invalidate queries for the affected functions and garden
+      for (const func of affectedFunctions) {
+        if (func.id) {
+          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+        }
+      }
+      if (garden.doi) {
+        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+      }
       
       // Call the onUpdate callback to refresh the garden data
       if (onUpdate) {
-        onUpdate();
+        await onUpdate();
       }
       
     } catch (error) {
       toast.error(`Failed to remove ${materialType}`);
       console.error(`Error removing ${materialType}:`, error);
+      
+      // Reset state even on error
+      setAffectedFunctions([]);
+      setSelectiveFunctions({});
       setConfirmRemove(false);
     }
   };
@@ -444,17 +546,35 @@ export function useMaterialActions<T extends MaterialType>({
       await Promise.all(updatePromises);
       
       toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} removed from ${functionsToUpdate.length} function(s)`);
+      
+      // Reset all state completely to avoid stale references
+      setAffectedFunctions([]);
+      setSelectiveFunctions({});
       setIsSelectiveRemoval(false);
       setConfirmRemove(false);
       
+      // Explicitly invalidate queries for the affected functions and garden
+      for (const func of functionsToUpdate) {
+        if (func.id) {
+          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+        }
+      }
+      if (garden.doi) {
+        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+      }
+      
       // Call the onUpdate callback to refresh the garden data
       if (onUpdate) {
-        onUpdate();
+        await onUpdate();
       }
       
     } catch (error) {
       toast.error(`Failed to remove ${materialType}`);
       console.error(`Error removing ${materialType}:`, error);
+      
+      // Reset state even on error
+      setAffectedFunctions([]);
+      setSelectiveFunctions({});
       setIsSelectiveRemoval(false);
       setConfirmRemove(false);
     }

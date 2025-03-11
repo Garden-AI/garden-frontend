@@ -68,31 +68,32 @@ export const PaperCard = ({
     materialType: "paper"
   });
 
-  const handleEdit = (updatedPaper: Paper) => {
+  const handleEditClick = async () => {
+    // Programmatically click the hidden trigger button
+    if (triggerButtonRef.current) {
+      triggerButtonRef.current.click();
+    }
+  };
+
+  const handleEdit = async (updatedPaper: Paper) => {
     setIsEditing(false);
     
     // Clean up the updated paper for proper typing
     const cleanUpdatedPaper = {
       ...updatedPaper,
       doi: updatedPaper.doi || undefined,
-      url: updatedPaper.url || undefined
+      url: updatedPaper.url || undefined,
+      name: updatedPaper.title || "Untitled Paper"
     };
     
     // Show the confirmation dialog for function selection
     if (paper.doi && findAffectedFunctions) {
-      prepareFunctionsForEdit(cleanUpdatedPaper);
+      await prepareFunctionsForEdit(cleanUpdatedPaper);
     } else {
       // If no DOI or findAffectedFunctions, just refresh
       if (onUpdate) {
         onUpdate();
       }
-    }
-  };
-
-  const handleEditClick = () => {
-    // Programmatically click the hidden trigger button
-    if (triggerButtonRef.current) {
-      triggerButtonRef.current.click();
     }
   };
   
@@ -307,7 +308,14 @@ export const DatasetCard = ({
     materialType: "dataset"
   });
 
-  const handleEdit = (updatedDataset: Dataset) => {
+  const handleEditClick = async () => {
+    // Programmatically click the hidden trigger button
+    if (triggerButtonRef.current) {
+      triggerButtonRef.current.click();
+    }
+  };
+
+  const handleEdit = async (updatedDataset: Dataset) => {
     setIsEditing(false);
     
     // Clean up the updated dataset for proper typing
@@ -321,19 +329,12 @@ export const DatasetCard = ({
     
     // Show the confirmation dialog for function selection
     if (dataset.doi && findAffectedFunctions) {
-      prepareFunctionsForEdit(cleanUpdatedDataset);
+      await prepareFunctionsForEdit(cleanUpdatedDataset);
     } else {
       // If no DOI or findAffectedFunctions, just refresh
       if (onUpdate) {
         onUpdate();
       }
-    }
-  };
-
-  const handleEditClick = () => {
-    // Programmatically click the hidden trigger button
-    if (triggerButtonRef.current) {
-      triggerButtonRef.current.click();
     }
   };
   
@@ -538,7 +539,7 @@ export const RepositoryCard = ({
     materialType: "repository"
   });
 
-  const handleEdit = (updatedRepository: Repository) => {
+  const handleEdit = async (updatedRepository: Repository) => {
     setIsEditing(false);
     
     // Clean up the updated repository for proper typing
@@ -554,7 +555,7 @@ export const RepositoryCard = ({
     
     // Show the confirmation dialog for function selection
     if (typeof repository.doi === 'string' && repository.doi && findAffectedFunctions) {
-      prepareFunctionsForEdit(cleanUpdatedRepository);
+      await prepareFunctionsForEdit(cleanUpdatedRepository);
     } else {
       // If no DOI or findAffectedFunctions, just refresh
       if (onUpdate) {
@@ -563,7 +564,7 @@ export const RepositoryCard = ({
     }
   };
 
-  const handleEditClick = () => {
+  const handleEditClick = async () => {
     // Programmatically click the hidden trigger button
     if (triggerButtonRef.current) {
       triggerButtonRef.current.click();

@@ -24,13 +24,6 @@ import {
   FormDescription,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/shadcn/select";
 import { DatasetFormData, datasetSchema } from "../../types/entrypoint.types";
 import { extractZenodoId, fetchZenodoMetadata } from "../../utils/zenodo";
 

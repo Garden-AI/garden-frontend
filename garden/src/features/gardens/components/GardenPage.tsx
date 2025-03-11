@@ -2,7 +2,8 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2 } from "lucide-react";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import Breadcrumb from "@/components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
@@ -45,6 +46,7 @@ type ModalFunctionWithOwner = ModalFunction & {
 const GardenPage = () => {
   const { doi } = useParams();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [forceRefreshMaterialsFlag, setForceRefreshMaterialsFlag] = useState(0);
   
   if (!doi) {
     return <NotFoundPage />;
@@ -56,12 +58,42 @@ const GardenPage = () => {
   const auth = useGlobusAuth();
   const { data: garden, isLoading, isError, refetch } = useGetGarden(doi);
   const { mutate: updateGarden } = usePatchGarden();
+  const queryClient = useQueryClient();
 
   // Callback to refresh data after adding materials
   const handleMaterialAdded = useCallback(() => {
     refetch();
     setRefreshTrigger(prev => prev + 1);
   }, [refetch]);
+
+  // Force refresh all materials lists
+  const forceRefreshMaterials = useCallback(() => {
+    setForceRefreshMaterialsFlag(prev => prev + 1);
+  }, []);
+
+  // Enhanced refetch that ensures both the garden and its functions are refreshed
+  const forceRefreshGardenAndFunctions = useCallback(async () => {
+    // First invalidate any cached modal functions
+    if (garden?.modal_functions) {
+      garden.modal_functions.forEach(func => {
+        if (func.id) {
+          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+        }
+      });
+    }
+    
+    // Invalidate the garden query to ensure fresh data
+    queryClient.invalidateQueries({ queryKey: ["garden", doi] });
+    
+    // Then perform the refetch
+    await refetch();
+    
+    // Update the refresh trigger to force re-renders
+    setRefreshTrigger(prev => prev + 1);
+    
+    // Force refresh materials lists
+    forceRefreshMaterials();
+  }, [doi, garden, queryClient, refetch, forceRefreshMaterials]);
 
   if (isLoading) {
     return <LoadingOverlay />;
@@ -102,29 +134,37 @@ const GardenPage = () => {
     });
   };
   
-  // Collect and deduplicate datasets from all functions
-  const allDatasets = deduplicateByDOI([
-    ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.datasets || []).flat() || []),
-    ...(extendedGarden.modal_functions?.map(func => func.datasets || []).flat() || [])
-  ]);
+  // Collect all materials with proper memoization
+  const allMaterials = useMemo(() => {
+    return {
+      datasets: deduplicateByDOI([
+        ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.datasets || []).flat() || []),
+        ...(extendedGarden.modal_functions?.map(func => func.datasets || []).flat() || [])
+      ]),
+      papers: deduplicateByDOI([
+        ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.papers || []).flat() || []),
+        ...(extendedGarden.modal_functions?.map(func => func.papers || []).flat() || [])
+      ]),
+      repositories: deduplicateRepositoriesByURL([
+        ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.repositories || []).flat() || []),
+        ...(extendedGarden.modal_functions?.map(func => func.repositories || []).flat() || [])
+      ])
+    };
+  }, [extendedGarden]);
+
+  // Use the memoized collections
+  const allDatasets = allMaterials.datasets;
+  const allPapers = allMaterials.papers;
+  const allRepositories = allMaterials.repositories;
   
-  // Collect and deduplicate papers from all functions
-  const allPapers = deduplicateByDOI([
-    ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.papers || []).flat() || []),
-    ...(extendedGarden.modal_functions?.map(func => func.papers || []).flat() || [])
-  ]);
-  
-  // Collect and deduplicate repositories from all functions
-  const allRepositories = deduplicateRepositoriesByURL([
-    ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.repositories || []).flat() || []),
-    ...(extendedGarden.modal_functions?.map(func => func.repositories || []).flat() || [])
-  ]);
-  
-  // Find all functions that use a specific material by its DOI
-  const findFunctionsWithMaterial = (doi: string): ModalFunctionWithOwner[] => {
+  // Find functions with material - memoized separately to avoid unnecessary recalculations
+  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
     if (!extendedGarden.modal_functions) return [];
     
-    const foundFunctions = extendedGarden.modal_functions.filter(func => {
+    // Get the absolute latest functions data to avoid any stale references
+    const currentFunctions = [...(extendedGarden.modal_functions || [])];
+    
+    return currentFunctions.filter(func => {
       // Check datasets
       const hasMaterialInDataset = func.datasets?.some(
         dataset => dataset.doi === doi
@@ -135,11 +175,14 @@ const GardenPage = () => {
         paper => paper.doi === doi
       );
       
-      return hasMaterialInDataset || hasMaterialInPaper;
+      // Check repositories
+      const hasMaterialInRepo = func.repositories?.some(
+        repo => repo.doi === doi
+      );
+      
+      return hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo;
     }) as ModalFunctionWithOwner[];
-    
-    return foundFunctions;
-  };
+  }, [extendedGarden.modal_functions]);
   
   return (
     <div className="container max-w-7xl">
@@ -252,7 +295,7 @@ const GardenPage = () => {
                                 isOwner={ownsThisGarden}
                                 garden={extendedGarden as ExtendedGarden}
                                 findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={() => refetch()}
+                                onUpdate={async () => await forceRefreshGardenAndFunctions()}
                               />
                             ))}
                           </div>
@@ -294,7 +337,7 @@ const GardenPage = () => {
                                 isOwner={ownsThisGarden}
                                 garden={extendedGarden as ExtendedGarden}
                                 findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={() => refetch()}
+                                onUpdate={async () => await forceRefreshGardenAndFunctions()}
                               />
                             ))}
                           </div>
@@ -401,7 +444,7 @@ const GardenPage = () => {
                 isOwner={ownsThisGarden}
                 garden={extendedGarden as ExtendedGarden}
                 findAffectedFunctions={findFunctionsWithMaterial}
-                onUpdate={() => refetch()}
+                onUpdate={async () => await forceRefreshGardenAndFunctions()}
               />
             ))}
           </div>
