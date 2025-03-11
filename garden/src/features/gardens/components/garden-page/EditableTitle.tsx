@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Garden } from "@/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { usePatchGarden } from "../../api/usePatchGarden";
+import { z } from "zod";
+import { formSchema } from "../EditGardenschemas";
 
 export interface EditableTitleProps {
   garden: Garden;
@@ -18,13 +20,14 @@ const EditableTitle = ({ garden, ownsThisGarden }: EditableTitleProps) => {
   const { mutate: updateGarden } = usePatchGarden();
 
   const handleSave = () => {
-    // Validate title according to zod schema requirements
-    if (!inputValue || inputValue.trim().length < 8) {
-      toast.error("Title must be at least 8 characters");
-      return;
-    }
-    if (inputValue.length > 100) {
-      toast.error("Title must not exceed 100 characters");
+    // Validate using the schema
+    const schema = formSchema.shape.title;
+    const result = schema.safeParse(inputValue);
+    
+    if (!result.success) {
+      // Display the first validation error
+      const errorMessage = result.error.errors[0]?.message || "Invalid title";
+      toast.error(errorMessage);
       return;
     }
     
@@ -82,7 +85,7 @@ const EditableTitle = ({ garden, ownsThisGarden }: EditableTitleProps) => {
               <TooltipTrigger asChild>
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 hover:text-blue-800"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-green hover:text-darkgreen"
                   aria-label="Edit title"
                 >
                   <EditIcon className="h-4 w-4" />

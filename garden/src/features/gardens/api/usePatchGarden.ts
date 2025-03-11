@@ -8,6 +8,7 @@ interface PatchGardenProps {
   doi: string;
   garden: GardenPatchRequest;
 }
+
 const patchGarden = async ({ doi, garden }: PatchGardenProps): Promise<Garden> => {
   try {
     const response = await axios.patch(`/gardens/${doi}`, garden);

@@ -1817,6 +1817,8 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
             /** Function Name */
             function_name: string;
             /** File Contents */
@@ -1862,6 +1864,8 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
             /** Function Name */
             function_name: string;
             /** File Contents */
@@ -1913,6 +1917,8 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][] | null;
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata"][] | null;
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][] | null;
             /** Doi */
             doi?: string | null;
             /** Function Name */
@@ -2394,6 +2400,22 @@ export interface components {
             url: string;
             /** Contributors */
             contributors?: string[];
+        } & {
+            [key: string]: unknown;
+        };
+        /** _NotebookMetadata */
+        _NotebookMetadata: {
+            /** Title */
+            title: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+            /** Type */
+            type: "colab" | "jupyter";
         } & {
             [key: string]: unknown;
         };

@@ -11,7 +11,13 @@ type EntrypointPatchRequest = components["schemas"]["EntrypointPatchRequest"];
 
 type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
-type ModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
+type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
+
+// Extended interface for UI-specific properties
+interface ModalFunction extends BaseModalFunction {
+  already_has_material?: boolean;
+}
+
 type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchRequest"];
 
 type AsyncModalAppMetadataResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
@@ -26,7 +32,8 @@ type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 type Dataset = components["schemas"]["_DatasetMetadata"];
 type Paper = components["schemas"]["_PaperMetadata"];
 type Repository = components["schemas"]["_RepositoryMetadata"];
-// type Notebook = components["schemas"]["_RegisteredNotebook"];
+type Model = components["schemas"]["_ModelMetadata"];
+type Notebook = components["schemas"]["_NotebookMetadata"];
 
 type DOIRequest = components["schemas"]["Doi"];
 
@@ -45,8 +52,6 @@ export type {
   EntrypointPatchRequest,
   ModalAppCreateRequest,
   ModalAppMetadataResponse,
-  ModalFunction,
-  ModalFunctionPatchRequest,
   User,
   UpdateUserSchema,
   Dataset,
@@ -61,4 +66,8 @@ export type {
   AsyncModalJobStatus,
   ModalFileMetadataRequest,
   ModalFileMetadataResponse,
+  Model,
+  Notebook
 };
+
+export type { ModalFunction, ModalFunctionPatchRequest };

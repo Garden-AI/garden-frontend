@@ -1,4 +1,5 @@
-import { InfoIcon } from "lucide-react";
+import React from 'react';
+import { InfoIcon } from 'lucide-react';
 
 interface ReviewNoticeProps {
   isNewlyCreated: boolean;

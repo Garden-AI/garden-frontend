@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Book, Link, FileType, Loader2 } from "lucide-react";
+import { Book, Link, Database, Hash, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -24,13 +24,6 @@ import {
   FormDescription,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/shadcn/select";
 import { DatasetFormData, datasetSchema } from "../../types/entrypoint.types";
 import { extractZenodoId, fetchZenodoMetadata } from "../../utils/zenodo";
 
@@ -249,11 +242,11 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
                   <FormControl>
                     <div className="flex">
                       <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
-                        <FileType className="h-4 w-4" />
+                        <Hash className="h-4 w-4" />
                       </span>
                       <Input
                         className="rounded-l-none"
-                        placeholder="Dataset DOI"
+                        placeholder="Enter the DOI"
                         {...field}
                         value={field.value || ""}
                       />
