@@ -504,7 +504,6 @@ export const RepositoryCard = ({
   const materialRepository = useMemo(() => ({
     ...repository,
     title: repository.repo_name,
-    doi: repository.url,
     url: repository.url
   }), [repository]);
 
@@ -546,12 +545,11 @@ export const RepositoryCard = ({
     const cleanUpdatedRepository = {
       ...updatedRepository,
       title: updatedRepository.repo_name || 'Untitled Repository',
-      doi: updatedRepository.doi || undefined,
       url: updatedRepository.url || undefined,
       repo_name: updatedRepository.repo_name
     };
 
-    const identifier = cleanUpdatedRepository.doi || cleanUpdatedRepository.url;
+    const identifier = cleanUpdatedRepository.url;
     if (findAffectedFunctions && identifier) {
       await prepareFunctionsForEdit(cleanUpdatedRepository as any);
     } else {
@@ -607,21 +605,6 @@ export const RepositoryCard = ({
         toggleAll={toggleAll}
       >
         <div className="space-y-2.5 py-1">
-          {/* DOI */}
-          {typeof repository.doi === 'string' && repository.doi && (
-            <div className="flex items-baseline">
-              <span className="w-24 text-gray-500 text-xs font-medium">DOI</span>
-              <a 
-                href={`https://doi.org/${repository.doi}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 text-blue-600 hover:underline text-xs"
-              >
-                {repository.doi}
-              </a>
-            </div>
-          )}
-          
           {/* URL */}
           {typeof repository.url === 'string' && repository.url && (
             <div className="flex items-baseline">

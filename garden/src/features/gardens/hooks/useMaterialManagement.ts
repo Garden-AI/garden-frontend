@@ -118,9 +118,9 @@ export const useRepositoryManagement = (garden: Garden): MaterialManagementHook<
     });
   }, [garden.modal_functions]);
 
-  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunction[] => {
+  const findFunctionsWithMaterial = useCallback((url: string): ModalFunction[] => {
     return (garden.modal_functions || [])
-      .filter(fn => fn.repositories?.some(repo => repo.url === doi || repo.doi === doi))
+      .filter(fn => fn.repositories?.some(repo => repo.url === url))
       .map(fn => ({
         ...fn,
         already_has_material: true
