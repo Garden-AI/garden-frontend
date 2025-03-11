@@ -2,7 +2,7 @@ import { Garden } from "@/types";
 import axios from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
 interface SaveGardenProps {
   doi: string;

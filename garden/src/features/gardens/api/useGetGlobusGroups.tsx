@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { groups } from "@globus/sdk/cjs";
+import { groups } from "@globus/sdk";
 
 const getGlobusGroups = async () => {
   try {

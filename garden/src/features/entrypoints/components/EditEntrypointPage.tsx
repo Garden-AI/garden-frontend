@@ -3,7 +3,6 @@ import Breadcrumb from "@/components/Breadcrumb";
 import NotFoundPage from "@/components/NotFoundPage";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useSearchGardenByDOI } from "@/features/search/api/useSearchGardenByDOI";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useGetEntrypoint } from "../api/useGetEntrypoint";
 
@@ -15,14 +14,13 @@ const EditEntrypointPage = () => {
   }
 
   const { data: entrypoint, isLoading: entrypointLoading } = useGetEntrypoint(doi);
-  const { data: garden, isLoading: gardenLoading } = useSearchGardenByDOI(doi);
   const { data: user, isLoading: userLoading } = useGetUserInfo();
 
-  if (entrypointLoading || gardenLoading || userLoading) {
+  if (entrypointLoading || userLoading) {
     return <LoadingSpinner />;
   }
 
-  if (!entrypoint || !garden || !user) {
+  if (!entrypoint || !user) {
     return <NotFoundPage />;
   }
 
@@ -36,11 +34,6 @@ const EditEntrypointPage = () => {
       <Breadcrumb
         crumbs={[
           { label: "Home", link: "/" },
-          { label: "Gardens", link: "/search" },
-          {
-            label: garden.title,
-            link: `/garden/${encodeURIComponent(garden.doi)}`,
-          },
           {
             label: entrypoint.title,
             link: `/entrypoint/${encodeURIComponent(entrypoint.doi)}`,

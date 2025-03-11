@@ -7,7 +7,7 @@ import { Garden } from "@/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 import Markdown from "@/components/Markdown";
 import { usePatchGarden } from "../../api/usePatchGarden";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
 interface GardenDescriptionProps {
   garden: Garden;

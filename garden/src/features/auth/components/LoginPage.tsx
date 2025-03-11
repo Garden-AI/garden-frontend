@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button, buttonVariants } from "@/components/shadcn/button";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
 const LoginPage = () => {
   const auth = useGlobusAuth();
@@ -19,15 +18,11 @@ const LoginPage = () => {
     }
   }, [auth.authorization, navigate]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const from = location.state?.from?.pathname || "/";
     localStorage.setItem("loginRedirect", from);
-    auth.authorization?.login();
+    await auth.authorization?.login();
   };
-
-  if (auth.isLoading) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">

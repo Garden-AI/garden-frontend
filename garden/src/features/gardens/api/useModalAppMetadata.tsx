@@ -3,7 +3,7 @@ import axios from "@/lib/axios";
 import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { GardenCreateFormData } from "../types/garden.types";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 
 /**

@@ -13,7 +13,7 @@ import { useFormContext } from "react-hook-form";
 import { Link } from "react-router-dom";
 import WithTooltip from "@/components/WithTooltip";
 import { cn } from "@/utils/form.utils";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetEntrypoints } from "@/features/entrypoints/api/useGetEntrypoints";
 
 export const SelectEntrypointsTable = () => {

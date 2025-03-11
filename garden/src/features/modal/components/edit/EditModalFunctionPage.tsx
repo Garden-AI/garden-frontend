@@ -1,6 +1,6 @@
 import { useParams, Navigate } from "react-router-dom";
 import { useGetModalFunction } from "../../api/useGetModalFunction";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import { EditModalFunctionForm } from "./EditModalFunctionForm";
