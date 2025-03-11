@@ -64,18 +64,50 @@ export const useMaterialsManager = ({
 
   // Find functions that use a specific material
   const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
-    if (!garden.modal_functions) return [];
+    if (!garden.doi) return [];
     
-    const currentFunctions = [...(garden.modal_functions || [])];
+    // CRITICAL FIX: Always get the freshest data directly from the query cache
+    const latestGardenData = queryClient.getQueryData(["garden", garden.doi]) as ExtendedGarden;
+    const currentFunctions = [...(latestGardenData?.modal_functions || [])];
     
-    return currentFunctions.filter(func => {
-      const hasMaterialInDataset = func.datasets?.some(dataset => dataset.doi === doi);
-      const hasMaterialInPaper = func.papers?.some(paper => paper.doi === doi);
-      const hasMaterialInRepo = func.repositories?.some(repo => repo.doi === doi);
+    if (!currentFunctions.length) {
+      console.warn('No functions found in the latest garden data');
+      return [];
+    }
+    
+    console.log(`Finding functions with material ${doi} from ${currentFunctions.length} total functions`);
+    
+    // Deep check to make sure each function's materials are properly examined
+    const functionsWithMaterial = currentFunctions.filter(func => {
+      // Defensive coding - ensure func is valid
+      if (!func) return false;
       
-      return hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo;
-    }) as ModalFunctionWithOwner[];
-  }, [garden.modal_functions]);
+      // Check datasets
+      const hasMaterialInDataset = Array.isArray(func.datasets) && 
+        func.datasets.some(dataset => dataset && dataset.doi === doi);
+      
+      // Check papers
+      const hasMaterialInPaper = Array.isArray(func.papers) && 
+        func.papers.some(paper => paper && paper.doi === doi);
+      
+      // Check repositories
+      const hasMaterialInRepo = Array.isArray(func.repositories) && 
+        func.repositories.some(repo => repo && repo.doi === doi);
+      
+      const hasMaterial = hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo;
+      
+      // Debugging log
+      if (hasMaterial) {
+        console.log(`Function ${func.id} (${func.title}) has material ${doi}`);
+      }
+      
+      return hasMaterial;
+    });
+    
+    console.log(`Found ${functionsWithMaterial.length} functions with material ${doi}`);
+    
+    return functionsWithMaterial as ModalFunctionWithOwner[];
+  }, [garden.doi, queryClient]);
 
   // Refresh all materials and related data
   const refreshMaterials = useCallback(async () => {
