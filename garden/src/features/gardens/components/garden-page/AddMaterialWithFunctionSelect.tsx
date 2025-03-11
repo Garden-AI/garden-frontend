@@ -24,13 +24,13 @@ const AddMaterialWithFunctionSelect: React.FC<AddMaterialWithFunctionSelectProps
   materialType,
   onSuccess
 }) => {
-  const [selectedFunctions, setSelectedFunctions] = useState<number[]>([]);
+  // Get all available functions from the garden
+  const functions = garden.modal_functions || [];
+  
+  const [selectedFunctions, setSelectedFunctions] = useState<number[]>(functions.map(f => f.id));
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [material, setMaterial] = useState<Dataset | Paper | Repository | Notebook | null>(null);
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
-  
-  // Get all available functions from the garden
-  const functions = garden.modal_functions || [];
   
   // Get singular form of the material type for labels
   const singularName = materialType === 'repositories'
