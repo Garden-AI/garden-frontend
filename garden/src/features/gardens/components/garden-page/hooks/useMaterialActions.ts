@@ -510,10 +510,9 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const handleSelectiveRemove = async () => {
-    // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
-    const identifier = materialType === 'repository' || materialType === 'notebook'
-      ? (material.doi || material.url) 
-      : material.doi;
+    const identifier = materialType === 'repository' ? material.url :
+                      materialType === 'notebook' ? (material.doi || material.url) :
+                      material.doi;
     if (!identifier || affectedFunctions.length === 0) {
       setIsSelectiveRemoval(false);
       setConfirmRemove(false);
@@ -521,7 +520,6 @@ export function useMaterialActions<T extends MaterialType>({
     }
     
     try {
-      // Filter functions that are selected for updating
       const functionsToUpdate = affectedFunctions.filter(func => 
         func.id && selectiveFunctions[func.id]
       );
@@ -531,68 +529,74 @@ export function useMaterialActions<T extends MaterialType>({
         return;
       }
       
-      // Create an array of promises for updating each selected function
       const updatePromises = functionsToUpdate.map(async func => {
-        // Get current materials using our helper function
-        const materialCollection = getMaterialCollection(func, materialType);
+        if (!func.id) {
+          console.warn('Function missing ID:', func);
+          return;
+        }
+
+        const materialsKey = materialType === 'repository' ? 'repositories' :
+                           `${materialType}s` as 'datasets' | 'papers' | 'repositories' | 'notebooks';
         
-        // Remove the material from the list
-        const updatedMaterials = materialCollection.filter((m: any) => {
-          if (materialType === 'repository' || materialType === 'notebook') {
-            // For repositories and notebooks, match on either DOI or URL
+        const currentMaterials = func[materialsKey] || [];
+        
+        const updatedMaterials = currentMaterials.filter((m: any) => {
+          if (materialType === 'repository') {
+            return m.url !== identifier;
+          } else if (materialType === 'notebook') {
             return !(m.doi === identifier || m.url === identifier);
           } else {
-            // For other materials, match on DOI
             return m.doi !== identifier;
           }
         });
-        
-        // Patch the function with updated materials
+
+        const patchData = {
+          datasets: func.datasets || [],
+          papers: func.papers || [],
+          repositories: func.repositories || [],
+          notebooks: func.notebooks || [],
+          [materialsKey]: updatedMaterials
+        };
+
         await patchModalFunction({
           id: func.id,
-          modalFunction: {
-            [`${materialType}s`]: updatedMaterials
-          }
+          modalFunction: patchData
         });
 
-        // Invalidate and refetch the function cache immediately after update
-        await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
-        await queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] });
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] }),
+          queryClient.invalidateQueries({ queryKey: ["modalFunction"] }),
+          queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] })
+        ]);
       });
       
-      // Wait for all updates to complete
       await Promise.all(updatePromises);
       
-      // Close the dialog before showing success message
-      setConfirmRemove(false);
-      
-      // Success message
-      toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} removed from ${functionsToUpdate.length} function(s)`);
-      
-      // Reset all state completely to avoid stale references
-      setAffectedFunctions([]);
-      setSelectiveFunctions({});
-      setIsSelectiveRemoval(false);
-      
-      // CRITICAL: Invalidate and refetch garden cache after all updates are complete
       if (garden.doi) {
-        await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
-        await queryClient.refetchQueries({ queryKey: ["garden", garden.doi] });
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] }),
+          queryClient.invalidateQueries({ queryKey: ["garden"] }),
+          queryClient.refetchQueries({ queryKey: ["garden", garden.doi] })
+        ]);
       }
 
-      // Add a small delay to ensure cache updates are complete
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Call the onUpdate callback to refresh the garden data
       if (onUpdate) {
         await onUpdate();
       }
       
-    } catch (error) {
-      toast.error(`Failed to remove ${materialType}`);
-      console.error(`Error removing ${materialType}:`, error);
+      toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} removed from ${functionsToUpdate.length} function(s)`);
       
-      // Reset state even on error
+      setAffectedFunctions([]);
+      setSelectiveFunctions({});
+      setConfirmRemove(false);
+      setIsSelectiveRemoval(false);
+      
+    } catch (error) {
+      console.error('Error removing material:', error);
+      toast.error(`Failed to remove ${materialType}`);
+      
       setAffectedFunctions([]);
       setSelectiveFunctions({});
       setConfirmRemove(false);
