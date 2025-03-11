@@ -489,26 +489,65 @@ export function useMaterialActions<T extends MaterialType>({
   
   const handleRemoveAll = async () => {
     try {
-      // Get all affected functions
-      const affectedFunctions = findAffectedFunctions?.(material.doi || '') || [];
+      // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
+      const identifier = materialType === 'repository' || materialType === 'notebook'
+        ? (material.doi || material.url) 
+        : material.doi;
+      if (!identifier) {
+        return;
+      }
+
+      // Get all affected functions using our direct check method
+      const functionsToUpdate = await directlyCheckFunctionsWithMaterial(identifier);
+      
+      if (functionsToUpdate.length === 0) {
+        toast.error(`Could not find functions referencing this ${materialType}`);
+        return;
+      }
+
+      console.log(`Found ${functionsToUpdate.length} functions with material ${identifier}`);
       
       // Update each function
       await Promise.all(
-        affectedFunctions.map(async (func) => {
+        functionsToUpdate.map(async (func) => {
           const materialCollection = getMaterialCollection(func, materialType);
           
           const patchData = {
             [`${materialType}s`]: materialCollection.filter(
-              (m: any) => m.doi !== material.doi && m.url !== material.url
+              (m: any) => {
+                if (materialType === 'repository' || materialType === 'notebook') {
+                  // For repositories and notebooks, match on either DOI or URL
+                  return !(m.doi === identifier || m.url === identifier);
+                } else {
+                  // For other materials, match on DOI
+                  return m.doi !== identifier;
+                }
+              }
             )
           };
+          
+          // Log the update for debugging
+          console.log(`Updating function ${func.id} with patch data:`, patchData);
           
           await patchModalFunction({
             id: func.id,
             modalFunction: patchData
           });
+
+          // Invalidate and refetch the function cache immediately after update
+          await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+          await queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] });
         })
       );
+      
+      // Invalidate and refetch garden cache after all updates are complete
+      if (garden.doi) {
+        await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+        await queryClient.refetchQueries({ queryKey: ["garden", garden.doi] });
+      }
+
+      // Add a small delay to ensure cache updates are complete
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Call onUpdate callback if provided
       if (onUpdate) {
@@ -545,14 +584,12 @@ export function useMaterialActions<T extends MaterialType>({
       }
       
       // Create an array of promises for updating each selected function
-      const updatePromises = functionsToUpdate.map(func => {
-        // Get current materials
-        const currentMaterials = materialType === 'repository' || materialType === 'notebook'
-          ? func[materialType === 'repository' ? 'repositories' : 'notebooks'] || []
-          : func[`${materialType}s`] || [];
+      const updatePromises = functionsToUpdate.map(async func => {
+        // Get current materials using our helper function
+        const materialCollection = getMaterialCollection(func, materialType);
         
         // Remove the material from the list
-        const updatedMaterials = currentMaterials.filter((m: any) => {
+        const updatedMaterials = materialCollection.filter((m: any) => {
           if (materialType === 'repository' || materialType === 'notebook') {
             // For repositories and notebooks, match on either DOI or URL
             return !(m.doi === identifier || m.url === identifier);
@@ -563,12 +600,16 @@ export function useMaterialActions<T extends MaterialType>({
         });
         
         // Patch the function with updated materials
-        return patchModalFunction({
+        await patchModalFunction({
           id: func.id,
           modalFunction: {
-            [materialType === 'repository' ? 'repositories' : `${materialType}s`]: updatedMaterials
+            [`${materialType}s`]: updatedMaterials
           }
         });
+
+        // Invalidate and refetch the function cache immediately after update
+        await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+        await queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] });
       });
       
       // Wait for all updates to complete
@@ -585,30 +626,19 @@ export function useMaterialActions<T extends MaterialType>({
       setSelectiveFunctions({});
       setIsSelectiveRemoval(false);
       
-      // CRITICAL FIX: Explicitly clear all caches to ensure fresh data
-      console.log("Clearing caches after selective removal operation");
-      
-      // Invalidate function caches
-      for (const func of functionsToUpdate) {
-        if (func.id) {
-          await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
-          await queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] });
-        }
-      }
-      
-      // Invalidate and refetch garden data
+      // CRITICAL: Invalidate and refetch garden cache after all updates are complete
       if (garden.doi) {
         await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
         await queryClient.refetchQueries({ queryKey: ["garden", garden.doi] });
       }
+
+      // Add a small delay to ensure cache updates are complete
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Call the onUpdate callback to refresh the garden data
       if (onUpdate) {
         await onUpdate();
       }
-      
-      // Add a significant delay to ensure the UI has fully refreshed
-      await new Promise(resolve => setTimeout(resolve, 500));
       
     } catch (error) {
       toast.error(`Failed to remove ${materialType}`);
