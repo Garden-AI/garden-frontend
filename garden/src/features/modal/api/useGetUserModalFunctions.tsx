@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/lib/axios";
 import { ModalFunction } from "@/types";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
 interface UseGetUserModalFunctionsOptions {
   enabled?: boolean;

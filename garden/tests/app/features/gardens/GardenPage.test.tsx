@@ -2,7 +2,7 @@ import { vi, describe, it, expect } from "vitest";
 
 import { renderWithProviders } from "@tests/setupTests";
 import GardenPage from "@/features/gardens/components/GardenPage";
-import * as authHook from "@/hooks/useGlobusAuth";
+import * as authHook from "@globus/react-auth-context";
 import { screen, within } from "@testing-library/react";
 import * as getGardenHook from "@/features/gardens/api/useGetGarden";
 import { createMockAuthState } from "@tests/setupTests";

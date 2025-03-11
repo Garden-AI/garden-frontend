@@ -2,10 +2,8 @@ import { Entrypoint } from "@/types";
 import { ExampleFunction } from "./ExampleFunction";
 
 const EntrypointFunction = ({
-  gardenDOI,
   entrypoint,
 }: {
-  gardenDOI: string;
   entrypoint: Entrypoint;
 }) => {
   return (
@@ -13,7 +11,7 @@ const EntrypointFunction = ({
       <h2 className="text-center text-2xl sm:text-3xl">Run this function</h2>
       <div className="justify-center pt-2 sm:flex">
         <div className="relative">
-          <ExampleFunction functionText={exampleFunctionText(gardenDOI, entrypoint)} />
+          <ExampleFunction functionText={exampleFunctionText("my_garden_doi", entrypoint)} />
         </div>
       </div>
     </div>

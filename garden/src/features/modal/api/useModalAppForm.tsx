@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useModalAppUpload } from "./useModalAppUpload";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
 import { ApiError } from "@/features/gardens/utils/garden.utils";

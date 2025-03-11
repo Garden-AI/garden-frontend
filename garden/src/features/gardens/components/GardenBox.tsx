@@ -4,7 +4,6 @@ import { TagIcon } from "lucide-react";
 import { Garden } from "@/types";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useGetGardens } from "@/features/gardens/api/useGetGardens";
-import Markdown from "@/components/Markdown";
 
 const GardenBox = ({ garden }: { garden: Garden }) => {
   const navigate = useNavigate();

@@ -16,7 +16,7 @@ import TombstonePage from "@/components/TombstonePage";
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
 
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import SaveGardenButton from "./SaveGardenButton";
 
 // Import extracted components

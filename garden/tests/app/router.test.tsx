@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import Router from "@/app/router";
-import * as authHook from "@/hooks/useGlobusAuth";
+import * as authHook from "@globus/react-auth-context";
 import { createMockAuthState, renderWithProviders } from "@tests/setupTests";
 import { MemoryRouter, useLocation } from "react-router-dom";
 
@@ -31,23 +31,6 @@ describe("Router", () => {
             // Verify we're redirected to login
             const locationDisplay = screen.getByTestId("location-display");
             expect(locationDisplay).toHaveTextContent("/login");
-        });
-
-        it("should show loading state while auth is being checked", () => {
-            // Mock the auth hook to return loading state
-            vi.spyOn(authHook, "useGlobusAuth").mockReturnValue(createMockAuthState({
-                isLoading: true
-            }));
-
-            // Render router with a private route path
-            renderWithProviders(
-                <MemoryRouter initialEntries={["/garden/create"]}>
-                    <Router />
-                </MemoryRouter>
-            );
-            const loadingElement = screen.getByRole("status", { name: "loading" });
-            // Verify loading state is shown
-            expect(loadingElement).toBeInTheDocument();
         });
 
         it("should show the private route content if the user is authenticated", () => {

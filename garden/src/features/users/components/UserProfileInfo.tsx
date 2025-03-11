@@ -10,7 +10,7 @@ import { useGetUserInfo } from "../api/useGetUserInfo";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import NotFoundPage from "@/components/NotFoundPage";
 import RenderTags from "@/components/shadcn/renderTags";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { useUpdateUserInfo } from "../api/updateUserInfo";
 
 const UserProfileInfo = () => {

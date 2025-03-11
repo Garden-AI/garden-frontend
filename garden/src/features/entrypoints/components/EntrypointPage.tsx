@@ -9,7 +9,6 @@ import ShareModal from "@/components/ShareModal";
 import { Separator } from "@/components/shadcn/separator";
 import { Entrypoint, Garden } from "@/types";
 import { useGetEntrypoint } from "../api/useGetEntrypoint";
-import { useSearchGardenByDOI } from "@/features/search/api/useSearchGardenByDOI";
 import EntrypointTabs from "@/features/entrypoints/components/EntrypointTabs";
 import EntrypointFunction from "@/features/entrypoints/components/EntrypointFunction";
 import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
@@ -19,30 +18,21 @@ const EntrypointPage = () => {
   const { doi } = useParams() as { doi: string };
   const { data: entrypoint, isError, isLoading } = useGetEntrypoint(doi);
 
-  const { data: garden, isLoading: gardenIsLoading } = useSearchGardenByDOI(doi);
-
-  if (isLoading || gardenIsLoading) return <LoadingOverlay />;
+  if (isLoading) return <LoadingOverlay />;
 
   if (isError || !entrypoint) return <NotFoundPage />;
 
-  if (!garden) return <NotFoundPage />;
-
   return (
     <div className="mx-auto max-w-7xl px-8 pt-16 font-display">
-      <Breadcrumb
-        crumbs={[
-          { label: "Home", link: "/" },
-          { label: "Gardens", link: "/search" },
-          garden && {
-            label: garden?.title,
-            link: `/garden/${encodeURIComponent(garden.doi)}`,
-          },
-          { label: entrypoint.title },
-        ]}
-      />
+      <div>
+        <Breadcrumb 
+          className="mb-3" 
+          crumbs={[{ label: "Home", link: "/" }, { label: entrypoint.title }]} 
+        />
+      </div>
       <EntrypointHeader entrypoint={entrypoint} doi={doi} />
-      <EntrypointBody garden={garden} entrypoint={entrypoint} />
-      <EntrypointFunction gardenDOI={garden.doi} entrypoint={entrypoint} />
+      <EntrypointBody entrypoint={entrypoint} />
+      <EntrypointFunction entrypoint={entrypoint} />
       <AssociatedMaterials resource={entrypoint} />
       <EntrypointTabs entrypoint={entrypoint} />
     </div>
@@ -68,12 +58,12 @@ const EntrypointHeader = ({ entrypoint, doi }: { entrypoint: Entrypoint; doi: st
   );
 };
 
-const EntrypointBody = ({ garden, entrypoint }: { garden: Garden; entrypoint: Entrypoint }) => {
+const EntrypointBody = ({ entrypoint }: { entrypoint: Entrypoint }) => {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
         <span>
-          Version {garden.version} | {garden.year} |
+          Version {entrypoint.year} |
         </span>
         <TagIcon className="h-4 w-4" />
         <span>{entrypoint.tags?.join(", ")}</span>

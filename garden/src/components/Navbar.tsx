@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, RefObject } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/shadcn/separator";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { ChevronDown, ChevronUp, LogOut, Plus, User, Menu, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,15 +35,15 @@ const Navbar = () => {
     setOpenMenuDropdown(!openMenuDropdown);
   };
 
-  const handleLogOut = () => {
-    auth.authorization?.revoke();
+  const handleLogOut = async () => {
+    await auth.authorization?.revoke();
     navigate("/");
     toast.success("Logged out successfully!");
     queryClient.removeQueries();
   };
 
-  const handleLogin = () => {
-    auth.authorization?.login();
+  const handleLogin = async () => {
+    await auth.authorization?.login();
   };
 
   let Links = [{ name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" }];

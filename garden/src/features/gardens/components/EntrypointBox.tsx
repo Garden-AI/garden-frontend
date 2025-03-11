@@ -2,7 +2,7 @@ import { Entrypoint } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { buttonVariants } from "@/components/shadcn/button";
 import { cn } from "@/utils/form.utils";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetEntrypoints } from "@/features/entrypoints/api/useGetEntrypoints";
 import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/shadcn/card";
 
