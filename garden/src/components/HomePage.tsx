@@ -25,7 +25,7 @@ import {
   Lightbulb,
   Search,
 } from "lucide-react";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import UChicagoLogo from "@/svgs/logos/uchicago"
 import NSFLogo from "@/svgs/logos/nsf"
 import WisconsinLogo from "@/svgs/logos/badger"
@@ -44,12 +44,17 @@ const icons = [
 
 const HomePage = () => {
   const auth = useGlobusAuth();
+  const { isAuthenticated, authorization } = auth;
   useEffect(() => {
     async function getToken() {
-      await auth.authorization?.handleCodeRedirect();
+      if (!authorization?.handleCodeRedirect || isAuthenticated) {
+        return;
+      }
+      console.log("getting token ...")
+      await authorization.handleCodeRedirect();
     }
     getToken();
-  }, [auth]);
+  }, [authorization, authorization?.handleCodeRedirect, isAuthenticated]);
 
   const gardens: Garden[] = [
     {

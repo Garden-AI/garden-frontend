@@ -1,16 +1,15 @@
 import { useParams, useNavigate } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
 import NotFoundPage from "@/components/NotFoundPage";
 
-// import ModalFunctionTabs from "@/components/ModalFunctionTabs";
 import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
-import { Eye, LinkIcon, TagIcon, PencilIcon } from "lucide-react";
+import { LinkIcon, TagIcon, PencilIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -21,7 +20,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  CardDescription,
   CardFooter,
   CardTitle,
   MarkdownCardContent,
@@ -29,7 +27,6 @@ import {
 import { Button } from "@/components/shadcn/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
 import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
-import { ExampleFunction } from "@/features/entrypoints/components/ExampleFunction";
 import Markdown from "@/components/Markdown";
 
 // Extend ModalFunction type to include owner_identity_id

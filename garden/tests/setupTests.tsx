@@ -2,8 +2,18 @@ import { vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { render } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import * as authHook from "@/hooks/useGlobusAuth";
+import * as authHook from "@globus/react-auth-context";
 
+// Mock the entire @globus/react-auth-context module
+vi.mock("@globus/react-auth-context", () => ({
+    useGlobusAuth: vi.fn().mockImplementation(() => ({
+      isLoading: false,
+      isAuthenticated: false,
+      authorization: undefined,
+      error: undefined,
+      events: {}
+    }))
+  }));
 
 // this gets rid of warning about window.scrollTo not being implemented
 window.scrollTo = vi.fn();

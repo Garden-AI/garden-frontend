@@ -30,7 +30,7 @@ import { Input } from "@/components/shadcn/input";
 import { Label } from "@/components/shadcn/label";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Garden } from "@/types";
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
+import { useGlobusAuth } from "@globus/react-auth-context";
 import { usePatchEntrypoint } from "@/features/entrypoints/api/usePatchEntrypoint";
 import { useDeleteGarden } from "../api/useDeleteGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
