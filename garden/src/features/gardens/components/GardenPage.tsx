@@ -139,7 +139,10 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 className="w-full"
               >
                 <TabsList className="mb-2 bg-gray-100 p-0.5">
-                  <TabsTrigger value="functions" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Functions</TabsTrigger>
+                  <TabsTrigger value="functions" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                    Functions {((garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)) > 0 && 
+                      `(${(garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)})`}
+                  </TabsTrigger>
                   <TabsTrigger value="datasets" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
                     Datasets {datasets.length > 0 && `(${datasets.length})`}
                   </TabsTrigger>
