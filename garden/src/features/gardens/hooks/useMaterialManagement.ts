@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
-import { Dataset, Paper, Repository, ModalFunction } from '@/types';
+import { Dataset, Paper, Repository, Notebook, ModalFunction } from '@/types';
 import { ExtendedGarden, MaterialWithDOI, MaterialManagementHook } from '@/types/garden.types';
 import { useMaterialsContext } from '../contexts/MaterialsContext';
 
 // Generic type for material with optional DOI
 interface MaterialWithDOI {
   doi?: string | null;
+  title: string;
   [key: string]: any;
 }
 
@@ -23,6 +24,9 @@ export const useMaterialManagement = <T extends MaterialWithDOI>(
       ...(garden.entrypoints?.map(entrypoint => getMaterialsFromEntrypoint(entrypoint) || []).flat() || []),
       ...(garden.modal_functions?.map(func => getMaterialsFromFunction(func) || []).flat() || [])
     ];
+
+    // Log for debugging
+    console.log('All materials before deduplication:', allMaterials);
 
     return allMaterials.filter((item, index, self) => {
       // Skip items with no deduplication key
@@ -62,5 +66,26 @@ export const useRepositoryManagement = (garden: ExtendedGarden): MaterialManagem
     (entrypoint) => entrypoint.repositories || [],
     (func) => func.repositories || [],
     'url' // Use URL as deduplication key for repositories
+  );
+};
+
+export const useNotebookManagement = (garden: ExtendedGarden): MaterialManagementHook<Notebook> => {
+  // Log for debugging
+  console.log('Garden entrypoints:', garden.entrypoints);
+  console.log('Garden modal functions:', garden.modal_functions);
+
+  return useMaterialManagement<Notebook>(
+    garden,
+    (entrypoint) => {
+      const notebooks = entrypoint.notebooks || [];
+      console.log('Notebooks from entrypoint:', notebooks);
+      return notebooks;
+    },
+    (func) => {
+      const notebooks = func.notebooks || [];
+      console.log('Notebooks from function:', notebooks);
+      return notebooks;
+    },
+    'url' // Use URL as deduplication key for notebooks
   );
 }; 

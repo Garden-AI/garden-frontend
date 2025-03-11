@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2 } from "lucide-react";
+import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2, Laptop } from "lucide-react";
 import { useState, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -34,12 +34,13 @@ import {
   AddMaterialWithFunctionSelect,
   DatasetCard,
   PaperCard,
-  RepositoryCard
+  RepositoryCard,
+  NotebookCard
 } from "./garden-page";
 
 // Import our new hooks and context
 import { MaterialsProvider } from '../contexts/MaterialsContext';
-import { useDatasetManagement, usePaperManagement, useRepositoryManagement } from '../hooks/useMaterialManagement';
+import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '../hooks/useMaterialManagement';
 
 interface GardenContentProps {
   garden: ExtendedGarden;
@@ -53,11 +54,15 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
   const { materials: datasets, refreshMaterials, findFunctionsWithMaterial } = useDatasetManagement(garden);
   const { materials: papers } = usePaperManagement(garden);
   const { materials: repositories } = useRepositoryManagement(garden);
+  const { materials: notebooks } = useNotebookManagement(garden);
 
   // Callback to refresh data after adding materials
   const handleMaterialAdded = useCallback(() => {
     refreshMaterials();
   }, [refreshMaterials]);
+
+  // Log notebooks for debugging
+  console.log('Notebooks:', notebooks);
 
   return (
     <div className="container max-w-7xl">
@@ -98,13 +103,14 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
             {/* Description with Markdown */}
             <GardenDescription garden={garden} />
             
-            {/* Functions, Datasets, and Papers tabs */}
+            {/* Functions, Datasets, Papers, and Notebooks tabs */}
             <div className="mt-6">
               <Tabs 
                 defaultValue={
                   garden.modal_functions?.length ? "functions" : 
                   datasets.length ? "datasets" : 
                   papers.length ? "papers" : 
+                  notebooks.length ? "notebooks" :
                   "functions"
                 } 
                 className="w-full"
@@ -119,6 +125,9 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                   </TabsTrigger>
                   <TabsTrigger value="repositories" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
                     Repositories {repositories.length > 0 && `(${repositories.length})`}
+                  </TabsTrigger>
+                  <TabsTrigger value="notebooks" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                    Notebooks {notebooks.length > 0 && `(${notebooks.length})`}
                   </TabsTrigger>
                 </TabsList>
                 
@@ -257,6 +266,46 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                           </div>
                         ) : (
                           <p className="text-gray-500 italic">No repositories associated with this garden</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="notebooks" className="mt-0 relative">
+                  <Card className="border-0 shadow-none bg-transparent">
+                    <CardContent className="pt-6">
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-lg font-medium flex items-center">
+                            <Laptop className="h-5 w-5 mr-2 text-green" />
+                            Notebooks
+                          </h3>
+                          
+                          {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
+                            <AddMaterialWithFunctionSelect
+                              garden={garden}
+                              materialType="notebooks"
+                              onSuccess={handleMaterialAdded}
+                            />
+                          )}
+                        </div>
+                        
+                        {notebooks.length > 0 ? (
+                          <div className="grid grid-cols-1 gap-8 py-2">
+                            {notebooks.map((notebook) => (
+                              <NotebookCard 
+                                key={notebook.url} 
+                                notebook={notebook} 
+                                isOwner={ownsThisGarden}
+                                garden={garden}
+                                findAffectedFunctions={findFunctionsWithMaterial}
+                                onUpdate={refreshMaterials}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 italic">No notebooks associated with this garden</p>
                         )}
                       </div>
                     </CardContent>

@@ -19,6 +19,8 @@ const BYPASS_MISSING_OWNER_CHECK = true;
 export type MaterialType = {
   doi?: string;
   url?: string;
+  title: string;
+  description?: string | null;
   [key: string]: any;
 };
 
@@ -27,7 +29,7 @@ export interface UseMaterialActionsOptions<T extends MaterialType> {
   garden: ExtendedGarden;
   findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
   onUpdate?: () => Promise<void>;
-  materialType: 'paper' | 'dataset' | 'repository';
+  materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
 }
 
 // Direct fetch function for getting modal function data
@@ -76,11 +78,13 @@ export function useMaterialActions<T extends MaterialType>({
   const queryClient = useQueryClient();
   
   // Create a link from URL or DOI
-  const materialLink = material.url || (material.doi ? `https://doi.org/${material.doi}` : undefined);
+  const materialLink = material?.url || (material?.doi ? `https://doi.org/${material.doi}` : undefined);
   
   const prepareFunctionsForEdit = async (updatedMaterial: T) => {
-    // For repositories, check either DOI or URL. For other materials, require DOI
-    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' || materialType === 'notebook'
+      ? (material.doi || material.url) 
+      : material.doi;
     if (!identifier) {
       return;
     }
@@ -148,8 +152,10 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const applyEditToAllFunctions = async () => {
-    // For repositories, check either DOI or URL. For other materials, require DOI
-    const identifier = materialType === 'repository' ? (editingMaterial?.doi || editingMaterial?.url) : editingMaterial?.doi;
+    // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' || materialType === 'notebook'
+      ? (editingMaterial?.doi || editingMaterial?.url) 
+      : editingMaterial?.doi;
     if (!editingMaterial || !identifier || editAffectedFunctions.length === 0) {
       setIsSelectiveEditing(false);
       return;
@@ -165,14 +171,14 @@ export function useMaterialActions<T extends MaterialType>({
         }
 
         // Get current materials based on type
-        const currentMaterials = materialType === 'repository' 
-          ? func.repositories || []
+        const currentMaterials = materialType === 'repository' || materialType === 'notebook'
+          ? func[materialType === 'repository' ? 'repositories' : 'notebooks'] || []
           : func[`${materialType}s`] || [];
         
         // Replace the material being edited
         const updatedMaterials = currentMaterials.map((m: any) => {
-          if (materialType === 'repository') {
-            // For repositories, match on either DOI or URL
+          if (materialType === 'repository' || materialType === 'notebook') {
+            // For repositories and notebooks, match on either DOI or URL
             if ((m.doi && m.doi === identifier) || (!m.doi && m.url && m.url === identifier)) {
               return editingMaterial;
             }
@@ -430,8 +436,8 @@ export function useMaterialActions<T extends MaterialType>({
           
           const hasMaterial = Array.isArray(materials) && 
             materials.some((m: any) => {
-              if (materialType === 'repository') {
-                // For repositories, match on either DOI or URL
+              if (materialType === 'repository' || materialType === 'notebook') {
+                // For repositories and notebooks, match on either DOI or URL
                 return (m.doi && m.doi === identifier) || (m.url && m.url === identifier);
               } else {
                 // For other materials, match on DOI
@@ -463,8 +469,10 @@ export function useMaterialActions<T extends MaterialType>({
   };
 
   const prepareFunctionsForRemoval = async () => {
-    // For repositories, check either DOI or URL. For other materials, require DOI
-    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' || materialType === 'notebook'
+      ? (material.doi || material.url) 
+      : material.doi;
     if (!identifier) {
       return;
     }
@@ -529,8 +537,10 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const handleRemoveAll = async () => {
-    // For repositories, check either DOI or URL. For other materials, require DOI
-    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' || materialType === 'notebook'
+      ? (material.doi || material.url) 
+      : material.doi;
     if (!identifier || affectedFunctions.length === 0) {
       setConfirmRemove(false);
       return;
@@ -546,8 +556,8 @@ export function useMaterialActions<T extends MaterialType>({
         
         // Remove the material from the list
         const updatedMaterials = currentMaterials.filter((m: any) => {
-          if (materialType === 'repository') {
-            // For repositories, match on either DOI or URL
+          if (materialType === 'repository' || materialType === 'notebook') {
+            // For repositories and notebooks, match on either DOI or URL
             return !(m.doi === identifier || m.url === identifier);
           } else {
             // For other materials, match on DOI
@@ -616,8 +626,10 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const handleSelectiveRemove = async () => {
-    // For repositories, check either DOI or URL. For other materials, require DOI
-    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' || materialType === 'notebook'
+      ? (material.doi || material.url) 
+      : material.doi;
     if (!identifier || affectedFunctions.length === 0) {
       setIsSelectiveRemoval(false);
       setConfirmRemove(false);
@@ -638,14 +650,14 @@ export function useMaterialActions<T extends MaterialType>({
       // Create an array of promises for updating each selected function
       const updatePromises = functionsToUpdate.map(func => {
         // Get current materials
-        const currentMaterials = materialType === 'repository' 
-          ? func.repositories || []
+        const currentMaterials = materialType === 'repository' || materialType === 'notebook'
+          ? func[materialType === 'repository' ? 'repositories' : 'notebooks'] || []
           : func[`${materialType}s`] || [];
         
         // Remove the material from the list
         const updatedMaterials = currentMaterials.filter((m: any) => {
-          if (materialType === 'repository') {
-            // For repositories, match on either DOI or URL
+          if (materialType === 'repository' || materialType === 'notebook') {
+            // For repositories and notebooks, match on either DOI or URL
             return !(m.doi === identifier || m.url === identifier);
           } else {
             // For other materials, match on DOI

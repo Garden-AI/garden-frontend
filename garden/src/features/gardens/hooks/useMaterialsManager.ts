@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { QueryClient } from '@tanstack/react-query';
-import { Dataset, Paper, Repository, ModalFunction } from '@/types';
+import { Dataset, Paper, Repository, Notebook, ModalFunction } from '@/types';
 import { ExtendedGarden } from '@/types/garden.types';
 
 // Helper type for functions with owner
@@ -19,23 +19,33 @@ export interface MaterialsManager {
     datasets: Dataset[];
     papers: Paper[];
     repositories: Repository[];
+    notebooks: Notebook[];
   };
   findFunctionsWithMaterial: (doi: string) => ModalFunctionWithOwner[];
   refreshMaterials: () => Promise<void>;
 }
 
-// Helper functions for deduplication
-const deduplicateByDOI = <T extends { doi?: string | null }>(items: T[]): T[] => {
-  return items.filter((item, index, self) => {
+// Helper function to deduplicate materials by DOI
+const deduplicateByDOI = <T extends { doi?: string | null }>(materials: T[]): T[] => {
+  return materials.filter((item, index, self) => {
     if (!item.doi) return true;
     return index === self.findIndex((t) => t.doi === item.doi);
   });
 };
 
-const deduplicateRepositoriesByURL = (repos: Repository[]): Repository[] => {
-  return repos.filter((repo, index, self) => {
+// Helper function to deduplicate repositories by URL
+const deduplicateRepositoriesByURL = (repositories: Repository[]): Repository[] => {
+  return repositories.filter((repo, index, self) => {
     if (!repo.url) return true;
     return index === self.findIndex((t) => t.url === repo.url);
+  });
+};
+
+// Helper function to deduplicate notebooks by URL
+const deduplicateNotebooksByURL = (notebooks: Notebook[]): Notebook[] => {
+  return notebooks.filter((notebook, index, self) => {
+    if (!notebook.url) return true;
+    return index === self.findIndex((t) => t.url === notebook.url);
   });
 };
 
@@ -58,6 +68,10 @@ export const useMaterialsManager = ({
       repositories: deduplicateRepositoriesByURL([
         ...(garden.entrypoints?.map(entrypoint => entrypoint.repositories || []).flat() || []),
         ...(garden.modal_functions?.map(func => func.repositories || []).flat() || [])
+      ]),
+      notebooks: deduplicateNotebooksByURL([
+        ...(garden.entrypoints?.map(entrypoint => entrypoint.notebooks || []).flat() || []),
+        ...(garden.modal_functions?.map(func => func.notebooks || []).flat() || [])
       ])
     };
   }, [garden]);
@@ -94,7 +108,11 @@ export const useMaterialsManager = ({
       const hasMaterialInRepo = Array.isArray(func.repositories) && 
         func.repositories.some(repo => repo && repo.doi === doi);
       
-      const hasMaterial = hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo;
+      // Check notebooks
+      const hasMaterialInNotebook = Array.isArray(func.notebooks) && 
+        func.notebooks.some(notebook => notebook && notebook.doi === doi);
+      
+      const hasMaterial = hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo || hasMaterialInNotebook;
       
       // Debugging log
       if (hasMaterial) {

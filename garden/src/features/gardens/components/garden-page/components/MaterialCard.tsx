@@ -9,7 +9,7 @@ import { RemoveDialog } from "./MaterialDialogs";
 
 export interface BaseMaterialCardProps<T extends MaterialType> {
   material: T;
-  materialType: 'paper' | 'dataset' | 'repository';
+  materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
   isOwner: boolean;
   garden: ExtendedGarden;
   findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
@@ -96,7 +96,7 @@ export function BaseMaterialCard<T extends MaterialType>({
   const affectedFunctions = propAffectedFunctions || hooksResult.affectedFunctions;
   const isSelectiveRemoval = propIsSelectiveRemoval !== undefined ? propIsSelectiveRemoval : hooksResult.isSelectiveRemoval;
   const setIsSelectiveRemoval = propSetIsSelectiveRemoval || hooksResult.setIsSelectiveRemoval;
-  const materialLink = hooksResult.materialLink;
+  const materialLink = material?.url || (material?.doi ? `https://doi.org/${material.doi}` : undefined);
   const prepareFunctionsForRemoval = propPrepareFunctionsForRemoval || hooksResult.prepareFunctionsForRemoval;
   const applyEditToAllFunctions = propApplyEditToAllFunctions || hooksResult.applyEditToAllFunctions;
   const applySelectiveEdit = propApplySelectiveEdit || hooksResult.applySelectiveEdit;

@@ -9,3 +9,4 @@ export { default as GardenAssociatedMaterialsSection } from "./GardenAssociatedM
 export { default as ShowAllMaterialsToggle } from "./ShowAllMaterialsToggle";
 export { default as AddMaterialWithFunctionSelect } from "./AddMaterialWithFunctionSelect";
 export { PaperCard, DatasetCard, RepositoryCard } from "./MaterialCards";
+export { NotebookCard } from "./components/NotebookCard";

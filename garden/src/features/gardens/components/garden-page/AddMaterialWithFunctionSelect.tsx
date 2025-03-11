@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
 import { ExtendedGarden } from '@/types/garden.types';
-import { Dataset, ModalFunction, Paper, Repository } from '@/types';
+import { Dataset, ModalFunction, Paper, Repository, Notebook } from '@/types';
 import DatasetModal from '@/features/entrypoints/components/modals/DatasetModal';
 import PaperModal from '@/features/entrypoints/components/modals/PaperModal';
 import RepositoryModal from '@/features/entrypoints/components/modals/RepositoryModal';
+import NotebookModal from '@/features/entrypoints/components/modals/NotebookModal';
 import { Checkbox } from '@/components/shadcn/checkbox';
 import { Label } from '@/components/shadcn/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shadcn/dialog';
@@ -14,7 +15,7 @@ import { usePatchModalFunction } from '@/features/modal/api/usePatchModalFunctio
 
 interface AddMaterialWithFunctionSelectProps {
   garden: ExtendedGarden;
-  materialType: 'datasets' | 'papers' | 'repositories';
+  materialType: 'datasets' | 'papers' | 'repositories' | 'notebooks';
   onSuccess?: () => void;
 }
 
@@ -25,7 +26,7 @@ const AddMaterialWithFunctionSelect: React.FC<AddMaterialWithFunctionSelectProps
 }) => {
   const [selectedFunctions, setSelectedFunctions] = useState<number[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [material, setMaterial] = useState<Dataset | Paper | Repository | null>(null);
+  const [material, setMaterial] = useState<Dataset | Paper | Repository | Notebook | null>(null);
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
   
   // Get all available functions from the garden
@@ -42,7 +43,8 @@ const AddMaterialWithFunctionSelect: React.FC<AddMaterialWithFunctionSelectProps
   const modalMap = {
     datasets: DatasetModal,
     papers: PaperModal,
-    repositories: RepositoryModal
+    repositories: RepositoryModal,
+    notebooks: NotebookModal
   };
   
   const ModalComponent = modalMap[materialType];
@@ -57,7 +59,7 @@ const AddMaterialWithFunctionSelect: React.FC<AddMaterialWithFunctionSelectProps
   };
   
   // Handle material selection from modal
-  const handleMaterialSelect = (data: Dataset | Paper | Repository) => {
+  const handleMaterialSelect = (data: Dataset | Paper | Repository | Notebook) => {
     setMaterial(data);
     setIsDialogOpen(true);
   };

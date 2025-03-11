@@ -26,7 +26,8 @@ type UpdateUserSchema = components["schemas"]["UserUpdateRequest"];
 type Dataset = components["schemas"]["_DatasetMetadata"];
 type Paper = components["schemas"]["_PaperMetadata"];
 type Repository = components["schemas"]["_RepositoryMetadata"];
-// type Notebook = components["schemas"]["_RegisteredNotebook"];
+type Model = components["schemas"]["_ModelMetadata"];
+type Notebook = components["schemas"]["_NotebookMetadata"];
 
 type DOIRequest = components["schemas"]["Doi"];
 
@@ -61,4 +62,6 @@ export type {
   AsyncModalJobStatus,
   ModalFileMetadataRequest,
   ModalFileMetadataResponse,
+  Model,
+  Notebook,
 };

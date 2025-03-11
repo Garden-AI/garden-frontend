@@ -12,7 +12,7 @@ import { InfoIcon, PlusCircleIcon, CheckCircleIcon, AlertCircleIcon, ChevronDown
 interface EditDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  materialType: string;
+  materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
   editAffectedFunctions: ModalFunctionWithOwner[] & { already_has_material?: boolean }[];
   editSelectiveFunctions: Record<number, boolean>;
   toggleEditFunction: (id: number) => void;
@@ -239,7 +239,7 @@ export const EditDialog = ({
 interface RemoveDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  materialType: string;
+  materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
   affectedFunctions: ModalFunctionWithOwner[] & { already_has_material?: boolean }[];
   selectiveFunctions: Record<number, boolean>;
   toggleFunction: (id: number) => void;
