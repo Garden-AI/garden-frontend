@@ -18,17 +18,13 @@ import SaveGardenButton from "./SaveGardenButton";
 
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
-
-import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import { MaterialsProvider } from '../contexts/MaterialsContext';
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '../hooks/useMaterialManagement';
 
 // Import Garden from the root types directory
 import { Garden, ModalFunction } from "@/types";
-
-import { useGlobusAuth } from "@globus/react-auth-context";
-import SaveGardenButton from "./SaveGardenButton";
 
 
 // Import extracted components
