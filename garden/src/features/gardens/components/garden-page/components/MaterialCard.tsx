@@ -13,7 +13,7 @@ export interface BaseMaterialCardProps<T extends MaterialType> {
   isOwner: boolean;
   garden: ExtendedGarden;
   findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
-  onUpdate?: () => void;
+  onUpdate?: () => Promise<void>;
   icon: ReactNode;
   title: string;
   onEdit: (updatedMaterial: T) => void;
@@ -106,6 +106,12 @@ export function BaseMaterialCard<T extends MaterialType>({
   const handleSelectiveRemove = propHandleSelectiveRemove || hooksResult.handleSelectiveRemove;
   const toggleFunction = propToggleFunction || hooksResult.toggleFunction;
   const toggleAll = propToggleAll || hooksResult.toggleAll;
+
+  const handleUpdate = async () => {
+    if (onUpdate) {
+      await onUpdate();
+    }
+  };
 
   return (
     <>

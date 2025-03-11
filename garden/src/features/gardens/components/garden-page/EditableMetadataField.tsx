@@ -49,6 +49,7 @@ const EditableMetadataField = ({
   onSave
 }: EditableMetadataFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [inputValue, setInputValue] = useState<string | string[]>(value || (isArray ? [] : ""));
   const { mutate: updateGarden } = usePatchGarden();
   
@@ -67,57 +68,32 @@ const EditableMetadataField = ({
     return value;
   }, [value, isArray, label]);
   
-  const handleSave = () => {
-    // Get the appropriate schema for validation
-    let schema;
-    
-    if (fieldName in formSchema.shape) {
-      // Use the schema from formSchema if the field exists there
-      schema = formSchema.shape[fieldName as keyof typeof formSchema.shape];
-    } else if (isRequired) {
-      // Use fallback required schema if the field is required
-      schema = isArray ? fallbackSchemas.requiredArray : fallbackSchemas.required;
-    } else {
-      // No validation needed for optional fields
-      schema = isArray ? z.array(z.string()) : z.string().optional();
-    }
-    
-    // Validate the input value using the schema
-    const result = schema.safeParse(inputValue);
-    
-    if (!result.success) {
-      // Display the first validation error
-      const errorMessage = result.error.errors[0]?.message || `Invalid ${label}`;
-      toast.error(errorMessage);
-      return;
-    }
-    
-    // Create an update object with just the field being edited
-    const updateData: Partial<Garden> = {};
-    
-    // Check if the field is safe to update
-    const readOnlyFields = ['entrypoint_ids', 'modal_function_ids'];
-    if (!readOnlyFields.includes(fieldName)) {
-      updateData[fieldName as keyof Garden] = inputValue as any;
-    
-      updateGarden(
-        {
-          doi: garden.doi,
-          garden: updateData
-        },
-        {
-          onSuccess: () => {
-            toast.success(`${label} updated successfully`);
-            setIsEditing(false);
-            if (onSave) onSave();
-          },
-          onError: (error: any) => {
-            toast.error(`Error updating ${label.toLowerCase()}: ${error.message}`);
-          }
-        }
-      );
-    } else {
-      toast.error(`Cannot update ${fieldName} as it is read-only`);
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      
+      // Create a partial garden object with the updated field
+      const updateData: Partial<Garden> = {};
+      
+      // Handle read-only properties correctly
+      if (fieldName !== 'entrypoint_ids' && fieldName !== 'modal_function_ids') {
+        // Only try to update non-readonly fields
+        updateData[fieldName as keyof Omit<Garden, 'entrypoint_ids' | 'modal_function_ids'>] = inputValue as any;
+      }
+      
+      await updateGarden({
+        doi: garden.doi,
+        garden: updateData
+      });
+      
+      toast.success(`${label} updated successfully`);
+      setIsEditing(false);
+      setIsSaving(false);
+      if (onSave) onSave();
+    } catch (error: any) {
+      const errorMessage = error?.message || `Error updating ${label.toLowerCase()}`;
+      toast.error(`Error updating ${label.toLowerCase()}: ${errorMessage}`);
+      setIsSaving(false);
     }
   };
   

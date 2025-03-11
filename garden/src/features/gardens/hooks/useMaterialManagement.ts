@@ -1,37 +1,31 @@
-import { useMemo } from 'react';
-import { Dataset, Paper, Repository, Notebook, ModalFunction } from '@/types';
-import { ExtendedGarden, MaterialWithDOI, MaterialManagementHook } from '@/types/garden.types';
+import { useMemo, useCallback } from 'react';
+import { Dataset, Paper, Repository, Notebook } from '@/types';
+import { ExtendedGarden, ModalFunctionWithOwner } from '@/types/garden.types';
 import { useMaterialsContext } from '../contexts/MaterialsContext';
+import type { MaterialWithDOI } from '@/types/garden.types';
 
-// Generic type for material with optional DOI
-interface MaterialWithDOI {
-  doi?: string | null;
-  title: string;
-  [key: string]: any;
+interface MaterialManagementHook<T> {
+  materials: T[];
+  refreshMaterials: () => Promise<void>;
+  findFunctionsWithMaterial: (doi: string) => ModalFunctionWithOwner[];
 }
 
 export const useMaterialManagement = <T extends MaterialWithDOI>(
   garden: ExtendedGarden,
-  getMaterialsFromEntrypoint: (entrypoint: ExtendedGarden['entrypoints'][0]) => T[],
-  getMaterialsFromFunction: (func: ExtendedGarden['modal_functions'][0]) => T[],
+  getMaterialsFromEntrypoint: (entrypoint: NonNullable<ExtendedGarden['entrypoints']>[number]) => T[],
+  getMaterialsFromFunction: (func: NonNullable<ExtendedGarden['modal_functions']>[number]) => T[],
   deduplicationKey: keyof T = 'doi' as keyof T
 ): MaterialManagementHook<T> => {
   const { refreshMaterials, findFunctionsWithMaterial } = useMaterialsContext();
 
-  // Collect and deduplicate materials
   const materials = useMemo(() => {
     const allMaterials = [
       ...(garden.entrypoints?.map(entrypoint => getMaterialsFromEntrypoint(entrypoint) || []).flat() || []),
       ...(garden.modal_functions?.map(func => getMaterialsFromFunction(func) || []).flat() || [])
     ];
 
-    // Log for debugging
-    console.log('All materials before deduplication:', allMaterials);
-
     return allMaterials.filter((item, index, self) => {
-      // Skip items with no deduplication key
       if (!item[deduplicationKey]) return true;
-      
       return index === self.findIndex((t) => t[deduplicationKey] === item[deduplicationKey]);
     });
   }, [garden, getMaterialsFromEntrypoint, getMaterialsFromFunction, deduplicationKey]);
@@ -45,47 +39,92 @@ export const useMaterialManagement = <T extends MaterialWithDOI>(
 
 // Type-specific hooks
 export const useDatasetManagement = (garden: ExtendedGarden): MaterialManagementHook<Dataset> => {
-  return useMaterialManagement<Dataset>(
-    garden,
-    (entrypoint) => entrypoint.datasets || [],
-    (func) => func.datasets || []
-  );
+  const materials = useMemo(() => garden.datasets || [], [garden.datasets]);
+
+  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
+    return (garden.modal_functions || []).filter(fn => 
+      fn.datasets?.some(dataset => dataset.doi === doi)
+    ).map(fn => ({
+      ...fn,
+      owner_identity_id: fn.owner_identity_id,
+      already_has_material: true
+    }));
+  }, [garden.modal_functions]);
+
+  const refreshMaterials = useCallback(async () => {
+    return Promise.resolve();
+  }, []);
+
+  return { materials, findFunctionsWithMaterial, refreshMaterials };
 };
 
-export const usePaperManagement = (garden: ExtendedGarden): MaterialManagementHook<Paper> => {
-  return useMaterialManagement<Paper>(
-    garden,
-    (entrypoint) => entrypoint.papers || [],
-    (func) => func.papers || []
-  );
+export const usePaperManagement = (garden: ExtendedGarden): MaterialManagementHook<Paper & { title: string }> => {
+  const materials = useMemo(() => 
+    (garden.papers || []).map(paper => ({
+      ...paper,
+      title: paper.title || 'Untitled Paper'
+    }))
+  , [garden.papers]);
+
+  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
+    return (garden.modal_functions || []).filter(fn => 
+      fn.papers?.some(paper => paper.doi === doi)
+    ).map(fn => ({
+      ...fn,
+      owner_identity_id: fn.owner_identity_id,
+      already_has_material: true
+    }));
+  }, [garden.modal_functions]);
+
+  const refreshMaterials = useCallback(async () => {
+    return Promise.resolve();
+  }, []);
+
+  return { materials, findFunctionsWithMaterial, refreshMaterials };
 };
 
-export const useRepositoryManagement = (garden: ExtendedGarden): MaterialManagementHook<Repository> => {
-  return useMaterialManagement<Repository>(
-    garden,
-    (entrypoint) => entrypoint.repositories || [],
-    (func) => func.repositories || [],
-    'url' // Use URL as deduplication key for repositories
-  );
+export const useRepositoryManagement = (garden: ExtendedGarden): MaterialManagementHook<Repository & { title: string }> => {
+  const materials = useMemo(() => 
+    (garden.repositories || []).map(repo => ({
+      ...repo,
+      title: repo.repo_name
+    }))
+  , [garden.repositories]);
+
+  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
+    return (garden.modal_functions || []).filter(fn => 
+      fn.repositories?.some(repo => repo.url === doi)
+    ).map(fn => ({
+      ...fn,
+      owner_identity_id: fn.owner_identity_id,
+      already_has_material: true
+    }));
+  }, [garden.modal_functions]);
+
+  const refreshMaterials = useCallback(async () => {
+    return Promise.resolve();
+  }, []);
+
+  return { materials, findFunctionsWithMaterial, refreshMaterials };
 };
 
 export const useNotebookManagement = (garden: ExtendedGarden): MaterialManagementHook<Notebook> => {
-  // Log for debugging
-  console.log('Garden entrypoints:', garden.entrypoints);
-  console.log('Garden modal functions:', garden.modal_functions);
+  const materials = useMemo(() => garden.notebooks || [], [garden.notebooks]);
 
-  return useMaterialManagement<Notebook>(
-    garden,
-    (entrypoint) => {
-      const notebooks = entrypoint.notebooks || [];
-      console.log('Notebooks from entrypoint:', notebooks);
-      return notebooks;
-    },
-    (func) => {
-      const notebooks = func.notebooks || [];
-      console.log('Notebooks from function:', notebooks);
-      return notebooks;
-    },
-    'url' // Use URL as deduplication key for notebooks
-  );
+  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
+    return (garden.modal_functions || []).filter(fn => 
+      fn.notebooks?.some(notebook => notebook.url === doi)
+    ).map(fn => ({
+      ...fn,
+      owner_identity_id: fn.owner_identity_id,
+      already_has_material: true
+    }));
+  }, [garden.modal_functions]);
+
+  const refreshMaterials = useCallback(async () => {
+    // Implement refresh logic if needed
+    return Promise.resolve();
+  }, []);
+
+  return { materials, findFunctionsWithMaterial, refreshMaterials };
 }; 

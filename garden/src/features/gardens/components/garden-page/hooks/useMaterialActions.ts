@@ -432,7 +432,9 @@ export function useMaterialActions<T extends MaterialType>({
           
           // Check if this function has the material
           const materialsKey = materialType === 'repository' ? 'repositories' : `${materialType}s`;
-          const materials = freshFunction[materialsKey] || [];
+          const materials = materialsKey in freshFunction 
+            ? (freshFunction as any)[materialsKey] || [] 
+            : [];
           
           const hasMaterial = Array.isArray(materials) && 
             materials.some((m: any) => {

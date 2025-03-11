@@ -19,16 +19,13 @@ export const MaterialsProvider = ({ children, garden, refetchGarden }: Materials
   const { allMaterials, findFunctionsWithMaterial, refreshMaterials } = useMaterialsManager({
     garden,
     queryClient,
-    refetchGarden,
+    refetchGarden: async () => {
+      await refetchGarden();
+    }
   });
 
   return (
-    <MaterialsContext.Provider
-      value={{
-        refreshMaterials,
-        findFunctionsWithMaterial,
-      }}
-    >
+    <MaterialsContext.Provider value={{ allMaterials, findFunctionsWithMaterial, refreshMaterials }}>
       {children}
     </MaterialsContext.Provider>
   );

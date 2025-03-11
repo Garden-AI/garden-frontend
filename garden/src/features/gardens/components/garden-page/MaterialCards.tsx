@@ -1,6 +1,6 @@
 import { Paper, Dataset, Repository } from "@/types";
 import { BookOpen, FileType, FolderGit2, Link, Calendar, Book, Users, Database } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import DatasetModal from "@/features/entrypoints/components/modals/DatasetModal";
 import PaperModal from "@/features/entrypoints/components/modals/PaperModal";
 import RepositoryModal from "@/features/entrypoints/components/modals/RepositoryModal";
@@ -14,7 +14,7 @@ interface MaterialCardProps {
   isOwner: boolean;
   garden: ExtendedGarden;
   findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
-  onUpdate?: () => void; // Callback to refresh the garden data
+  onUpdate?: () => Promise<void>; // Changed to return Promise<void>
 }
 
 export const PaperCard = ({ 
@@ -30,12 +30,14 @@ export const PaperCard = ({
   const [showFullAuthors, setShowFullAuthors] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Clean up paper object to ensure compatibility with MaterialType
-  const materialPaper = {
-    ...paper,
-    doi: paper.doi || undefined, // Convert null to undefined
-    url: paper.url || undefined   // Convert null to undefined
-  };
+  const materialPaper = useMemo(() => ({
+    title: paper.title || 'Untitled Paper',
+    doi: paper.doi || undefined,
+    url: paper.url || undefined,
+    authors: paper.authors,
+    description: paper.description,
+    citation: paper.citation
+  }), [paper]);
 
   // Directly use the useMaterialActions hook in the component
   const {
@@ -58,8 +60,8 @@ export const PaperCard = ({
     setIsSelectiveRemoval,
     handleRemoveAll,
     handleSelectiveRemove,
-    toggleFunction,
-    toggleAll
+    toggleFunction: removeToggleFunction,
+    toggleAll: removeToggleAll
   } = useMaterialActions({
     material: materialPaper,
     garden,
@@ -78,21 +80,22 @@ export const PaperCard = ({
   const handleEdit = async (updatedPaper: Paper) => {
     setIsEditing(false);
     
-    // Clean up the updated paper for proper typing
+    // Create a clean version of the updated paper to send to the API
     const cleanUpdatedPaper = {
       ...updatedPaper,
+      title: updatedPaper.title || 'Untitled Paper',
       doi: updatedPaper.doi || undefined,
       url: updatedPaper.url || undefined,
-      name: updatedPaper.title || "Untitled Paper"
+      authors: updatedPaper.authors
     };
     
     // Show the confirmation dialog for function selection
     if (paper.doi && findAffectedFunctions) {
-      await prepareFunctionsForEdit(cleanUpdatedPaper);
+      await prepareFunctionsForEdit(cleanUpdatedPaper as any);
     } else {
       // If no DOI or findAffectedFunctions, just refresh
       if (onUpdate) {
-        onUpdate();
+        await onUpdate();
       }
     }
   };
@@ -115,7 +118,7 @@ export const PaperCard = ({
         findAffectedFunctions={findAffectedFunctions}
         onUpdate={onUpdate}
         icon={<BookOpen className="h-4 w-4" />}
-        title={paper.title || "Untitled Paper"}
+        title={materialPaper.title}
         onEdit={handleEdit}
         onEditClick={handleEditClick}
         // Pass all the necessary state and functions for edit/remove dialogs
@@ -136,8 +139,8 @@ export const PaperCard = ({
         setIsSelectiveRemoval={setIsSelectiveRemoval}
         handleRemoveAll={handleRemoveAll}
         handleSelectiveRemove={handleSelectiveRemove}
-        toggleFunction={toggleFunction}
-        toggleAll={toggleAll}
+        toggleFunction={removeToggleFunction}
+        toggleAll={removeToggleAll}
       >
         <div className="space-y-2.5 py-1">
           {/* DOI */}
@@ -237,8 +240,8 @@ export const PaperCard = ({
         materialType="paper"
         affectedFunctions={affectedFunctions}
         selectiveFunctions={selectiveFunctions}
-        toggleFunction={toggleFunction}
-        toggleAll={toggleAll}
+        toggleFunction={removeToggleFunction}
+        toggleAll={removeToggleAll}
         handleRemoveAll={handleRemoveAll}
         handleSelectiveRemove={handleSelectiveRemove}
         isSelectiveRemoval={isSelectiveRemoval}
@@ -333,7 +336,7 @@ export const DatasetCard = ({
     } else {
       // If no DOI or findAffectedFunctions, just refresh
       if (onUpdate) {
-        onUpdate();
+        await onUpdate();
       }
     }
   };
@@ -498,15 +501,12 @@ export const RepositoryCard = ({
   const [showFullContributors, setShowFullContributors] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Clean up repository object to ensure compatibility with MaterialType
-  const materialRepository = {
+  const materialRepository = useMemo(() => ({
     ...repository,
-    doi: typeof repository.doi === 'string' ? repository.doi : undefined,
-    url: typeof repository.url === 'string' ? repository.url : undefined,
-    name: typeof repository.name === 'string' ? repository.name : 
-          (typeof repository.repo_name === 'string' ? repository.repo_name : "Untitled Repository"),
-    description: typeof repository.description === 'string' ? repository.description : undefined
-  };
+    title: repository.repo_name,
+    doi: repository.url,
+    url: repository.url
+  }), [repository]);
 
   // Directly use the useMaterialActions hook in the component
   const {
@@ -542,21 +542,18 @@ export const RepositoryCard = ({
   const handleEdit = async (updatedRepository: Repository) => {
     setIsEditing(false);
     
-    // Clean up the updated repository for proper typing
+    // Create a clean version of the updated repository
     const cleanUpdatedRepository = {
       ...updatedRepository,
-      // Prioritize DOI over URL for identification
-      doi: typeof updatedRepository.doi === 'string' ? updatedRepository.doi : undefined,
-      url: !updatedRepository.doi && typeof updatedRepository.url === 'string' ? updatedRepository.url : undefined,
-      name: typeof updatedRepository.name === 'string' ? updatedRepository.name : 
-            (typeof updatedRepository.repo_name === 'string' ? updatedRepository.repo_name : "Untitled Repository"),
-      description: typeof updatedRepository.description === 'string' ? updatedRepository.description : undefined
+      title: updatedRepository.repo_name || 'Untitled Repository',
+      doi: updatedRepository.doi || undefined,
+      url: updatedRepository.url || undefined,
+      repo_name: updatedRepository.repo_name
     };
-    
-    // Show the confirmation dialog for function selection if we can find affected functions
+
     const identifier = cleanUpdatedRepository.doi || cleanUpdatedRepository.url;
     if (findAffectedFunctions && identifier) {
-      await prepareFunctionsForEdit(cleanUpdatedRepository);
+      await prepareFunctionsForEdit(cleanUpdatedRepository as any);
     } else {
       // If no identifier or findAffectedFunctions, just refresh
       if (onUpdate) {
@@ -585,7 +582,7 @@ export const RepositoryCard = ({
         findAffectedFunctions={findAffectedFunctions}
         onUpdate={onUpdate}
         icon={<FolderGit2 className="h-4 w-4" />}
-        title={typeof materialRepository.name === 'string' ? materialRepository.name : "Untitled Repository"}
+        title={materialRepository.title}
         onEdit={handleEdit as any}
         onEditClick={handleEditClick}
         // Pass all the necessary state and functions for edit/remove dialogs

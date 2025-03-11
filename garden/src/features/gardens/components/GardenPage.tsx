@@ -14,12 +14,17 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import ShareModal from "@/components/ShareModal";
 import TombstonePage from "@/components/TombstonePage";
+import SaveGardenButton from "./SaveGardenButton";
 
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
 
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
-import SaveGardenButton from "./SaveGardenButton";
+import { MaterialsProvider } from '../contexts/MaterialsContext';
+import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '../hooks/useMaterialManagement';
+
+// Import Garden from the root types directory
+import { Garden } from "@/types";
 import { ExtendedGarden } from "@/types/garden.types";
 
 // Import extracted components
@@ -38,15 +43,11 @@ import {
   NotebookCard
 } from "./garden-page";
 
-// Import our new hooks and context
-import { MaterialsProvider } from '../contexts/MaterialsContext';
-import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '../hooks/useMaterialManagement';
-
 interface GardenContentProps {
   garden: ExtendedGarden;
   ownsThisGarden: boolean;
   isNewlyCreated: boolean;
-  updateGarden: (data: Partial<ExtendedGarden>) => void;
+  updateGarden: (data: { doi: string; garden: Partial<ExtendedGarden> }) => void;
 }
 
 const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }: GardenContentProps) => {
@@ -82,7 +83,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
         ownsThisGarden={ownsThisGarden} 
       />
       
-      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
+      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={asGarden(garden)} updateGarden={updateGarden} />}
       
       {/* Hero Metadata Section */}
       <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
@@ -90,18 +91,18 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">
             <div className="flex justify-between items-start mb-4">
-              <EditableTitle garden={garden} ownsThisGarden={ownsThisGarden} />
+              <EditableTitle garden={asGarden(garden)} ownsThisGarden={ownsThisGarden} />
               <div className="flex gap-2">
-                <SaveGardenButton garden={garden} />
+                <SaveGardenButton garden={asGarden(garden)} />
                 <ShareModal
                   doi={garden.doi}
                 />
-                <GardenDropdownOptions garden={garden} />
+                <GardenDropdownOptions garden={asGarden(garden)} />
               </div>
             </div>
             
             {/* Description with Markdown */}
-            <GardenDescription garden={garden} />
+            <GardenDescription garden={asGarden(garden)} />
             
             {/* Functions, Datasets, Papers, and Notebooks tabs */}
             <div className="mt-6">
@@ -344,7 +345,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 label="Authors"
                 value={garden.authors}
                 fieldName="authors"
-                garden={garden}
+                garden={asGarden(garden)}
                 ownsThisGarden={ownsThisGarden}
                 isArray={true}
               />
@@ -353,7 +354,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 label="Year"
                 value={garden.year}
                 fieldName="year"
-                garden={garden}
+                garden={asGarden(garden)}
                 ownsThisGarden={ownsThisGarden}
               />
               
@@ -361,12 +362,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 label="Version"
                 value={garden.version}
                 fieldName="version"
-                garden={garden}
+                garden={asGarden(garden)}
                 ownsThisGarden={ownsThisGarden}
               />
               
               <EditableTags
-                garden={garden}
+                garden={asGarden(garden)}
                 ownsThisGarden={ownsThisGarden}
               />
               
@@ -385,7 +386,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                     icon={<ClipboardIcon className="h-4 w-4" />}
                   />
                 </div>
-                <CitationBlock garden={garden} />
+                <CitationBlock garden={asGarden(garden)} />
               </div>
             </div>
           </div>
@@ -402,7 +403,7 @@ const GardenPage = () => {
   
   const auth = useGlobusAuth();
   const { data: garden, isLoading, isError, refetch } = useGetGarden(doi || '');
-  const { mutate: updateGarden } = usePatchGarden();
+  const { mutate: patchGarden } = usePatchGarden();
 
   if (isLoading) {
     return <LoadingOverlay />;
@@ -416,25 +417,67 @@ const GardenPage = () => {
   }
 
   // Cast garden to ExtendedGarden to support our type definitions
-  const extendedGarden = garden as ExtendedGarden;
-  
-  // Set current user ID on the garden object for ownership checks
-  if (auth.isAuthenticated && auth?.authorization?.user?.sub) {
-    extendedGarden.current_user_id = auth.authorization.user.sub;
-  }
+  const extendedGarden: ExtendedGarden = {
+    ...garden,
+    current_user_id: auth.isAuthenticated ? auth?.authorization?.user?.sub : undefined,
+    datasets: [],
+    papers: [],
+    repositories: [],
+    notebooks: [],
+    entrypoints: garden.entrypoints?.map(entrypoint => ({
+      ...entrypoint,
+      base_image_uri: entrypoint.base_image_uri || '',
+      full_image_uri: entrypoint.full_image_uri || '',
+      notebook_url: entrypoint.notebook_url || '',
+      owner_identity_id: garden.owner_identity_id,
+      doi_is_draft: entrypoint.doi_is_draft || false,
+      modal_app_id: (entrypoint as any).modal_app_id || 0
+    })),
+    modal_functions: garden.modal_functions?.map(fn => ({
+      ...fn,
+      owner_identity_id: garden.owner_identity_id
+    }))
+  };
   
   const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
 
+  const handleUpdateGarden = (data: Partial<ExtendedGarden>) => {
+    patchGarden({
+      doi: garden.doi,
+      garden: data
+    });
+  };
+
   return (
-    <MaterialsProvider garden={extendedGarden} refetchGarden={refetch}>
+    <MaterialsProvider garden={extendedGarden} refetchGarden={async () => { await refetch(); }}>
       <GardenContent 
         garden={extendedGarden} 
         ownsThisGarden={ownsThisGarden} 
         isNewlyCreated={isNewlyCreated}
-        updateGarden={updateGarden}
+        updateGarden={({ doi, garden: data }) => patchGarden({ doi, garden: data })}
       />
     </MaterialsProvider>
   );
+};
+
+// Add a type guard function to convert ExtendedGarden to Garden where needed
+const asGarden = (garden: ExtendedGarden): Garden => {
+  const { datasets, papers, repositories, notebooks, current_user_id, ...gardenProps } = garden;
+  
+  // Convert the entrypoints to the format expected by Garden
+  const standardEntrypoints = garden.entrypoints?.map(ep => {
+    const { 
+      datasets, papers, repositories, notebooks,
+      ...standardEntrypoint 
+    } = ep;
+    return standardEntrypoint;
+  });
+  
+  return {
+    ...gardenProps,
+    entrypoints: standardEntrypoints as any, // Type assertion needed here
+    modal_functions: garden.modal_functions as any // Type assertion needed here
+  };
 };
 
 export default GardenPage;
