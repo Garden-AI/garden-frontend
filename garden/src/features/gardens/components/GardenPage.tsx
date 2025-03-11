@@ -20,7 +20,6 @@ import { usePatchGarden } from "../api/usePatchGarden";
 
 import { useGlobusAuth } from "@/hooks/useGlobusAuth";
 import SaveGardenButton from "./SaveGardenButton";
-import { Dataset, Paper, Repository, ModalFunction } from "@/types";
 import { ExtendedGarden } from "@/types/garden.types";
 
 // Import extracted components
@@ -38,152 +37,28 @@ import {
   RepositoryCard
 } from "./garden-page";
 
-// Extend ModalFunction type to include owner_identity_id
-type ModalFunctionWithOwner = ModalFunction & {
-  owner_identity_id: string;
-};
+// Import our new hooks and context
+import { MaterialsProvider } from '../contexts/MaterialsContext';
+import { useDatasetManagement, usePaperManagement, useRepositoryManagement } from '../hooks/useMaterialManagement';
 
-const GardenPage = () => {
-  const { doi } = useParams();
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [forceRefreshMaterialsFlag, setForceRefreshMaterialsFlag] = useState(0);
-  
-  if (!doi) {
-    return <NotFoundPage />;
-  }
+interface GardenContentProps {
+  garden: ExtendedGarden;
+  ownsThisGarden: boolean;
+  isNewlyCreated: boolean;
+  updateGarden: (data: Partial<ExtendedGarden>) => void;
+}
 
-  const [searchParams] = useSearchParams();
-  const isNewlyCreated = searchParams.get('newlyCreated') === 'true';
-  
-  const auth = useGlobusAuth();
-  const { data: garden, isLoading, isError, refetch } = useGetGarden(doi);
-  const { mutate: updateGarden } = usePatchGarden();
-  const queryClient = useQueryClient();
+const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }: GardenContentProps) => {
+  // Use our new material management hooks
+  const { materials: datasets, refreshMaterials, findFunctionsWithMaterial } = useDatasetManagement(garden);
+  const { materials: papers } = usePaperManagement(garden);
+  const { materials: repositories } = useRepositoryManagement(garden);
 
   // Callback to refresh data after adding materials
   const handleMaterialAdded = useCallback(() => {
-    refetch();
-    setRefreshTrigger(prev => prev + 1);
-  }, [refetch]);
+    refreshMaterials();
+  }, [refreshMaterials]);
 
-  // Force refresh all materials lists
-  const forceRefreshMaterials = useCallback(() => {
-    setForceRefreshMaterialsFlag(prev => prev + 1);
-  }, []);
-
-  // Enhanced refetch that ensures both the garden and its functions are refreshed
-  const forceRefreshGardenAndFunctions = useCallback(async () => {
-    // First invalidate any cached modal functions
-    if (garden?.modal_functions) {
-      garden.modal_functions.forEach(func => {
-        if (func.id) {
-          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
-        }
-      });
-    }
-    
-    // Invalidate the garden query to ensure fresh data
-    queryClient.invalidateQueries({ queryKey: ["garden", doi] });
-    
-    // Then perform the refetch
-    await refetch();
-    
-    // Update the refresh trigger to force re-renders
-    setRefreshTrigger(prev => prev + 1);
-    
-    // Force refresh materials lists
-    forceRefreshMaterials();
-  }, [doi, garden, queryClient, refetch, forceRefreshMaterials]);
-
-  if (isLoading) {
-    return <LoadingOverlay />;
-  }
-  if (isError || !garden) {
-    return <NotFoundPage />;
-  }
-
-  if (garden.is_archived) {
-    return <TombstonePage garden={garden} />;
-  }
-
-  // Cast garden to ExtendedGarden to support our type definitions
-  const extendedGarden = garden as ExtendedGarden;
-  
-  // Set current user ID on the garden object for ownership checks in material actions
-  if (auth.isAuthenticated && auth?.authorization?.user?.sub) {
-    extendedGarden.current_user_id = auth.authorization.user.sub;
-  }
-  
-  const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
-  
-  // Helper function to deduplicate materials by DOI
-  const deduplicateByDOI = <T extends { doi?: string | null }>(items: T[]): T[] => {
-    return items.filter((item, index, self) => {
-      // Skip items with no DOI
-      if (!item.doi) return true;
-      
-      return index === self.findIndex((t) => t.doi === item.doi);
-    });
-  };
-  
-  // Helper function to deduplicate repositories by URL
-  const deduplicateRepositoriesByURL = (repos: Repository[]): Repository[] => {
-    return repos.filter((repo, index, self) => {
-      if (!repo.url) return true;
-      return index === self.findIndex((t) => t.url === repo.url);
-    });
-  };
-  
-  // Collect all materials with proper memoization
-  const allMaterials = useMemo(() => {
-    return {
-      datasets: deduplicateByDOI([
-        ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.datasets || []).flat() || []),
-        ...(extendedGarden.modal_functions?.map(func => func.datasets || []).flat() || [])
-      ]),
-      papers: deduplicateByDOI([
-        ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.papers || []).flat() || []),
-        ...(extendedGarden.modal_functions?.map(func => func.papers || []).flat() || [])
-      ]),
-      repositories: deduplicateRepositoriesByURL([
-        ...(extendedGarden.entrypoints?.map(entrypoint => entrypoint.repositories || []).flat() || []),
-        ...(extendedGarden.modal_functions?.map(func => func.repositories || []).flat() || [])
-      ])
-    };
-  }, [extendedGarden]);
-
-  // Use the memoized collections
-  const allDatasets = allMaterials.datasets;
-  const allPapers = allMaterials.papers;
-  const allRepositories = allMaterials.repositories;
-  
-  // Find functions with material - memoized separately to avoid unnecessary recalculations
-  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
-    if (!extendedGarden.modal_functions) return [];
-    
-    // Get the absolute latest functions data to avoid any stale references
-    const currentFunctions = [...(extendedGarden.modal_functions || [])];
-    
-    return currentFunctions.filter(func => {
-      // Check datasets
-      const hasMaterialInDataset = func.datasets?.some(
-        dataset => dataset.doi === doi
-      );
-      
-      // Check papers
-      const hasMaterialInPaper = func.papers?.some(
-        paper => paper.doi === doi
-      );
-      
-      // Check repositories
-      const hasMaterialInRepo = func.repositories?.some(
-        repo => repo.doi === doi
-      );
-      
-      return hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo;
-    }) as ModalFunctionWithOwner[];
-  }, [extendedGarden.modal_functions]);
-  
   return (
     <div className="container max-w-7xl">
       <div className="mt-2 mb-4">
@@ -227,9 +102,9 @@ const GardenPage = () => {
             <div className="mt-6">
               <Tabs 
                 defaultValue={
-                  extendedGarden.modal_functions?.length ? "functions" : 
-                  allDatasets.length ? "datasets" : 
-                  allPapers.length ? "papers" : 
+                  garden.modal_functions?.length ? "functions" : 
+                  datasets.length ? "datasets" : 
+                  papers.length ? "papers" : 
                   "functions"
                 } 
                 className="w-full"
@@ -237,10 +112,10 @@ const GardenPage = () => {
                 <TabsList className="mb-2 bg-gray-100 p-0.5">
                   <TabsTrigger value="functions" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Functions</TabsTrigger>
                   <TabsTrigger value="datasets" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                    Datasets {allDatasets.length > 0 && `(${allDatasets.length})`}
+                    Datasets {datasets.length > 0 && `(${datasets.length})`}
                   </TabsTrigger>
                   <TabsTrigger value="papers" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                    Papers {allPapers.length > 0 && `(${allPapers.length})`}
+                    Papers {papers.length > 0 && `(${papers.length})`}
                   </TabsTrigger>
                 </TabsList>
                 
@@ -248,13 +123,13 @@ const GardenPage = () => {
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {extendedGarden.entrypoints?.map((entrypoint, index) => (
+                        {garden.entrypoints?.map((entrypoint, index) => (
                           <EntrypointBox
                             key={index}
                             entrypoint={entrypoint}
                           />
                         ))}
-                        {extendedGarden.modal_functions?.map((modalFunction, index) => (
+                        {garden.modal_functions?.map((modalFunction, index) => (
                           <ModalFunctionBox
                             key={index}
                             modalFunction={modalFunction}
@@ -275,27 +150,25 @@ const GardenPage = () => {
                             Datasets
                           </h3>
                           
-                          {/* Show add button for garden owners */}
-                          {ownsThisGarden && (extendedGarden.modal_functions?.length ?? 0) > 0 && (
+                          {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
                             <AddMaterialWithFunctionSelect
-                              garden={extendedGarden}
+                              garden={garden}
                               materialType="datasets"
                               onSuccess={handleMaterialAdded}
                             />
                           )}
                         </div>
                         
-                        {/* Display all deduplicated datasets */}
-                        {allDatasets.length > 0 ? (
+                        {datasets.length > 0 ? (
                           <div className="grid grid-cols-1 gap-8 py-2">
-                            {allDatasets.map((dataset) => (
+                            {datasets.map((dataset) => (
                               <DatasetCard 
                                 key={dataset.doi || dataset.title} 
                                 dataset={dataset} 
                                 isOwner={ownsThisGarden}
-                                garden={extendedGarden as ExtendedGarden}
+                                garden={garden}
                                 findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={async () => await forceRefreshGardenAndFunctions()}
+                                onUpdate={refreshMaterials}
                               />
                             ))}
                           </div>
@@ -317,27 +190,25 @@ const GardenPage = () => {
                             Papers
                           </h3>
                           
-                          {/* Show add button for garden owners */}
-                          {ownsThisGarden && (extendedGarden.modal_functions?.length ?? 0) > 0 && (
+                          {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
                             <AddMaterialWithFunctionSelect
-                              garden={extendedGarden}
+                              garden={garden}
                               materialType="papers"
                               onSuccess={handleMaterialAdded}
                             />
                           )}
                         </div>
                         
-                        {/* Display all deduplicated papers */}
-                        {allPapers.length > 0 ? (
+                        {papers.length > 0 ? (
                           <div className="grid grid-cols-1 gap-8 py-2">
-                            {allPapers.map((paper) => (
+                            {papers.map((paper) => (
                               <PaperCard 
                                 key={paper.doi || paper.title} 
                                 paper={paper} 
                                 isOwner={ownsThisGarden}
-                                garden={extendedGarden as ExtendedGarden}
+                                garden={garden}
                                 findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={async () => await forceRefreshGardenAndFunctions()}
+                                onUpdate={refreshMaterials}
                               />
                             ))}
                           </div>
@@ -430,27 +301,69 @@ const GardenPage = () => {
       </div>
       
       {/* Repositories Section */}
-      {allRepositories.length > 0 && (
+      {repositories.length > 0 && (
         <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mb-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center">
             <FolderGit2 className="h-5 w-5 mr-2 text-green" />
             Repositories
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {allRepositories.map((repository) => (
+            {repositories.map((repository) => (
               <RepositoryCard 
                 key={repository.url || repository.repo_name} 
                 repository={repository} 
                 isOwner={ownsThisGarden}
-                garden={extendedGarden as ExtendedGarden}
+                garden={garden}
                 findAffectedFunctions={findFunctionsWithMaterial}
-                onUpdate={async () => await forceRefreshGardenAndFunctions()}
+                onUpdate={refreshMaterials}
               />
             ))}
           </div>
         </div>
       )}
     </div>
+  );
+};
+
+const GardenPage = () => {
+  const { doi } = useParams();
+  const [searchParams] = useSearchParams();
+  const isNewlyCreated = searchParams.get('newlyCreated') === 'true';
+  
+  const auth = useGlobusAuth();
+  const { data: garden, isLoading, isError, refetch } = useGetGarden(doi || '');
+  const { mutate: updateGarden } = usePatchGarden();
+
+  if (isLoading) {
+    return <LoadingOverlay />;
+  }
+  if (isError || !garden) {
+    return <NotFoundPage />;
+  }
+
+  if (garden.is_archived) {
+    return <TombstonePage garden={garden} />;
+  }
+
+  // Cast garden to ExtendedGarden to support our type definitions
+  const extendedGarden = garden as ExtendedGarden;
+  
+  // Set current user ID on the garden object for ownership checks
+  if (auth.isAuthenticated && auth?.authorization?.user?.sub) {
+    extendedGarden.current_user_id = auth.authorization.user.sub;
+  }
+  
+  const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
+
+  return (
+    <MaterialsProvider garden={extendedGarden} refetchGarden={refetch}>
+      <GardenContent 
+        garden={extendedGarden} 
+        ownsThisGarden={ownsThisGarden} 
+        isNewlyCreated={isNewlyCreated}
+        updateGarden={updateGarden}
+      />
+    </MaterialsProvider>
   );
 };
 
