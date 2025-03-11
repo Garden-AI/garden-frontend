@@ -27,9 +27,6 @@ const notebookSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional().nullable(),
   url: z.string().url("Must be a valid URL"),
-  type: z.enum(["colab", "jupyter"], {
-    required_error: "Please select a notebook type",
-  }),
 });
 
 type NotebookFormData = z.infer<typeof notebookSchema>;
@@ -50,7 +47,6 @@ const NotebookModal = ({ edit, onSave, initialData, trigger }: NotebookModalProp
       title: initialData?.title || "",
       description: initialData?.description || "",
       url: initialData?.url || "",
-      type: initialData?.type || "jupyter",
     },
   });
 
@@ -123,26 +119,6 @@ const NotebookModal = ({ edit, onSave, initialData, trigger }: NotebookModalProp
                       {...field}
                       value={field.value || ""}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Type</FormLabel>
-                  <FormControl>
-                    <select
-                      {...field}
-                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-                    >
-                      <option value="jupyter">Jupyter Notebook</option>
-                      <option value="colab">Google Colab</option>
-                    </select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

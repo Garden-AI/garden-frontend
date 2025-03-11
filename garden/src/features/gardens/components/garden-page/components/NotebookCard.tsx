@@ -26,11 +26,7 @@ export const NotebookCard = ({
   const [isEditing, setIsEditing] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
-  const notebookIcon = notebook.type === "colab" ? (
-    <Laptop className="h-5 w-5 text-blue-500" />
-  ) : (
-    <Book className="h-5 w-5 text-orange-500" />
-  );
+  const notebookIcon = <Book className="h-5 w-5 text-green" />;
 
   // Ensure notebook has all required fields
   if (!notebook || !notebook.title || !notebook.url) {
@@ -155,7 +151,6 @@ export const NotebookCard = ({
           </div>
         )}
         <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
-          <span className="font-medium capitalize">{notebook.type}</span>
           <a 
             href={notebook.url}
             target="_blank"
