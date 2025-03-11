@@ -1,16 +1,9 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { ExtendedGarden } from "@/types/garden.types";
+import { Garden, ModalFunction } from '@/types';
 import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
-import { ModalFunction } from "@/types";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
-
-// Extend ModalFunction type to include owner_identity_id
-export type ModalFunctionWithOwner = ModalFunction & {
-  owner_identity_id: string;
-  already_has_material?: boolean;
-};
 
 // Temporary flag to bypass ownership check if the field is missing
 // Set to false to enforce strict ownership checking once the backend includes the field
@@ -26,14 +19,14 @@ export type MaterialType = {
 
 export interface UseMaterialActionsOptions<T extends MaterialType> {
   material: T;
-  garden: ExtendedGarden;
-  findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
+  garden: Garden;
+  findAffectedFunctions?: (doi: string) => ModalFunction[];
   onUpdate?: () => Promise<void>;
   materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
 }
 
 // Direct fetch function for getting modal function data
-const fetchModalFunction = async (id: number): Promise<ModalFunction & { owner_identity_id?: string }> => {
+const fetchModalFunction = async (id: number): Promise<ModalFunction> => {
   try {
     const response = await axios.get(`/modal-functions/${id}`);
     const modalFunction = response.data as ModalFunction;
@@ -66,13 +59,13 @@ export function useMaterialActions<T extends MaterialType>({
   const [isEditing, setIsEditing] = useState(false);
   const [editSelectiveFunctions, setEditSelectiveFunctions] = useState<Record<number, boolean>>({});
   const [editingMaterial, setEditingMaterial] = useState<T | null>(null);
-  const [editAffectedFunctions, setEditAffectedFunctions] = useState<ModalFunctionWithOwner[]>([]);
+  const [editAffectedFunctions, setEditAffectedFunctions] = useState<ModalFunction[]>([]);
   
   // Simplified version of setIsSelectiveEditing without debug logging
   const [isSelectiveEditing, setIsSelectiveEditing] = useState(false);
   
   const [selectiveFunctions, setSelectiveFunctions] = useState<Record<number, boolean>>({});
-  const [affectedFunctions, setAffectedFunctions] = useState<ModalFunctionWithOwner[]>([]);
+  const [affectedFunctions, setAffectedFunctions] = useState<ModalFunction[]>([]);
   const [isSelectiveRemoval, setIsSelectiveRemoval] = useState(false);
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
   const queryClient = useQueryClient();
@@ -120,7 +113,6 @@ export function useMaterialActions<T extends MaterialType>({
       // Store all eligible functions, annotated with whether they already have the material
       const allEligibleFunctions = allFunctions.map(func => ({
         ...func,
-        owner_identity_id: func.owner_identity_id || garden.owner_identity_id,
         already_has_material: functionIdsWithMaterial.has(func.id)
       }));
       
@@ -404,70 +396,28 @@ export function useMaterialActions<T extends MaterialType>({
     setEditSelectiveFunctions(newSelections);
   };
   
-  // CRITICAL FIX: Direct function to check material references by fetching each function directly
-  const directlyCheckFunctionsWithMaterial = async (identifier: string): Promise<ModalFunctionWithOwner[]> => {
-    if (!identifier || !garden.modal_functions) {
-      console.log("Cannot check functions: missing identifier or garden functions");
-      return [];
-    }
+  const directlyCheckFunctionsWithMaterial = async (identifier: string): Promise<ModalFunction[]> => {
+    // Get all functions in the garden
+    const allFunctions = garden.modal_functions || [];
     
-    console.log(`Directly checking which functions have material ${identifier}`);
-    
-    try {
-      // We'll directly fetch each function from the backend to get the freshest data
-      const results: ModalFunctionWithOwner[] = [];
+    // Filter functions that have this material
+    const functionsWithMaterial = allFunctions.filter(func => {
+      const materials = materialType === 'repository' || materialType === 'notebook'
+        ? func[materialType === 'repository' ? 'repositories' : 'notebooks'] || []
+        : func[`${materialType}s`] || [];
       
-      // Use Promise.all to fetch all functions concurrently
-      await Promise.all(garden.modal_functions.map(async (func) => {
-        if (!func.id) return;
-        
-        try {
-          // Directly fetch the function data from the API
-          const freshFunction = await fetchModalFunction(func.id);
-          
-          if (!freshFunction) {
-            console.log(`No data returned for function ${func.id}`);
-            return;
-          }
-          
-          // Check if this function has the material
-          const materialsKey = materialType === 'repository' ? 'repositories' : `${materialType}s`;
-          const materials = materialsKey in freshFunction 
-            ? (freshFunction as any)[materialsKey] || [] 
-            : [];
-          
-          const hasMaterial = Array.isArray(materials) && 
-            materials.some((m: any) => {
-              if (materialType === 'repository' || materialType === 'notebook') {
-                // For repositories and notebooks, match on either DOI or URL
-                return (m.doi && m.doi === identifier) || (m.url && m.url === identifier);
-              } else {
-                // For other materials, match on DOI
-                return m.doi === identifier;
-              }
-            });
-          
-          if (hasMaterial) {
-            console.log(`Function ${func.id} (${func.title}) HAS material ${identifier}`);
-            results.push({
-              ...freshFunction,
-              owner_identity_id: freshFunction.owner_identity_id || garden.owner_identity_id,
-              already_has_material: true
-            });
-          } else {
-            console.log(`Function ${func.id} (${func.title}) does NOT have material ${identifier}`);
-          }
-        } catch (error) {
-          console.error(`Error fetching function ${func.id}:`, error);
+      return materials.some((m: any) => {
+        if (materialType === 'repository' || materialType === 'notebook') {
+          // For repositories and notebooks, match on either DOI or URL
+          return (m.doi && m.doi === identifier) || (!m.doi && m.url && m.url === identifier);
+        } else {
+          // For other materials, match on DOI
+          return m.doi === identifier;
         }
-      }));
-      
-      console.log(`Found ${results.length} functions with material ${identifier} via direct API check`);
-      return results;
-    } catch (error) {
-      console.error("Error directly checking functions with material:", error);
-      return [];
-    }
+      });
+    });
+    
+    return functionsWithMaterial;
   };
 
   const prepareFunctionsForRemoval = async () => {

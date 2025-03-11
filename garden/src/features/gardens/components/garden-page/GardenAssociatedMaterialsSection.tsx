@@ -1,8 +1,7 @@
 import React from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { Dataset, Paper, Repository } from '@/types';
-import { ExtendedGarden } from '@/types/garden.types';
+import { Dataset, Paper, Repository, Garden } from '@/types';
 import DatasetModal from '@/features/entrypoints/components/modals/DatasetModal';
 import PaperModal from '@/features/entrypoints/components/modals/PaperModal';
 import RepositoryModal from '@/features/entrypoints/components/modals/RepositoryModal';
@@ -10,9 +9,12 @@ import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { toast } from 'sonner';
 import { DatasetCard, PaperCard, RepositoryCard } from '@/features/entrypoints/components/AssociatedMaterialCards';
 
+type MaterialType = Dataset | Paper | Repository;
+type MaterialsRecord = Record<'papers' | 'repositories' | 'datasets', MaterialType[]>;
+
 interface GardenAssociatedMaterialsSectionProps {
-  garden: ExtendedGarden;
-  fieldName: 'papers' | 'repositories' | 'datasets';
+  garden: Garden & MaterialsRecord;
+  fieldName: keyof MaterialsRecord;
 }
 
 const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectionProps> = ({ 
@@ -90,7 +92,7 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
   const handleDeleteMaterial = async (index: number) => {
     try {
       // Make a copy and remove the item at index
-      const updatedMaterials = materials.filter((_, i) => i !== index);
+      const updatedMaterials = materials.filter((_: MaterialType, i: number) => i !== index);
       
       // Create patch request with just the updated field
       const patchData = { [fieldName]: updatedMaterials };
@@ -119,7 +121,7 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
 
     return (
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {materials.map((material, index) => {
+        {materials.map((material: MaterialType, index: number) => {
           if (fieldName === 'datasets') {
             return (
               <DatasetCard

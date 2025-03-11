@@ -1,19 +1,19 @@
-import { Paper, Dataset, Repository } from "@/types";
+import { Paper, Dataset, Repository, Garden, ModalFunction } from "@/types";
 import { BookOpen, FileType, FolderGit2, Link, Calendar, Book, Users, Database } from "lucide-react";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import DatasetModal from "@/features/entrypoints/components/modals/DatasetModal";
 import PaperModal from "@/features/entrypoints/components/modals/PaperModal";
 import RepositoryModal from "@/features/entrypoints/components/modals/RepositoryModal";
 import { Button } from "@/components/shadcn/button";
-import { ExtendedGarden } from "@/types/garden.types";
-import { BaseMaterialCard } from "./components/MaterialCard";
-import { ModalFunctionWithOwner, useMaterialActions } from "./hooks/useMaterialActions";
+import { Edit2, Trash2 } from "lucide-react";
+import { useMaterialActions } from "./hooks/useMaterialActions";
 import { EditDialog, RemoveDialog } from "./components/MaterialDialogs";
+import { BaseMaterialCard } from "./components/MaterialCard";
 
 interface MaterialCardProps {
   isOwner: boolean;
-  garden: ExtendedGarden;
-  findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
+  garden: Garden;
+  findAffectedFunctions?: (doi: string) => ModalFunction[];
   onUpdate?: () => Promise<void>; // Changed to return Promise<void>
 }
 

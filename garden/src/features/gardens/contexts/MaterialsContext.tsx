@@ -1,7 +1,8 @@
-import { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ModalFunction } from '@/types';
-import { ExtendedGarden, MaterialsContextType, MaterialsProviderProps } from '@/types/garden.types';
+import { Garden } from '@/types';
+import { MaterialsContextType, MaterialsProviderProps } from '@/types/garden.types';
 import { useMaterialsManager } from '../hooks/useMaterialsManager';
 
 const MaterialsContext = createContext<MaterialsContextType | undefined>(undefined);

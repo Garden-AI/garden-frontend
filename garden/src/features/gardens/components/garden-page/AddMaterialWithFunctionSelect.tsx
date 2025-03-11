@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { ExtendedGarden } from '@/types/garden.types';
+import { Garden } from '@/types';
 import { Dataset, ModalFunction, Paper, Repository, Notebook } from '@/types';
 import DatasetModal from '@/features/entrypoints/components/modals/DatasetModal';
 import PaperModal from '@/features/entrypoints/components/modals/PaperModal';
@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { usePatchModalFunction } from '@/features/modal/api/usePatchModalFunction';
 
 interface AddMaterialWithFunctionSelectProps {
-  garden: ExtendedGarden;
+  garden: Garden;
   materialType: 'datasets' | 'papers' | 'repositories' | 'notebooks';
   onSuccess?: () => void;
 }

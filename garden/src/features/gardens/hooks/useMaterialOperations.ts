@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { ExtendedGarden } from '@/types/garden.types';
+import { Garden } from '@/types';
 import { MaterialsManager } from './useMaterialsManager';
 
 interface MaterialOperationsConfig {
-  garden: ExtendedGarden;
+  garden: Garden;
   materialsManager: MaterialsManager;
 }
 

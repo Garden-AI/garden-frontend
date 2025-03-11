@@ -1,18 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { QueryClient } from '@tanstack/react-query';
-import { Dataset, Paper, Repository, Notebook, ModalFunction } from '@/types';
-import { ExtendedGarden } from '@/types/garden.types';
-
-// Helper type for functions with owner
-type ModalFunctionWithOwner = ModalFunction & {
-  owner_identity_id: string;
-};
-
-interface MaterialsManagerConfig {
-  garden: ExtendedGarden;
-  queryClient: QueryClient;
-  refetchGarden: () => Promise<void>;
-}
+import { Dataset, Paper, Repository, Notebook, ModalFunction, Garden } from '@/types';
 
 export interface MaterialsManager {
   allMaterials: {
@@ -21,7 +9,7 @@ export interface MaterialsManager {
     repositories: Repository[];
     notebooks: Notebook[];
   };
-  findFunctionsWithMaterial: (doi: string) => ModalFunctionWithOwner[];
+  findFunctionsWithMaterial: (doi: string) => ModalFunction[];
   refreshMaterials: () => Promise<void>;
 }
 
@@ -49,6 +37,12 @@ const deduplicateNotebooksByURL = (notebooks: Notebook[]): Notebook[] => {
   });
 };
 
+interface MaterialsManagerConfig {
+  garden: Garden;
+  queryClient: QueryClient;
+  refetchGarden: () => Promise<void>;
+}
+
 export const useMaterialsManager = ({
   garden,
   queryClient,
@@ -58,30 +52,26 @@ export const useMaterialsManager = ({
   const allMaterials = useMemo(() => {
     return {
       datasets: deduplicateByDOI([
-        ...(garden.entrypoints?.map(entrypoint => entrypoint.datasets || []).flat() || []),
         ...(garden.modal_functions?.map(func => func.datasets || []).flat() || [])
       ]),
       papers: deduplicateByDOI([
-        ...(garden.entrypoints?.map(entrypoint => entrypoint.papers || []).flat() || []),
         ...(garden.modal_functions?.map(func => func.papers || []).flat() || [])
       ]),
       repositories: deduplicateRepositoriesByURL([
-        ...(garden.entrypoints?.map(entrypoint => entrypoint.repositories || []).flat() || []),
         ...(garden.modal_functions?.map(func => func.repositories || []).flat() || [])
       ]),
       notebooks: deduplicateNotebooksByURL([
-        ...(garden.entrypoints?.map(entrypoint => entrypoint.notebooks || []).flat() || []),
         ...(garden.modal_functions?.map(func => func.notebooks || []).flat() || [])
       ])
     };
   }, [garden]);
 
   // Find functions that use a specific material
-  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunctionWithOwner[] => {
+  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunction[] => {
     if (!garden.doi) return [];
     
-    // CRITICAL FIX: Always get the freshest data directly from the query cache
-    const latestGardenData = queryClient.getQueryData(["garden", garden.doi]) as ExtendedGarden;
+    // Get the freshest data directly from the query cache
+    const latestGardenData = queryClient.getQueryData(["garden", garden.doi]) as Garden;
     const currentFunctions = [...(latestGardenData?.modal_functions || [])];
     
     if (!currentFunctions.length) {
@@ -89,60 +79,50 @@ export const useMaterialsManager = ({
       return [];
     }
     
-    console.log(`Finding functions with material ${doi} from ${currentFunctions.length} total functions`);
-    
     // Deep check to make sure each function's materials are properly examined
     const functionsWithMaterial = currentFunctions.filter(func => {
-      // Defensive coding - ensure func is valid
       if (!func) return false;
       
-      // Check datasets
       const hasMaterialInDataset = Array.isArray(func.datasets) && 
         func.datasets.some(dataset => dataset && dataset.doi === doi);
       
-      // Check papers
       const hasMaterialInPaper = Array.isArray(func.papers) && 
         func.papers.some(paper => paper && paper.doi === doi);
       
-      // Check repositories
       const hasMaterialInRepo = Array.isArray(func.repositories) && 
-        func.repositories.some(repo => repo && repo.doi === doi);
+        func.repositories.some(repo => repo && (repo.doi === doi || repo.url === doi));
       
-      // Check notebooks
       const hasMaterialInNotebook = Array.isArray(func.notebooks) && 
-        func.notebooks.some(notebook => notebook && notebook.doi === doi);
+        func.notebooks.some(notebook => notebook && notebook.url === doi);
       
-      const hasMaterial = hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo || hasMaterialInNotebook;
-      
-      // Debugging log
-      if (hasMaterial) {
-        console.log(`Function ${func.id} (${func.title}) has material ${doi}`);
-      }
-      
-      return hasMaterial;
-    });
+      return hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo || hasMaterialInNotebook;
+    }).map(func => ({
+      ...func,
+      already_has_material: true
+    }));
     
-    console.log(`Found ${functionsWithMaterial.length} functions with material ${doi}`);
-    
-    return functionsWithMaterial as ModalFunctionWithOwner[];
+    return functionsWithMaterial;
   }, [garden.doi, queryClient]);
 
   // Refresh all materials and related data
   const refreshMaterials = useCallback(async () => {
     // Invalidate function caches
     if (garden.modal_functions) {
-      garden.modal_functions.forEach(func => {
+      await Promise.all(garden.modal_functions.map(async func => {
         if (func.id) {
-          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+          await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
         }
-      });
+      }));
     }
     
-    // Invalidate garden cache
-    queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+    // Invalidate garden cache and wait for it to complete
+    await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
     
-    // Refetch garden data
+    // Refetch garden data and wait for completion
     await refetchGarden();
+    
+    // Ensure the query client settles all pending operations
+    await queryClient.resumePausedMutations();
   }, [garden, queryClient, refetchGarden]);
 
   return {

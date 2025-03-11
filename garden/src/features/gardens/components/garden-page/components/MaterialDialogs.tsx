@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from "react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shadcn/alert-dialog";
 import { Button } from "@/components/shadcn/button";
@@ -5,15 +6,15 @@ import { Checkbox } from "@/components/shadcn/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
 import { Label } from "@/components/shadcn/label";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { ModalFunctionWithOwner } from "../hooks/useMaterialActions";
+import { ModalFunction } from '@/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { InfoIcon, PlusCircleIcon, CheckCircleIcon, AlertCircleIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 
-interface EditDialogProps {
+export interface EditDialogProps {
   isOpen: boolean;
   onClose: () => void;
   materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
-  editAffectedFunctions: ModalFunctionWithOwner[] & { already_has_material?: boolean }[];
+  editAffectedFunctions: ModalFunction[];
   editSelectiveFunctions: Record<number, boolean>;
   toggleEditFunction: (id: number) => void;
   toggleEditAll: (value: boolean) => void;
@@ -21,7 +22,7 @@ interface EditDialogProps {
   applySelectiveEdit: () => Promise<void>;
 }
 
-export const EditDialog = ({
+export const EditDialog: React.FC<EditDialogProps> = ({
   isOpen,
   onClose,
   materialType,
@@ -31,7 +32,7 @@ export const EditDialog = ({
   toggleEditAll,
   applyEditToAllFunctions,
   applySelectiveEdit
-}: EditDialogProps) => {
+}) => {
   const [showFunctionSelector, setShowFunctionSelector] = useState(false);
   
   // Reset states when dialog opens/closes
@@ -236,11 +237,11 @@ export const EditDialog = ({
   );
 };
 
-interface RemoveDialogProps {
+export interface RemoveDialogProps {
   isOpen: boolean;
   onClose: () => void;
   materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
-  affectedFunctions: ModalFunctionWithOwner[] & { already_has_material?: boolean }[];
+  affectedFunctions: ModalFunction[];
   selectiveFunctions: Record<number, boolean>;
   toggleFunction: (id: number) => void;
   toggleAll: (value: boolean) => void;
@@ -250,7 +251,7 @@ interface RemoveDialogProps {
   setIsSelectiveRemoval: (value: boolean) => void;
 }
 
-export const RemoveDialog = ({
+export const RemoveDialog: React.FC<RemoveDialogProps> = ({
   isOpen,
   onClose,
   materialType,
@@ -262,7 +263,7 @@ export const RemoveDialog = ({
   handleSelectiveRemove,
   isSelectiveRemoval,
   setIsSelectiveRemoval
-}: RemoveDialogProps) => {
+}) => {
   const [showFunctionSelector, setShowFunctionSelector] = useState(false);
   
   // Reset states when dialog opens/closes

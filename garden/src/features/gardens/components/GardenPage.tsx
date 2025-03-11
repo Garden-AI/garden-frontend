@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2, Laptop } from "lucide-react";
+import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2, Laptop, CodeIcon, ScrollTextIcon } from "lucide-react";
 import { useState, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -24,8 +24,7 @@ import { MaterialsProvider } from '../contexts/MaterialsContext';
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '../hooks/useMaterialManagement';
 
 // Import Garden from the root types directory
-import { Garden } from "@/types";
-import { ExtendedGarden } from "@/types/garden.types";
+import { Garden, ModalFunction } from "@/types";
 
 // Import extracted components
 import {
@@ -44,23 +43,41 @@ import {
 } from "./garden-page";
 
 interface GardenContentProps {
-  garden: ExtendedGarden;
+  garden: Garden;
   ownsThisGarden: boolean;
   isNewlyCreated: boolean;
-  updateGarden: (data: { doi: string; garden: Partial<ExtendedGarden> }) => void;
+  updateGarden: (data: { doi: string; garden: Partial<Garden> }) => void;
 }
 
 const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }: GardenContentProps) => {
   // Use our new material management hooks
-  const { materials: datasets, refreshMaterials, findFunctionsWithMaterial } = useDatasetManagement(garden);
-  const { materials: papers } = usePaperManagement(garden);
-  const { materials: repositories } = useRepositoryManagement(garden);
-  const { materials: notebooks } = useNotebookManagement(garden);
+  const { materials: datasets, refreshMaterials: refreshDatasets, findFunctionsWithMaterial: findDatasetFunctions } = useDatasetManagement(garden);
+  const { materials: papers, refreshMaterials: refreshPapers, findFunctionsWithMaterial: findPaperFunctions } = usePaperManagement(garden);
+  const { materials: repositories, refreshMaterials: refreshRepositories, findFunctionsWithMaterial: findRepositoryFunctions } = useRepositoryManagement(garden);
+  const { materials: notebooks, refreshMaterials: refreshNotebooks, findFunctionsWithMaterial: findNotebookFunctions } = useNotebookManagement(garden);
 
-  // Callback to refresh data after adding materials
-  const handleMaterialAdded = useCallback(() => {
-    refreshMaterials();
-  }, [refreshMaterials]);
+  // Callback to refresh all materials after adding/updating/removing
+  const handleMaterialsChange = useCallback(async () => {
+    await Promise.all([
+      refreshDatasets(),
+      refreshPapers(),
+      refreshRepositories(),
+      refreshNotebooks()
+    ]);
+  }, [refreshDatasets, refreshPapers, refreshRepositories, refreshNotebooks]);
+
+  // Use this handler for all material operations
+  const handleMaterialAdded = useCallback(async () => {
+    await handleMaterialsChange();
+  }, [handleMaterialsChange]);
+
+  const handleMaterialUpdated = useCallback(async () => {
+    await handleMaterialsChange();
+  }, [handleMaterialsChange]);
+
+  const handleMaterialRemoved = useCallback(async () => {
+    await handleMaterialsChange();
+  }, [handleMaterialsChange]);
 
   // Log notebooks for debugging
   console.log('Notebooks:', notebooks);
@@ -83,7 +100,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
         ownsThisGarden={ownsThisGarden} 
       />
       
-      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={asGarden(garden)} updateGarden={updateGarden} />}
+      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
       
       {/* Hero Metadata Section */}
       <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
@@ -91,18 +108,18 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">
             <div className="flex justify-between items-start mb-4">
-              <EditableTitle garden={asGarden(garden)} ownsThisGarden={ownsThisGarden} />
+              <EditableTitle garden={garden} ownsThisGarden={ownsThisGarden} />
               <div className="flex gap-2">
-                <SaveGardenButton garden={asGarden(garden)} />
+                <SaveGardenButton garden={garden} />
                 <ShareModal
                   doi={garden.doi}
                 />
-                <GardenDropdownOptions garden={asGarden(garden)} />
+                <GardenDropdownOptions garden={garden} />
               </div>
             </div>
             
             {/* Description with Markdown */}
-            <GardenDescription garden={asGarden(garden)} />
+            <GardenDescription garden={garden} />
             
             {/* Functions, Datasets, Papers, and Notebooks tabs */}
             <div className="mt-6">
@@ -176,17 +193,17 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                           <div className="grid grid-cols-1 gap-8 py-2">
                             {datasets.map((dataset) => (
                               <DatasetCard 
-                                key={dataset.doi || dataset.title} 
-                                dataset={dataset} 
+                                key={dataset.doi} 
+                                dataset={dataset}
                                 isOwner={ownsThisGarden}
                                 garden={garden}
-                                findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={refreshMaterials}
+                                findAffectedFunctions={findDatasetFunctions}
+                                onUpdate={handleMaterialUpdated}
                               />
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-500 italic">No datasets associated with this garden</p>
+                          <p className="text-gray-500 italic">No datasets associated with the functions in this garden</p>
                         )}
                       </div>
                     </CardContent>
@@ -220,13 +237,13 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                                 paper={paper} 
                                 isOwner={ownsThisGarden}
                                 garden={garden}
-                                findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={refreshMaterials}
+                                findAffectedFunctions={findPaperFunctions}
+                                onUpdate={handleMaterialUpdated}
                               />
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-500 italic">No papers associated with this garden</p>
+                          <p className="text-gray-500 italic">No papers associated with the functions in this garden</p>
                         )}
                       </div>
                     </CardContent>
@@ -239,8 +256,8 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                       <div>
                         <div className="flex items-center justify-between mb-3">
                           <h3 className="text-lg font-medium flex items-center">
-                            <FolderGit2 className="h-5 w-5 mr-2 text-green" />
-                            Repositories
+                            <CodeIcon className="h-5 w-5 mr-2 text-green" />
+                            Code Repositories
                           </h3>
                           
                           {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
@@ -254,19 +271,19 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                         
                         {repositories.length > 0 ? (
                           <div className="grid grid-cols-1 gap-8 py-2">
-                            {repositories.map((repository) => (
+                            {repositories.map((repo) => (
                               <RepositoryCard 
-                                key={repository.url || repository.repo_name} 
-                                repository={repository} 
+                                key={repo.url} 
+                                repository={repo}
                                 isOwner={ownsThisGarden}
                                 garden={garden}
-                                findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={refreshMaterials}
+                                findAffectedFunctions={findRepositoryFunctions}
+                                onUpdate={handleMaterialUpdated}
                               />
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-500 italic">No repositories associated with this garden</p>
+                          <p className="text-gray-500 italic">No repositories associated with the functions in this garden</p>
                         )}
                       </div>
                     </CardContent>
@@ -279,7 +296,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                       <div>
                         <div className="flex items-center justify-between mb-3">
                           <h3 className="text-lg font-medium flex items-center">
-                            <Laptop className="h-5 w-5 mr-2 text-green" />
+                            <ScrollTextIcon className="h-5 w-5 mr-2 text-green" />
                             Notebooks
                           </h3>
                           
@@ -297,16 +314,16 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             {notebooks.map((notebook) => (
                               <NotebookCard 
                                 key={notebook.url} 
-                                notebook={notebook} 
+                                notebook={notebook}
                                 isOwner={ownsThisGarden}
                                 garden={garden}
-                                findAffectedFunctions={findFunctionsWithMaterial}
-                                onUpdate={refreshMaterials}
+                                findAffectedFunctions={findNotebookFunctions}
+                                onUpdate={handleMaterialUpdated}
                               />
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-500 italic">No notebooks associated with this garden</p>
+                          <p className="text-gray-500 italic">No notebooks associated with the functions in this garden</p>
                         )}
                       </div>
                     </CardContent>
@@ -345,7 +362,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 label="Authors"
                 value={garden.authors}
                 fieldName="authors"
-                garden={asGarden(garden)}
+                garden={garden}
                 ownsThisGarden={ownsThisGarden}
                 isArray={true}
               />
@@ -354,7 +371,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 label="Year"
                 value={garden.year}
                 fieldName="year"
-                garden={asGarden(garden)}
+                garden={garden}
                 ownsThisGarden={ownsThisGarden}
               />
               
@@ -362,12 +379,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 label="Version"
                 value={garden.version}
                 fieldName="version"
-                garden={asGarden(garden)}
+                garden={garden}
                 ownsThisGarden={ownsThisGarden}
               />
               
               <EditableTags
-                garden={asGarden(garden)}
+                garden={garden}
                 ownsThisGarden={ownsThisGarden}
               />
               
@@ -386,7 +403,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                     icon={<ClipboardIcon className="h-4 w-4" />}
                   />
                 </div>
-                <CitationBlock garden={asGarden(garden)} />
+                <CitationBlock garden={garden} />
               </div>
             </div>
           </div>
@@ -416,32 +433,9 @@ const GardenPage = () => {
     return <TombstonePage garden={garden} />;
   }
 
-  // Cast garden to ExtendedGarden to support our type definitions
-  const extendedGarden: ExtendedGarden = {
-    ...garden,
-    current_user_id: auth.isAuthenticated ? auth?.authorization?.user?.sub : undefined,
-    datasets: [],
-    papers: [],
-    repositories: [],
-    notebooks: [],
-    entrypoints: garden.entrypoints?.map(entrypoint => ({
-      ...entrypoint,
-      base_image_uri: entrypoint.base_image_uri || '',
-      full_image_uri: entrypoint.full_image_uri || '',
-      notebook_url: entrypoint.notebook_url || '',
-      owner_identity_id: garden.owner_identity_id,
-      doi_is_draft: entrypoint.doi_is_draft || false,
-      modal_app_id: (entrypoint as any).modal_app_id || 0
-    })),
-    modal_functions: garden.modal_functions?.map(fn => ({
-      ...fn,
-      owner_identity_id: garden.owner_identity_id
-    }))
-  };
-  
   const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
 
-  const handleUpdateGarden = (data: Partial<ExtendedGarden>) => {
+  const handleUpdateGarden = (data: Partial<Garden>) => {
     patchGarden({
       doi: garden.doi,
       garden: data
@@ -449,35 +443,15 @@ const GardenPage = () => {
   };
 
   return (
-    <MaterialsProvider garden={extendedGarden} refetchGarden={async () => { await refetch(); }}>
+    <MaterialsProvider garden={garden} refetchGarden={async () => { await refetch(); }}>
       <GardenContent 
-        garden={extendedGarden} 
+        garden={garden} 
         ownsThisGarden={ownsThisGarden} 
         isNewlyCreated={isNewlyCreated}
         updateGarden={({ doi, garden: data }) => patchGarden({ doi, garden: data })}
       />
     </MaterialsProvider>
   );
-};
-
-// Add a type guard function to convert ExtendedGarden to Garden where needed
-const asGarden = (garden: ExtendedGarden): Garden => {
-  const { datasets, papers, repositories, notebooks, current_user_id, ...gardenProps } = garden;
-  
-  // Convert the entrypoints to the format expected by Garden
-  const standardEntrypoints = garden.entrypoints?.map(ep => {
-    const { 
-      datasets, papers, repositories, notebooks,
-      ...standardEntrypoint 
-    } = ep;
-    return standardEntrypoint;
-  });
-  
-  return {
-    ...gardenProps,
-    entrypoints: standardEntrypoints as any, // Type assertion needed here
-    modal_functions: garden.modal_functions as any // Type assertion needed here
-  };
 };
 
 export default GardenPage;

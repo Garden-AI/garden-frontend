@@ -1,28 +1,29 @@
-import { Notebook } from "@/types";
+import React from 'react';
+import { Notebook, Garden, ModalFunction } from "@/types";
 import { BookOpen, FileType, Link, Book, Laptop } from "lucide-react";
 import { useState, useRef } from "react";
 import NotebookModal from "@/features/entrypoints/components/modals/NotebookModal";
 import { Button } from "@/components/shadcn/button";
-import { ExtendedGarden } from "@/types/garden.types";
-import { BaseMaterialCard } from "./MaterialCard";
-import { ModalFunctionWithOwner, useMaterialActions } from "../hooks/useMaterialActions";
+import { Edit2, Trash2 } from "lucide-react";
+import { useMaterialActions } from "../hooks/useMaterialActions";
 import { EditDialog, RemoveDialog } from "./MaterialDialogs";
+import { BaseMaterialCard } from "./MaterialCard";
 
 interface NotebookCardProps {
   notebook: Notebook;
   isOwner: boolean;
-  garden: ExtendedGarden;
-  findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
+  garden: Garden;
+  findAffectedFunctions?: (doi: string) => ModalFunction[];
   onUpdate?: () => Promise<void>;
 }
 
-export const NotebookCard = ({
+export const NotebookCard: React.FC<NotebookCardProps> = ({
   notebook,
-  isOwner,
+  isOwner = false,
   garden,
   findAffectedFunctions,
-  onUpdate,
-}: NotebookCardProps) => {
+  onUpdate
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
 

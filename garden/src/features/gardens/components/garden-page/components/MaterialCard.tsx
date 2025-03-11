@@ -1,38 +1,39 @@
+import React from 'react';
 import { ReactNode } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { Edit2, Trash2 } from "lucide-react";
-import { ExtendedGarden } from "@/types/garden.types";
+import { Garden, ModalFunction } from '@/types';
 import { MaterialType, ModalFunctionWithOwner, useMaterialActions } from "../hooks/useMaterialActions";
 import { EditDialog } from "./MaterialDialogs";
 import { RemoveDialog } from "./MaterialDialogs";
 
-export interface BaseMaterialCardProps<T extends MaterialType> {
-  material: T;
+export interface BaseMaterialCardProps {
+  material: MaterialType;
   materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
   isOwner: boolean;
-  garden: ExtendedGarden;
-  findAffectedFunctions?: (doi: string) => ModalFunctionWithOwner[];
+  garden: Garden;
+  findAffectedFunctions?: (doi: string) => ModalFunction[];
   onUpdate?: () => Promise<void>;
-  icon: ReactNode;
+  icon: React.ReactNode;
   title: string;
-  onEdit: (updatedMaterial: T) => void;
-  children: ReactNode;
+  onEdit: (data: any) => Promise<void>;
   onEditClick: () => void;
-  
-  // Optional dialog-related props - if provided, will be used instead of useMaterialActions
+  children: React.ReactNode;
+  // Edit dialog props
   isSelectiveEditing?: boolean;
   setIsSelectiveEditing?: (value: boolean) => void;
-  editAffectedFunctions?: ModalFunctionWithOwner[];
+  editAffectedFunctions?: ModalFunction[];
   editSelectiveFunctions?: Record<number, boolean>;
   applyEditToAllFunctions?: () => Promise<void>;
   applySelectiveEdit?: () => Promise<void>;
   toggleEditFunction?: (id: number) => void;
   toggleEditAll?: (value: boolean) => void;
+  // Remove dialog props
   confirmRemove?: boolean;
   setConfirmRemove?: (value: boolean) => void;
-  prepareFunctionsForRemoval?: () => void;
-  affectedFunctions?: ModalFunctionWithOwner[];
+  prepareFunctionsForRemoval?: () => Promise<void>;
+  affectedFunctions?: ModalFunction[];
   selectiveFunctions?: Record<number, boolean>;
   isSelectiveRemoval?: boolean;
   setIsSelectiveRemoval?: (value: boolean) => void;
@@ -74,7 +75,7 @@ export function BaseMaterialCard<T extends MaterialType>({
   handleSelectiveRemove: propHandleSelectiveRemove,
   toggleFunction: propToggleFunction,
   toggleAll: propToggleAll
-}: BaseMaterialCardProps<T>) {
+}: BaseMaterialCardProps) {
   
   // Use Material Actions hook if props aren't provided
   const hooksResult = useMaterialActions<T>({

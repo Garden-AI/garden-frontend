@@ -11,7 +11,13 @@ type EntrypointPatchRequest = components["schemas"]["EntrypointPatchRequest"];
 
 type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
-type ModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
+type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
+
+// Extended interface for UI-specific properties
+export interface ModalFunction extends BaseModalFunction {
+  already_has_material?: boolean;
+}
+
 type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchRequest"];
 
 type AsyncModalAppMetadataResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
