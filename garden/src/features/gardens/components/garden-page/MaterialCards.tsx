@@ -545,21 +545,22 @@ export const RepositoryCard = ({
     // Clean up the updated repository for proper typing
     const cleanUpdatedRepository = {
       ...updatedRepository,
+      // Prioritize DOI over URL for identification
       doi: typeof updatedRepository.doi === 'string' ? updatedRepository.doi : undefined,
-      url: typeof updatedRepository.url === 'string' ? updatedRepository.url : undefined,
-      // Ensure name and description properties are included
+      url: !updatedRepository.doi && typeof updatedRepository.url === 'string' ? updatedRepository.url : undefined,
       name: typeof updatedRepository.name === 'string' ? updatedRepository.name : 
             (typeof updatedRepository.repo_name === 'string' ? updatedRepository.repo_name : "Untitled Repository"),
       description: typeof updatedRepository.description === 'string' ? updatedRepository.description : undefined
     };
     
-    // Show the confirmation dialog for function selection
-    if (typeof repository.doi === 'string' && repository.doi && findAffectedFunctions) {
+    // Show the confirmation dialog for function selection if we can find affected functions
+    const identifier = cleanUpdatedRepository.doi || cleanUpdatedRepository.url;
+    if (findAffectedFunctions && identifier) {
       await prepareFunctionsForEdit(cleanUpdatedRepository);
     } else {
-      // If no DOI or findAffectedFunctions, just refresh
+      // If no identifier or findAffectedFunctions, just refresh
       if (onUpdate) {
-        onUpdate();
+        await onUpdate();
       }
     }
   };

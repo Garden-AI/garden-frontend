@@ -117,6 +117,9 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                   <TabsTrigger value="papers" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
                     Papers {papers.length > 0 && `(${papers.length})`}
                   </TabsTrigger>
+                  <TabsTrigger value="repositories" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                    Repositories {repositories.length > 0 && `(${repositories.length})`}
+                  </TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="functions" className="mt-0 relative">
@@ -219,6 +222,46 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                     </CardContent>
                   </Card>
                 </TabsContent>
+
+                <TabsContent value="repositories" className="mt-0 relative">
+                  <Card className="border-0 shadow-none bg-transparent">
+                    <CardContent className="pt-6">
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-lg font-medium flex items-center">
+                            <FolderGit2 className="h-5 w-5 mr-2 text-green" />
+                            Repositories
+                          </h3>
+                          
+                          {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
+                            <AddMaterialWithFunctionSelect
+                              garden={garden}
+                              materialType="repositories"
+                              onSuccess={handleMaterialAdded}
+                            />
+                          )}
+                        </div>
+                        
+                        {repositories.length > 0 ? (
+                          <div className="grid grid-cols-1 gap-8 py-2">
+                            {repositories.map((repository) => (
+                              <RepositoryCard 
+                                key={repository.url || repository.repo_name} 
+                                repository={repository} 
+                                isOwner={ownsThisGarden}
+                                garden={garden}
+                                findAffectedFunctions={findFunctionsWithMaterial}
+                                onUpdate={refreshMaterials}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 italic">No repositories associated with this garden</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
               </Tabs>
             </div>
           </div>
@@ -299,28 +342,6 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
           </div>
         </div>
       </div>
-      
-      {/* Repositories Section */}
-      {repositories.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
-            <FolderGit2 className="h-5 w-5 mr-2 text-green" />
-            Repositories
-          </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {repositories.map((repository) => (
-              <RepositoryCard 
-                key={repository.url || repository.repo_name} 
-                repository={repository} 
-                isOwner={ownsThisGarden}
-                garden={garden}
-                findAffectedFunctions={findFunctionsWithMaterial}
-                onUpdate={refreshMaterials}
-              />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

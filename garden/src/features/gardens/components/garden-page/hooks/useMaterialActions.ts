@@ -79,7 +79,9 @@ export function useMaterialActions<T extends MaterialType>({
   const materialLink = material.url || (material.doi ? `https://doi.org/${material.doi}` : undefined);
   
   const prepareFunctionsForEdit = async (updatedMaterial: T) => {
-    if (!material.doi) {
+    // For repositories, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    if (!identifier) {
       return;
     }
     
@@ -88,13 +90,14 @@ export function useMaterialActions<T extends MaterialType>({
     setEditSelectiveFunctions({});
     
     try {
-      // CRITICAL FIX: Use our direct function checking method 
-      const functionsWithMaterial = await directlyCheckFunctionsWithMaterial(material.doi);
-      
-      // Store the updated material
+      // CRITICAL FIX: Store the updated material first
+      console.log('Setting editingMaterial:', updatedMaterial);
       setEditingMaterial(updatedMaterial);
       
-      console.log(`Edit - Found ${functionsWithMaterial.length} functions with material ${material.doi}`);
+      // CRITICAL FIX: Use our direct function checking method 
+      const functionsWithMaterial = await directlyCheckFunctionsWithMaterial(identifier);
+      
+      console.log(`Edit - Found ${functionsWithMaterial.length} functions with material ${identifier}`);
       
       // Get all functions in the garden
       let allFunctions = [...(garden.modal_functions || [])];
@@ -117,6 +120,7 @@ export function useMaterialActions<T extends MaterialType>({
         already_has_material: functionIdsWithMaterial.has(func.id)
       }));
       
+      console.log('Setting editAffectedFunctions:', allEligibleFunctions);
       // Store the affected functions including annotation
       setEditAffectedFunctions(allEligibleFunctions);
       
@@ -128,6 +132,7 @@ export function useMaterialActions<T extends MaterialType>({
           initialSelections[func.id] = func.already_has_material || false;
         }
       });
+      console.log('Setting editSelectiveFunctions:', initialSelections);
       setEditSelectiveFunctions(initialSelections);
       
       // Show the function selection dialog
@@ -143,7 +148,9 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const applyEditToAllFunctions = async () => {
-    if (!editingMaterial || !material.doi || editAffectedFunctions.length === 0) {
+    // For repositories, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' ? (editingMaterial?.doi || editingMaterial?.url) : editingMaterial?.doi;
+    if (!editingMaterial || !identifier || editAffectedFunctions.length === 0) {
       setIsSelectiveEditing(false);
       return;
     }
@@ -163,9 +170,20 @@ export function useMaterialActions<T extends MaterialType>({
           : func[`${materialType}s`] || [];
         
         // Replace the material being edited
-        const updatedMaterials = currentMaterials.map((m: any) => 
-          m.doi === material.doi ? editingMaterial : m
-        );
+        const updatedMaterials = currentMaterials.map((m: any) => {
+          if (materialType === 'repository') {
+            // For repositories, match on either DOI or URL
+            if ((m.doi && m.doi === identifier) || (!m.doi && m.url && m.url === identifier)) {
+              return editingMaterial;
+            }
+          } else {
+            // For other materials, match on DOI
+            if (m.doi === identifier) {
+              return editingMaterial;
+            }
+          }
+          return m;
+        });
         
         // Patch the function with updated materials
         return patchModalFunction({
@@ -188,14 +206,16 @@ export function useMaterialActions<T extends MaterialType>({
       setIsSelectiveEditing(false);
       
       // Explicitly invalidate queries for the affected functions and garden
-      editAffectedFunctions.forEach(func => {
+      for (const func of editAffectedFunctions) {
         if (func.id) {
-          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+          await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+          await queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] });
         }
-      });
+      }
       
       if (garden.doi) {
-        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+        await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+        await queryClient.refetchQueries({ queryKey: ["garden", garden.doi] });
       }
       
       // Call the onUpdate callback to refresh the garden data
@@ -216,7 +236,24 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const applySelectiveEdit = async () => {
-    if (!editingMaterial || !material.doi || editAffectedFunctions.length === 0) {
+    console.log('Starting applySelectiveEdit');
+    console.log('Current state:', {
+      editingMaterial,
+      editAffectedFunctions,
+      editSelectiveFunctions
+    });
+
+    // For repositories, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' ? 
+      (editingMaterial?.doi || editingMaterial?.url) : 
+      editingMaterial?.doi;
+
+    if (!editingMaterial || !identifier || editAffectedFunctions.length === 0) {
+      console.error('Missing required data:', {
+        editingMaterial: !!editingMaterial,
+        identifier: !!identifier,
+        affectedFunctionsLength: editAffectedFunctions.length
+      });
       setIsSelectiveEditing(false);
       return;
     }
@@ -226,6 +263,8 @@ export function useMaterialActions<T extends MaterialType>({
       const functionsToUpdate = editAffectedFunctions.filter(func => 
         typeof func.id === 'number' && editSelectiveFunctions[func.id]
       );
+      
+      console.log('Functions to update:', functionsToUpdate);
       
       if (functionsToUpdate.length === 0) {
         toast.error(`Please select at least one function to update the ${materialType} in`);
@@ -242,25 +281,53 @@ export function useMaterialActions<T extends MaterialType>({
 
         // Get current materials
         const currentMaterials = materialType === 'repository' 
-          ? func.repositories || []
-          : func[`${materialType}s`] || [];
+          ? (func.repositories || [])
+          : (func[`${materialType}s`] || []);
+        
+        console.log(`Current materials for function ${func.id}:`, currentMaterials);
         
         let updatedMaterials;
         
-        // Check if this function already has this material (by DOI)
-        const hasMaterial = currentMaterials.some((m: any) => m.doi === material.doi);
+        // Check if this function already has this material (by DOI or URL for repositories)
+        const hasMaterial = currentMaterials.some((m: any) => {
+          if (materialType === 'repository') {
+            // For repositories, match on either DOI or URL
+            return (m.doi && m.doi === identifier) || 
+                   (!m.doi && m.url && m.url === identifier);
+          } else {
+            // For other materials, match on DOI
+            return m.doi === identifier;
+          }
+        });
         
         if (hasMaterial) {
           // If function already has the material, replace it
-          updatedMaterials = currentMaterials.map((m: any) => 
-            m.doi === material.doi ? editingMaterial : m
-          );
+          updatedMaterials = currentMaterials.map((m: any) => {
+            if (materialType === 'repository') {
+              // For repositories, match on either DOI or URL
+              if ((m.doi && m.doi === identifier) || 
+                  (!m.doi && m.url && m.url === identifier)) {
+                return editingMaterial;
+              }
+            } else {
+              // For other materials, match on DOI
+              if (m.doi === identifier) {
+                return editingMaterial;
+              }
+            }
+            return m;
+          });
         } else {
           // If function doesn't have the material yet, add it
           updatedMaterials = [...currentMaterials, editingMaterial];
         }
         
-        // Patch the function with updated materials
+        console.log(`Preparing patch for function ${func.id}:`, {
+          id: func.id,
+          updatedMaterials
+        });
+        
+        // CRITICAL FIX: Ensure we're actually returning the patch promise
         return patchModalFunction({
           id: func.id,
           modalFunction: {
@@ -269,8 +336,12 @@ export function useMaterialActions<T extends MaterialType>({
         });
       }).filter(Boolean);
       
+      console.log(`Sending ${updatePromises.length} patch requests...`);
+      
       // Wait for all updates to complete
       await Promise.all(updatePromises);
+      
+      console.log('All patches completed successfully');
       
       toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} updated in ${updatePromises.length} function(s)`);
       
@@ -281,14 +352,16 @@ export function useMaterialActions<T extends MaterialType>({
       setIsSelectiveEditing(false);
       
       // Explicitly invalidate queries for the affected functions and garden
-      functionsToUpdate.forEach(func => {
+      for (const func of functionsToUpdate) {
         if (func.id) {
-          queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+          await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
+          await queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] });
         }
-      });
+      }
       
       if (garden.doi) {
-        queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+        await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
+        await queryClient.refetchQueries({ queryKey: ["garden", garden.doi] });
       }
       
       // Call the onUpdate callback to refresh the garden data
@@ -297,8 +370,8 @@ export function useMaterialActions<T extends MaterialType>({
       }
       
     } catch (error) {
+      console.error("Error in applySelectiveEdit:", error);
       toast.error(`Failed to update ${materialType}`);
-      console.error(`Error updating ${materialType}:`, error);
       
       // Reset state even on error
       setEditingMaterial(null);
@@ -326,13 +399,13 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   // CRITICAL FIX: Direct function to check material references by fetching each function directly
-  const directlyCheckFunctionsWithMaterial = async (doi: string): Promise<ModalFunctionWithOwner[]> => {
-    if (!doi || !garden.modal_functions) {
-      console.log("Cannot check functions: missing DOI or garden functions");
+  const directlyCheckFunctionsWithMaterial = async (identifier: string): Promise<ModalFunctionWithOwner[]> => {
+    if (!identifier || !garden.modal_functions) {
+      console.log("Cannot check functions: missing identifier or garden functions");
       return [];
     }
     
-    console.log(`Directly checking which functions have material ${doi}`);
+    console.log(`Directly checking which functions have material ${identifier}`);
     
     try {
       // We'll directly fetch each function from the backend to get the freshest data
@@ -356,24 +429,32 @@ export function useMaterialActions<T extends MaterialType>({
           const materials = freshFunction[materialsKey] || [];
           
           const hasMaterial = Array.isArray(materials) && 
-            materials.some((m: any) => m && m.doi === doi);
+            materials.some((m: any) => {
+              if (materialType === 'repository') {
+                // For repositories, match on either DOI or URL
+                return (m.doi && m.doi === identifier) || (m.url && m.url === identifier);
+              } else {
+                // For other materials, match on DOI
+                return m.doi === identifier;
+              }
+            });
           
           if (hasMaterial) {
-            console.log(`Function ${func.id} (${func.title}) HAS material ${doi}`);
+            console.log(`Function ${func.id} (${func.title}) HAS material ${identifier}`);
             results.push({
               ...freshFunction,
               owner_identity_id: freshFunction.owner_identity_id || garden.owner_identity_id,
               already_has_material: true
             });
           } else {
-            console.log(`Function ${func.id} (${func.title}) does NOT have material ${doi}`);
+            console.log(`Function ${func.id} (${func.title}) does NOT have material ${identifier}`);
           }
         } catch (error) {
           console.error(`Error fetching function ${func.id}:`, error);
         }
       }));
       
-      console.log(`Found ${results.length} functions with material ${doi} via direct API check`);
+      console.log(`Found ${results.length} functions with material ${identifier} via direct API check`);
       return results;
     } catch (error) {
       console.error("Error directly checking functions with material:", error);
@@ -382,7 +463,9 @@ export function useMaterialActions<T extends MaterialType>({
   };
 
   const prepareFunctionsForRemoval = async () => {
-    if (!material.doi) {
+    // For repositories, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    if (!identifier) {
       return;
     }
     
@@ -393,14 +476,14 @@ export function useMaterialActions<T extends MaterialType>({
     try {
       // CRITICAL FIX: Use our direct function checking method instead of findAffectedFunctions
       // This bypasses the cache and gets fresh data for each function
-      const functionsWithMaterial = await directlyCheckFunctionsWithMaterial(material.doi);
+      const functionsWithMaterial = await directlyCheckFunctionsWithMaterial(identifier);
       
       if (functionsWithMaterial.length === 0) {
         toast.error(`Could not find functions referencing this ${materialType}`);
         return;
       }
       
-      console.log(`Found ${functionsWithMaterial.length} functions with material ${material.doi}`);
+      console.log(`Found ${functionsWithMaterial.length} functions with material ${identifier}`);
       
       // Check if user owns all affected functions
       const nonOwnedFunctions = functionsWithMaterial.filter(func => {
@@ -446,7 +529,9 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const handleRemoveAll = async () => {
-    if (!material.doi || affectedFunctions.length === 0) {
+    // For repositories, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    if (!identifier || affectedFunctions.length === 0) {
       setConfirmRemove(false);
       return;
     }
@@ -460,7 +545,15 @@ export function useMaterialActions<T extends MaterialType>({
           : func[`${materialType}s`] || [];
         
         // Remove the material from the list
-        const updatedMaterials = currentMaterials.filter((m: any) => m.doi !== material.doi);
+        const updatedMaterials = currentMaterials.filter((m: any) => {
+          if (materialType === 'repository') {
+            // For repositories, match on either DOI or URL
+            return !(m.doi === identifier || m.url === identifier);
+          } else {
+            // For other materials, match on DOI
+            return m.doi !== identifier;
+          }
+        });
         
         // Patch the function with updated materials
         return patchModalFunction({
@@ -523,7 +616,9 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const handleSelectiveRemove = async () => {
-    if (!material.doi || affectedFunctions.length === 0) {
+    // For repositories, check either DOI or URL. For other materials, require DOI
+    const identifier = materialType === 'repository' ? (material.doi || material.url) : material.doi;
+    if (!identifier || affectedFunctions.length === 0) {
       setIsSelectiveRemoval(false);
       setConfirmRemove(false);
       return;
@@ -548,7 +643,15 @@ export function useMaterialActions<T extends MaterialType>({
           : func[`${materialType}s`] || [];
         
         // Remove the material from the list
-        const updatedMaterials = currentMaterials.filter((m: any) => m.doi !== material.doi);
+        const updatedMaterials = currentMaterials.filter((m: any) => {
+          if (materialType === 'repository') {
+            // For repositories, match on either DOI or URL
+            return !(m.doi === identifier || m.url === identifier);
+          } else {
+            // For other materials, match on DOI
+            return m.doi !== identifier;
+          }
+        });
         
         // Patch the function with updated materials
         return patchModalFunction({
