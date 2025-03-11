@@ -4,12 +4,12 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Button } from "@/components/shadcn/button";
 import { Edit2, Trash2 } from "lucide-react";
 import { Garden, ModalFunction } from '@/types';
-import { MaterialType, ModalFunctionWithOwner, useMaterialActions } from "../hooks/useMaterialActions";
+import { MaterialType, useMaterialActions } from "../hooks/useMaterialActions";
 import { EditDialog } from "./MaterialDialogs";
 import { RemoveDialog } from "./MaterialDialogs";
 
-export interface BaseMaterialCardProps {
-  material: MaterialType;
+export interface BaseMaterialCardProps<T extends MaterialType> {
+  material: T;
   materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
   isOwner: boolean;
   garden: Garden;
@@ -43,7 +43,7 @@ export interface BaseMaterialCardProps {
   toggleAll?: (value: boolean) => void;
 }
 
-export function BaseMaterialCard<T extends MaterialType>({
+export const BaseMaterialCard = <T extends MaterialType>({
   material,
   materialType,
   isOwner,
@@ -75,7 +75,7 @@ export function BaseMaterialCard<T extends MaterialType>({
   handleSelectiveRemove: propHandleSelectiveRemove,
   toggleFunction: propToggleFunction,
   toggleAll: propToggleAll
-}: BaseMaterialCardProps) {
+}: BaseMaterialCardProps<T>) => {
   
   // Use Material Actions hook if props aren't provided
   const hooksResult = useMaterialActions<T>({

@@ -14,7 +14,7 @@ type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"
 type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 
 // Extended interface for UI-specific properties
-export interface ModalFunction extends BaseModalFunction {
+interface ModalFunction extends BaseModalFunction {
   already_has_material?: boolean;
 }
 
@@ -52,8 +52,6 @@ export type {
   EntrypointPatchRequest,
   ModalAppCreateRequest,
   ModalAppMetadataResponse,
-  ModalFunction,
-  ModalFunctionPatchRequest,
   User,
   UpdateUserSchema,
   Dataset,
@@ -69,5 +67,7 @@ export type {
   ModalFileMetadataRequest,
   ModalFileMetadataResponse,
   Model,
-  Notebook,
+  Notebook
 };
+
+export type { ModalFunction, ModalFunctionPatchRequest };

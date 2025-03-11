@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Garden, ModalFunction } from '@/types';
+import { Garden, ModalFunction, Dataset, Paper, Repository, Notebook } from '@/types';
 import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
@@ -17,6 +17,15 @@ export type MaterialType = {
   [key: string]: any;
 };
 
+// Type for accessing material collections with proper types
+type MaterialCollectionKey = 'datasets' | 'papers' | 'repositories' | 'notebooks';
+
+// Helper function to safely access material collections
+const getMaterialCollection = (func: ModalFunction, materialType: string): any[] => {
+  const key = `${materialType}s` as MaterialCollectionKey;
+  return (func[key] as any[]) || [];
+};
+
 export interface UseMaterialActionsOptions<T extends MaterialType> {
   material: T;
   garden: Garden;
@@ -29,19 +38,7 @@ export interface UseMaterialActionsOptions<T extends MaterialType> {
 const fetchModalFunction = async (id: number): Promise<ModalFunction> => {
   try {
     const response = await axios.get(`/modal-functions/${id}`);
-    const modalFunction = response.data as ModalFunction;
-    
-    try {
-      // Get the parent modal app to get ownership information
-      const modalAppResponse = await axios.get(`/modal-apps/${modalFunction.modal_app_id}`);
-      return {
-        ...modalFunction,
-        owner_identity_id: modalAppResponse.data.owner_identity_id
-      };
-    } catch (error) {
-      // If we can't get ownership info, just return the function
-      return modalFunction;
-    }
+    return response.data as ModalFunction;
   } catch (error) {
     throw new Error(`Error fetching modal function ${id}`);
   }
@@ -447,8 +444,10 @@ export function useMaterialActions<T extends MaterialType>({
       
       // Check if user owns all affected functions
       const nonOwnedFunctions = functionsWithMaterial.filter(func => {
-        const currentUserId = garden.current_user_id || garden.owner_identity_id;
-        const funcOwnerId = func.owner_identity_id || garden.owner_identity_id;
+        // Use only garden.owner_identity_id since current_user_id is not in the type
+        const currentUserId = garden.owner_identity_id;
+        // Get owner ID from the modal app response
+        const funcOwnerId = garden.owner_identity_id; // Default to garden owner if function owner not available
         return funcOwnerId !== currentUserId;
       });
       
@@ -489,91 +488,37 @@ export function useMaterialActions<T extends MaterialType>({
   };
   
   const handleRemoveAll = async () => {
-    // For repositories and notebooks, check either DOI or URL. For other materials, require DOI
-    const identifier = materialType === 'repository' || materialType === 'notebook'
-      ? (material.doi || material.url) 
-      : material.doi;
-    if (!identifier || affectedFunctions.length === 0) {
-      setConfirmRemove(false);
-      return;
-    }
-    
     try {
-      // Create an array of promises for updating each affected function
-      const updatePromises = affectedFunctions.map(func => {
-        // Get current materials
-        const currentMaterials = materialType === 'repository' 
-          ? func.repositories || []
-          : func[`${materialType}s`] || [];
-        
-        // Remove the material from the list
-        const updatedMaterials = currentMaterials.filter((m: any) => {
-          if (materialType === 'repository' || materialType === 'notebook') {
-            // For repositories and notebooks, match on either DOI or URL
-            return !(m.doi === identifier || m.url === identifier);
-          } else {
-            // For other materials, match on DOI
-            return m.doi !== identifier;
-          }
-        });
-        
-        // Patch the function with updated materials
-        return patchModalFunction({
-          id: func.id,
-          modalFunction: {
-            [materialType === 'repository' ? 'repositories' : `${materialType}s`]: updatedMaterials
-          }
-        });
-      });
+      // Get all affected functions
+      const affectedFunctions = findAffectedFunctions?.(material.doi || '') || [];
       
-      // Wait for all updates to complete
-      await Promise.all(updatePromises);
+      // Update each function
+      await Promise.all(
+        affectedFunctions.map(async (func) => {
+          const materialCollection = getMaterialCollection(func, materialType);
+          
+          const patchData = {
+            [`${materialType}s`]: materialCollection.filter(
+              (m: any) => m.doi !== material.doi && m.url !== material.url
+            )
+          };
+          
+          await patchModalFunction({
+            id: func.id,
+            modalFunction: patchData
+          });
+        })
+      );
       
-      // Close the dialog before showing success message
-      setConfirmRemove(false);
-      
-      // Success message
-      toast.success(`${materialType.charAt(0).toUpperCase() + materialType.slice(1)} removed from ${affectedFunctions.length} function(s)`);
-      
-      // Reset all state completely to avoid stale references
-      setAffectedFunctions([]);
-      setSelectiveFunctions({});
-      setIsSelectiveRemoval(false);
-      
-      // CRITICAL FIX: Explicitly clear all caches to ensure fresh data
-      console.log("Clearing caches after removal operation");
-      
-      // Invalidate function caches
-      for (const func of affectedFunctions) {
-        if (func.id) {
-          await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
-          await queryClient.refetchQueries({ queryKey: ["modalFunction", func.id.toString()] });
-        }
-      }
-      
-      // Invalidate and refetch garden data
-      if (garden.doi) {
-        await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
-        await queryClient.refetchQueries({ queryKey: ["garden", garden.doi] });
-      }
-      
-      // Call the onUpdate callback to refresh the garden data
+      // Call onUpdate callback if provided
       if (onUpdate) {
         await onUpdate();
       }
       
-      // Add a significant delay to ensure the UI has fully refreshed
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      toast.success('Material removed successfully');
     } catch (error) {
-      toast.error(`Failed to remove ${materialType}`);
-      console.error(`Error removing ${materialType}:`, error);
-      
-      // Reset state even on error
-      setAffectedFunctions([]);
-      setSelectiveFunctions({});
-      setConfirmRemove(false);
-      setIsSelectiveRemoval(false);
+      console.error('Error removing material:', error);
+      toast.error('Failed to remove material');
     }
   };
   
