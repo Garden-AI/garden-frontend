@@ -163,19 +163,17 @@ ${modalFunction.example_usage || `input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`}`;
 
   return (
-    <Card className="rounded-lg shadow-md bg-white p-4">
-      <CardContent className="space-y-4 px-6 py-4">
-        <div>
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-base font-semibold">Example Usage</h3>
-            <CopyButton hint="Copy example code" content={exampleText} />
-          </div>
-          <div className="rounded-md border border-gray-200 p-2 bg-gray-50">
-            <SyntaxHighlighter>
-              {exampleText}
-            </SyntaxHighlighter>
-          </div>
+    <Card className="rounded-lg shadow-md bg-white mb-6">
+      <CardHeader className="py-3 px-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-semibold">Example Usage</h3>
+          <CopyButton hint="Copy example code" content={exampleText} />
         </div>
+      </CardHeader>
+      <CardContent className="px-6 pb-4 pt-0">
+        <SyntaxHighlighter className="rounded-md border border-gray-200 bg-gray-50">
+          {exampleText}
+        </SyntaxHighlighter>
       </CardContent>
     </Card>
   );
