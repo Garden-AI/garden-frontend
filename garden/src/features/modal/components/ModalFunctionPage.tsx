@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
 import { useGlobusAuth } from "@globus/react-auth-context";
@@ -9,7 +10,7 @@ import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
-import { LinkIcon, TagIcon, PencilIcon } from "lucide-react";
+import { LinkIcon, TagIcon, PencilIcon, ChevronUpIcon, ChevronDownIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -26,7 +27,7 @@ import {
 } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
-import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
+import AssociatedMaterials from "./AssociatedMaterials";
 import Markdown from "@/components/Markdown";
 
 // Extend ModalFunction type to include owner_identity_id
@@ -43,18 +44,58 @@ const ModalFunctionPage = () => {
   if (isError || !modalFunction) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 md:px-6 pt-6 font-display">
-      <div>
-        <Breadcrumb 
-          className="mb-3" 
-          crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
-        />
+    <div className="container max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
+      <div className="flex flex-col-reverse lg:flex-row gap-6">
+        {/* Main Content */}
+        <div className="lg:w-2/3">
+          <Breadcrumb 
+            className="mb-3" 
+            crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
+          />
+          <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
+          <ModalFunctionBody modalFunction={modalFunction} />
+          <ModalFunctionExample modalFunction={modalFunction} />
+          <AssociatedMaterials resource={modalFunction} />
+        </div>
+        {/* Sidebar */}
+        <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold mb-2">Metadata</h3>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500 font-medium">DOI</p>
+                <CopyButton 
+                  content={modalFunction.doi} 
+                  hint="Copy DOI" 
+                  className="ml-2" 
+                  icon={<LinkIcon className="h-4 w-4" />}
+                />
+              </div>
+              <div className="mt-0.5">
+                <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
+                  {modalFunction.doi}
+                </p>
+              </div>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Authors</p>
+              <p className="font-medium text-gray-800">{modalFunction.authors?.join(", ")}</p>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Contributors</p>
+              <p className="font-medium text-gray-800">{modalFunction.authors?.join(", ")}</p>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Year</p>
+              <p className="font-medium text-gray-800">{modalFunction.year}</p>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Tags</p>
+              <p className="font-medium text-gray-800">{modalFunction.tags?.join(", ")}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
-      <ModalFunctionBody modalFunction={modalFunction} />
-      <ModalFunctionExample modalFunction={modalFunction} />
-      <AssociatedMaterials resource={modalFunction} />
-      <ModalFunctionTabs modalFunction={modalFunction} />
     </div>
   );
 };
@@ -100,23 +141,37 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
 };
 
 const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const descriptionText = modalFunction.description || "No description provided.";
+
   return (
     <div className="space-y-3 py-2">
-      <div className="flex flex-wrap items-center gap-1 text-xs text-gray-500">
-        <span>
-          {modalFunction.doi ? `DOI: ${modalFunction.doi} | ` : ""} {modalFunction.year} |{" "}
-        </span>
-        <TagIcon className="h-3.5 w-3.5" />
-        <span>{modalFunction.tags?.join(", ")}</span>
-      </div>
-
-      <div className="flex items-center space-x-2 text-sm">
-        <span className="font-semibold">Contributors:</span>
-        <span>{modalFunction.authors?.join(", ")}</span>
-      </div>
-
-      <div className="mt-2 bg-gray-50 rounded-md p-3">
-        <Markdown content={modalFunction.description || ""} className="text-sm" />
+      <div className="relative group rounded-lg border border-gray-200 p-4 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
+        {modalFunction.description && modalFunction.description.length > 300 ? (
+          <>
+            <div className={`${isExpanded ? "" : "line-clamp-3"} prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800`}>
+              <Markdown content={modalFunction.description} />
+            </div>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUpIcon className="h-4 w-4 mr-1" /> Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDownIcon className="h-4 w-4 mr-1" /> Show More
+                </>
+              )}
+            </button>
+          </>
+        ) : (
+          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
+            <Markdown content={modalFunction.description || ""} />
+          </div>
+        )}
       </div>
 
       <Separator className="my-3" />
@@ -136,158 +191,17 @@ ${modalFunction.example_usage || `input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`}`;
 
   return (
-    <Card className="rounded-none bg-white p-3">
-      <CardHeader className="px-4 py-2">
-        <CardTitle className="text-lg font-bold text-gray-800">
-          {modalFunction.function_name}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 px-4 py-2">
-        <div>
-          <div className="mb-1 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">Example Usage</h3>
-            <CopyButton hint="Copy example code" content={exampleText} />
-          </div>
-          <SyntaxHighlighter>{exampleText}</SyntaxHighlighter>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-const ModalFunctionTabs = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  const tabs = [
-    {
-      name: "Function",
-      content: (modalFunction: ModalFunction) => <FunctionTab modalFunction={modalFunction} />,
-    },
-    {
-      name: "App Text",
-      content: (modalFunction: ModalFunction) => <FullTextTab modalFunction={modalFunction} />,
-    },
-    {
-      name: "Datasets",
-      content: (modalFunction: ModalFunction) => <DatasetsTab datasets={modalFunction.datasets} />,
-    },
-  ];
-  return (
-    <Tabs defaultValue="function" className="min-h-[400px] w-full">
-      <TabsList className="m-0 grid w-full grid-cols-3 rounded-none bg-transparent p-0 ">
-        {tabs?.map(({ name }) => (
-          <TabsTrigger
-            key={name}
-            value={name.toLowerCase()}
-            className="m-0 rounded-none border-b-4 border-transparent bg-gray-100 bg-gradient-to-b py-2 text-base text-black transition-none hover:border-primary hover:from-gray-100 hover:from-70% hover:to-primary data-[state=active]:border-green data-[state=active]:bg-primary/30 data-[state=active]:bg-none"
-          >
-            {name}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {tabs.map(({ name, content }) => (
-        <TabsContent key={name} value={name.toLowerCase()} className="p-4">
-          {content(modalFunction)}
-        </TabsContent>
-      ))}
-    </Tabs>
-  );
-};
-
-const FullTextTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  if (!modalFunction.file_contents) {
-    return (
-      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">No Full Text Available</h2>
-        <p className="mt-2 text-gray-600">The complete source code for this modal function is not available.</p>
+    <div className="relative group rounded-lg border border-gray-200 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
+      <div className="flex items-center justify-between p-3 border-b border-gray-100">
+        <h3 className="text-base font-semibold text-gray-800">Example Usage</h3>
+        <CopyButton hint="Copy example code" content={exampleText} className="text-gray-500 hover:text-gray-700" />
       </div>
-    );
-  }
-
-  return (
-    <div className="prose prose-sm mx-auto mt-8 lg:prose-base 2xl:prose-xl">
-      <div className="py-8">
-        <p className="text-gray-700">
-          This is the complete source code for this Modal function, including imports and any helper functions.
-        </p>
-      </div>
-      <div className="relative">
-        <div className="absolute right-4 top-4 z-10">
-          <CopyButton
-            hint="Copy full source"
-            content={modalFunction.file_contents}
-            className="bg-white shadow-md hover:bg-gray-50"
-          />
-        </div>
-        <SyntaxHighlighter>{modalFunction.file_contents}</SyntaxHighlighter>
+      <div className="p-4">
+        <SyntaxHighlighter className="rounded-md bg-gray-50 !mt-0">
+          {exampleText}
+        </SyntaxHighlighter>
       </div>
     </div>
-  );
-};
-
-const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
-  if (!datasets || datasets.length === 0) {
-    return (
-      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">No Datasets Found</h2>
-        <p className="mt-2 text-gray-600">There are no datasets linked to this resource.</p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="mb-16 grid grid-cols-1 gap-2 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-4 ">
-        {datasets?.map((dataset: any) => (
-          <Card key={dataset.doi} className="rounded-lg border border-gray-200 shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold">{dataset.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <span className="font-medium text-gray-600">Data Type:</span>{" "}
-                {dataset.data_type || "N/A"}
-              </div>
-              <div>
-                <span className="font-medium text-gray-600">DOI:</span>{" "}
-                <a
-                  href={`https://doi.org/${dataset.doi}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {dataset.doi}
-                </a >
-              </div >
-            </CardContent >
-            <CardFooter className="flex justify-start ">
-              <Button variant="default" size={"sm"} asChild className="text-xs">
-                <a href={dataset.url} target="_blank" rel="noopener noreferrer">
-                  View Dataset
-                </a>
-              </Button>
-            </CardFooter>
-          </Card >
-        ))}
-      </div >
-    </>
-  );
-};
-
-const FunctionTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  return (
-    <Card className="rounded-none bg-white p-4">
-      <CardHeader className="px-6 py-4">
-        <CardTitle className="text-xl font-bold text-gray-800">
-          {modalFunction.function_name}
-        </CardTitle>
-        <MarkdownCardContent 
-          className="mt-1 text-gray-600"
-          content={modalFunction.description || ""}
-        />
-      </CardHeader>
-      <CardContent className="px-6 py-4">
-        <SyntaxHighlighter>{modalFunction.function_text}</SyntaxHighlighter>
-      </CardContent>
-    </Card>
   );
 };
 
