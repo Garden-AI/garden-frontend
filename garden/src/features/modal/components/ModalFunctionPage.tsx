@@ -43,18 +43,59 @@ const ModalFunctionPage = () => {
   if (isError || !modalFunction) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 md:px-6 pt-6 font-display">
-      <div>
-        <Breadcrumb 
-          className="mb-3" 
-          crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
-        />
+    <div className="container max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
+      <div className="flex flex-col-reverse lg:flex-row gap-6">
+        {/* Main Content */}
+        <div className="lg:w-2/3">
+          <Breadcrumb 
+            className="mb-3" 
+            crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
+          />
+          <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
+          <ModalFunctionBody modalFunction={modalFunction} />
+          <ModalFunctionExample modalFunction={modalFunction} />
+          <AssociatedMaterials resource={modalFunction} />
+          <ModalFunctionTabs modalFunction={modalFunction} />
+        </div>
+        {/* Sidebar */}
+        <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold mb-2">Metadata</h3>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500 font-medium">DOI</p>
+                <CopyButton 
+                  content={modalFunction.doi} 
+                  hint="Copy DOI" 
+                  className="ml-2" 
+                  icon={<LinkIcon className="h-4 w-4" />}
+                />
+              </div>
+              <div className="mt-0.5">
+                <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
+                  {modalFunction.doi}
+                </p>
+              </div>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Authors</p>
+              <p className="font-medium text-gray-800">{modalFunction.authors?.join(", ")}</p>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Contributors</p>
+              <p className="font-medium text-gray-800">{modalFunction.authors?.join(", ")}</p>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Year</p>
+              <p className="font-medium text-gray-800">{modalFunction.year}</p>
+            </div>
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <p className="text-sm text-gray-500 font-medium">Tags</p>
+              <p className="font-medium text-gray-800">{modalFunction.tags?.join(", ")}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
-      <ModalFunctionBody modalFunction={modalFunction} />
-      <ModalFunctionExample modalFunction={modalFunction} />
-      <AssociatedMaterials resource={modalFunction} />
-      <ModalFunctionTabs modalFunction={modalFunction} />
     </div>
   );
 };
@@ -102,19 +143,6 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
 const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) => {
   return (
     <div className="space-y-3 py-2">
-      <div className="flex flex-wrap items-center gap-1 text-xs text-gray-500">
-        <span>
-          {modalFunction.doi ? `DOI: ${modalFunction.doi} | ` : ""} {modalFunction.year} |{" "}
-        </span>
-        <TagIcon className="h-3.5 w-3.5" />
-        <span>{modalFunction.tags?.join(", ")}</span>
-      </div>
-
-      <div className="flex items-center space-x-2 text-sm">
-        <span className="font-semibold">Contributors:</span>
-        <span>{modalFunction.authors?.join(", ")}</span>
-      </div>
-
       <div className="mt-2 bg-gray-50 rounded-md p-3">
         <Markdown content={modalFunction.description || ""} className="text-sm" />
       </div>
