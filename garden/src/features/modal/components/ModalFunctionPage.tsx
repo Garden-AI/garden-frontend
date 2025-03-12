@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
 import { useGlobusAuth } from "@globus/react-auth-context";
@@ -9,7 +10,7 @@ import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
-import { LinkIcon, TagIcon, PencilIcon } from "lucide-react";
+import { LinkIcon, TagIcon, PencilIcon, ChevronUpIcon, ChevronDownIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -140,10 +141,37 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
 };
 
 const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const descriptionText = modalFunction.description || "No description provided.";
+
   return (
     <div className="space-y-3 py-2">
-      <div className="mt-2 bg-gray-50 rounded-md p-3">
-        <Markdown content={modalFunction.description || ""} className="text-sm" />
+      <div className="relative group rounded-lg border border-gray-200 p-4 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
+        {modalFunction.description && modalFunction.description.length > 300 ? (
+          <>
+            <div className={`${isExpanded ? "" : "line-clamp-3"} prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800`}>
+              <Markdown content={modalFunction.description} />
+            </div>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUpIcon className="h-4 w-4 mr-1" /> Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDownIcon className="h-4 w-4 mr-1" /> Show More
+                </>
+              )}
+            </button>
+          </>
+        ) : (
+          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
+            <Markdown content={modalFunction.description || ""} />
+          </div>
+        )}
       </div>
 
       <Separator className="my-3" />
@@ -163,19 +191,17 @@ ${modalFunction.example_usage || `input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`}`;
 
   return (
-    <Card className="rounded-lg shadow-md bg-white mb-6">
-      <CardHeader className="py-3 px-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold">Example Usage</h3>
-          <CopyButton hint="Copy example code" content={exampleText} />
-        </div>
-      </CardHeader>
-      <CardContent className="px-6 pb-4 pt-0">
-        <SyntaxHighlighter className="rounded-md border border-gray-200 bg-gray-50">
+    <div className="relative group rounded-lg border border-gray-200 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
+      <div className="flex items-center justify-between p-3 border-b border-gray-100">
+        <h3 className="text-base font-semibold text-gray-800">Example Usage</h3>
+        <CopyButton hint="Copy example code" content={exampleText} className="text-gray-500 hover:text-gray-700" />
+      </div>
+      <div className="p-4">
+        <SyntaxHighlighter className="rounded-md bg-gray-50 !mt-0">
           {exampleText}
         </SyntaxHighlighter>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
