@@ -77,30 +77,37 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
         {/* App Text Tab */}
         <TabsContent value="apptext" className="mt-0 relative p-4">
           {!resource.file_contents ? (
-            <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-              <h2 className="text-xl font-semibold text-gray-800">No Full Text Available</h2>
-              <p className="mt-2 text-gray-600">The complete source code for this modal function is not available.</p>
+            <div className="px-4 py-6 text-center sm:px-6">
+              <FileTextIcon className="mx-auto h-12 w-12 text-gray-400" />
+              <h2 className="mt-2 text-base font-medium text-gray-800">No Full Text Available</h2>
+              <p className="mt-1 text-sm text-gray-600">The complete source code for this modal function is not available.</p>
             </div>
           ) : (
-            <div className="prose prose-sm mx-auto mt-8 lg:prose-base 2xl:prose-xl">
-              <div className="py-8">
-                <p className="text-gray-700">
-                  This is the complete source code for this Modal function, including imports and any helper functions.
-                </p>
-              </div>
-              <div className="relative">
-                <div className="absolute right-4 top-4 z-10">
+            <Card className="rounded-none bg-white">
+              <CardHeader className="px-4 py-3 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <AppWindowIcon className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm font-medium text-gray-700">Complete Source Code</span>
+                  </div>
                   <CopyButton
                     hint="Copy full source"
                     content={resource.file_contents}
-                    className="bg-white shadow-md hover:bg-gray-50"
+                    className="text-gray-500 hover:text-gray-700"
                   />
                 </div>
-                <SyntaxHighlighter>
-                  {resource.file_contents}
-                </SyntaxHighlighter>
-              </div>
-            </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  Includes all imports, helper functions, and dependencies for this Modal function.
+                </p>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="relative">
+                  <SyntaxHighlighter className="rounded-none text-sm">
+                    {resource.file_contents}
+                  </SyntaxHighlighter>
+                </div>
+              </CardContent>
+            </Card>
           )}
         </TabsContent>
         
