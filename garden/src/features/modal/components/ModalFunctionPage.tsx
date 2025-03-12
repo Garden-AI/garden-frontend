@@ -26,7 +26,7 @@ import {
 } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
-import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
+import AssociatedMaterials from "./AssociatedMaterials";
 import Markdown from "@/components/Markdown";
 
 // Extend ModalFunction type to include owner_identity_id
@@ -55,7 +55,6 @@ const ModalFunctionPage = () => {
           <ModalFunctionBody modalFunction={modalFunction} />
           <ModalFunctionExample modalFunction={modalFunction} />
           <AssociatedMaterials resource={modalFunction} />
-          <ModalFunctionTabs modalFunction={modalFunction} />
         </div>
         {/* Sidebar */}
         <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -171,146 +170,12 @@ return my_garden.${modalFunction.function_name}(input)`}`;
             <h3 className="text-base font-semibold">Example Usage</h3>
             <CopyButton hint="Copy example code" content={exampleText} />
           </div>
-          <SyntaxHighlighter className="rounded-md border border-gray-200 p-2 bg-gray-50">
-            {exampleText}
-          </SyntaxHighlighter>
+          <div className="rounded-md border border-gray-200 p-2 bg-gray-50">
+            <SyntaxHighlighter>
+              {exampleText}
+            </SyntaxHighlighter>
+          </div>
         </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-const ModalFunctionTabs = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  const tabs = [
-    {
-      name: "Function",
-      content: (modalFunction: ModalFunction) => <FunctionTab modalFunction={modalFunction} />,
-    },
-    {
-      name: "App Text",
-      content: (modalFunction: ModalFunction) => <FullTextTab modalFunction={modalFunction} />,
-    },
-    {
-      name: "Datasets",
-      content: (modalFunction: ModalFunction) => <DatasetsTab datasets={modalFunction.datasets} />,
-    },
-  ];
-  return (
-    <Tabs defaultValue="function" className="min-h-[400px] w-full">
-      <TabsList className="m-0 grid w-full grid-cols-3 rounded-none bg-transparent p-0 ">
-        {tabs?.map(({ name }) => (
-          <TabsTrigger
-            key={name}
-            value={name.toLowerCase()}
-            className="m-0 rounded-none border-b-4 border-transparent bg-gray-100 bg-gradient-to-b py-2 text-base text-black transition-none hover:border-primary hover:from-gray-100 hover:from-70% hover:to-primary data-[state=active]:border-green data-[state=active]:bg-primary/30 data-[state=active]:bg-none"
-          >
-            {name}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {tabs.map(({ name, content }) => (
-        <TabsContent key={name} value={name.toLowerCase()} className="p-4">
-          {content(modalFunction)}
-        </TabsContent>
-      ))}
-    </Tabs>
-  );
-};
-
-const FullTextTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  if (!modalFunction.file_contents) {
-    return (
-      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">No Full Text Available</h2>
-        <p className="mt-2 text-gray-600">The complete source code for this modal function is not available.</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="prose prose-sm mx-auto mt-8 lg:prose-base 2xl:prose-xl">
-      <div className="py-8">
-        <p className="text-gray-700">
-          This is the complete source code for this Modal function, including imports and any helper functions.
-        </p>
-      </div>
-      <div className="relative">
-        <div className="absolute right-4 top-4 z-10">
-          <CopyButton
-            hint="Copy full source"
-            content={modalFunction.file_contents}
-            className="bg-white shadow-md hover:bg-gray-50"
-          />
-        </div>
-        <SyntaxHighlighter>{modalFunction.file_contents}</SyntaxHighlighter>
-      </div>
-    </div>
-  );
-};
-
-const DatasetsTab = ({ datasets }: { datasets?: any[] }) => {
-  if (!datasets || datasets.length === 0) {
-    return (
-      <div className="px-4 py-8 text-center sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-gray-800">No Datasets Found</h2>
-        <p className="mt-2 text-gray-600">There are no datasets linked to this resource.</p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="mb-16 grid grid-cols-1 gap-2 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-4 ">
-        {datasets?.map((dataset: any) => (
-          <Card key={dataset.doi} className="rounded-lg border border-gray-200 shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold">{dataset.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <span className="font-medium text-gray-600">Data Type:</span>{" "}
-                {dataset.data_type || "N/A"}
-              </div>
-              <div>
-                <span className="font-medium text-gray-600">DOI:</span>{" "}
-                <a
-                  href={`https://doi.org/${dataset.doi}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {dataset.doi}
-                </a >
-              </div >
-            </CardContent >
-            <CardFooter className="flex justify-start ">
-              <Button variant="default" size={"sm"} asChild className="text-xs">
-                <a href={dataset.url} target="_blank" rel="noopener noreferrer">
-                  View Dataset
-                </a>
-              </Button>
-            </CardFooter>
-          </Card >
-        ))}
-      </div >
-    </>
-  );
-};
-
-const FunctionTab = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  return (
-    <Card className="rounded-none bg-white p-4">
-      <CardHeader className="px-6 py-4">
-        <CardTitle className="text-xl font-bold text-gray-800">
-          {modalFunction.function_name}
-        </CardTitle>
-        <MarkdownCardContent 
-          className="mt-1 text-gray-600"
-          content={modalFunction.description || ""}
-        />
-      </CardHeader>
-      <CardContent className="px-6 py-4">
-        <SyntaxHighlighter>{modalFunction.function_text}</SyntaxHighlighter>
       </CardContent>
     </Card>
   );
