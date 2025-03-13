@@ -12,6 +12,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
+import MultipleSelector from "@/components/shadcn/multiple-select";
 
 import { LinkIcon, TagIcon, PencilIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon, XIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
@@ -41,7 +42,7 @@ type ModalFunctionWithOwner = ModalFunction & {
 
 interface EditableMetadataFieldProps {
   label: string;
-  value: string | string[] | undefined;
+  value: string | string[] | null | undefined;
   fieldName: keyof ModalFunction;
   modalFunction: ModalFunction;
   ownsThisFunction: boolean;
@@ -50,17 +51,14 @@ interface EditableMetadataFieldProps {
 
 const EditableMetadataField = ({ label, value, fieldName, modalFunction, ownsThisFunction, isArray = false }: EditableMetadataFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(isArray ? (value as string[])?.join(", ") || "" : value || "");
+  const [editValue, setEditValue] = useState<string | string[]>(isArray ? (value as string[] || []) : value || "");
   const { mutate: patchModalFunction } = usePatchModalFunction();
 
   const handleSave = () => {
-    const newValue = isArray 
-      ? (editValue as string).split(",").map((v: string) => v.trim()).filter(Boolean) 
-      : editValue;
     patchModalFunction({
       id: modalFunction.id,
       modalFunction: {
-        [fieldName]: newValue
+        [fieldName]: editValue
       }
     });
     setIsEditing(false);
@@ -68,7 +66,7 @@ const EditableMetadataField = ({ label, value, fieldName, modalFunction, ownsThi
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditValue(isArray ? (value as string[])?.join(", ") || "" : value || "");
+    setEditValue(isArray ? (value as string[] || []) : value || "");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -96,9 +94,15 @@ const EditableMetadataField = ({ label, value, fieldName, modalFunction, ownsThi
             </Button>
           )}
         </div>
-        <p className="font-medium text-gray-800">
-          {isArray ? (value as string[])?.join(", ") || "None" : value || "None"}
-        </p>
+        {fieldName === "description" ? (
+          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
+            <Markdown content={value as string || "None"} />
+          </div>
+        ) : (
+          <p className="font-medium text-gray-800">
+            {isArray ? (value as string[])?.join(", ") || "None" : value || "None"}
+          </p>
+        )}
       </div>
     );
   }
@@ -109,15 +113,23 @@ const EditableMetadataField = ({ label, value, fieldName, modalFunction, ownsThi
       <div className="flex gap-2">
         {fieldName === "description" ? (
           <Textarea
-            value={editValue}
+            value={editValue as string}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex-1"
-            rows={3}
+            className="flex-1 min-h-[120px] resize-vertical"
+            placeholder="Tell us about your function. Markdown is supported."
+          />
+        ) : isArray ? (
+          <MultipleSelector
+            value={(Array.isArray(editValue) ? editValue : []).map(val => ({ value: val, label: val }))}
+            onChange={(options: any) => setEditValue(options.map((opt: any) => opt.value))}
+            placeholder={`Add ${label.toLowerCase()}`}
+            creatable
+            className="w-full"
           />
         ) : (
           <Input
-            value={editValue}
+            value={editValue as string}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={handleKeyDown}
             className="flex-1"
@@ -155,15 +167,14 @@ interface EditableTagsProps {
 
 const EditableTags = ({ modalFunction, ownsThisFunction }: EditableTagsProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(modalFunction.tags?.join(", ") || "");
+  const [editValue, setEditValue] = useState<string[]>(modalFunction.tags || []);
   const { mutate: patchModalFunction } = usePatchModalFunction();
 
   const handleSave = () => {
-    const newTags = editValue.split(",").map(tag => tag.trim()).filter(Boolean);
     patchModalFunction({
       id: modalFunction.id,
       modalFunction: {
-        tags: newTags
+        tags: editValue
       }
     });
     setIsEditing(false);
@@ -175,7 +186,7 @@ const EditableTags = ({ modalFunction, ownsThisFunction }: EditableTagsProps) =>
       handleSave();
     } else if (e.key === "Escape") {
       setIsEditing(false);
-      setEditValue(modalFunction.tags?.join(", ") || "");
+      setEditValue(modalFunction.tags || []);
     }
   };
 
@@ -218,14 +229,36 @@ const EditableTags = ({ modalFunction, ownsThisFunction }: EditableTagsProps) =>
     <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
       <p className="text-sm text-gray-500 font-medium mb-1">Tags</p>
       <div className="flex gap-2">
-        <Input
-          value={editValue}
-          onChange={(e) => setEditValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onBlur={handleSave}
-          placeholder="Enter tags separated by commas"
-          className="flex-1"
+        <MultipleSelector
+          value={editValue.map(tag => ({ value: tag, label: tag }))}
+          onChange={(options: any) => setEditValue(options.map((opt: any) => opt.value))}
+          placeholder="Add tags"
+          creatable
+          className="w-full"
         />
+      </div>
+      <div className="flex justify-end gap-2 mt-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            setIsEditing(false);
+            setEditValue(modalFunction.tags || []);
+          }}
+          className="h-7 px-2"
+        >
+          <XIcon className="h-4 w-4 mr-1" />
+          Cancel
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleSave}
+          className="h-7 px-2"
+        >
+          <CheckIcon className="h-4 w-4 mr-1" />
+          Save
+        </Button>
       </div>
     </div>
   );
@@ -275,13 +308,6 @@ const ModalFunctionPage = () => {
                 </p>
               </div>
             </div>
-            <EditableMetadataField
-              label="Title"
-              value={modalFunction.title}
-              fieldName="title"
-              modalFunction={modalFunction}
-              ownsThisFunction={ownsThisFunction}
-            />
             <EditableMetadataField
               label="Authors"
               value={modalFunction.authors}
