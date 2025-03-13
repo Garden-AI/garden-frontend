@@ -102,9 +102,9 @@ export const EditableCodeField = ({
 
   if (!ownsThisFunction || !isEditing) {
     return (
-      <div className="relative group rounded-lg border border-gray-200 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
-        <div className="flex items-center justify-between p-3 border-b border-gray-100">
-          <h3 className="text-base font-semibold text-gray-800">{label}</h3>
+      <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-500 font-medium">{label}</p>
           <div className="flex items-center gap-2">
             <CopyButton hint={`Copy ${label.toLowerCase()}`} content={value} className="text-gray-500 hover:text-gray-700" />
             {ownsThisFunction && (
@@ -119,7 +119,7 @@ export const EditableCodeField = ({
             )}
           </div>
         </div>
-        <div className="p-4">
+        <div className="mt-2">
           <SyntaxHighlighter className="rounded-md bg-gray-50 !mt-0">
             {value || ''}
           </SyntaxHighlighter>
@@ -129,35 +129,31 @@ export const EditableCodeField = ({
   }
 
   return (
-    <div className="relative group rounded-lg border border-gray-200 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
-      <div className="flex items-center justify-between p-3 border-b border-gray-100">
-        <h3 className="text-base font-semibold text-gray-800">{label}</h3>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCancel}
-            className="h-7 px-2"
-          >
-            <XIcon className="h-4 w-4 mr-1" />
-            Cancel
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleSave}
-            className="h-7 px-2"
-          >
-            <CheckIcon className="h-4 w-4 mr-1" />
-            Save
-          </Button>
-        </div>
-      </div>
-      <div className="p-4">
-        <div 
-          ref={editorRef} 
-          className="w-full min-h-[200px] font-mono text-sm rounded-md overflow-hidden border border-gray-200"
-        />
+    <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+      <p className="text-sm text-gray-500 font-medium mb-1">{label}</p>
+      <div 
+        ref={editorRef} 
+        className="w-full min-h-[200px] font-mono text-sm rounded-md overflow-hidden border border-gray-200"
+      />
+      <div className="flex justify-end gap-2 mt-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleCancel}
+          className="h-7 px-2"
+        >
+          <XIcon className="h-4 w-4 mr-1" />
+          Cancel
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleSave}
+          className="h-7 px-2"
+        >
+          <CheckIcon className="h-4 w-4 mr-1" />
+          Save
+        </Button>
       </div>
     </div>
   );
