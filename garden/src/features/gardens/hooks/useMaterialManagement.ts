@@ -36,6 +36,20 @@ export const useMaterialManagement = <T extends MaterialWithDOI>(
   };
 };
 
+const deduplicateWithFallback = <T extends { doi?: string | null; url?: string | null }>(
+  materials: T[],
+): T[] => {
+  return materials.filter((item, index, self) => {
+    if (item.doi) {
+      return index === self.findIndex((t) => t.doi === item.doi);
+    }
+    if (item.url) {
+      return index === self.findIndex((t) => !t.doi && t.url === item.url);
+    }
+    return true;
+  });
+};
+
 export const useDatasetManagement = (garden: Garden): MaterialManagementHook<Dataset> => {
   const { refreshMaterials: contextRefreshMaterials } = useMaterialsContext();
   
@@ -44,15 +58,14 @@ export const useDatasetManagement = (garden: Garden): MaterialManagementHook<Dat
       .map(fn => fn.datasets || [])
       .flat();
     
-    return functionDatasets.filter((dataset, index, self) => {
-      if (!dataset.doi) return true;
-      return index === self.findIndex(d => d.doi === dataset.doi);
-    });
+    return deduplicateWithFallback(functionDatasets);
   }, [garden.modal_functions]);
 
-  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunction[] => {
+  const findFunctionsWithMaterial = useCallback((identifier: string): ModalFunction[] => {
     return (garden.modal_functions || [])
-      .filter(fn => fn.datasets?.some(dataset => dataset.doi === doi))
+      .filter(fn => fn.datasets?.some(dataset => 
+        dataset.doi === identifier || (!dataset.doi && dataset.url === identifier)
+      ))
       .map(fn => ({
         ...fn,
         already_has_material: true
@@ -78,15 +91,14 @@ export const usePaperManagement = (garden: Garden): MaterialManagementHook<Paper
         title: paper.title || 'Untitled Paper'
       }));
     
-    return functionPapers.filter((paper, index, self) => {
-      if (!paper.doi) return true;
-      return index === self.findIndex(p => p.doi === paper.doi);
-    });
+    return deduplicateWithFallback(functionPapers);
   }, [garden.modal_functions]);
 
-  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunction[] => {
+  const findFunctionsWithMaterial = useCallback((identifier: string): ModalFunction[] => {
     return (garden.modal_functions || [])
-      .filter(fn => fn.papers?.some(paper => paper.doi === doi))
+      .filter(fn => fn.papers?.some(paper => 
+        paper.doi === identifier || (!paper.doi && paper.url === identifier)
+      ))
       .map(fn => ({
         ...fn,
         already_has_material: true
@@ -112,15 +124,14 @@ export const useRepositoryManagement = (garden: Garden): MaterialManagementHook<
         title: repo.repo_name
       }));
     
-    return functionRepos.filter((repo, index, self) => {
-      if (!repo.url) return true;
-      return index === self.findIndex(r => r.url === repo.url);
-    });
+    return deduplicateWithFallback(functionRepos);
   }, [garden.modal_functions]);
 
-  const findFunctionsWithMaterial = useCallback((url: string): ModalFunction[] => {
+  const findFunctionsWithMaterial = useCallback((identifier: string): ModalFunction[] => {
     return (garden.modal_functions || [])
-      .filter(fn => fn.repositories?.some(repo => repo.url === url))
+      .filter(fn => fn.repositories?.some(repo => 
+        repo.doi === identifier || (!repo.doi && repo.url === identifier)
+      ))
       .map(fn => ({
         ...fn,
         already_has_material: true
@@ -142,15 +153,14 @@ export const useNotebookManagement = (garden: Garden): MaterialManagementHook<No
       .map(fn => fn.notebooks || [])
       .flat();
     
-    return functionNotebooks.filter((notebook, index, self) => {
-      if (!notebook.url) return true;
-      return index === self.findIndex(n => n.url === notebook.url);
-    });
+    return deduplicateWithFallback(functionNotebooks);
   }, [garden.modal_functions]);
 
-  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunction[] => {
+  const findFunctionsWithMaterial = useCallback((identifier: string): ModalFunction[] => {
     return (garden.modal_functions || [])
-      .filter(fn => fn.notebooks?.some(notebook => notebook.url === doi))
+      .filter(fn => fn.notebooks?.some(notebook => 
+        notebook.doi === identifier || (!notebook.doi && notebook.url === identifier)
+      ))
       .map(fn => ({
         ...fn,
         already_has_material: true
