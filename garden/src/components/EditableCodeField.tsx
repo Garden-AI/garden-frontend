@@ -5,7 +5,7 @@ import { python } from '@codemirror/lang-python';
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { Button } from './shadcn/button';
-import { XIcon, CheckIcon, PencilIcon } from 'lucide-react';
+import { XIcon, CheckIcon, PencilIcon, Loader2Icon } from 'lucide-react';
 import CopyButton from './CopyButton';
 import SyntaxHighlighter from './SyntaxHighlighter';
 
@@ -23,11 +23,15 @@ const basicSetup = [
     '&': {
       backgroundColor: '#f9fafb',
       fontSize: '14px',
-      height: '200px'
+      minHeight: '200px',
+      height: '100%'
     },
     '.cm-content': {
       fontFamily: 'Menlo, Monaco, "Courier New", monospace',
       padding: '8px'
+    },
+    '.cm-scroller': {
+      overflow: 'auto'
     }
   })
 ];
@@ -36,7 +40,7 @@ interface EditableCodeFieldProps {
   label: string;
   value: string;
   fieldName: string;
-  onSave: (value: string) => void;
+  onSave: (value: string) => Promise<void>;
   ownsThisFunction: boolean;
   language?: string;
 }
@@ -50,6 +54,7 @@ export const EditableCodeField = ({
   language = 'python',
 }: EditableCodeFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [editValue, setEditValue] = useState(value || '');
   const editorRef = useRef<HTMLDivElement>(null);
   const editorViewRef = useRef<EditorView>();
@@ -90,9 +95,17 @@ export const EditableCodeField = ({
     setEditValue(value || '');
   }, [value]);
 
-  const handleSave = () => {
-    onSave(editValue);
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      await onSave(editValue);
+      setIsEditing(false);
+    } catch (error) {
+      // Keep the editor open if there's an error
+      console.error('Failed to save:', error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => {
@@ -120,9 +133,15 @@ export const EditableCodeField = ({
           </div>
         </div>
         <div className="mt-2">
-          <SyntaxHighlighter className="rounded-md bg-gray-50 !mt-0">
-            {value || ''}
-          </SyntaxHighlighter>
+          {isSaving ? (
+            <div className="flex items-center justify-center py-8 bg-gray-50 rounded-md">
+              <Loader2Icon className="h-6 w-6 animate-spin text-gray-400" />
+            </div>
+          ) : (
+            <SyntaxHighlighter className="rounded-md bg-gray-50 !mt-0">
+              {value || ''}
+            </SyntaxHighlighter>
+          )}
         </div>
       </div>
     );
@@ -132,8 +151,9 @@ export const EditableCodeField = ({
     <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
       <p className="text-sm text-gray-500 font-medium mb-1">{label}</p>
       <div 
-        ref={editorRef} 
-        className="w-full min-h-[200px] font-mono text-sm rounded-md overflow-hidden border border-gray-200"
+        ref={editorRef}
+        className="w-full min-h-[200px] font-mono text-sm rounded-md overflow-hidden border border-gray-200 resize-vertical"
+        style={{ resize: 'vertical' }}
       />
       <div className="flex justify-end gap-2 mt-2">
         <Button
@@ -141,6 +161,7 @@ export const EditableCodeField = ({
           size="sm"
           onClick={handleCancel}
           className="h-7 px-2"
+          disabled={isSaving}
         >
           <XIcon className="h-4 w-4 mr-1" />
           Cancel
@@ -150,9 +171,14 @@ export const EditableCodeField = ({
           size="sm"
           onClick={handleSave}
           className="h-7 px-2"
+          disabled={isSaving}
         >
-          <CheckIcon className="h-4 w-4 mr-1" />
-          Save
+          {isSaving ? (
+            <Loader2Icon className="h-4 w-4 mr-1 animate-spin" />
+          ) : (
+            <CheckIcon className="h-4 w-4 mr-1" />
+          )}
+          {isSaving ? 'Saving...' : 'Save'}
         </Button>
       </div>
     </div>

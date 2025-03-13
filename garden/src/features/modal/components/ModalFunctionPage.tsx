@@ -391,7 +391,7 @@ const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction:
 };
 
 const ModalFunctionExample = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
-  const { mutate: patchModalFunction } = usePatchModalFunction();
+  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
   
   // Create example text with fallback to default placeholder
   const defaultExample = `from garden_ai import GardenClient
@@ -401,8 +401,8 @@ my_garden = client.get_garden(my_garden_doi)
 input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`;
 
-  const handleSave = (newValue: string) => {
-    patchModalFunction({
+  const handleSave = async (newValue: string) => {
+    await patchModalFunction({
       id: modalFunction.id,
       modalFunction: {
         example_usage: newValue
