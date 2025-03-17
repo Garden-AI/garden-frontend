@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
+import { usePatchModalFunction } from "../api/usePatchModalFunction";
 import { useGlobusAuth } from "@globus/react-auth-context";
 
 import NotFoundPage from "@/components/NotFoundPage";
@@ -9,8 +10,11 @@ import NotFoundPage from "@/components/NotFoundPage";
 import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import { Input } from "@/components/shadcn/input";
+import { Textarea } from "@/components/shadcn/textarea";
+import MultipleSelector from "@/components/shadcn/multiple-select";
 
-import { LinkIcon, TagIcon, PencilIcon, ChevronUpIcon, ChevronDownIcon } from "lucide-react";
+import { LinkIcon, TagIcon, PencilIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon, XIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -29,15 +33,242 @@ import { Button } from "@/components/shadcn/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
 import AssociatedMaterials from "./AssociatedMaterials";
 import Markdown from "@/components/Markdown";
+import { EditableCodeField } from "@/components/EditableCodeField";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
   owner_identity_id: string;
 };
 
+interface EditableMetadataFieldProps {
+  label: string;
+  value: string | string[] | null | undefined;
+  fieldName: keyof ModalFunction;
+  modalFunction: ModalFunction;
+  ownsThisFunction: boolean;
+  isArray?: boolean;
+}
+
+const EditableMetadataField = ({ label, value, fieldName, modalFunction, ownsThisFunction, isArray = false }: EditableMetadataFieldProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState<string | string[]>(isArray ? (value as string[] || []) : value || "");
+  const { mutate: patchModalFunction } = usePatchModalFunction();
+
+  const handleSave = () => {
+    patchModalFunction({
+      id: modalFunction.id,
+      modalFunction: {
+        [fieldName]: editValue
+      }
+    });
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditValue(isArray ? (value as string[] || []) : value || "");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey && fieldName !== "description") {
+      e.preventDefault();
+      handleSave();
+    } else if (e.key === "Escape") {
+      handleCancel();
+    }
+  };
+
+  if (!ownsThisFunction || !isEditing) {
+    return (
+      <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-500 font-medium">{label}</p>
+          {ownsThisFunction && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsEditing(true)}
+              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <PencilIcon className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
+        {fieldName === "description" ? (
+          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
+            <Markdown content={value as string || "None"} />
+          </div>
+        ) : (
+          <p className="font-medium text-gray-800">
+            {isArray ? (value as string[])?.join(", ") || "None" : value || "None"}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+      <p className="text-sm text-gray-500 font-medium mb-1">{label}</p>
+      <div className="flex gap-2">
+        {fieldName === "description" ? (
+          <Textarea
+            value={editValue as string}
+            onChange={(e) => setEditValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-1 min-h-[120px] resize-vertical"
+            placeholder="Tell us about your function. Markdown is supported."
+          />
+        ) : isArray ? (
+          <MultipleSelector
+            value={(Array.isArray(editValue) ? editValue : []).map(val => ({ value: val, label: val }))}
+            onChange={(options: any) => setEditValue(options.map((opt: any) => opt.value))}
+            placeholder={`Add ${label.toLowerCase()}`}
+            creatable
+            className="w-full"
+          />
+        ) : (
+          <Input
+            value={editValue as string}
+            onChange={(e) => setEditValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-1"
+          />
+        )}
+      </div>
+      <div className="flex justify-end gap-2 mt-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleCancel}
+          className="h-7 px-2"
+        >
+          <XIcon className="h-4 w-4 mr-1" />
+          Cancel
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleSave}
+          className="h-7 px-2"
+        >
+          <CheckIcon className="h-4 w-4 mr-1" />
+          Save
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface EditableTagsProps {
+  modalFunction: ModalFunction;
+  ownsThisFunction: boolean;
+}
+
+const EditableTags = ({ modalFunction, ownsThisFunction }: EditableTagsProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState<string[]>(modalFunction.tags || []);
+  const { mutate: patchModalFunction } = usePatchModalFunction();
+
+  const handleSave = () => {
+    patchModalFunction({
+      id: modalFunction.id,
+      modalFunction: {
+        tags: editValue
+      }
+    });
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSave();
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+      setEditValue(modalFunction.tags || []);
+    }
+  };
+
+  if (!ownsThisFunction || !isEditing) {
+    return (
+      <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-500 font-medium">Tags</p>
+          {ownsThisFunction && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsEditing(true)}
+              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <PencilIcon className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-1 mt-1">
+          {modalFunction.tags && modalFunction.tags.length > 0 ? (
+            modalFunction.tags.map((tag, index) => (
+              <div
+                key={index}
+                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800"
+              >
+                <TagIcon className="h-3 w-3 mr-1" />
+                {tag}
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 italic">No tags</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+      <p className="text-sm text-gray-500 font-medium mb-1">Tags</p>
+      <div className="flex gap-2">
+        <MultipleSelector
+          value={editValue.map(tag => ({ value: tag, label: tag }))}
+          onChange={(options: any) => setEditValue(options.map((opt: any) => opt.value))}
+          placeholder="Add tags"
+          creatable
+          className="w-full"
+        />
+      </div>
+      <div className="flex justify-end gap-2 mt-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            setIsEditing(false);
+            setEditValue(modalFunction.tags || []);
+          }}
+          className="h-7 px-2"
+        >
+          <XIcon className="h-4 w-4 mr-1" />
+          Cancel
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleSave}
+          className="h-7 px-2"
+        >
+          <CheckIcon className="h-4 w-4 mr-1" />
+          Save
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const ModalFunctionPage = () => {
   const { id } = useParams() as { id: string };
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
+  const auth = useGlobusAuth();
+  const ownsThisFunction = auth.isAuthenticated && modalFunction?.owner_identity_id === auth?.authorization?.user?.sub;
 
   if (isLoading) return <LoadingOverlay />;
 
@@ -52,9 +283,9 @@ const ModalFunctionPage = () => {
             className="mb-3" 
             crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
           />
-          <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} />
-          <ModalFunctionBody modalFunction={modalFunction} />
-          <ModalFunctionExample modalFunction={modalFunction} />
+          <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} ownsThisFunction={ownsThisFunction} />
+          <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
+          <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <AssociatedMaterials resource={modalFunction} />
         </div>
         {/* Sidebar */}
@@ -65,7 +296,7 @@ const ModalFunctionPage = () => {
               <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-500 font-medium">DOI</p>
                 <CopyButton 
-                  content={modalFunction.doi} 
+                  content={modalFunction.doi || ""} 
                   hint="Copy DOI" 
                   className="ml-2" 
                   icon={<LinkIcon className="h-4 w-4" />}
@@ -73,26 +304,29 @@ const ModalFunctionPage = () => {
               </div>
               <div className="mt-0.5">
                 <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
-                  {modalFunction.doi}
+                  {modalFunction.doi || "No DOI"}
                 </p>
               </div>
             </div>
-            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Authors</p>
-              <p className="font-medium text-gray-800">{modalFunction.authors?.join(", ")}</p>
-            </div>
-            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Contributors</p>
-              <p className="font-medium text-gray-800">{modalFunction.authors?.join(", ")}</p>
-            </div>
-            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Year</p>
-              <p className="font-medium text-gray-800">{modalFunction.year}</p>
-            </div>
-            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Tags</p>
-              <p className="font-medium text-gray-800">{modalFunction.tags?.join(", ")}</p>
-            </div>
+            <EditableMetadataField
+              label="Authors"
+              value={modalFunction.authors}
+              fieldName="authors"
+              modalFunction={modalFunction}
+              ownsThisFunction={ownsThisFunction}
+              isArray={true}
+            />
+            <EditableMetadataField
+              label="Year"
+              value={modalFunction.year}
+              fieldName="year"
+              modalFunction={modalFunction}
+              ownsThisFunction={ownsThisFunction}
+            />
+            <EditableTags
+              modalFunction={modalFunction}
+              ownsThisFunction={ownsThisFunction}
+            />
           </div>
         </div>
       </div>
@@ -100,10 +334,8 @@ const ModalFunctionPage = () => {
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWithOwner }) => {
+const ModalFunctionHeader = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunctionWithOwner; ownsThisFunction: boolean }) => {
   const navigate = useNavigate();
-  const auth = useGlobusAuth();
-  const isOwner = auth.isAuthenticated && modalFunction.owner_identity_id === auth?.authorization?.user?.sub;
 
   return (
     <div className="mb-3 flex items-center justify-between gap-2">
@@ -116,7 +348,7 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
           className="border-none bg-transparent"
         />
         {modalFunction.doi && <ShareModal doi={modalFunction.doi} />}
-        {isOwner && (
+        {ownsThisFunction && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -140,68 +372,53 @@ const ModalFunctionHeader = ({ modalFunction }: { modalFunction: ModalFunctionWi
   );
 };
 
-const ModalFunctionBody = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const descriptionText = modalFunction.description || "No description provided.";
 
   return (
     <div className="space-y-3 py-2">
-      <div className="relative group rounded-lg border border-gray-200 p-4 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
-        {modalFunction.description && modalFunction.description.length > 300 ? (
-          <>
-            <div className={`${isExpanded ? "" : "line-clamp-3"} prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800`}>
-              <Markdown content={modalFunction.description} />
-            </div>
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center"
-            >
-              {isExpanded ? (
-                <>
-                  <ChevronUpIcon className="h-4 w-4 mr-1" /> Show Less
-                </>
-              ) : (
-                <>
-                  <ChevronDownIcon className="h-4 w-4 mr-1" /> Show More
-                </>
-              )}
-            </button>
-          </>
-        ) : (
-          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
-            <Markdown content={modalFunction.description || ""} />
-          </div>
-        )}
-      </div>
-
+      <EditableMetadataField
+        label="Description"
+        value={modalFunction.description}
+        fieldName="description"
+        modalFunction={modalFunction}
+        ownsThisFunction={ownsThisFunction}
+      />
       <Separator className="my-3" />
     </div>
   );
 };
 
-const ModalFunctionExample = ({ modalFunction }: { modalFunction: ModalFunction }) => {
-  const functionText = modalFunction.function_text;
-
+const ModalFunctionExample = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
+  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
+  
   // Create example text with fallback to default placeholder
-  const exampleText = `from garden_ai import GardenClient
+  const defaultExample = `from garden_ai import GardenClient
 client = GardenClient()
 my_garden = client.get_garden(my_garden_doi)
 
-${modalFunction.example_usage || `input = ['Data Here']
-return my_garden.${modalFunction.function_name}(input)`}`;
+input = ['Data Here']
+return my_garden.${modalFunction.function_name}(input)`;
+
+  const handleSave = async (newValue: string) => {
+    await patchModalFunction({
+      id: modalFunction.id,
+      modalFunction: {
+        example_usage: newValue
+      }
+    });
+  };
 
   return (
-    <div className="relative group rounded-lg border border-gray-200 hover:border-blue-200 bg-gradient-to-b from-white to-gray-50 shadow-sm">
-      <div className="flex items-center justify-between p-3 border-b border-gray-100">
-        <h3 className="text-base font-semibold text-gray-800">Example Usage</h3>
-        <CopyButton hint="Copy example code" content={exampleText} className="text-gray-500 hover:text-gray-700" />
-      </div>
-      <div className="p-4">
-        <SyntaxHighlighter className="rounded-md bg-gray-50 !mt-0">
-          {exampleText}
-        </SyntaxHighlighter>
-      </div>
-    </div>
+    <EditableCodeField
+      label="Example Usage"
+      value={modalFunction.example_usage || defaultExample}
+      fieldName="example_usage"
+      onSave={handleSave}
+      ownsThisFunction={ownsThisFunction}
+      language="python"
+    />
   );
 };
 
