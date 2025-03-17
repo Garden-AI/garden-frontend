@@ -78,8 +78,14 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
       };
 
       if (modalAppId && modalApp) {
-        // Use the pre-deployed modal app
-        gardenCreateRequest.modal_function_ids = modalApp.modal_function_ids;
+        // Use the pre-deployed modal app, but preserve user selections for additional functions
+        gardenCreateRequest.modal_function_ids = [
+          ...(modalApp.modal_function_ids || []),
+          ...(values.modal_function_ids || [])
+        ];
+        
+        // Remove duplicates if any
+        gardenCreateRequest.modal_function_ids = [...new Set(gardenCreateRequest.modal_function_ids)];
       }
 
       const { garden } = await createGardenAndDOI(gardenCreateRequest);
