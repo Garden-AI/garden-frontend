@@ -26,7 +26,9 @@ export const usePatchModalFunction = () => {
       if (previousModalFunction) {
         queryClient.setQueryData<ModalFunction>(["modalFunction", id.toString()], {
           ...previousModalFunction,
-          ...modalFunction
+          ...Object.fromEntries(
+            Object.entries(modalFunction).filter(([_, value]) => value !== null)
+          )
         });
       }
 
