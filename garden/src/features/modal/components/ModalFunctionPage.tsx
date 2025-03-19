@@ -31,7 +31,7 @@ import {
 } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
-import AssociatedMaterials from "./AssociatedMaterials";
+import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
 import Markdown from "@/components/Markdown";
 import { EditableCodeField } from "@/components/EditableCodeField";
 
@@ -286,7 +286,7 @@ const ModalFunctionPage = () => {
           <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
-          <AssociatedMaterials resource={modalFunction} />
+          <ModalAssociatedMaterials resource={modalFunction} />
         </div>
         {/* Sidebar */}
         <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">

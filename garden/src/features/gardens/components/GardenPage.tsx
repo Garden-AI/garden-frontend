@@ -20,12 +20,11 @@ import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
 import { useGlobusAuth } from "@globus/react-auth-context";
 
-import { MaterialsProvider } from '../contexts/MaterialsContext';
-import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '../hooks/useMaterialManagement';
+import { MaterialsProvider } from '@/features/materials/contexts/MaterialsContext';
+import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
 
 // Import Garden from the root types directory
 import { Garden, ModalFunction } from "@/types";
-
 
 // Import extracted components
 import {
