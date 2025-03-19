@@ -1,117 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactNode } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { Edit2, Trash2 } from "lucide-react";
-import { Garden, ModalFunction } from '@/types';
-import { MaterialType, useMaterialActions } from "../../hooks/useMaterialActions";
-import { EditDialog } from "./MaterialDialogs";
-import { RemoveDialog } from "./MaterialDialogs";
+import { ModalFunction } from '@/types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/shadcn/alert-dialog";
 
-export interface BaseMaterialCardProps<T extends MaterialType> {
-  material: T;
-  materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
-  isOwner: boolean;
-  garden: Garden;
-  findAffectedFunctions?: (doi: string) => ModalFunction[];
-  onUpdate?: () => Promise<void>;
-  icon: React.ReactNode;
-  title: string;
-  onEdit: (data: any) => Promise<void>;
-  onEditClick: () => void;
-  children: React.ReactNode;
-  // Edit dialog props
-  isSelectiveEditing?: boolean;
-  setIsSelectiveEditing?: (value: boolean) => void;
-  editAffectedFunctions?: ModalFunction[];
-  editSelectiveFunctions?: Record<number, boolean>;
-  applyEditToAllFunctions?: () => Promise<void>;
-  applySelectiveEdit?: () => Promise<void>;
-  toggleEditFunction?: (id: number) => void;
-  toggleEditAll?: (value: boolean) => void;
-  // Remove dialog props
-  confirmRemove?: boolean;
-  setConfirmRemove?: (value: boolean) => void;
-  prepareFunctionsForRemoval?: () => Promise<void>;
-  affectedFunctions?: ModalFunction[];
-  selectiveFunctions?: Record<number, boolean>;
-  isSelectiveRemoval?: boolean;
-  setIsSelectiveRemoval?: (value: boolean) => void;
-  handleRemoveAll?: () => Promise<void>;
-  handleSelectiveRemove?: () => Promise<void>;
-  toggleFunction?: (id: number) => void;
-  toggleAll?: (value: boolean) => void;
+// Define the context interface that represents where this material is being used
+export interface MaterialContext {
+  parentFunction: ModalFunction;
+  parentDoi?: string;
 }
 
-export const BaseMaterialCard = <T extends MaterialType>({
+export interface BaseMaterialCardProps {
+  material: any;
+  materialType: 'paper' | 'dataset' | 'repository' | 'notebook';
+  isOwner: boolean;
+  context: MaterialContext;
+  icon: ReactNode;
+  title: string;
+  onEdit: () => void;
+  onEditClick: () => void;
+  children: ReactNode;
+}
+
+export const BaseMaterialCard = ({
   material,
   materialType,
   isOwner,
-  garden,
-  findAffectedFunctions,
-  onUpdate,
   icon,
   title,
   onEdit,
-  children,
   onEditClick,
-  // Optional dialog-related props
-  isSelectiveEditing: propIsSelectiveEditing,
-  setIsSelectiveEditing: propSetIsSelectiveEditing,
-  editAffectedFunctions: propEditAffectedFunctions,
-  editSelectiveFunctions: propEditSelectiveFunctions, 
-  applyEditToAllFunctions: propApplyEditToAllFunctions,
-  applySelectiveEdit: propApplySelectiveEdit,
-  toggleEditFunction: propToggleEditFunction,
-  toggleEditAll: propToggleEditAll,
-  confirmRemove: propConfirmRemove,
-  setConfirmRemove: propSetConfirmRemove,
-  prepareFunctionsForRemoval: propPrepareFunctionsForRemoval,
-  affectedFunctions: propAffectedFunctions,
-  selectiveFunctions: propSelectiveFunctions,
-  isSelectiveRemoval: propIsSelectiveRemoval,
-  setIsSelectiveRemoval: propSetIsSelectiveRemoval,
-  handleRemoveAll: propHandleRemoveAll,
-  handleSelectiveRemove: propHandleSelectiveRemove,
-  toggleFunction: propToggleFunction,
-  toggleAll: propToggleAll
-}: BaseMaterialCardProps<T>) => {
-  
-  // Use Material Actions hook if props aren't provided
-  const hooksResult = useMaterialActions<T>({
-    material,
-    garden,
-    findAffectedFunctions,
-    onUpdate,
-    materialType
-  });
-  
-  // Use provided props if available, otherwise use the hook results
-  const confirmRemove = propConfirmRemove !== undefined ? propConfirmRemove : hooksResult.confirmRemove;
-  const setConfirmRemove = propSetConfirmRemove || hooksResult.setConfirmRemove;
-  const editSelectiveFunctions = propEditSelectiveFunctions || hooksResult.editSelectiveFunctions;
-  const editAffectedFunctions = propEditAffectedFunctions || hooksResult.editAffectedFunctions;
-  const isSelectiveEditing = propIsSelectiveEditing !== undefined ? propIsSelectiveEditing : hooksResult.isSelectiveEditing;
-  const setIsSelectiveEditing = propSetIsSelectiveEditing || hooksResult.setIsSelectiveEditing;
-  const selectiveFunctions = propSelectiveFunctions || hooksResult.selectiveFunctions;
-  const affectedFunctions = propAffectedFunctions || hooksResult.affectedFunctions;
-  const isSelectiveRemoval = propIsSelectiveRemoval !== undefined ? propIsSelectiveRemoval : hooksResult.isSelectiveRemoval;
-  const setIsSelectiveRemoval = propSetIsSelectiveRemoval || hooksResult.setIsSelectiveRemoval;
+  children
+}: BaseMaterialCardProps) => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const materialLink = material?.url || (material?.doi ? `https://doi.org/${material.doi}` : undefined);
-  const prepareFunctionsForRemoval = propPrepareFunctionsForRemoval || hooksResult.prepareFunctionsForRemoval;
-  const applyEditToAllFunctions = propApplyEditToAllFunctions || hooksResult.applyEditToAllFunctions;
-  const applySelectiveEdit = propApplySelectiveEdit || hooksResult.applySelectiveEdit;
-  const toggleEditFunction = propToggleEditFunction || hooksResult.toggleEditFunction;
-  const toggleEditAll = propToggleEditAll || hooksResult.toggleEditAll;
-  const handleRemoveAll = propHandleRemoveAll || hooksResult.handleRemoveAll;
-  const handleSelectiveRemove = propHandleSelectiveRemove || hooksResult.handleSelectiveRemove;
-  const toggleFunction = propToggleFunction || hooksResult.toggleFunction;
-  const toggleAll = propToggleAll || hooksResult.toggleAll;
 
-  const handleUpdate = async () => {
-    if (onUpdate) {
-      await onUpdate();
-    }
+  const handleDelete = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    onEdit();
+    setShowDeleteConfirm(false);
   };
 
   return (
@@ -145,16 +86,14 @@ export const BaseMaterialCard = <T extends MaterialType>({
           </div>
         </CardContent>
         
-        <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex items-center">
+        <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex items-center justify-end">
           {isOwner && (
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-xs text-gray-600 hover:text-green hover:bg-green/10 transition-colors h-7 px-2 rounded-md"
-                onClick={async () => {
-                  if (onEditClick) await onEditClick();
-                }}
+                onClick={onEditClick}
                 aria-label={`Edit ${materialType}`}
               >
                 <Edit2 className="h-3.5 w-3.5 mr-1" />
@@ -165,9 +104,7 @@ export const BaseMaterialCard = <T extends MaterialType>({
                 variant="ghost"
                 size="sm"
                 className="text-xs text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors h-7 px-2 rounded-md"
-                onClick={async () => {
-                  if (prepareFunctionsForRemoval) await prepareFunctionsForRemoval();
-                }}
+                onClick={handleDelete}
                 aria-label={`Remove ${materialType}`}
               >
                 <Trash2 className="h-3.5 w-3.5 mr-1" />
@@ -177,37 +114,26 @@ export const BaseMaterialCard = <T extends MaterialType>({
           )}
         </CardFooter>
       </Card>
-      
-      {/* Only render these dialogs if we're not rendering them in the parent component */}
-      {!propIsSelectiveEditing && (
-        <EditDialog
-          isOpen={isSelectiveEditing}
-          onClose={() => setIsSelectiveEditing(false)}
-          materialType={materialType}
-          editAffectedFunctions={editAffectedFunctions}
-          editSelectiveFunctions={editSelectiveFunctions}
-          toggleEditFunction={toggleEditFunction}
-          toggleEditAll={toggleEditAll}
-          applyEditToAllFunctions={applyEditToAllFunctions}
-          applySelectiveEdit={applySelectiveEdit}
-        />
-      )}
-      
-      {!propConfirmRemove && (
-        <RemoveDialog
-          isOpen={confirmRemove}
-          onClose={() => setConfirmRemove(false)}
-          materialType={materialType}
-          affectedFunctions={affectedFunctions}
-          selectiveFunctions={selectiveFunctions}
-          toggleFunction={toggleFunction}
-          toggleAll={toggleAll}
-          handleRemoveAll={handleRemoveAll}
-          handleSelectiveRemove={handleSelectiveRemove}
-          isSelectiveRemoval={isSelectiveRemoval}
-          setIsSelectiveRemoval={setIsSelectiveRemoval}
-        />
-      )}
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove {materialType}</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove this {materialType} from the function? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleConfirmDelete}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
-} 
+}; 

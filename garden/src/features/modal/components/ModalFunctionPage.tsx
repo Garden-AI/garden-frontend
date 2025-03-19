@@ -286,7 +286,10 @@ const ModalFunctionPage = () => {
           <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
-          <ModalAssociatedMaterials resource={modalFunction} />
+          <ModalAssociatedMaterials 
+            resource={modalFunction} 
+            ownsThisFunction={ownsThisFunction} 
+          />
         </div>
         {/* Sidebar */}
         <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">

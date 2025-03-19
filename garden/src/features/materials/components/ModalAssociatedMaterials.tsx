@@ -17,14 +17,14 @@ import { RepositoryModal } from "./modals/RepositoryModal";
 import { NotebookModal } from "./modals/NotebookModal";
 
 // Import the card components
-import { DatasetCard, PaperCard, RepositoryCard } from "@/features/materials/components/cards/MaterialCards";
-import { NotebookCard } from "@/features/gardens/components/garden-page";
+import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from "@/features/materials/components/cards/MaterialCards";
 
 interface AssociatedMaterialsProps {
   resource: ModalFunction;
+  ownsThisFunction: boolean;
 }
 
-const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
+const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterialsProps) => {
   // Get all materials from the modal function
   const { datasets, papers, repositories, notebooks } = useModalFunctionMaterials(resource);
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
@@ -179,15 +179,17 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                     <DatabaseIcon className="h-5 w-5 mr-2 text-green" />
                     Datasets
                   </h3>
-                  <DatasetModal
-                    onSave={(data) => handleAddMaterial('datasets', data)}
-                    trigger={
-                      <Button type="button" variant="outline">
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Add dataset
-                      </Button>
-                    }
-                  />
+                  {ownsThisFunction && (
+                    <DatasetModal
+                      onSave={(data) => handleAddMaterial('datasets', data)}
+                      trigger={
+                        <Button type="button" variant="outline">
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Add dataset
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
                 
                 {datasets.length > 0 ? (
@@ -196,7 +198,11 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                       <DatasetCard 
                         key={dataset.doi || index} 
                         dataset={dataset}
-                        index={index}
+                        isOwner={ownsThisFunction}
+                        context={{
+                          parentFunction: resource,
+                          parentDoi: resource.doi || undefined
+                        }}
                         onUpdate={(data) => handleUpdateMaterial('datasets', index, data)}
                         onDelete={() => handleDeleteMaterial('datasets', index)}
                       />
@@ -220,15 +226,17 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                     <BookIcon className="h-5 w-5 mr-2 text-green" />
                     Papers
                   </h3>
-                  <PaperModal
-                    onSave={(data) => handleAddMaterial('papers', data)}
-                    trigger={
-                      <Button type="button" variant="outline">
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Add paper
-                      </Button>
-                    }
-                  />
+                  {ownsThisFunction && (
+                    <PaperModal
+                      onSave={(data) => handleAddMaterial('papers', data)}
+                      trigger={
+                        <Button type="button" variant="outline">
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Add paper
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
                 
                 {papers.length > 0 ? (
@@ -237,7 +245,11 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                       <PaperCard 
                         key={paper.doi || paper.title || index} 
                         paper={paper}
-                        index={index}
+                        isOwner={ownsThisFunction}
+                        context={{
+                          parentFunction: resource,
+                          parentDoi: resource.doi || undefined
+                        }}
                         onUpdate={(data) => handleUpdateMaterial('papers', index, data)}
                         onDelete={() => handleDeleteMaterial('papers', index)}
                       />
@@ -261,15 +273,17 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                     <CodeIcon className="h-5 w-5 mr-2 text-green" />
                     Code Repositories
                   </h3>
-                  <RepositoryModal
-                    onSave={(data) => handleAddMaterial('repositories', data)}
-                    trigger={
-                      <Button type="button" variant="outline">
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Add repository
-                      </Button>
-                    }
-                  />
+                  {ownsThisFunction && (
+                    <RepositoryModal
+                      onSave={(data) => handleAddMaterial('repositories', data)}
+                      trigger={
+                        <Button type="button" variant="outline">
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Add repository
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
                 
                 {repositories.length > 0 ? (
@@ -278,7 +292,11 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                       <RepositoryCard 
                         key={repo.url || index} 
                         repository={repo}
-                        index={index}
+                        isOwner={ownsThisFunction}
+                        context={{
+                          parentFunction: resource,
+                          parentDoi: resource.doi || undefined
+                        }}
                         onUpdate={(data) => handleUpdateMaterial('repositories', index, data)}
                         onDelete={() => handleDeleteMaterial('repositories', index)}
                       />
@@ -302,15 +320,17 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                     <ScrollTextIcon className="h-5 w-5 mr-2 text-green" />
                     Notebooks
                   </h3>
-                  <NotebookModal
-                    onSave={(data) => handleAddMaterial('notebooks', data)}
-                    trigger={
-                      <Button type="button" variant="outline">
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Add notebook
-                      </Button>
-                    }
-                  />
+                  {ownsThisFunction && (
+                    <NotebookModal
+                      onSave={(data) => handleAddMaterial('notebooks', data)}
+                      trigger={
+                        <Button type="button" variant="outline">
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Add notebook
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
                 
                 {notebooks.length > 0 ? (
@@ -319,12 +339,16 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                       <NotebookCard 
                         key={notebook.url || index} 
                         notebook={notebook}
-                        isOwner={true}
-                        garden={{ doi: resource.doi || '', modal_functions: [resource] }}
+                        isOwner={ownsThisFunction}
+                        context={{
+                          parentFunction: resource,
+                          parentDoi: resource.doi || undefined
+                        }}
                         onUpdate={async () => {
                           const updatedNotebook = notebooks[index];
                           await handleUpdateMaterial('notebooks', index, updatedNotebook);
                         }}
+                        onDelete={() => handleDeleteMaterial('notebooks', index)}
                       />
                     ))}
                   </div>
