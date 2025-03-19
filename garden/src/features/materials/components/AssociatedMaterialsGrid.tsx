@@ -1,4 +1,4 @@
-import { Dataset, Paper, Repository } from "@/types";
+import { Dataset, Paper, Repository, ModalFunction } from "@/types";
 import { DatasetCard, PaperCard, RepositoryCard } from "./cards/MaterialCards";
 
 interface Resource {
@@ -25,24 +25,30 @@ const AssociatedMaterialsGrid: React.FC<AssociatedMaterialsGridProps> = ({
         key={index}
         dataset={resource}
         index={index}
-        onUpdate={(data) => onUpdate(index, data)}
+        onUpdate={async (data) => onUpdate(index, data)}
         onDelete={() => onDelete(index)}
+        isOwner={false}
+        context={{ parentFunction: {} as ModalFunction }}
       />
     ) : isRepository(resource) ? (
       <RepositoryCard
         key={index}
         repository={resource}
         index={index}
-        onUpdate={(data) => onUpdate(index, data)}
+        onUpdate={async (data) => onUpdate(index, data)}
         onDelete={() => onDelete(index)}
+        isOwner={false}
+        context={{ parentFunction: {} as ModalFunction }}
       />
     ) : (
       <PaperCard
         key={index}
         paper={resource}
         index={index}
-        onUpdate={(data) => onUpdate(index, data)}
+        onUpdate={async (data) => onUpdate(index, data)}
         onDelete={() => onDelete(index)}
+        isOwner={false}
+        context={{ parentFunction: {} as ModalFunction }}
       />
     );
   };

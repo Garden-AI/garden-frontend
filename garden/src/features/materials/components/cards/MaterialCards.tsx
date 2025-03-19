@@ -19,10 +19,12 @@ export const PaperCard = ({
   context,
   onUpdate,
   onDelete,
+  index,
 }: { 
   paper: Paper;
   onUpdate: (data: Paper) => Promise<void>;
   onDelete: () => void;
+  index?: number;
 } & MaterialCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
@@ -99,10 +101,12 @@ export const DatasetCard = ({
   context,
   onUpdate,
   onDelete,
+  index,
 }: { 
   dataset: Dataset;
   onUpdate: (data: Dataset) => Promise<void>;
   onDelete: () => void;
+  index?: number;
 } & MaterialCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
@@ -152,12 +156,14 @@ export const DatasetCard = ({
             </div>
           )}
           
-          {dataset.description && (
-            <div className="flex items-baseline">
-              <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
-              <div className="flex-1 line-clamp-2">{String(dataset.description)}</div>
-            </div>
-          )}
+          {dataset.description ? (
+            typeof dataset.description === 'string' && (
+              <div className="flex items-baseline">
+                <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
+                <div className="flex-1 line-clamp-2">{dataset.description}</div>
+              </div>
+            )
+          ) : null}
         </div>
       </BaseMaterialCard>
       
@@ -177,10 +183,12 @@ export const RepositoryCard = ({
   context,
   onUpdate,
   onDelete,
+  index,
 }: { 
   repository: Repository;
   onUpdate: (data: Repository) => Promise<void>;
   onDelete: () => void;
+  index?: number;
 } & MaterialCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
@@ -223,12 +231,23 @@ export const RepositoryCard = ({
             </div>
           )}
           
-          {repository.description && (
-            <div className="flex items-baseline">
-              <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
-              <div className="flex-1 line-clamp-2">{String(repository.description)}</div>
-            </div>
-          )}
+          {repository.license ? (
+            typeof repository.license === 'string' && (
+              <div className="flex items-baseline">
+                <span className="w-24 text-gray-500 text-xs font-medium">License</span>
+                <span className="flex-1">{repository.license}</span>
+              </div>
+            )
+          ) : null}
+          
+          {repository.description ? (
+            typeof repository.description === 'string' && (
+              <div className="flex items-baseline">
+                <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
+                <div className="flex-1 line-clamp-2">{repository.description}</div>
+              </div>
+            )
+          ) : null}
           
           {repository.contributors && repository.contributors.length > 0 && (
             <div className="flex items-baseline">
@@ -289,12 +308,14 @@ export const NotebookCard = ({
         onEditClick={handleEditClick}
       >
         <div className="space-y-2.5 py-1">
-          {notebook.description && (
-            <div className="flex items-baseline">
-              <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
-              <div className="flex-1 line-clamp-2">{notebook.description}</div>
-            </div>
-          )}
+          {notebook.description ? (
+            typeof notebook.description === 'string' && (
+              <div className="flex items-baseline">
+                <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
+                <div className="flex-1 line-clamp-2">{notebook.description}</div>
+              </div>
+            )
+          ) : null}
           
           {notebook.url && (
             <div className="flex items-baseline">

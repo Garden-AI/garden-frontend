@@ -24,7 +24,7 @@ import {
   FormDescription,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { datasetSchema } from "../../types/material.types";
+import { datasetSchema, DatasetFormData } from "../../types/material.types";
 import { extractZenodoId, fetchZenodoMetadata } from "../../utils/zenodo";
 
 interface DatasetModalProps {

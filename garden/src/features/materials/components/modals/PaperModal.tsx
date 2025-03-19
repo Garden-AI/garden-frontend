@@ -1,6 +1,10 @@
-import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Book, FileText, Hash, Link, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/shadcn/button";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +14,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/shadcn/dialog";
-import { Button } from "@/components/shadcn/button";
-import { Input } from "@/components/shadcn/input";
 import {
   Form,
   FormField,
@@ -21,12 +23,12 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/shadcn/form";
+import { Input } from "@/components/shadcn/input";
+import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Paper } from "@/types";
-import { paperSchema } from "../../types/material.types";
+import { paperSchema, PaperFormData } from "../../types/material.types";
 import { extractArxivId, fetchArxivMetadata } from "../../utils/arxiv";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 
 interface PaperModalProps {
   edit?: boolean;
@@ -37,9 +39,9 @@ interface PaperModalProps {
 }
 
 const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [isLoadingMetadata, setIsLoadingMetadata] = React.useState(false);
-  const [previousUrl, setPreviousUrl] = React.useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
+  const [previousUrl, setPreviousUrl] = useState("");
 
   const form = useForm<PaperFormData>({
     resolver: zodResolver(paperSchema),

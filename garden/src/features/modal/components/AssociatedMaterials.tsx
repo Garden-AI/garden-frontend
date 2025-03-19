@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { ModalFunction } from "@/types";
+import { ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { Card, CardContent, CardHeader, CardTitle, MarkdownCardContent } from "@/components/shadcn/card";
 import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon } from "lucide-react";
-import { useModalFunctionMaterials } from "../hooks/useModalFunctionMaterials";
+import { useModalFunctionMaterials } from "@/features/materials/hooks/useModalFunctionMaterials";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import CopyButton from "@/components/CopyButton";
 
-// We'll import the card components directly from the garden page components
+// Import the material card components from the materials feature
 import { 
   PaperCard, 
   DatasetCard, 
-  RepositoryCard, 
-  NotebookCard 
-} from "@/features/gardens/components/garden-page";
+  RepositoryCard,
+  NotebookCard
+} from "@/features/materials/components/cards/MaterialCards";
 
 interface AssociatedMaterialsProps {
   resource: ModalFunction;
@@ -23,12 +23,6 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
   // Get all materials from the modal function
   const { datasets, papers, repositories, notebooks } = useModalFunctionMaterials(resource);
   
-  // Create a fake Garden object with just the minimum required for the card components
-  const fakeGarden = {
-    doi: resource.doi || '',
-    modal_functions: [resource],
-  };
-
   return (
     <div className="mt-6 mb-6">
       <Tabs 
@@ -125,13 +119,14 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                 
                 {datasets.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {datasets.map((dataset) => (
+                    {datasets.map((dataset: Dataset) => (
                       <DatasetCard 
                         key={dataset.doi} 
                         dataset={dataset}
                         isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        context={{ parentFunction: resource }}
+                        onUpdate={async () => {}}
+                        onDelete={() => {}}
                       />
                     ))}
                   </div>
@@ -157,13 +152,14 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                 
                 {papers.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {papers.map((paper) => (
+                    {papers.map((paper: Paper) => (
                       <PaperCard 
                         key={paper.doi || paper.title} 
                         paper={paper}
                         isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        context={{ parentFunction: resource }}
+                        onUpdate={async () => {}}
+                        onDelete={() => {}}
                       />
                     ))}
                   </div>
@@ -189,13 +185,14 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                 
                 {repositories.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {repositories.map((repo) => (
+                    {repositories.map((repo: Repository) => (
                       <RepositoryCard 
                         key={repo.url} 
                         repository={repo}
                         isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        context={{ parentFunction: resource }}
+                        onUpdate={async () => {}}
+                        onDelete={() => {}}
                       />
                     ))}
                   </div>
@@ -221,13 +218,14 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
                 
                 {notebooks.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {notebooks.map((notebook) => (
+                    {notebooks.map((notebook: Notebook) => (
                       <NotebookCard 
                         key={notebook.url} 
                         notebook={notebook}
                         isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        context={{ parentFunction: resource }}
+                        onUpdate={async () => Promise.resolve()}
+                        onDelete={() => {}}
                       />
                     ))}
                   </div>

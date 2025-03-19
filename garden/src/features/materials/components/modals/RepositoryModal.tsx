@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -24,7 +24,7 @@ import {
 import { Link, Loader2 } from "lucide-react";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Repository } from "@/types";
-import { repositorySchema } from "../../types/material.types";
+import { repositorySchema, RepositoryFormData } from "../../types/material.types";
 import { extractGitHubInfo, fetchGitHubMetadata } from "../../utils/github";
 import { toast } from "sonner";
 import { Textarea } from "@/components/shadcn/textarea";
@@ -38,9 +38,9 @@ interface RepositoryModalProps {
 }
 
 const RepositoryModal = ({ edit, onSave, initialData, trigger }: RepositoryModalProps) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [isLoadingMetadata, setIsLoadingMetadata] = React.useState(false);
-  const [previousUrl, setPreviousUrl] = React.useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
+  const [previousUrl, setPreviousUrl] = useState("");
 
   const form = useForm<RepositoryFormData>({
     resolver: zodResolver(repositorySchema),

@@ -1,4 +1,4 @@
-import { DatasetFormData } from "../types/entrypoint.types";
+import { DatasetFormData } from "../types/material.types";
 
 /**
  * Extracts Zenodo ID from a URL

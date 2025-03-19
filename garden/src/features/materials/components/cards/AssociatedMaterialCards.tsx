@@ -3,10 +3,10 @@ import { Button } from "@/components/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/shadcn/card";
 import { Edit2, Book, FileType, Link, Database } from "lucide-react";
 
-import DatasetModal from "./modals/DatasetModal";
-import DeleteConfirmationModal from "./modals/DeleteConfirmationModal";
-import PaperModal from "./modals/PaperModal";
-import RepositoryModal from "./modals/RepositoryModal";
+import { DatasetModal } from "@/features/materials/components/modals/DatasetModal";
+import { PaperModal } from "@/features/materials/components/modals/PaperModal";
+import { RepositoryModal } from "@/features/materials/components/modals/RepositoryModal";
+import DeleteConfirmationModal from "@/features/entrypoints/components/modals/DeleteConfirmationModal";
 
 export const PaperCard = ({
   paper,

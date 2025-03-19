@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import NotebookModal from "@/features/entrypoints/components/modals/NotebookModal";
 import { Button } from "@/components/shadcn/button";
 import { Edit2, Trash2 } from "lucide-react";
-import { useMaterialActions } from "../hooks/useMaterialActions";
+import { useMaterialActions } from "../../hooks/useMaterialActions";
 import { EditDialog, RemoveDialog } from "./MaterialDialogs";
 import { BaseMaterialCard } from "./MaterialCard";
 
@@ -120,31 +120,11 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
         title={notebook.title}
         icon={notebookIcon}
         isOwner={isOwner}
-        garden={garden}
-        findAffectedFunctions={findAffectedFunctions}
-        onUpdate={onUpdate}
+        context={{
+          parentFunction: {} as ModalFunction
+        }}
         onEditClick={handleEditClick}
-        onEdit={handleEdit}
-        // Pass through all the material action props
-        isSelectiveEditing={isSelectiveEditing}
-        setIsSelectiveEditing={setIsSelectiveEditing}
-        editAffectedFunctions={editAffectedFunctions}
-        editSelectiveFunctions={editSelectiveFunctions}
-        applyEditToAllFunctions={applyEditToAllFunctions}
-        applySelectiveEdit={applySelectiveEdit}
-        toggleEditFunction={toggleEditFunction}
-        toggleEditAll={toggleEditAll}
-        confirmRemove={confirmRemove}
-        setConfirmRemove={setConfirmRemove}
-        prepareFunctionsForRemoval={handleRemoveClick}
-        affectedFunctions={affectedFunctions}
-        selectiveFunctions={selectiveFunctions}
-        isSelectiveRemoval={isSelectiveRemoval}
-        setIsSelectiveRemoval={setIsSelectiveRemoval}
-        handleRemoveAll={handleRemoveAll}
-        handleSelectiveRemove={handleSelectiveRemove}
-        toggleFunction={toggleFunction}
-        toggleAll={toggleAll}
+        onEdit={() => handleEdit}
       >
         {notebook.description && (
           <div className="mt-2 text-sm text-gray-600">

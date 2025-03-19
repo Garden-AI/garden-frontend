@@ -129,7 +129,7 @@ const EditEntrypointFormFields = () => {
         <h2 className="mb-6 border-b pb-2 text-2xl font-bold text-gray-800">
           Associated Materials
         </h2>
-        <AssociatedMaterials resource={form.getValues()} />
+        <AssociatedMaterials resource={form.getValues() as any} />
       </section>
 
       <div className="mt-8 flex justify-end gap-x-4">
