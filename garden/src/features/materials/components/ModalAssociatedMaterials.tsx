@@ -10,14 +10,14 @@ import { Button } from "@/components/shadcn/button";
 import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
 import { toast } from "sonner";
 
-// Import the modal components from entrypoints
-import DatasetModal from "@/features/entrypoints/components/modals/DatasetModal";
-import PaperModal from "@/features/entrypoints/components/modals/PaperModal";
-import RepositoryModal from "@/features/entrypoints/components/modals/RepositoryModal";
-import NotebookModal from "@/features/entrypoints/components/modals/NotebookModal";
+// Import the modal components
+import { DatasetModal } from "./modals/DatasetModal";
+import { PaperModal } from "./modals/PaperModal";
+import { RepositoryModal } from "./modals/RepositoryModal";
+import { NotebookModal } from "./modals/NotebookModal";
 
 // Import the card components
-import { DatasetCard, PaperCard, RepositoryCard } from "@/features/entrypoints/components/AssociatedMaterialCards";
+import { DatasetCard, PaperCard, RepositoryCard } from "@/features/materials/components/cards/MaterialCards";
 import { NotebookCard } from "@/features/gardens/components/garden-page";
 
 interface AssociatedMaterialsProps {

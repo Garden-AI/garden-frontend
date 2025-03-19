@@ -24,7 +24,7 @@ import {
 import { Link, Loader2 } from "lucide-react";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Repository } from "@/types";
-import { RepositoryFormData, repositorySchema } from "../../types/entrypoint.types";
+import { repositorySchema } from "../../types/material.types";
 import { extractGitHubInfo, fetchGitHubMetadata } from "../../utils/github";
 import { toast } from "sonner";
 import { Textarea } from "@/components/shadcn/textarea";
@@ -302,4 +302,4 @@ const RepositoryModal = ({ edit, onSave, initialData, trigger }: RepositoryModal
   );
 };
 
-export default RepositoryModal;
+export { RepositoryModal };

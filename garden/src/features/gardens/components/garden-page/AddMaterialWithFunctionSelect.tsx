@@ -5,7 +5,7 @@ import { Garden } from '@/types';
 import { Dataset, ModalFunction, Paper, Repository, Notebook } from '@/types';
 import DatasetModal from '@/features/entrypoints/components/modals/DatasetModal';
 import PaperModal from '@/features/entrypoints/components/modals/PaperModal';
-import RepositoryModal from '@/features/entrypoints/components/modals/RepositoryModal';
+import { RepositoryModal } from '@/features/materials/components/modals/RepositoryModal';
 import NotebookModal from '@/features/entrypoints/components/modals/NotebookModal';
 import { Checkbox } from '@/components/shadcn/checkbox';
 import { Label } from '@/components/shadcn/label';

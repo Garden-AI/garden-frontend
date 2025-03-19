@@ -53,4 +53,4 @@ const AssociatedMaterialsSection = ({
   );
 };
 
-export default AssociatedMaterialsSection;
+export { AssociatedMaterialsSection };

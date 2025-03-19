@@ -138,4 +138,4 @@ const NotebookModal = ({ edit, onSave, initialData, trigger }: NotebookModalProp
   );
 };
 
-export default NotebookModal; 
+export { NotebookModal }; 

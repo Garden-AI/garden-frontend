@@ -24,7 +24,7 @@ import {
   FormDescription,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { DatasetFormData, datasetSchema } from "../../types/entrypoint.types";
+import { datasetSchema } from "../../types/material.types";
 import { extractZenodoId, fetchZenodoMetadata } from "../../utils/zenodo";
 
 interface DatasetModalProps {
@@ -269,4 +269,4 @@ const DatasetModal = ({ edit, onSave, initialData, trigger }: DatasetModalProps)
   );
 };
 
-export default DatasetModal;
+export { DatasetModal };

@@ -23,7 +23,7 @@ import {
 } from "@/components/shadcn/form";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Paper } from "@/types";
-import { PaperFormData, paperSchema } from "../../types/entrypoint.types";
+import { paperSchema } from "../../types/material.types";
 import { extractArxivId, fetchArxivMetadata } from "../../utils/arxiv";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -264,4 +264,4 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
   );
 };
 
-export default PaperModal;
+export { PaperModal };

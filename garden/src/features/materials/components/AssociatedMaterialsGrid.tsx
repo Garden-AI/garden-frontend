@@ -61,4 +61,4 @@ const isRepository = (resource: any): resource is Repository => {
   return resource.repo_name !== undefined;
 };
 
-export default AssociatedMaterialsGrid;
+export { AssociatedMaterialsGrid };

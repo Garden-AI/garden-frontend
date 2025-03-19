@@ -11,7 +11,7 @@ import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import SyntaxHighlighterComponent from "@/components/SyntaxHighlighter";
-import AssociatedMaterialsSection from "@/features/entrypoints/components/AssociatedMaterialsSection";
+import { AssociatedMaterialsSection } from "@/features/materials/components/AssociatedMaterialsSection";
 
 const EditModalFunctionFormFields = () => {
   const form = useFormContext();

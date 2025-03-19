@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
-import AssociatedMaterials from "./AssociatedMaterials";
+import AssociatedMaterials from "@/features/materials/components/AssociatedMaterials";
 
 const EditEntrypointFormFields = () => {
   const navigate = useNavigate();
@@ -129,7 +129,7 @@ const EditEntrypointFormFields = () => {
         <h2 className="mb-6 border-b pb-2 text-2xl font-bold text-gray-800">
           Associated Materials
         </h2>
-        <AssociatedMaterials />
+        <AssociatedMaterials resource={form.getValues()} />
       </section>
 
       <div className="mt-8 flex justify-end gap-x-4">
