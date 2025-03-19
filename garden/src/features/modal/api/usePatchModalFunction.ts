@@ -42,6 +42,8 @@ export const usePatchModalFunction = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["modalFunction", data.id.toString()] });
+      // Invalidate all garden queries since we don't know which gardens contain this function
+      queryClient.invalidateQueries({ queryKey: ["garden"] });
       queryClient.invalidateQueries({ queryKey: ["gardens"] });
       queryClient.invalidateQueries({ queryKey: ["search"] });
     },

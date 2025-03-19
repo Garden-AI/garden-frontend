@@ -1,19 +1,24 @@
 import { useState } from "react";
-import { ModalFunction } from "@/types";
+import { ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { Card, CardContent, CardHeader, CardTitle, MarkdownCardContent } from "@/components/shadcn/card";
-import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon } from "lucide-react";
+import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle } from "lucide-react";
 import { useModalFunctionMaterials } from "../hooks/useModalFunctionMaterials";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import CopyButton from "@/components/CopyButton";
+import { Button } from "@/components/shadcn/button";
+import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
+import { toast } from "sonner";
 
-// We'll import the card components directly from the garden page components
-import { 
-  PaperCard, 
-  DatasetCard, 
-  RepositoryCard, 
-  NotebookCard 
-} from "@/features/gardens/components/garden-page";
+// Import the modal components from entrypoints
+import DatasetModal from "@/features/entrypoints/components/modals/DatasetModal";
+import PaperModal from "@/features/entrypoints/components/modals/PaperModal";
+import RepositoryModal from "@/features/entrypoints/components/modals/RepositoryModal";
+import NotebookModal from "@/features/entrypoints/components/modals/NotebookModal";
+
+// Import the card components
+import { DatasetCard, PaperCard, RepositoryCard } from "@/features/entrypoints/components/AssociatedMaterialCards";
+import { NotebookCard } from "@/features/gardens/components/garden-page";
 
 interface AssociatedMaterialsProps {
   resource: ModalFunction;
@@ -22,11 +27,64 @@ interface AssociatedMaterialsProps {
 const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
   // Get all materials from the modal function
   const { datasets, papers, repositories, notebooks } = useModalFunctionMaterials(resource);
-  
-  // Create a fake Garden object with just the minimum required for the card components
-  const fakeGarden = {
-    doi: resource.doi || '',
-    modal_functions: [resource],
+  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
+
+  const handleAddMaterial = async (type: 'datasets' | 'papers' | 'repositories' | 'notebooks', material: Dataset | Paper | Repository | Notebook) => {
+    try {
+      const currentMaterials = resource[type] || [];
+      const updatedMaterials = [...currentMaterials, material];
+      
+      await patchModalFunction({
+        id: resource.id,
+        modalFunction: {
+          [type]: updatedMaterials
+        }
+      });
+      
+      toast.success(`${type.slice(0, -1)} added successfully`);
+    } catch (error) {
+      toast.error(`Failed to add ${type.slice(0, -1)}`);
+      console.error('Error adding material:', error);
+    }
+  };
+
+  const handleUpdateMaterial = async (type: 'datasets' | 'papers' | 'repositories' | 'notebooks', index: number, material: Dataset | Paper | Repository | Notebook) => {
+    try {
+      const currentMaterials = resource[type] || [];
+      const updatedMaterials = [...currentMaterials];
+      updatedMaterials[index] = material;
+      
+      await patchModalFunction({
+        id: resource.id,
+        modalFunction: {
+          [type]: updatedMaterials
+        }
+      });
+      
+      toast.success(`${type.slice(0, -1)} updated successfully`);
+    } catch (error) {
+      toast.error(`Failed to update ${type.slice(0, -1)}`);
+      console.error('Error updating material:', error);
+    }
+  };
+
+  const handleDeleteMaterial = async (type: 'datasets' | 'papers' | 'repositories' | 'notebooks', index: number) => {
+    try {
+      const currentMaterials = resource[type] || [];
+      const updatedMaterials = currentMaterials.filter((_, i) => i !== index);
+      
+      await patchModalFunction({
+        id: resource.id,
+        modalFunction: {
+          [type]: updatedMaterials
+        }
+      });
+      
+      toast.success(`${type.slice(0, -1)} removed successfully`);
+    } catch (error) {
+      toast.error(`Failed to remove ${type.slice(0, -1)}`);
+      console.error('Error removing material:', error);
+    }
   };
 
   return (
@@ -116,22 +174,31 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
               <div>
-                <div className="flex items-center mb-3">
+                <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
                     <DatabaseIcon className="h-5 w-5 mr-2 text-green" />
                     Datasets
                   </h3>
+                  <DatasetModal
+                    onSave={(data) => handleAddMaterial('datasets', data)}
+                    trigger={
+                      <Button type="button" variant="outline">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add dataset
+                      </Button>
+                    }
+                  />
                 </div>
                 
                 {datasets.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {datasets.map((dataset) => (
+                    {datasets.map((dataset, index) => (
                       <DatasetCard 
-                        key={dataset.doi} 
+                        key={dataset.doi || index} 
                         dataset={dataset}
-                        isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        index={index}
+                        onUpdate={(data) => handleUpdateMaterial('datasets', index, data)}
+                        onDelete={() => handleDeleteMaterial('datasets', index)}
                       />
                     ))}
                   </div>
@@ -148,22 +215,31 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
               <div>
-                <div className="flex items-center mb-3">
+                <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
                     <BookIcon className="h-5 w-5 mr-2 text-green" />
                     Papers
                   </h3>
+                  <PaperModal
+                    onSave={(data) => handleAddMaterial('papers', data)}
+                    trigger={
+                      <Button type="button" variant="outline">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add paper
+                      </Button>
+                    }
+                  />
                 </div>
                 
                 {papers.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {papers.map((paper) => (
+                    {papers.map((paper, index) => (
                       <PaperCard 
-                        key={paper.doi || paper.title} 
+                        key={paper.doi || paper.title || index} 
                         paper={paper}
-                        isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        index={index}
+                        onUpdate={(data) => handleUpdateMaterial('papers', index, data)}
+                        onDelete={() => handleDeleteMaterial('papers', index)}
                       />
                     ))}
                   </div>
@@ -180,22 +256,31 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
               <div>
-                <div className="flex items-center mb-3">
+                <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
                     <CodeIcon className="h-5 w-5 mr-2 text-green" />
                     Code Repositories
                   </h3>
+                  <RepositoryModal
+                    onSave={(data) => handleAddMaterial('repositories', data)}
+                    trigger={
+                      <Button type="button" variant="outline">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add repository
+                      </Button>
+                    }
+                  />
                 </div>
                 
                 {repositories.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {repositories.map((repo) => (
+                    {repositories.map((repo, index) => (
                       <RepositoryCard 
-                        key={repo.url} 
+                        key={repo.url || index} 
                         repository={repo}
-                        isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        index={index}
+                        onUpdate={(data) => handleUpdateMaterial('repositories', index, data)}
+                        onDelete={() => handleDeleteMaterial('repositories', index)}
                       />
                     ))}
                   </div>
@@ -212,22 +297,34 @@ const AssociatedMaterials = ({ resource }: AssociatedMaterialsProps) => {
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
               <div>
-                <div className="flex items-center mb-3">
+                <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
                     <ScrollTextIcon className="h-5 w-5 mr-2 text-green" />
                     Notebooks
                   </h3>
+                  <NotebookModal
+                    onSave={(data) => handleAddMaterial('notebooks', data)}
+                    trigger={
+                      <Button type="button" variant="outline">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add notebook
+                      </Button>
+                    }
+                  />
                 </div>
                 
                 {notebooks.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
-                    {notebooks.map((notebook) => (
+                    {notebooks.map((notebook, index) => (
                       <NotebookCard 
-                        key={notebook.url} 
+                        key={notebook.url || index} 
                         notebook={notebook}
-                        isOwner={false}
-                        garden={fakeGarden as any}
-                        findAffectedFunctions={() => []}
+                        isOwner={true}
+                        garden={{ doi: resource.doi || '', modal_functions: [resource] }}
+                        onUpdate={async () => {
+                          const updatedNotebook = notebooks[index];
+                          await handleUpdateMaterial('notebooks', index, updatedNotebook);
+                        }}
                       />
                     ))}
                   </div>
