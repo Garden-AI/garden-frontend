@@ -23,6 +23,7 @@ export const formSchema = z.object({
   contributors: z.array(z.string()),
   tags: z.array(z.string()),
   entrypoint_ids: z.array(z.string()),
+  modal_function_ids: z.array(z.number()).optional().default([]),
 });
 
 export type GardenPatchFormData = z.infer<typeof formSchema>;

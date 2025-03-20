@@ -28,6 +28,7 @@ export const EditGardenForm = ({ garden }: { garden: Garden }) => {
         contributors: garden.contributors || [],
         tags: garden.tags || [],
         entrypoint_ids: garden.entrypoints?.map((entrypoint) => entrypoint.doi) || [],
+        modal_function_ids: garden.modal_functions?.map((func) => func.id) || [],
         is_archived: garden.is_archived,
         doi_is_draft: garden.doi_is_draft,
       }),

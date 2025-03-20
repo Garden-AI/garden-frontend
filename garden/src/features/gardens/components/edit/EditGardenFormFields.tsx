@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
-import { SelectEntrypointsTable } from "../SelectEntrypointsTable";
+import { EditModalFunctionsTable } from "./EditModalFunctionsTable";
 
 const EditGardenFormFields = () => {
   const navigate = useNavigate();
@@ -124,12 +124,14 @@ const EditGardenFormFields = () => {
       </section>
 
       <section>
-        <h2 className="mb-6 border-b  text-2xl font-bold text-gray-800">Entrypoints</h2>
+        <h2 className="mb-6 border-b  text-2xl font-bold text-gray-800">Modal Functions</h2>
         <p className="mb-8 text-sm text-muted-foreground">
-          Select the functions that are part of your garden. These functions will be displayed
+          Select the modal functions that are part of your garden. These functions will be displayed
           on the Garden page. Only unpublished gardens can modify their functions.
         </p>
-        <SelectEntrypointsTable />
+        <EditModalFunctionsTable 
+          published={form.getValues("doi_is_draft") === false && form.getValues("is_archived") === false}
+        />
       </section>
 
       <section>
