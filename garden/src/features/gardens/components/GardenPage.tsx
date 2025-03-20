@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2, Laptop, CodeIcon, ScrollTextIcon } from "lucide-react";
+import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2, Laptop, CodeIcon, ScrollTextIcon, FunctionSquare } from "lucide-react";
 import { useState, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -36,6 +36,7 @@ import {
   EditableTitle,
   ReviewNotice,
   AddMaterialWithFunctionSelect,
+  AddModalFunctionSelector,
   DatasetCard,
   PaperCard,
   RepositoryCard,
@@ -155,19 +156,35 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 <TabsContent value="functions" className="mt-0 relative">
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {garden.entrypoints?.map((entrypoint, index) => (
-                          <EntrypointBox
-                            key={index}
-                            entrypoint={entrypoint}
-                          />
-                        ))}
-                        {garden.modal_functions?.map((modalFunction, index) => (
-                          <ModalFunctionBox
-                            key={index}
-                            modalFunction={modalFunction}
-                          />
-                        ))}
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-lg font-medium flex items-center">
+                            <FunctionSquare className="h-5 w-5 mr-2 text-green" />
+                            Functions
+                          </h3>
+                          
+                          {ownsThisGarden && (
+                            <AddModalFunctionSelector
+                              garden={garden}
+                              onSuccess={handleMaterialAdded}
+                            />
+                          )}
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {garden.entrypoints?.map((entrypoint, index) => (
+                            <EntrypointBox
+                              key={index}
+                              entrypoint={entrypoint}
+                            />
+                          ))}
+                          {garden.modal_functions?.map((modalFunction, index) => (
+                            <ModalFunctionBox
+                              key={index}
+                              modalFunction={modalFunction}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

@@ -74,65 +74,67 @@ export const SelectModalFunctionsTable = ({
           </WithTooltip>
         </div>
       </div>
-      <div className="relative mb-4 min-h-[250px] overflow-x-auto rounded-md border bg-white">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-1/12"></TableHead>
-              <TableHead className="w-1/4">Name</TableHead>
-              <TableHead className="w-1/2">Description</TableHead>
-              <TableHead className="w-1/6 text-center"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
+      <div className="relative mb-4 rounded-md border bg-white">
+        <div className="max-h-[480px] overflow-y-auto">
+          <Table>
+            <TableHeader className="sticky top-0 bg-white z-10">
               <TableRow>
-                <TableCell colSpan={4} className="text-center">
-                  <div className="flex h-24 items-center justify-center">
-                    <LoadingSpinner />
-                  </div>
-                </TableCell>
+                <TableHead className="w-1/12"></TableHead>
+                <TableHead className="w-1/4">Name</TableHead>
+                <TableHead className="w-1/2">Description</TableHead>
+                <TableHead className="w-1/6 text-center"></TableHead>
               </TableRow>
-            ) : functions?.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center text-gray-500">
-                  No additional modal functions available
-                </TableCell>
-              </TableRow>
-            ) : (
-              functions?.map((func) => (
-                <TableRow key={func.id}>
-                  <TableCell className="w-1/12 text-center">
-                    <Checkbox
-                      checked={selectedIds.includes(func.id)}
-                      onCheckedChange={() => handleCheckboxChange(func.id)}
-                      value={func.id}
-                      disabled={published}
-                    />
-                  </TableCell>
-                  <TableCell className="w-1/4 truncate whitespace-normal break-words">
-                    {func.title || func.function_name}
-                  </TableCell>
-                  <TableCell className="w-1/2 truncate whitespace-normal break-words">
-                    {func.description || "No description available"}
-                  </TableCell>
-                  <TableCell className="w-1/6 text-center">
-                    <Link
-                      to={`/modal-functions/${func.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button variant="outline" size="sm" type="button">
-                        View
-                        <ExternalLink size={14} className="mb-0.5 ml-1" />
-                      </Button>
-                    </Link>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center">
+                    <div className="flex h-24 items-center justify-center">
+                      <LoadingSpinner />
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : functions?.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center text-gray-500">
+                    No additional modal functions available
+                  </TableCell>
+                </TableRow>
+              ) : (
+                functions?.map((func) => (
+                  <TableRow key={func.id}>
+                    <TableCell className="w-1/12 text-center">
+                      <Checkbox
+                        checked={selectedIds.includes(func.id)}
+                        onCheckedChange={() => handleCheckboxChange(func.id)}
+                        value={func.id}
+                        disabled={published}
+                      />
+                    </TableCell>
+                    <TableCell className="w-1/4 truncate whitespace-normal break-words">
+                      {func.title || func.function_name}
+                    </TableCell>
+                    <TableCell className="w-1/2 truncate whitespace-normal break-words">
+                      {func.description || "No description available"}
+                    </TableCell>
+                    <TableCell className="w-1/6 text-center">
+                      <Link
+                        to={`/modal-functions/${func.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button variant="outline" size="sm" type="button">
+                          View
+                          <ExternalLink size={14} className="mb-0.5 ml-1" />
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
         {published && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 backdrop-blur-sm">
             <div className="max-w-md rounded-lg bg-white p-6 text-center shadow-lg">
