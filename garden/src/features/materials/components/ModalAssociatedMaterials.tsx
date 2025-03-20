@@ -17,7 +17,8 @@ import { RepositoryModal } from "./modals/RepositoryModal";
 import { NotebookModal } from "./modals/NotebookModal";
 
 // Import the card components
-import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from "@/features/materials/components/cards/MaterialCards";
+import { DatasetCard, PaperCard, RepositoryCard } from "@/features/materials/components/cards/MaterialCards";
+import { NotebookCard } from "@/features/materials/components/cards/NotebookCard";
 
 interface AssociatedMaterialsProps {
   resource: ModalFunction;
@@ -344,8 +345,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                           parentFunction: resource,
                           parentDoi: resource.doi || undefined
                         }}
-                        onUpdate={async () => {
-                          const updatedNotebook = notebooks[index];
+                        onUpdate={async (updatedNotebook) => {
                           await handleUpdateMaterial('notebooks', index, updatedNotebook);
                         }}
                         onDelete={() => handleDeleteMaterial('notebooks', index)}
