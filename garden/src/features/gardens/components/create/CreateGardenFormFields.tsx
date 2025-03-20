@@ -37,7 +37,11 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
 
   const isTestGarden = form.watch("is_test");
   const modalApp = form.watch("modal");
-  const currentModalFunctionIds = form.watch("modal_function_ids") || [];
+  
+  // Extract only the function IDs from the main modal app - these should be excluded from the selection table
+  // as they're already part of the garden. We don't want to exclude functions that are being selected
+  // in the modal_function_ids field.
+  const modalAppFunctionIds = modalApp.modal_functions?.map((func: any) => func.id) || [];
   
   // Check if garden is published to disable modal function selection
   const isPublished = form.watch("doi_is_draft") === false && form.watch("is_archived") === false;
@@ -204,7 +208,7 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
             </div>
             <CollapsibleContent className="mt-4">
               <SelectModalFunctionsTable 
-                currentFunctionIds={currentModalFunctionIds}
+                currentFunctionIds={modalAppFunctionIds}
                 published={isPublished}
               />
             </CollapsibleContent>
