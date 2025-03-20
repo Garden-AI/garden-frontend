@@ -8,6 +8,7 @@ import { RepositoryModal } from '@/features/materials/components/modals/Reposito
 import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { toast } from 'sonner';
 import { DatasetCard, PaperCard, RepositoryCard } from '@/features/materials/components/cards/MaterialCards';
+import AddMaterialWithFunctionSelect from './AddMaterialWithFunctionSelect';
 
 type MaterialType = Dataset | Paper | Repository;
 type MaterialsRecord = Record<'papers' | 'repositories' | 'datasets', MaterialType[]>;
@@ -15,11 +16,15 @@ type MaterialsRecord = Record<'papers' | 'repositories' | 'datasets', MaterialTy
 interface GardenAssociatedMaterialsSectionProps {
   garden: Garden & MaterialsRecord;
   fieldName: keyof MaterialsRecord;
+  isOwner: boolean;
+  modalFunction: ModalFunction;
 }
 
 const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectionProps> = ({ 
   garden,
-  fieldName 
+  fieldName,
+  isOwner,
+  modalFunction
 }) => {
   const { mutateAsync: updateGarden } = usePatchGarden();
   
@@ -40,30 +45,6 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
   const singularName = (fieldName === "repositories") 
     ? "repository" 
     : (fieldName.endsWith('s') ? fieldName.slice(0, -1) : fieldName);
-
-  const handleAddMaterial = async (data: Dataset | Paper | Repository) => {
-    try {
-      // Get existing materials or empty array
-      const existingMaterials = garden[fieldName] || [];
-      
-      // Create updated array with new material
-      const updatedMaterials = [...existingMaterials, data];
-      
-      // Create patch request with just the updated field
-      const patchData = { [fieldName]: updatedMaterials };
-      
-      // Update the garden
-      await updateGarden({
-        doi: garden.doi,
-        garden: patchData
-      });
-      
-      toast.success(`${singularName} added successfully`);
-    } catch (error) {
-      toast.error(`Failed to add ${singularName}`);
-      console.error('Error adding material:', error);
-    }
-  };
 
   const handleUpdateMaterial = async (index: number, data: Dataset | Paper | Repository) => {
     try {
@@ -120,8 +101,14 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
     }
 
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8">
         {materials.map((material: MaterialType, index: number) => {
+          const context = {
+            parentFunction: modalFunction,
+            parentDoi: garden.doi,
+            garden: garden
+          };
+
           if (fieldName === 'datasets') {
             return (
               <DatasetCard
@@ -130,8 +117,8 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 index={index}
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
-                isOwner={false}
-                context={{ parentFunction: {} as ModalFunction }}
+                isOwner={isOwner}
+                context={context}
               />
             );
           } else if (fieldName === 'repositories') {
@@ -142,8 +129,8 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 index={index}
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
-                isOwner={false}
-                context={{ parentFunction: {} as ModalFunction }}
+                isOwner={isOwner}
+                context={context}
               />
             );
           } else {
@@ -154,8 +141,8 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 index={index}
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
-                isOwner={false}
-                context={{ parentFunction: {} as ModalFunction }}
+                isOwner={isOwner}
+                context={context}
               />
             );
           }
@@ -168,15 +155,17 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold capitalize">{fieldName}</h3>
-        <ModalComponent
-          onSave={handleAddMaterial}
-          trigger={
-            <Button type="button" variant="outline">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add {singularName.toLowerCase()}
-            </Button>
-          }
-        />
+        {isOwner && (garden.modal_functions?.length ?? 0) > 0 && (
+          <AddMaterialWithFunctionSelect
+            garden={garden}
+            materialType={fieldName}
+            onSuccess={() => {
+              // The AddMaterialWithFunctionSelect component handles the actual material addition
+              // We just need to refresh the garden data to show the updated materials
+              window.location.reload();
+            }}
+          />
+        )}
       </div>
       {renderCards()}
     </div>

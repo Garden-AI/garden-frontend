@@ -53,8 +53,9 @@ const NotebookModal = ({ edit, onSave, initialData, trigger }: NotebookModalProp
   const onSubmit = async (data: NotebookFormData) => {
     try {
       onSave({
+        ...(edit && initialData ? initialData : {}),
         ...data,
-        type: 'jupyter' // Default to jupyter, or you may want to add a type selector in your form
+        type: 'jupyter' // Default type
       });
       setOpen(false);
       form.reset();

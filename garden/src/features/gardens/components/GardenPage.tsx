@@ -39,7 +39,8 @@ import {
   DatasetCard,
   PaperCard,
   RepositoryCard,
-  NotebookCard
+  NotebookCard,
+  GardenAssociatedMaterialsSection
 } from "./garden-page";
 
 interface GardenContentProps {
@@ -176,39 +177,17 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 <TabsContent value="datasets" className="mt-0 relative">
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
-                      <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-lg font-medium flex items-center">
-                            <DatabaseIcon className="h-5 w-5 mr-2 text-green" />
-                            Datasets
-                          </h3>
-                          
-                          {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
-                            <AddMaterialWithFunctionSelect
-                              garden={garden}
-                              materialType="datasets"
-                              onSuccess={handleMaterialAdded}
-                            />
-                          )}
-                        </div>
-                        
-                        {datasets.length > 0 ? (
-                          <div className="grid grid-cols-1 gap-8 py-2">
-                            {datasets.map((dataset) => (
-                              <DatasetCard 
-                                key={dataset.doi} 
-                                dataset={dataset}
-                                isOwner={ownsThisGarden}
-                                garden={garden}
-                                findAffectedFunctions={findDatasetFunctions}
-                                onUpdate={handleMaterialUpdated}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-gray-500 italic">No datasets associated with the functions in this garden</p>
-                        )}
-                      </div>
+                      <GardenAssociatedMaterialsSection
+                        garden={{
+                          ...garden,
+                          datasets,
+                          papers: [],
+                          repositories: []
+                        }}
+                        fieldName="datasets"
+                        isOwner={ownsThisGarden}
+                        modalFunction={garden.modal_functions?.[0] || {} as ModalFunction}
+                      />
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -216,39 +195,17 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 <TabsContent value="papers" className="mt-0 relative">
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
-                      <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-lg font-medium flex items-center">
-                            <BookIcon className="h-5 w-5 mr-2 text-green" />
-                            Papers
-                          </h3>
-                          
-                          {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
-                            <AddMaterialWithFunctionSelect
-                              garden={garden}
-                              materialType="papers"
-                              onSuccess={handleMaterialAdded}
-                            />
-                          )}
-                        </div>
-                        
-                        {papers.length > 0 ? (
-                          <div className="grid grid-cols-1 gap-8 py-2">
-                            {papers.map((paper) => (
-                              <PaperCard 
-                                key={paper.doi || paper.title} 
-                                paper={paper} 
-                                isOwner={ownsThisGarden}
-                                garden={garden}
-                                findAffectedFunctions={findPaperFunctions}
-                                onUpdate={handleMaterialUpdated}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-gray-500 italic">No papers associated with the functions in this garden</p>
-                        )}
-                      </div>
+                      <GardenAssociatedMaterialsSection
+                        garden={{
+                          ...garden,
+                          papers,
+                          datasets: [],
+                          repositories: []
+                        }}
+                        fieldName="papers"
+                        isOwner={ownsThisGarden}
+                        modalFunction={garden.modal_functions?.[0] || {} as ModalFunction}
+                      />
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -256,39 +213,17 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 <TabsContent value="repositories" className="mt-0 relative">
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
-                      <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-lg font-medium flex items-center">
-                            <CodeIcon className="h-5 w-5 mr-2 text-green" />
-                            Code Repositories
-                          </h3>
-                          
-                          {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
-                            <AddMaterialWithFunctionSelect
-                              garden={garden}
-                              materialType="repositories"
-                              onSuccess={handleMaterialAdded}
-                            />
-                          )}
-                        </div>
-                        
-                        {repositories.length > 0 ? (
-                          <div className="grid grid-cols-1 gap-8 py-2">
-                            {repositories.map((repo) => (
-                              <RepositoryCard 
-                                key={repo.url} 
-                                repository={repo}
-                                isOwner={ownsThisGarden}
-                                garden={garden}
-                                findAffectedFunctions={findRepositoryFunctions}
-                                onUpdate={handleMaterialUpdated}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-gray-500 italic">No repositories associated with the functions in this garden</p>
-                        )}
-                      </div>
+                      <GardenAssociatedMaterialsSection
+                        garden={{
+                          ...garden,
+                          repositories,
+                          datasets: [],
+                          papers: []
+                        }}
+                        fieldName="repositories"
+                        isOwner={ownsThisGarden}
+                        modalFunction={garden.modal_functions?.[0] || {} as ModalFunction}
+                      />
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -307,7 +242,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             <AddMaterialWithFunctionSelect
                               garden={garden}
                               materialType="notebooks"
-                              onSuccess={handleMaterialAdded}
+                              onSuccess={(data) => handleMaterialAdded()}
                             />
                           )}
                         </div>
@@ -319,9 +254,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                                 key={notebook.url} 
                                 notebook={notebook}
                                 isOwner={ownsThisGarden}
-                                garden={garden}
-                                findAffectedFunctions={findNotebookFunctions}
+                                context={{
+                                  parentFunction: garden.modal_functions?.[0] || {} as ModalFunction,
+                                  parentDoi: garden.doi
+                                }}
                                 onUpdate={handleMaterialUpdated}
+                                onDelete={handleMaterialRemoved}
                               />
                             ))}
                           </div>

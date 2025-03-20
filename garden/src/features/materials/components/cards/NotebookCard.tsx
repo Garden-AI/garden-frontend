@@ -32,9 +32,9 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
     }
   };
 
-  const handleEdit = async (updatedNotebook: Notebook) => {
+  const handleEdit = async (updatedNotebook?: Notebook) => {
     setIsEditing(false);
-    await onUpdate(updatedNotebook);
+    await onUpdate(updatedNotebook ?? notebook);
   };
 
   return (
@@ -46,7 +46,7 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
         context={context}
         icon={<Book className="h-4 w-4" />}
         title={notebook.title || "Untitled Notebook"}
-        onEdit={onDelete}
+        onEdit={handleEdit}
         onEditClick={handleEditClick}
       >
         <div className="space-y-2.5 py-1">
