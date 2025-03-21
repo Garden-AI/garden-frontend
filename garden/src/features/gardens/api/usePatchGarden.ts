@@ -32,10 +32,27 @@ export const usePatchGarden = () => {
 
       // Optimistically update to the new value
       if (previousGarden) {
-        queryClient.setQueryData<Garden>(["garden", doi], {
+        // Handle arrays that might be null in the patch but can't be null in the Garden type
+        const updatedGarden = {
           ...previousGarden,
-          ...garden
-        });
+          // Keep required fields from previous garden
+          doi: previousGarden.doi,
+          owner_identity_id: previousGarden.owner_identity_id,
+          // Handle optional arrays that can't be null
+          authors: garden.authors ?? previousGarden.authors ?? [],
+          contributors: garden.contributors ?? previousGarden.contributors ?? [],
+          // Handle other fields from the patch
+          title: garden.title ?? previousGarden.title,
+          description: garden.description ?? previousGarden.description,
+          year: garden.year ?? previousGarden.year,
+          version: garden.version ?? previousGarden.version,
+          is_test: garden.is_test ?? previousGarden.is_test,
+          is_archived: garden.is_archived ?? previousGarden.is_archived,
+          doi_is_draft: garden.doi_is_draft ?? previousGarden.doi_is_draft,
+          tags: garden.tags ?? previousGarden.tags ?? [],
+        };
+
+        queryClient.setQueryData<Garden>(["garden", doi], updatedGarden);
       }
 
       return { previousGarden };

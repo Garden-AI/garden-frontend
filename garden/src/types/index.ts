@@ -16,9 +16,12 @@ type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 // Extended interface for UI-specific properties
 interface ModalFunction extends BaseModalFunction {
   already_has_material?: boolean;
+  contributors?: string[];
 }
 
-type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchRequest"];
+type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchRequest"] & {
+  contributors?: string[] | null;
+};
 
 type AsyncModalAppMetadataResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
 type AsyncModalJobStatus = components["schemas"]["AsyncModalJobStatus"];

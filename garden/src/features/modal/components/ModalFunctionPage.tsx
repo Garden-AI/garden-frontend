@@ -322,8 +322,8 @@ const ModalFunctionPage = () => {
 
             <EditableMetadataField
               label="Contributors"
-              value={modalFunction.contributors}
-              fieldName="contrubutors"
+              value={modalFunction.contributors ?? []}
+              fieldName="contributors"
               modalFunction={modalFunction}
               ownsThisFunction={ownsThisFunction}
               isArray={true}
