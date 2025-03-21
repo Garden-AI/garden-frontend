@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EditIcon, SaveIcon, XIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
@@ -51,7 +51,12 @@ const EditableMetadataField = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [inputValue, setInputValue] = useState<string | string[]>(value || (isArray ? [] : ""));
-  const { mutate: updateGarden } = usePatchGarden();
+  const { mutateAsync: updateGarden } = usePatchGarden();
+  
+  // Update inputValue when value prop changes
+  useEffect(() => {
+    setInputValue(value || (isArray ? [] : ""));
+  }, [value, isArray]);
   
   // Create a displayable value for the field
   const displayValue = React.useMemo(() => {
@@ -86,7 +91,6 @@ const EditableMetadataField = ({
         garden: updateData
       });
       
-      toast.success(`${label} updated successfully`);
       setIsEditing(false);
       setIsSaving(false);
       if (onSave) onSave();
@@ -196,9 +200,19 @@ const EditableMetadataField = ({
           <Button 
             size="sm" 
             onClick={handleSave}
+            disabled={isSaving}
             className="h-7 text-xs bg-blue-600 hover:bg-blue-700"
           >
-            <SaveIcon className="h-3.5 w-3.5 mr-1" /> Save
+            {isSaving ? (
+              <>
+                <span className="mr-2">Saving...</span>
+                <span className="animate-spin">⌛</span>
+              </>
+            ) : (
+              <>
+                <SaveIcon className="h-3.5 w-3.5 mr-1" /> Save
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -209,7 +223,6 @@ const EditableMetadataField = ({
   return (
     <div
       className="group border border-transparent hover:border-gray-200 bg-white rounded-md py-1.5 px-2.5 transition-all hover:shadow-sm"
-      style={undefined}
     >
       <div className="flex justify-between items-center">
         <p className="text-sm text-gray-500 font-medium">
