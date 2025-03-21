@@ -8,5 +8,6 @@ export { default as ReviewNotice } from "./ReviewNotice";
 export { default as GardenAssociatedMaterialsSection } from "./GardenAssociatedMaterialsSection";
 export { default as ShowAllMaterialsToggle } from "./ShowAllMaterialsToggle";
 export { default as AddMaterialWithFunctionSelect } from "./AddMaterialWithFunctionSelect";
+export { default as AddModalFunctionSelector } from "./AddModalFunctionSelector";
 export { PaperCard, DatasetCard, RepositoryCard } from "./MaterialCards";
 export { NotebookCard } from "./components/NotebookCard";

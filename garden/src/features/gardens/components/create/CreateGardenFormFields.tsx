@@ -37,7 +37,11 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
 
   const isTestGarden = form.watch("is_test");
   const modalApp = form.watch("modal");
-  const currentModalFunctionIds = form.watch("modal_function_ids") || [];
+  
+  // Extract only the function IDs from the main modal app - these should be excluded from the selection table
+  // as they're already part of the garden. We don't want to exclude functions that are being selected
+  // in the modal_function_ids field.
+  const modalAppFunctionIds = modalApp.modal_functions?.map((func: any) => func.id) || [];
   
   // Check if garden is published to disable modal function selection
   const isPublished = form.watch("doi_is_draft") === false && form.watch("is_archived") === false;
@@ -178,36 +182,39 @@ export const CreateGardenFormFields = ({ hideModalUpload = false }: CreateGarden
                   </ul>
                 </div>
               )}
-              
-              {/* Wrap the modal functions selector in a Collapsible component */}
-              <div className="mt-6">
-                <Collapsible className="w-full">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Add Additional Functions</h3>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="p-1 hover:bg-gray-100">
-                        <ChevronDown className="h-5 w-5" />
-                        <span className="sr-only">Toggle</span>
-                      </Button>
-                    </CollapsibleTrigger>
-                  </div>
-                  <p className="mt-1 text-sm text-gray-600">
-                    Optionally add other Modal functions you've created to this Garden.
-                  </p>
-                  
-                  <CollapsibleContent className="mt-2">
-                    <SelectModalFunctionsTable 
-                      currentFunctionIds={currentModalFunctionIds}
-                      published={isPublished}
-                    />
-                  </CollapsibleContent>
-                </Collapsible>
-              </div>
-        </div>
+            </div>
         ) : (
         <UploadModalFormFields />
         )}
+      </div>
+
+      {/* Additional Functions Section - Moved outside the Modal App box */}
+      {hideModalUpload && (
+        <div className="space-y-8">
+          <Collapsible className="w-full space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-semibold">(Optional) Include Additional Functions</h2>
+                <p className="text-sm text-gray-700">
+                  Add other Modal functions you've already created to this Garden. 
+                </p>
+              </div>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="p-1 hover:bg-gray-100">
+                  <ChevronDown className="h-5 w-5" />
+                  <span className="sr-only">Toggle</span>
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            <CollapsibleContent className="mt-4">
+              <SelectModalFunctionsTable 
+                currentFunctionIds={modalAppFunctionIds}
+                published={isPublished}
+              />
+            </CollapsibleContent>
+          </Collapsible>
         </div>
+      )}
 
       <div className="space-y-8">
         <h2 className="text-2xl font-semibold">Visibility Settings</h2>

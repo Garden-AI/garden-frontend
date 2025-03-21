@@ -401,6 +401,26 @@ export interface paths {
         patch: operations["update_modal_function_modal_functions__id__patch"];
         trace?: never;
     };
+    "/modal-functions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Modal Functions
+         * @description Fetch multiple modal functions according to query parameters.
+         */
+        get: operations["get_modal_functions_modal_functions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/modal-file-metadata": {
         parameters: {
             query?: never;
@@ -906,6 +926,8 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
             /** Doi */
             doi: string;
             /** Doi Is Draft */
@@ -965,6 +987,8 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][];
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
             /** Doi */
             doi: string;
             /** Doi Is Draft */
@@ -1028,6 +1052,8 @@ export interface components {
             papers?: components["schemas"]["_PaperMetadata"][] | null;
             /** Datasets */
             datasets?: components["schemas"]["_DatasetMetadata"][] | null;
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][] | null;
             /** Doi Is Draft */
             doi_is_draft?: boolean | null;
             /** Func Uuid */
@@ -1474,13 +1500,15 @@ export interface components {
             /** Entrypoint Aliases */
             entrypoint_aliases?: {
                 [key: string]: string;
-            };
+            } | null;
             /** Is Archived */
             is_archived?: boolean | null;
             /** Is Test */
             is_test?: boolean | null;
             /** Entrypoint Ids */
             entrypoint_ids?: string[] | null;
+            /** Modal Function Ids */
+            modal_function_ids?: number[] | null;
         };
         /** GardenSearchFacets */
         GardenSearchFacets: {
@@ -2372,6 +2400,20 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** _NotebookMetadata */
+        _NotebookMetadata: {
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** _PaperMetadata */
         _PaperMetadata: {
             /** Title */
@@ -2400,22 +2442,6 @@ export interface components {
             url: string;
             /** Contributors */
             contributors?: string[];
-        } & {
-            [key: string]: unknown;
-        };
-        /** _NotebookMetadata */
-        _NotebookMetadata: {
-            /** Title */
-            title: string;
-            /** Description */
-            description?: string | null;
-            /**
-             * Url
-             * Format: uri
-             */
-            url: string;
-            /** Type */
-            type: "colab" | "jupyter";
         } & {
             [key: string]: unknown;
         };
@@ -3484,6 +3510,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModalFunctionMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_modal_functions_modal_functions_get: {
+        parameters: {
+            query?: {
+                id?: number[] | null;
+                doi?: string[] | null;
+                tags?: string[] | null;
+                authors?: string[] | null;
+                owner_uuid?: string | null;
+                draft?: boolean | null;
+                year?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModalFunctionMetadataResponse"][];
                 };
             };
             /** @description Validation Error */

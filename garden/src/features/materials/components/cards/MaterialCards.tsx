@@ -309,12 +309,10 @@ export const NotebookCard = ({
       >
         <div className="space-y-2.5 py-1">
           {notebook.description ? (
-            typeof notebook.description === 'string' && (
-              <div className="flex items-baseline">
-                <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
-                <div className="flex-1 line-clamp-2">{notebook.description}</div>
-              </div>
-            )
+            <div className="flex items-baseline">
+              <span className="w-24 text-gray-500 text-xs font-medium">Description</span>
+              <div className="flex-1 line-clamp-2">{String(notebook.description)}</div>
+            </div>
           ) : null}
           
           {notebook.url && (
@@ -331,7 +329,7 @@ export const NotebookCard = ({
             </div>
           )}
           
-          {notebook.type && (
+          {typeof notebook.type === 'string' && (
             <div className="flex items-baseline">
               <span className="w-24 text-gray-500 text-xs font-medium">Type</span>
               <div className="flex-1 capitalize">{notebook.type}</div>

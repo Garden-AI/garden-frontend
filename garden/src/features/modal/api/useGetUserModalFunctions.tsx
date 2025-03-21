@@ -22,31 +22,18 @@ export const useGetUserModalFunctions = (options: UseGetUserModalFunctionsOption
   return useQuery<ModalFunction[]>({
     queryKey: ["userModalFunctions", userUuid, excludeFunctionIds],
     queryFn: async () => {
-      // First fetch the user's modal apps
-      const appsResponse = await axios.get(`/modal-apps`, {
+      // Get all modal functions for the user
+      const response = await axios.get(`/modal-functions`, {
         params: { owner_uuid: userUuid }
       });
       
-      const apps = appsResponse.data || [];
+      const allFunctions = response.data || [];
       
-      // Then fetch the details of each function
-      let allFunctions: ModalFunction[] = [];
-      
-      for (const app of apps) {
-        // Skip if the app has no functions
-        if (!app.modal_function_ids?.length) continue;
-        
-        // For each function ID, fetch the function details if not excluded
-        for (const functionId of app.modal_function_ids) {
-          if (excludeFunctionIds.includes(functionId)) continue;
-          
-          try {
-            const functionResponse = await axios.get(`/modal-functions/${functionId}`);
-            allFunctions.push(functionResponse.data);
-          } catch (error) {
-            console.error(`Failed to fetch modal function ${functionId}:`, error);
-          }
-        }
+      // Filter out excluded function IDs if any
+      if (excludeFunctionIds.length > 0) {
+        return allFunctions.filter((func: ModalFunction) => 
+          !excludeFunctionIds.includes(func.id)
+        );
       }
       
       return allFunctions;

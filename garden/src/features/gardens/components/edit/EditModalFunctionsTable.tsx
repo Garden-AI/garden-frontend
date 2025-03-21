@@ -13,32 +13,36 @@ import { useFormContext } from "react-hook-form";
 import { Link } from "react-router-dom";
 import WithTooltip from "@/components/WithTooltip";
 import { cn } from "@/utils/form.utils";
-import { useGetUserModalFunctions } from "../../modal/api/useGetUserModalFunctions";
-import { GardenCreateFormData } from "../types/garden.types";
+import { useGetUserModalFunctions } from "../../../modal/api/useGetUserModalFunctions";
+import { GardenPatchFormData } from "../EditGardenschemas";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
-interface SelectModalFunctionsTableProps {
-  currentFunctionIds?: number[];
+interface EditModalFunctionsTableProps {
   published?: boolean;
 }
 
-export const SelectModalFunctionsTable = ({ 
-  currentFunctionIds = [], 
+/**
+ * Component for editing modal functions in a garden
+ * Unlike SelectModalFunctionsTable, this shows ALL user functions with garden functions pre-checked
+ */
+export const EditModalFunctionsTable = ({ 
   published = false 
-}: SelectModalFunctionsTableProps) => {
-  const { watch, setValue } = useFormContext<GardenCreateFormData>();
+}: EditModalFunctionsTableProps) => {
+  const { watch, setValue } = useFormContext<GardenPatchFormData>();
+  const auth = useGlobusAuth();
   
   // Get the selected modal function IDs from the form
   const selectedIds = watch("modal_function_ids") || [];
   
-  // Fetch the user's other modal functions, excluding the ones already in the garden
+  // Fetch ALL user's modal functions (without exclusion)
   const {
     data: functions,
     refetch,
     isFetching,
     isLoading
   } = useGetUserModalFunctions({
-    excludeFunctionIds: currentFunctionIds,
+    enabled: !!auth?.authorization?.user?.sub,
   });
 
   const handleCheckboxChange = (id: number) => {
@@ -54,7 +58,7 @@ export const SelectModalFunctionsTable = ({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="mb-4 text-xl font-bold">Other Modal Functions</h3>
+        <h3 className="mb-4 text-xl font-bold">Your Modal Functions</h3>
         <div className="flex items-center pr-4 text-sm">
           <span className="text-gray-500">{isFetching && "Refreshing..."}</span>
           <WithTooltip hint="Refresh">
@@ -97,7 +101,7 @@ export const SelectModalFunctionsTable = ({
               ) : functions?.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-gray-500">
-                    No additional modal functions available
+                    No modal functions available
                   </TableCell>
                 </TableRow>
               ) : (
