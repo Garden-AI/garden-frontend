@@ -19,7 +19,7 @@ const TeamMember = ({ member }: { member: any }) => {
             rel="noreferrer"
             className="mx-2 inline-block pt-2 align-bottom"
           >
-            <img className="h-5 w-5" src="img/linkedin.png" alt="linkedin logo" />
+            <img className="h-5 w-5" src="img/extern-logos/linkedin.png" alt="linkedin logo" />
           </a>
         ) : (
           <></>
@@ -31,7 +31,7 @@ const TeamMember = ({ member }: { member: any }) => {
             rel="noreferrer"
             className="mx-2 inline-block pt-2 align-bottom"
           >
-            <img className="h-5 w-5" src="img/twitter.png" alt="twitter logo" />
+            <img className="h-5 w-5" src="img/extern-logos/twitter.png" alt="twitter logo" />
           </a>
         ) : (
           <></>

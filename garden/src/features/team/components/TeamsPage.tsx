@@ -1,5 +1,18 @@
+import Alumni from "./Alumni";
 import TeamMember from "./TeamMember";
 import StudentMember from "./StudentMember";
+
+interface TeamMember {
+  name: string;
+  major?: string;
+  description?: string;
+  workplace?: string;
+  title?: string;
+  linkedin_link: string;
+  github_link: string;
+  twitter_link?: string;
+  photo?: string;
+}
 
 const TeamsPage = () => {
   // 1. Ben Blaiszik; University of Chicago; Co-PI
@@ -51,26 +64,6 @@ const TeamsPage = () => {
       linkedin_link: "https://www.linkedin.com/in/rebecca-willett-90b95973/",
       github_link: "",
       photo: "img/team-images/rebecca.jpeg",
-    },
-    {
-      name: "Aristana Scourtas",
-      description: "Research Scientist and Software Engineer",
-      workplace: "University of Chicago",
-      title: "Senior Personnel",
-      twitter_link: "https://twitter.com/aristana_s",
-      linkedin_link: "https://www.linkedin.com/in/aristana/",
-      github_link: "",
-      photo: "img/team-images/ari.jpg",
-    },
-    {
-      name: "KJ Schmidt",
-      description: "Research Scientist and Software Engineer",
-      workplace: "University of Chicago",
-      title: "Senior Personnel",
-      twitter_link: "https://twitter.com/kj_schmidt",
-      linkedin_link: "https://www.linkedin.com/in/schmidtkj/",
-      github_link: "",
-      photo: "img/team-images/kj.jpeg",
     },
     {
       name: "Dane Morgan",
@@ -170,14 +163,47 @@ const TeamsPage = () => {
     //     linkedin_link:"https://www.linkedin.com/in/steven-wangen/",
     //     github_link:""
     // }
+    {
+      name: "Hayden Holbrook",
+      workplace: "University of Chicago",
+      description: "Software Engineer",
+      title: "Software Engineer",
+      linkedin_link: "http://www.linkedin.com/in/hholb",
+      github_link: "https://github.com/hholb",
+      photo: "img/team-images/hayden.jpeg",
+      twitter_link: "",
+    },
   ];
 
-  const students = [
+  const students: TeamMember[] = [
     {
-      name: "Max Tuecke",
+      name: "Riya Jain",
       major: "Computer Science @ University of Illinois Urbana-Champaign",
-      linkedin_link: "",
+      linkedin_link: "https://www.linkedin.com/in/riya-jain-uofi/",
+      github_link: "https://github.com/riyaj5246",
+    },
+  ];
+
+  const alums = [
+    {
+      name: "Aristana Scourtas",
+      description: "Research Scientist and Software Engineer",
+      workplace: "University of Chicago",
+      title: "Senior Personnel",
+      twitter_link: "https://twitter.com/aristana_s",
+      linkedin_link: "https://www.linkedin.com/in/aristana/",
       github_link: "",
+      photo: "img/team-images/ari.jpg",
+    },
+    {
+      name: "KJ Schmidt",
+      description: "Research Scientist and Software Engineer",
+      workplace: "University of Chicago",
+      title: "Senior Personnel",
+      twitter_link: "https://twitter.com/kj_schmidt",
+      linkedin_link: "https://www.linkedin.com/in/schmidtkj/",
+      github_link: "",
+      photo: "img/team-images/kj.jpeg",
     },
     {
       name: "Phillip Kim",
@@ -198,14 +224,11 @@ const TeamsPage = () => {
       github_link: "",
     },
     {
-      name: "Hayden Holbrook",
-      major: "Computer Science @ University of North Carolina Asheville",
-      linkedin_link: "http://www.linkedin.com/in/hholb",
-      github_link: "https://github.com/hholb",
+      name: "Max Tuecke",
+      major: "Computer Science @ University of Illinois Urbana-Champaign",
+      linkedin_link: "",
+      github_link: "",
     },
-  ];
-
-  const alums = [
     {
       name: "Isaac Darling",
       major: "Computer Science @ University of Chicago",
@@ -273,7 +296,7 @@ const TeamsPage = () => {
 
           <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {alums.map((student) => (
-              <StudentMember key={student.name} member={student} />
+              <Alumni key={student.name} member={student} />
             ))}
           </div>
         </div>
