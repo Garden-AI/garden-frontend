@@ -11,7 +11,7 @@ import { Entrypoint, Garden } from "@/types";
 import { useGetEntrypoint } from "../api/useGetEntrypoint";
 import EntrypointTabs from "@/features/entrypoints/components/EntrypointTabs";
 import EntrypointFunction from "@/features/entrypoints/components/EntrypointFunction";
-import AssociatedMaterials from "@/features/gardens/components/AssociatedMaterials";
+import AssociatedMaterials from "@/features/materials/components/AssociatedMaterials";
 import Markdown from "@/components/Markdown";
 
 const EntrypointPage = () => {

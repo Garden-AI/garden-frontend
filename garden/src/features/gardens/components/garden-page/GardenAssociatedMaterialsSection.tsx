@@ -1,13 +1,13 @@
 import React from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { Dataset, Paper, Repository, Garden } from '@/types';
-import DatasetModal from '@/features/entrypoints/components/modals/DatasetModal';
-import PaperModal from '@/features/entrypoints/components/modals/PaperModal';
-import RepositoryModal from '@/features/entrypoints/components/modals/RepositoryModal';
+import { Dataset, Paper, Repository, Garden, ModalFunction } from '@/types';
+import { DatasetModal } from '@/features/materials/components/modals/DatasetModal';
+import { PaperModal } from '@/features/materials/components/modals/PaperModal';
+import { RepositoryModal } from '@/features/materials/components/modals/RepositoryModal';
 import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { toast } from 'sonner';
-import { DatasetCard, PaperCard, RepositoryCard } from '@/features/entrypoints/components/AssociatedMaterialCards';
+import { DatasetCard, PaperCard, RepositoryCard } from '@/features/materials/components/cards/MaterialCards';
 
 type MaterialType = Dataset | Paper | Repository;
 type MaterialsRecord = Record<'papers' | 'repositories' | 'datasets', MaterialType[]>;
@@ -130,6 +130,8 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 index={index}
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
+                isOwner={false}
+                context={{ parentFunction: {} as ModalFunction }}
               />
             );
           } else if (fieldName === 'repositories') {
@@ -140,6 +142,8 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 index={index}
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
+                isOwner={false}
+                context={{ parentFunction: {} as ModalFunction }}
               />
             );
           } else {
@@ -150,6 +154,8 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 index={index}
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
+                isOwner={false}
+                context={{ parentFunction: {} as ModalFunction }}
               />
             );
           }

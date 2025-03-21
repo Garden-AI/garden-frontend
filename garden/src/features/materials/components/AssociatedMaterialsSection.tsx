@@ -2,10 +2,10 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { PlusCircle } from "lucide-react";
 
 import { Button } from "@/components/shadcn/button";
-import AssociatedMaterialsGrid from "./AssociatedMaterialsGrid";
-import DatasetModal from "./modals/DatasetModal";
-import PaperModal from "./modals/PaperModal";
-import RepositoryModal from "./modals/RepositoryModal";
+import { AssociatedMaterialsGrid } from "./AssociatedMaterialsGrid";
+import { DatasetModal } from "./modals/DatasetModal";
+import { PaperModal } from "./modals/PaperModal";
+import { RepositoryModal } from "./modals/RepositoryModal";
 
 interface AssociatedMaterialsSectionProps {
   fieldName: "papers" | "repositories" | "datasets";
@@ -53,4 +53,4 @@ const AssociatedMaterialsSection = ({
   );
 };
 
-export default AssociatedMaterialsSection;
+export { AssociatedMaterialsSection };

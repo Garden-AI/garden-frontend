@@ -145,7 +145,7 @@ export const BaseMaterialCard = <T extends MaterialType>({
           </div>
         </CardContent>
         
-        <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex items-center">
+        <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex items-center justify-end">
           {isOwner && (
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <Button
