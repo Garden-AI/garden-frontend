@@ -176,6 +176,12 @@ const TeamsPage = () => {
   ];
 
   const students: TeamMember[] = [
+    {
+      name: "Riya Jain",
+      major: "Computer Science @ University of Illinois Urbana-Champaign",
+      linkedin_link: "https://www.linkedin.com/in/riya-jain-uofi/",
+      github_link: "https://github.com/riyaj5246",
+    },
   ];
 
   const alums = [
