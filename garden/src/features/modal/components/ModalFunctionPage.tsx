@@ -319,6 +319,16 @@ const ModalFunctionPage = () => {
               ownsThisFunction={ownsThisFunction}
               isArray={true}
             />
+
+            <EditableMetadataField
+              label="Contributors"
+              value={modalFunction.contributors}
+              fieldName="contrubutors"
+              modalFunction={modalFunction}
+              ownsThisFunction={ownsThisFunction}
+              isArray={true}
+            />
+
             <EditableMetadataField
               label="Year"
               value={modalFunction.year}
