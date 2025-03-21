@@ -2,6 +2,18 @@ import Alumni from "./Alumni";
 import TeamMember from "./TeamMember";
 import StudentMember from "./StudentMember";
 
+interface TeamMember {
+  name: string;
+  major?: string;
+  description?: string;
+  workplace?: string;
+  title?: string;
+  linkedin_link: string;
+  github_link: string;
+  twitter_link?: string;
+  photo?: string;
+}
+
 const TeamsPage = () => {
   // 1. Ben Blaiszik; University of Chicago; Co-PI
   // 2. Ian Foster; University of Chicago; PI
@@ -163,7 +175,7 @@ const TeamsPage = () => {
     },
   ];
 
-  const students = [
+  const students: TeamMember[] = [
   ];
 
   const alums = [
