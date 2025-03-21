@@ -386,6 +386,15 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 ownsThisGarden={ownsThisGarden}
                 isArray={true}
               />
+
+              <EditableMetadataField
+                label="Contributors"
+                value={garden.contributors}
+                fieldName="contributors"
+                garden={garden}
+                ownsThisGarden={ownsThisGarden}
+                isArray={true}
+              />
               
               <EditableMetadataField
                 label="Year"
