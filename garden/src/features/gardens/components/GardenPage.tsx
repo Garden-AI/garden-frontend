@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { DatabaseIcon, BookIcon, ClipboardIcon, CodeIcon, ScrollTextIcon } from "lucide-react";
+import { DatabaseIcon, BookIcon, ClipboardIcon, CodeIcon, FunctionSquare, ScrollTextIcon } from "lucide-react";
 import { useCallback } from 'react';
 
 import Breadcrumb from "@/components/Breadcrumb";

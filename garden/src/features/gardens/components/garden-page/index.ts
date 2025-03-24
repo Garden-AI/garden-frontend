@@ -1,3 +1,4 @@
+export { default as AddModalFunctionSelector } from "./AddModalFunctionSelector";
 export { default as GardenDescription } from "./GardenDescription";
 export { default as CitationBlock } from "./CitationBlock";
 export { default as VisibilityWarning } from "./VisibilityWarning";
