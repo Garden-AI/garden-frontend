@@ -375,12 +375,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
               </div>
               
               <EditableMetadataField
-                label="Gardener"
-                helpText="Creator of the Garden"
-                value={[garden.owner]}
-                fieldName="gardener"
+                label="Gardeners"
+                helpText="Creator and contributors to this Garden"
+                value={[garden.owner, ...(garden.contributors || [])]}
+                fieldName="contributors"
                 garden={garden}
-                ownsThisGarden={false}
+                ownsThisGarden={ownsThisGarden}
                 isArray={true}
               />
               
@@ -394,16 +394,6 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 isArray={true}
               />
 
-              <EditableMetadataField
-                label="Contributors"
-                helpText="Contributors to this Garden and other related materials"
-                value={garden.contributors}
-                fieldName="contributors"
-                garden={garden}
-                ownsThisGarden={ownsThisGarden}
-                isArray={true}
-              />
-              
               <EditableMetadataField
                 label="Year"
                 helpText="Year this Garden was created"

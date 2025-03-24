@@ -82,8 +82,16 @@ const EditableMetadataField = ({
       
       // Handle read-only properties correctly
       if (fieldName !== 'entrypoint_ids' && fieldName !== 'modal_function_ids') {
-        // Only try to update non-readonly fields
-        updateData[fieldName as keyof Omit<Garden, 'entrypoint_ids' | 'modal_function_ids'>] = inputValue as any;
+        // Special handling for contributors to filter out the owner
+        if (fieldName === 'contributors') {
+          const contributors = Array.isArray(inputValue) 
+            ? inputValue.filter(c => c !== garden.owner)
+            : [];
+          updateData.contributors = contributors;
+        } else {
+          // Only try to update non-readonly fields
+          updateData[fieldName as keyof Omit<Garden, 'entrypoint_ids' | 'modal_function_ids'>] = inputValue as any;
+        }
       }
       
       await updateGarden({
@@ -166,7 +174,10 @@ const EditableMetadataField = ({
           fieldName === 'authors' || fieldName === 'contributors' || fieldName === 'tags' ? (
             <MultipleSelector
               value={(Array.isArray(inputValue) ? inputValue : []).map(val => ({ value: val, label: val }))}
-              onChange={(options: any) => setInputValue(options.map((opt: any) => opt.value))}
+              onChange={(options: any) => {
+                if(fieldName === "contributors") garden.contributors = garden.contributors?.filter(c => c !== garden.owner)
+                setInputValue(options.map((opt: any) => opt.value))
+              }}
               placeholder={`Add ${fieldName}`}
               creatable
               className="w-full"
