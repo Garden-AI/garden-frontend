@@ -163,7 +163,7 @@ const EditableMetadataField = ({
         {/* Text input or pill input */}
         {isArray ? (
           // Handle array inputs (like authors)
-          fieldName === 'authors' || fieldName === 'contributors' ? (
+          fieldName === 'authors' || fieldName === 'contributors' || fieldName === 'tags' ? (
             <MultipleSelector
               value={(Array.isArray(inputValue) ? inputValue : []).map(val => ({ value: val, label: val }))}
               onChange={(options: any) => setInputValue(options.map((opt: any) => opt.value))}

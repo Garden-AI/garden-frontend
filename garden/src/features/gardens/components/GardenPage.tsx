@@ -1,9 +1,8 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { DatabaseIcon, BookIcon, ClipboardIcon, FolderGit2, Laptop, CodeIcon, ScrollTextIcon, FunctionSquare } from "lucide-react";
-import { useState, useCallback, useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { DatabaseIcon, BookIcon, ClipboardIcon, CodeIcon, ScrollTextIcon } from "lucide-react";
+import { useCallback } from 'react';
 
 import Breadcrumb from "@/components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
@@ -23,13 +22,10 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import { MaterialsProvider } from '@/features/materials/contexts/MaterialsContext';
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
 
-// Import Garden from the root types directory
-import { Garden, ModalFunction } from "@/types";
+import { Garden } from "@/types";
 
-// Import extracted components
 import {
   EditableMetadataField,
-  EditableTags,
   GardenDescription,
   CitationBlock,
   VisibilityWarning,
@@ -379,7 +375,18 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
               </div>
               
               <EditableMetadataField
-                label="Authors"
+                label="Gardener"
+                helpText="Creator of the Garden"
+                value={[garden.owner]}
+                fieldName="gardener"
+                garden={garden}
+                ownsThisGarden={false}
+                isArray={true}
+              />
+              
+              <EditableMetadataField
+                label="Model Authors"
+                helpText="Orginial authors of the models in this Garden"
                 value={garden.authors}
                 fieldName="authors"
                 garden={garden}
@@ -389,6 +396,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
 
               <EditableMetadataField
                 label="Contributors"
+                helpText="Contributors to this Garden and other related materials"
                 value={garden.contributors}
                 fieldName="contributors"
                 garden={garden}
@@ -398,6 +406,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
               
               <EditableMetadataField
                 label="Year"
+                helpText="Year this Garden was created"
                 value={garden.year}
                 fieldName="year"
                 garden={garden}
@@ -406,17 +415,23 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
               
               <EditableMetadataField
                 label="Version"
+                helpText="Garden version"
                 value={garden.version}
                 fieldName="version"
                 garden={garden}
                 ownsThisGarden={ownsThisGarden}
               />
               
-              <EditableTags
+              <EditableMetadataField
+                label="Tags"
+                helpText="Tags help users discover this Garden"
+                value={garden.tags}
+                fieldName="tags"
                 garden={garden}
                 ownsThisGarden={ownsThisGarden}
+                isArray={true}
               />
-              
+
               {/* Citation */}
               <div className="mt-4 bg-white rounded-md p-3 shadow-sm">
                 <div className="flex items-center justify-between">
