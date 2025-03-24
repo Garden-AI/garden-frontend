@@ -1418,6 +1418,8 @@ export interface components {
             title: string;
             /** Authors */
             authors?: string[];
+            /** Owner */
+            owner: string,
             /** Contributors */
             contributors?: string[];
             /** Doi */
