@@ -1418,6 +1418,8 @@ export interface components {
             title: string;
             /** Authors */
             authors?: string[];
+            /** Owner */
+            owner: string,
             /** Contributors */
             contributors?: string[];
             /** Doi */
@@ -1863,6 +1865,8 @@ export interface components {
         };
         /** ModalFunctionMetadataResponse */
         ModalFunctionMetadataResponse: {
+            /** Owner */
+            owner: string;
             /**
              * Is Archived
              * @default false
