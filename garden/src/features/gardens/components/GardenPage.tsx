@@ -25,7 +25,6 @@ import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useN
 import { Garden } from "@/types";
 
 import {
-  EditableMetadataField,
   GardenDescription,
   CitationBlock,
   VisibilityWarning,
@@ -39,19 +38,20 @@ import {
   NotebookCard
 } from "./garden-page";
 
+import { Metadata, EditableMetadataField } from "@/components/shared/metadata";
+
 interface GardenContentProps {
   garden: Garden;
   ownsThisGarden: boolean;
   isNewlyCreated: boolean;
-  updateGarden: (data: { doi: string; garden: Partial<Garden> }) => void;
 }
 
-const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }: GardenContentProps) => {
-  // Use our new material management hooks
+const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContentProps) => {
   const { materials: datasets, refreshMaterials: refreshDatasets, findFunctionsWithMaterial: findDatasetFunctions } = useDatasetManagement(garden);
   const { materials: papers, refreshMaterials: refreshPapers, findFunctionsWithMaterial: findPaperFunctions } = usePaperManagement(garden);
   const { materials: repositories, refreshMaterials: refreshRepositories, findFunctionsWithMaterial: findRepositoryFunctions } = useRepositoryManagement(garden);
   const { materials: notebooks, refreshMaterials: refreshNotebooks, findFunctionsWithMaterial: findNotebookFunctions } = useNotebookManagement(garden);
+  const { mutateAsync: patchGarden } = usePatchGarden();
 
   // Callback to refresh all materials after adding/updating/removing
   const handleMaterialsChange = useCallback(async () => {
@@ -63,7 +63,6 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
     ]);
   }, [refreshDatasets, refreshPapers, refreshRepositories, refreshNotebooks]);
 
-  // Use this handler for all material operations
   const handleMaterialAdded = useCallback(async () => {
     await handleMaterialsChange();
   }, [handleMaterialsChange]);
@@ -76,9 +75,6 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
     await handleMaterialsChange();
   }, [handleMaterialsChange]);
 
-  // Log notebooks for debugging
-  console.log('Notebooks:', notebooks);
-
   return (
     <div className="container max-w-7xl">
       <div className="mt-2 mb-4">
@@ -90,15 +86,15 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
           ]}
         />
       </div>
-      
+
       {/* Display review notice for newly created gardens */}
-      <ReviewNotice 
-        isNewlyCreated={isNewlyCreated} 
-        ownsThisGarden={ownsThisGarden} 
+      <ReviewNotice
+        isNewlyCreated={isNewlyCreated}
+        ownsThisGarden={ownsThisGarden}
       />
-      
-      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={garden} updateGarden={updateGarden} />}
-      
+
+      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={garden} updateGarden={patchGarden} />}
+
       {/* Hero Metadata Section */}
       <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
         <div className="flex flex-col-reverse lg:flex-row gap-6">
@@ -114,25 +110,25 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                 <GardenDropdownOptions garden={garden} />
               </div>
             </div>
-            
+
             {/* Description with Markdown */}
             <GardenDescription garden={garden} />
-            
+
             {/* Functions, Datasets, Papers, and Notebooks tabs */}
             <div className="mt-6">
-              <Tabs 
+              <Tabs
                 defaultValue={
-                  garden.modal_functions?.length ? "functions" : 
-                  datasets.length ? "datasets" : 
-                  papers.length ? "papers" : 
-                  notebooks.length ? "notebooks" :
-                  "functions"
-                } 
+                  garden.modal_functions?.length ? "functions" :
+                    datasets.length ? "datasets" :
+                      papers.length ? "papers" :
+                        notebooks.length ? "notebooks" :
+                          "functions"
+                }
                 className="w-full"
               >
                 <TabsList className="mb-2 bg-gray-100 p-0.5">
                   <TabsTrigger value="functions" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                    Functions {((garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)) > 0 && 
+                    Functions {((garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)) > 0 &&
                       `(${(garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)})`}
                   </TabsTrigger>
                   <TabsTrigger value="datasets" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
@@ -148,7 +144,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                     Notebooks {notebooks.length > 0 && `(${notebooks.length})`}
                   </TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="functions" className="mt-0 relative">
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
@@ -185,7 +181,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                     </CardContent>
                   </Card>
                 </TabsContent>
-                
+
                 <TabsContent value="datasets" className="mt-0 relative">
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
@@ -195,7 +191,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             <DatabaseIcon className="h-5 w-5 mr-2 text-green" />
                             Datasets
                           </h3>
-                          
+
                           {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
                             <AddMaterialWithFunctionSelect
                               garden={garden}
@@ -204,12 +200,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             />
                           )}
                         </div>
-                        
+
                         {datasets.length > 0 ? (
                           <div className="grid grid-cols-1 gap-8 py-2">
                             {datasets.map((dataset) => (
-                              <DatasetCard 
-                                key={dataset.doi} 
+                              <DatasetCard
+                                key={dataset.doi}
                                 dataset={dataset}
                                 isOwner={ownsThisGarden}
                                 garden={garden}
@@ -225,7 +221,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                     </CardContent>
                   </Card>
                 </TabsContent>
-                
+
                 <TabsContent value="papers" className="mt-0 relative">
                   <Card className="border-0 shadow-none bg-transparent">
                     <CardContent className="pt-6">
@@ -235,7 +231,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             <BookIcon className="h-5 w-5 mr-2 text-green" />
                             Papers
                           </h3>
-                          
+
                           {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
                             <AddMaterialWithFunctionSelect
                               garden={garden}
@@ -244,13 +240,13 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             />
                           )}
                         </div>
-                        
+
                         {papers.length > 0 ? (
                           <div className="grid grid-cols-1 gap-8 py-2">
                             {papers.map((paper) => (
-                              <PaperCard 
-                                key={paper.doi || paper.title} 
-                                paper={paper} 
+                              <PaperCard
+                                key={paper.doi || paper.title}
+                                paper={paper}
                                 isOwner={ownsThisGarden}
                                 garden={garden}
                                 findAffectedFunctions={findPaperFunctions}
@@ -275,7 +271,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             <CodeIcon className="h-5 w-5 mr-2 text-green" />
                             Code Repositories
                           </h3>
-                          
+
                           {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
                             <AddMaterialWithFunctionSelect
                               garden={garden}
@@ -284,12 +280,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             />
                           )}
                         </div>
-                        
+
                         {repositories.length > 0 ? (
                           <div className="grid grid-cols-1 gap-8 py-2">
                             {repositories.map((repo) => (
-                              <RepositoryCard 
-                                key={repo.url} 
+                              <RepositoryCard
+                                key={repo.url}
                                 repository={repo}
                                 isOwner={ownsThisGarden}
                                 garden={garden}
@@ -315,7 +311,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             <ScrollTextIcon className="h-5 w-5 mr-2 text-green" />
                             Notebooks
                           </h3>
-                          
+
                           {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
                             <AddMaterialWithFunctionSelect
                               garden={garden}
@@ -324,12 +320,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
                             />
                           )}
                         </div>
-                        
+
                         {notebooks.length > 0 ? (
                           <div className="grid grid-cols-1 gap-8 py-2">
                             {notebooks.map((notebook) => (
-                              <NotebookCard 
-                                key={notebook.url} 
+                              <NotebookCard
+                                key={notebook.url}
                                 notebook={notebook}
                                 isOwner={ownsThisGarden}
                                 garden={garden}
@@ -348,99 +344,125 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, updateGarden }:
               </Tabs>
             </div>
           </div>
-          
+
           {/* Metadata Details */}
-          <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold mb-2">Metadata</h3>
-              
-              {/* DOI Field */}
-              <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-500 font-medium">
-                    DOI
-                  </p>
-                  <CopyButton 
-                    content={garden.doi} 
-                    hint="Copy DOI" 
-                    className="ml-2" 
-                    icon={<ClipboardIcon className="h-4 w-4" />}
-                  />
-                </div>
-                <div className="mt-0.5">
-                  <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
-                    {garden.doi}
-                  </p>
-                </div>
+          <Metadata entity={garden} ownsThisEntity={ownsThisGarden}>
+            {/* DOI Field */}
+            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500 font-medium">
+                  DOI
+                </p>
+                <CopyButton
+                  content={garden.doi}
+                  hint="Copy DOI"
+                  className="ml-2"
+                  icon={<ClipboardIcon className="h-4 w-4" />}
+                />
               </div>
-              
-              <EditableMetadataField
-                label="Gardeners"
-                helpText="Creator and contributors to this Garden"
-                value={[garden.owner, ...(garden.contributors || [])]}
-                fieldName="contributors"
-                garden={garden}
-                ownsThisGarden={ownsThisGarden}
-                isArray={true}
-              />
-              
-              <EditableMetadataField
-                label="Model Authors"
-                helpText="Orginial authors of the models in this Garden"
-                value={garden.authors}
-                fieldName="authors"
-                garden={garden}
-                ownsThisGarden={ownsThisGarden}
-                isArray={true}
-              />
+              <div className="mt-0.5">
+                <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
+                  {garden.doi}
+                </p>
+              </div>
+            </div>
 
-              <EditableMetadataField
-                label="Year"
-                helpText="Year this Garden was created"
-                value={garden.year}
-                fieldName="year"
-                garden={garden}
-                ownsThisGarden={ownsThisGarden}
-              />
-              
-              <EditableMetadataField
-                label="Version"
-                helpText="Garden version"
-                value={garden.version}
-                fieldName="version"
-                garden={garden}
-                ownsThisGarden={ownsThisGarden}
-              />
-              
-              <EditableMetadataField
-                label="Tags"
-                helpText="Tags help users discover this Garden"
-                value={garden.tags}
-                fieldName="tags"
-                garden={garden}
-                ownsThisGarden={ownsThisGarden}
-                isArray={true}
-              />
+            <EditableMetadataField
+              label="Model Authors"
+              helpText="Orginial authors of the models in this Garden"
+              value={garden.authors}
+              fieldName="authors"
+              entity={garden}
+              ownsThisEntity={ownsThisGarden}
+              isArray={true}
+              onUpdate={async (updateData) => {
+                await patchGarden({
+                  doi: garden.doi,
+                  garden: updateData
+                });
+              }}
+            />
 
-              {/* Citation */}
-              <div className="mt-4 bg-white rounded-md p-3 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-500 font-medium">Citation</p>
-                  <CopyButton 
-                    content={`@software{
+            <EditableMetadataField
+              label="Gardeners"
+              helpText="Creator and contributors to this Garden"
+              value={[garden.owner, ...(garden.contributors || [])]}
+              fieldName="contributors"
+              entity={garden}
+              ownsThisEntity={ownsThisGarden}
+              isArray={true}
+              onUpdate={async (updateData) => {
+                await patchGarden({
+                  doi: garden.doi,
+                  garden: updateData
+                });
+              }}
+            />
+
+            <EditableMetadataField
+              label="Year"
+              helpText="Year this Garden was created"
+              value={garden.year}
+              fieldName="year"
+              entity={garden}
+              ownsThisEntity={ownsThisGarden}
+              onUpdate={async (updateData) => {
+                await patchGarden({
+                  doi: garden.doi,
+                  garden: updateData
+                });
+              }}
+            />
+
+            <EditableMetadataField
+              label="Version"
+              helpText="Garden version"
+              value={garden.version}
+              fieldName="version"
+              entity={garden}
+              ownsThisEntity={ownsThisGarden}
+              onUpdate={async (updateData) => {
+                await patchGarden({
+                  doi: garden.doi,
+                  garden: updateData
+                });
+              }}
+            />
+
+            <EditableMetadataField
+              label="Tags"
+              helpText="Tags help users discover this Garden"
+              value={garden.tags}
+              fieldName="tags"
+              entity={garden}
+              ownsThisEntity={ownsThisGarden}
+              isArray={true}
+              onUpdate={async (updateData) => {
+                await patchGarden({
+                  doi: garden.doi,
+                  garden: updateData
+                });
+              }}
+            />
+
+            {/* Citation */}
+            <div className="mt-4 bg-white rounded-md p-3 shadow-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500 font-medium">Cite this Garden</p>
+                <CopyButton
+                  content={`@software{
   title = {${garden.title}},
   year = {${garden.year || 'n.d.'}},
   publisher = {Garden AI},
   doi = {${garden.doi}}
 }`}
-                    hint="Copy Citation"
-                    icon={<ClipboardIcon className="h-4 w-4" />}
-                  />
-                </div>
-                <CitationBlock garden={garden} />
+                  hint="Copy Citation"
+                  icon={<ClipboardIcon className="h-4 w-4" />}
+                />
               </div>
+              <CitationBlock garden={garden} />
             </div>
-          </div>
+          </Metadata>
         </div>
       </div>
     </div>
@@ -451,10 +473,9 @@ const GardenPage = () => {
   const { doi } = useParams();
   const [searchParams] = useSearchParams();
   const isNewlyCreated = searchParams.get('newlyCreated') === 'true';
-  
+
   const auth = useGlobusAuth();
   const { data: garden, isLoading, isError, refetch } = useGetGarden(doi || '');
-  const { mutate: patchGarden } = usePatchGarden();
 
   if (isLoading) {
     return <LoadingOverlay />;
@@ -469,20 +490,12 @@ const GardenPage = () => {
 
   const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
 
-  const handleUpdateGarden = (data: Partial<Garden>) => {
-    patchGarden({
-      doi: garden.doi,
-      garden: data
-    });
-  };
-
   return (
     <MaterialsProvider garden={garden} refetchGarden={async () => { await refetch(); }}>
-      <GardenContent 
-        garden={garden} 
-        ownsThisGarden={ownsThisGarden} 
+      <GardenContent
+        garden={garden}
+        ownsThisGarden={ownsThisGarden}
         isNewlyCreated={isNewlyCreated}
-        updateGarden={({ doi, garden: data }) => patchGarden({ doi, garden: data })}
       />
     </MaterialsProvider>
   );

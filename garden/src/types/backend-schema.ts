@@ -1863,6 +1863,8 @@ export interface components {
         };
         /** ModalFunctionMetadataResponse */
         ModalFunctionMetadataResponse: {
+            /** Owner */
+            owner: string;
             /**
              * Is Archived
              * @default false

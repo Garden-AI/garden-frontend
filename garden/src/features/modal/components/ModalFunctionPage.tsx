@@ -10,264 +10,28 @@ import NotFoundPage from "@/components/NotFoundPage";
 import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
-import { Input } from "@/components/shadcn/input";
-import { Textarea } from "@/components/shadcn/textarea";
-import MultipleSelector from "@/components/shadcn/multiple-select";
 
-import { LinkIcon, TagIcon, PencilIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon, XIcon } from "lucide-react";
+import { LinkIcon, TagIcon, PencilIcon, CheckIcon, XIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
 import CopyButton from "@/components/CopyButton";
 import ShareModal from "@/components/ShareModal";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  CardTitle,
-  MarkdownCardContent,
-} from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
-import Markdown from "@/components/Markdown";
 import { EditableCodeField } from "@/components/EditableCodeField";
+import { Metadata, EditableMetadataField } from "@/components/shared/metadata";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
   owner_identity_id: string;
 };
 
-interface EditableMetadataFieldProps {
-  label: string;
-  value: string | string[] | null | undefined;
-  fieldName: keyof ModalFunction;
-  modalFunction: ModalFunction;
-  ownsThisFunction: boolean;
-  isArray?: boolean;
-}
-
-const EditableMetadataField = ({ label, value, fieldName, modalFunction, ownsThisFunction, isArray = false }: EditableMetadataFieldProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState<string | string[]>(isArray ? (value as string[] || []) : value || "");
-  const { mutate: patchModalFunction } = usePatchModalFunction();
-
-  const handleSave = () => {
-    patchModalFunction({
-      id: modalFunction.id,
-      modalFunction: {
-        [fieldName]: editValue
-      }
-    });
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditValue(isArray ? (value as string[] || []) : value || "");
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey && fieldName !== "description") {
-      e.preventDefault();
-      handleSave();
-    } else if (e.key === "Escape") {
-      handleCancel();
-    }
-  };
-
-  if (!ownsThisFunction || !isEditing) {
-    return (
-      <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500 font-medium">{label}</p>
-          {ownsThisFunction && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsEditing(true)}
-              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <PencilIcon className="h-3 w-3" />
-            </Button>
-          )}
-        </div>
-        {fieldName === "description" ? (
-          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
-            <Markdown content={value as string || "None"} />
-          </div>
-        ) : (
-          <p className="font-medium text-gray-800">
-            {isArray ? (value as string[])?.join(", ") || "None" : value || "None"}
-          </p>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-      <p className="text-sm text-gray-500 font-medium mb-1">{label}</p>
-      <div className="flex gap-2">
-        {fieldName === "description" ? (
-          <Textarea
-            value={editValue as string}
-            onChange={(e) => setEditValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="flex-1 min-h-[120px] resize-vertical"
-            placeholder="Tell us about your function. Markdown is supported."
-          />
-        ) : isArray ? (
-          <MultipleSelector
-            value={(Array.isArray(editValue) ? editValue : []).map(val => ({ value: val, label: val }))}
-            onChange={(options: any) => setEditValue(options.map((opt: any) => opt.value))}
-            placeholder={`Add ${label.toLowerCase()}`}
-            creatable
-            className="w-full"
-          />
-        ) : (
-          <Input
-            value={editValue as string}
-            onChange={(e) => setEditValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="flex-1"
-          />
-        )}
-      </div>
-      <div className="flex justify-end gap-2 mt-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleCancel}
-          className="h-7 px-2"
-        >
-          <XIcon className="h-4 w-4 mr-1" />
-          Cancel
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleSave}
-          className="h-7 px-2"
-        >
-          <CheckIcon className="h-4 w-4 mr-1" />
-          Save
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-interface EditableTagsProps {
-  modalFunction: ModalFunction;
-  ownsThisFunction: boolean;
-}
-
-const EditableTags = ({ modalFunction, ownsThisFunction }: EditableTagsProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState<string[]>(modalFunction.tags || []);
-  const { mutate: patchModalFunction } = usePatchModalFunction();
-
-  const handleSave = () => {
-    patchModalFunction({
-      id: modalFunction.id,
-      modalFunction: {
-        tags: editValue
-      }
-    });
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSave();
-    } else if (e.key === "Escape") {
-      setIsEditing(false);
-      setEditValue(modalFunction.tags || []);
-    }
-  };
-
-  if (!ownsThisFunction || !isEditing) {
-    return (
-      <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500 font-medium">Tags</p>
-          {ownsThisFunction && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsEditing(true)}
-              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <PencilIcon className="h-3 w-3" />
-            </Button>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-1 mt-1">
-          {modalFunction.tags && modalFunction.tags.length > 0 ? (
-            modalFunction.tags.map((tag, index) => (
-              <div
-                key={index}
-                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800"
-              >
-                <TagIcon className="h-3 w-3 mr-1" />
-                {tag}
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 italic">No tags</p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-      <p className="text-sm text-gray-500 font-medium mb-1">Tags</p>
-      <div className="flex gap-2">
-        <MultipleSelector
-          value={editValue.map(tag => ({ value: tag, label: tag }))}
-          onChange={(options: any) => setEditValue(options.map((opt: any) => opt.value))}
-          placeholder="Add tags"
-          creatable
-          className="w-full"
-        />
-      </div>
-      <div className="flex justify-end gap-2 mt-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            setIsEditing(false);
-            setEditValue(modalFunction.tags || []);
-          }}
-          className="h-7 px-2"
-        >
-          <XIcon className="h-4 w-4 mr-1" />
-          Cancel
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleSave}
-          className="h-7 px-2"
-        >
-          <CheckIcon className="h-4 w-4 mr-1" />
-          Save
-        </Button>
-      </div>
-    </div>
-  );
-};
-
 const ModalFunctionPage = () => {
   const { id } = useParams() as { id: string };
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
   const auth = useGlobusAuth();
+  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
   const ownsThisFunction = auth.isAuthenticated && modalFunction?.owner_identity_id === auth?.authorization?.user?.sub;
 
   if (isLoading) return <LoadingOverlay />;
@@ -291,57 +55,85 @@ const ModalFunctionPage = () => {
             ownsThisFunction={ownsThisFunction} 
           />
         </div>
+
         {/* Sidebar */}
-        <div className="lg:w-1/3 bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold mb-2">Metadata</h3>
-            <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500 font-medium">DOI</p>
-                <CopyButton 
-                  content={modalFunction.doi || ""} 
-                  hint="Copy DOI" 
-                  className="ml-2" 
-                  icon={<LinkIcon className="h-4 w-4" />}
-                />
-              </div>
-              <div className="mt-0.5">
-                <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
-                  {modalFunction.doi || "No DOI"}
-                </p>
-              </div>
+        <Metadata entity={modalFunction} ownsThisEntity={ownsThisFunction}>
+          <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500 font-medium">DOI</p>
+              <CopyButton 
+                content={modalFunction.doi || ""} 
+                hint="Copy DOI" 
+                className="ml-2" 
+                icon={<LinkIcon className="h-4 w-4" />}
+              />
             </div>
-            <EditableMetadataField
-              label="Authors"
-              value={modalFunction.authors}
-              fieldName="authors"
-              modalFunction={modalFunction}
-              ownsThisFunction={ownsThisFunction}
-              isArray={true}
-            />
-
-            <EditableMetadataField
-              label="Contributors"
-              value={modalFunction.contributors ?? []}
-              fieldName="contributors"
-              modalFunction={modalFunction}
-              ownsThisFunction={ownsThisFunction}
-              isArray={true}
-            />
-
-            <EditableMetadataField
-              label="Year"
-              value={modalFunction.year}
-              fieldName="year"
-              modalFunction={modalFunction}
-              ownsThisFunction={ownsThisFunction}
-            />
-            <EditableTags
-              modalFunction={modalFunction}
-              ownsThisFunction={ownsThisFunction}
-            />
+            <div className="mt-0.5">
+              <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
+                {modalFunction.doi || "No DOI"}
+              </p>
+            </div>
           </div>
-        </div>
+
+          <EditableMetadataField
+            label="Model Authors"
+            value={modalFunction.authors}
+            fieldName="authors"
+            entity={modalFunction}
+            ownsThisEntity={ownsThisFunction}
+            isArray={true}
+            onUpdate={async (updateData) => {
+              await patchModalFunction({
+                id: modalFunction.id,
+                modalFunction: updateData
+              });
+            }}
+          />
+
+          <EditableMetadataField
+            label="Gardeners"
+            value={[modalFunction.owner, ...(modalFunction.contributors || [])]}
+            fieldName="contributors"
+            entity={modalFunction}
+            ownsThisEntity={ownsThisFunction}
+            isArray={true}
+            onUpdate={async (updateData) => {
+              await patchModalFunction({
+                id: modalFunction.id,
+                modalFunction: updateData
+              });
+            }}
+          />
+
+          <EditableMetadataField
+            label="Year"
+            value={modalFunction.year}
+            fieldName="year"
+            entity={modalFunction}
+            ownsThisEntity={ownsThisFunction}
+            onUpdate={async (updateData) => {
+              await patchModalFunction({
+                id: modalFunction.id,
+                modalFunction: updateData
+              });
+            }}
+          />
+
+          <EditableMetadataField
+            label="Tags"
+            value={modalFunction.tags}
+            fieldName="tags"
+            entity={modalFunction}
+            ownsThisEntity={ownsThisFunction}
+            isArray={true}
+            onUpdate={async (updateData) => {
+              await patchModalFunction({
+                id: modalFunction.id,
+                modalFunction: updateData
+              });
+            }}
+          />
+        </Metadata>
       </div>
     </div>
   );
@@ -386,17 +178,22 @@ const ModalFunctionHeader = ({ modalFunction, ownsThisFunction }: { modalFunctio
 };
 
 const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const descriptionText = modalFunction.description || "No description provided.";
+  const { mutate: patchModalFunction } = usePatchModalFunction();
 
   return (
     <div className="space-y-3 py-2">
       <EditableMetadataField
         label="Description"
-        value={modalFunction.description}
+        value={modalFunction.description || ""}
         fieldName="description"
-        modalFunction={modalFunction}
-        ownsThisFunction={ownsThisFunction}
+        entity={modalFunction}
+        ownsThisEntity={ownsThisFunction}
+        onUpdate={async (updateData) => {
+          await patchModalFunction({
+            id: modalFunction.id,
+            modalFunction: updateData
+          });
+        }}
       />
       <Separator className="my-3" />
     </div>
