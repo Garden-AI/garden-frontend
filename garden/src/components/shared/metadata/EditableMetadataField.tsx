@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { EditIcon, SaveIcon, XIcon, InfoIcon } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
@@ -61,7 +61,8 @@ const EditableMetadataField = ({
 
       // Handle read-only properties correctly
       if (fieldName !== 'entrypoint_ids' && fieldName !== 'modal_function_ids') {
-        // Special handling for contributors to filter out the owner
+        // we added the owner to the contributors list to display 'Gardeners',
+        // remove before sending the patch request
         if (fieldName === 'contributors' && 'owner' in entity) {
           const contributors = Array.isArray(inputValue) 
             ? inputValue.filter(c => c !== (entity as Garden).owner)
@@ -231,7 +232,6 @@ const EditableMetadataField = ({
             )}
           </div>
         ) : fieldName === 'description' ? (
-          // Use Markdown for description field
           <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
             <Markdown content={value as string || ""} />
           </div>
