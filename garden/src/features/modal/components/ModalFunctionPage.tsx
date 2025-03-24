@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
 import { usePatchModalFunction } from "../api/usePatchModalFunction";
@@ -11,7 +10,7 @@ import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
-import { LinkIcon, TagIcon, PencilIcon, CheckIcon, XIcon } from "lucide-react";
+import { LinkIcon, PencilIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
@@ -77,6 +76,7 @@ const ModalFunctionPage = () => {
 
           <EditableMetadataField
             label="Model Authors"
+            helpText="Original authors of the models used by this function"
             value={modalFunction.authors}
             fieldName="authors"
             entity={modalFunction}
@@ -92,6 +92,7 @@ const ModalFunctionPage = () => {
 
           <EditableMetadataField
             label="Gardeners"
+            helpText="Creator and contriubtors to this function and related materials"
             value={[modalFunction.owner, ...(modalFunction.contributors || [])]}
             fieldName="contributors"
             entity={modalFunction}
@@ -107,6 +108,7 @@ const ModalFunctionPage = () => {
 
           <EditableMetadataField
             label="Year"
+            helpText="Year this function was published"
             value={modalFunction.year}
             fieldName="year"
             entity={modalFunction}
@@ -121,6 +123,7 @@ const ModalFunctionPage = () => {
 
           <EditableMetadataField
             label="Tags"
+            helpText="Tags help users discover your functions"
             value={modalFunction.tags}
             fieldName="tags"
             entity={modalFunction}
