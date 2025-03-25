@@ -15,7 +15,6 @@ import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 import CopyButton from "@/components/CopyButton";
-import ShareModal from "@/components/ShareModal";
 import { Button } from "@/components/shadcn/button";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
 import { EditableCodeField } from "@/components/EditableCodeField";
@@ -155,7 +154,6 @@ const ModalFunctionHeader = ({ modalFunction, ownsThisFunction }: { modalFunctio
           hint="Copy Link"
           className="border-none bg-transparent"
         />
-        {modalFunction.doi && <ShareModal doi={modalFunction.doi} />}
         {ownsThisFunction && (
           <TooltipProvider>
             <Tooltip>
