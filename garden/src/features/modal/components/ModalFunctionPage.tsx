@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
 import { usePatchModalFunction } from "../api/usePatchModalFunction";
@@ -19,6 +19,7 @@ import { Button } from "@/components/shadcn/button";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { Metadata, EditableMetadataField } from "@/components/shared/metadata";
+import { useGetGarden } from "@/features/gardens/api/useGetGarden";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
@@ -27,15 +28,23 @@ type ModalFunctionWithOwner = ModalFunction & {
 
 const ModalFunctionPage = () => {
   const { id } = useParams() as { id: string };
+  const [searchParams] = useSearchParams();
+  const parentGardenDOI = searchParams.get("parentGarden");
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
+  const { data: garden, isError: isGardenError, isLoading: isGardenLoading } = useGetGarden(parentGardenDOI || "");
   const auth = useGlobusAuth();
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
+
   const ownsThisFunction = auth.isAuthenticated && modalFunction?.owner_identity_id === auth?.authorization?.user?.sub;
 
-  if (isLoading) return <LoadingOverlay />;
+  if (isLoading || isGardenLoading) return <LoadingOverlay />;
+  if (isGardenError) console.error("Failed to load Garden. Continuing to render function page");
 
   if (isError || !modalFunction) return <NotFoundPage />;
 
+  // Create garden URL using the correct path pattern
+  const gardenUrl = parentGardenDOI ? `/garden/${encodeURIComponent(parentGardenDOI)}` : "/search";
+  
   return (
     <div className="container max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
       <div className="flex flex-col-reverse lg:flex-row gap-6">
@@ -43,7 +52,13 @@ const ModalFunctionPage = () => {
         <div className="lg:w-2/3">
           <Breadcrumb 
             className="mb-3" 
-            crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
+            crumbs={[
+              { label: "Home", link: "/" },
+              (garden && parentGardenDOI) ?  // we're either coming from a garden or the search page
+                { label: garden.title, link: gardenUrl } : 
+                {label: "Search", link: "/search"},
+              { label: modalFunction.title },
+            ]} 
           />
           <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/shadcn/card";
 import { FunctionSquare } from "lucide-react";
 
-const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) => {
+const ModalFunctionBox = ({ parentGarden, modalFunction }: { parentGarden: Garden, modalFunction: ModalFunction }) => {
   const navigate = useNavigate();
   const id = modalFunction.id;
 
@@ -14,7 +14,7 @@ const ModalFunctionBox = ({ modalFunction }: { modalFunction: ModalFunction }) =
   return (
     <Card
       className="rounded-xl border border-gray-200 shadow-sm transition-all hover:shadow-md overflow-hidden group backdrop-blur-sm bg-white cursor-pointer"
-      onClick={() => navigate(`/modal-functions/${id}`)}
+      onClick={() => navigate(`/modal-functions/${id}?parentGarden=${encodeURIComponent(parentGarden.doi)}`)}
     >
       <CardHeader className="pt-5 pb-2 bg-gradient-to-r from-white to-gray-50 border-b border-gray-100">
         <div className="flex items-center gap-3">

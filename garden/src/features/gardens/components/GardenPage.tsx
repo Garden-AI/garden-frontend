@@ -169,6 +169,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
                           {garden.modal_functions?.map((modalFunction, index) => (
                             <ModalFunctionBox
                               key={index}
+                              parentGarden={garden}
                               modalFunction={modalFunction}
                             />
                           ))}
