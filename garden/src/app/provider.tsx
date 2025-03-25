@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 
-import { Provider as GlobusAuthorizationManagerProvider } from "@globus/react-auth-context";
+import { GlobusAuthProvider } from "@/lib/auth/GlobusAuthProvider";
 import queryClient from "@/lib/react-query";
 import App from "./app";
 
@@ -20,7 +20,7 @@ enableMocking().then(() => {
   const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
   root.render(
     <React.StrictMode>
-      <GlobusAuthorizationManagerProvider
+      <GlobusAuthProvider
         client={import.meta.env.VITE_GLOBUS_CLIENT_ID}
         redirect={import.meta.env.VITE_GLOBUS_REDIRECT_URI}
         scopes={import.meta.env.VITE_GLOBUS_SCOPES}
@@ -29,7 +29,7 @@ enableMocking().then(() => {
         <QueryClientProvider client={queryClient}>
           <App />
         </QueryClientProvider>
-      </GlobusAuthorizationManagerProvider>
+      </GlobusAuthProvider>
     </React.StrictMode>,
   );
 });
