@@ -17,7 +17,6 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 import CopyButton from "@/components/CopyButton";
 import ShareModal from "@/components/ShareModal";
-import { Button } from "@/components/shadcn/button";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { Metadata, EditableMetadataField } from "@/components/shared/metadata";
@@ -66,7 +65,7 @@ const ModalFunctionPage = () => {
             gardenDOI={gardenDOI}
           />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
-          <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
+          <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} gardenDOI={gardenDOI} />
           <ModalAssociatedMaterials 
             resource={modalFunction} 
             ownsThisFunction={ownsThisFunction} 
@@ -202,13 +201,15 @@ const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction:
   );
 };
 
-const ModalFunctionExample = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
+const ModalFunctionExample = ({ modalFunction, ownsThisFunction, gardenDOI }: { modalFunction: ModalFunction; ownsThisFunction: boolean; gardenDOI?: string; }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
   
+  const doiExpression = gardenDOI ? `'${gardenDOI}'` : "my_garden_doi"
+
   // Create example text with fallback to default placeholder
   const defaultExample = `from garden_ai import GardenClient
 client = GardenClient()
-my_garden = client.get_garden(my_garden_doi)
+my_garden = client.get_garden(${doiExpression})
 
 input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`;
