@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 
-import { GlobusAuthProvider } from "@/lib/auth/GlobusAuthProvider";
+import { GlobusAuthProvider } from "@/app/GlobusAuthProvider";
 import queryClient from "@/lib/react-query";
 import App from "./app";
 

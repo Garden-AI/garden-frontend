@@ -17,7 +17,6 @@ import { EditModalFunctionsTable } from "./EditModalFunctionsTable";
 const EditGardenFormFields = () => {
   const navigate = useNavigate();
   const form = useFormContext();
-  console.log(form.getValues("doi_is_draft"));
 
   return (
     <div className="space-y-12 rounded-xl bg-white p-8 shadow-lg">
