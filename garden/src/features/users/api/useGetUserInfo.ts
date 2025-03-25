@@ -1,6 +1,7 @@
 import { User } from "@/types";
 import instance from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
 const getUserInfo = async (): Promise<User> => {
   try {
@@ -12,8 +13,11 @@ const getUserInfo = async (): Promise<User> => {
 };
 
 export const useGetUserInfo = () => {
+  const auth = useGlobusAuth();
+  
   return useQuery<User>({
     queryKey: ["user", "me"],
     queryFn: () => getUserInfo(),
+    enabled: auth.isAuthenticated,
   });
 };

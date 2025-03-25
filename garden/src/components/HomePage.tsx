@@ -50,7 +50,6 @@ const HomePage = () => {
       if (!authorization?.handleCodeRedirect || isAuthenticated) {
         return;
       }
-      console.log("getting token ...")
       await authorization.handleCodeRedirect();
     }
     getToken();
