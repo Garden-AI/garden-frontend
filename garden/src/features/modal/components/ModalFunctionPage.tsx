@@ -1,8 +1,9 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
 import { usePatchModalFunction } from "../api/usePatchModalFunction";
 import { useGlobusAuth } from "@globus/react-auth-context";
+import { useGetGarden } from "@/features/gardens/api/useGetGarden";
 
 import NotFoundPage from "@/components/NotFoundPage";
 
@@ -27,15 +28,28 @@ type ModalFunctionWithOwner = ModalFunction & {
 };
 
 const ModalFunctionPage = () => {
-  const { id } = useParams() as { id: string };
+  const { id, doi: gardenDOI } = useParams() as { id: string; doi?: string };
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
+  const { data: garden, isLoading: isGardenLoading } = gardenDOI ? useGetGarden(gardenDOI) : { data: undefined, isLoading: false };
   const auth = useGlobusAuth();
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
   const ownsThisFunction = auth.isAuthenticated && modalFunction?.owner_identity_id === auth?.authorization?.user?.sub;
 
-  if (isLoading) return <LoadingOverlay />;
+  if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
 
   if (isError || !modalFunction) return <NotFoundPage />;
+
+  // Create breadcrumb items based on whether we navigated from a garden
+  const breadcrumbItems = gardenDOI && garden 
+    ? [
+        { label: "Home", link: "/" }, 
+        { label: garden.title, link: `/garden/${encodeURIComponent(gardenDOI)}` }, 
+        { label: modalFunction.title }
+      ]
+    : [
+        { label: "Home", link: "/" }, 
+        { label: modalFunction.title }
+      ];
 
   return (
     <div className="container max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
@@ -44,9 +58,13 @@ const ModalFunctionPage = () => {
         <div className="lg:w-2/3">
           <Breadcrumb 
             className="mb-3" 
-            crumbs={[{ label: "Home", link: "/" }, { label: modalFunction.title }]} 
+            crumbs={breadcrumbItems} 
           />
-          <ModalFunctionHeader modalFunction={modalFunction as ModalFunctionWithOwner} ownsThisFunction={ownsThisFunction} />
+          <ModalFunctionHeader 
+            modalFunction={modalFunction as ModalFunctionWithOwner} 
+            ownsThisFunction={ownsThisFunction} 
+            gardenDOI={gardenDOI}
+          />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalAssociatedMaterials 
@@ -142,39 +160,20 @@ const ModalFunctionPage = () => {
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunctionWithOwner; ownsThisFunction: boolean }) => {
-  const navigate = useNavigate();
-
+const ModalFunctionHeader = ({ modalFunction, ownsThisFunction, gardenDOI }: { modalFunction: ModalFunctionWithOwner; ownsThisFunction: boolean; gardenDOI?: string }) => {
   return (
     <div className="mb-3 flex items-center justify-between gap-2">
       <h1 className="text-xl md:text-2xl font-medium">{modalFunction.title}</h1>
       <div className="flex items-center gap-1">
         <CopyButton
           icon={<LinkIcon className="h-4 w-4" />}
-          content={`${window.location.origin}/modal-functions/${modalFunction.id}`}
+          content={gardenDOI
+            ? `${window.location.origin}/garden/${encodeURIComponent(gardenDOI)}/modal-functions/${modalFunction.id}` 
+            : `${window.location.origin}/modal-functions/${modalFunction.id}`}
           hint="Copy Link"
           className="border-none bg-transparent"
         />
         {modalFunction.doi && <ShareModal doi={modalFunction.doi} />}
-        {ownsThisFunction && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => navigate(`/modal-functions/${modalFunction.id}/edit`)}
-                  className="h-8 w-8"
-                >
-                  <PencilIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Edit Function</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
       </div>
     </div>
   );
