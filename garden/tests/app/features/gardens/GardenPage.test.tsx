@@ -141,7 +141,7 @@ describe("GardenPage", () => {
             expect(editTitleButton).not.toBeDisabled();
             
             // Check for editable metadata fields that should be interactive for owners
-            const editAuthorButton = screen.getByLabelText("Edit authors");
+            const editAuthorButton = screen.getByLabelText("Edit model authors");
             expect(editAuthorButton).toBeInTheDocument();
             expect(editAuthorButton).not.toHaveAttribute("aria-hidden", "true");
             expect(editAuthorButton).not.toBeDisabled();
