@@ -5,7 +5,6 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 
 const getUserInfo = async (): Promise<User> => {
   try {
-    // Need to not call this if user isn't logged in ...
     const response = await instance.get(`/users`);
     return response.data;
   } catch (error) {
