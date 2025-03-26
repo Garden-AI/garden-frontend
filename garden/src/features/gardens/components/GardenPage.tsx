@@ -170,6 +170,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
                             <ModalFunctionBox
                               key={index}
                               modalFunction={modalFunction}
+                              gardenDoi={garden.doi}
                             />
                           ))}
                         </div>

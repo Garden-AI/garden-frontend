@@ -16,7 +16,6 @@ import SearchPage from "@/features/search/components/SearchPage";
 import TeamsPage from "@/features/team/components/TeamsPage";
 import UserProfilePage from "@/features/users/components/UserProfilePage";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import EditModalFunctionPage from "@/features/modal/components/edit/EditModalFunctionPage";
 
 const Router: React.FC = () => {
   return (
@@ -32,6 +31,7 @@ const Router: React.FC = () => {
             <Route path=":doi/edit" element={<EditGardenPage />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
+          <Route path=":doi/modal-functions/:id" element={<ModalFunctionPage />} />
         </Route>
 
         {/* Entrypoint Routes */}
@@ -45,9 +45,6 @@ const Router: React.FC = () => {
         {/* Modal Routes */}
         <Route path="modal-functions">
           <Route path=":id" element={<ModalFunctionPage />} />
-          <Route element={<PrivateRoutes />}>
-            <Route path=":id/edit" element={<EditModalFunctionPage />} />
-          </Route>
         </Route>
 
         {/* Misc Routes */}

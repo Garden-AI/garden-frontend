@@ -71,7 +71,7 @@ const formModalFunctionDOIRequest = (
       attributes: {
         event,
         ...formSharedDOIAttributes(modalFunction),
-        url: `https://thegardens.ai/#/modal/${encodeURIComponent(modalFunction.id)}`,
+        url: `https://thegardens.ai/#/modal-functions/${encodeURIComponent(modalFunction.id)}`,
       },
     },
   };
