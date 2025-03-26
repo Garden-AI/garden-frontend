@@ -2,9 +2,10 @@ import { useState, useEffect, useRef, RefObject } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/shadcn/separator";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import { ChevronDown, ChevronUp, LogOut, Plus, User, Menu, X } from "lucide-react";
+import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./shadcn/tooltip";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
@@ -46,95 +47,94 @@ const Navbar = () => {
     await auth.authorization?.login();
   };
 
-  let Links = [{ name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" }];
-
-  let [isOpen, setIsOpen] = useState(false);
+  let Links = [
+    { name: "Search", link: "/search"},
+    { name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" },
+  ];
 
   return (
     <div className="relative left-0 top-0 z-10 w-full shadow-md">
       <div className="flex items-center justify-between bg-white px-7 py-2 md:px-10 md:py-1">
         {/* logo */}
-        <Link to="/" className="py-1">
-          <div className="relative w-32">
-            <img src="img/garden-logo-small.png" alt="Garden AI Logo" className="h-8" />
-          </div>
-        </Link>
+        <div>
+          <Link to="/" className="py-1">
+            <div className="relative w-32">
+              <img src="img/garden-logo-small.png" alt="Garden AI Logo" className="h-8" />
+            </div>
+          </Link>
+        </div>
 
-        {/* This wrapper controls both the links and the auth component */}
-        <div className="flex items-center">
-          {/* Auth/user section */}
-          <div
-            onClick={toggleMenuDropdown}
-            className="relative text-sm transition-all duration-500 flex items-center"
-            ref={dropdownRef}
-          >
-            {auth.isAuthenticated ? (
-              <div className="flex items-center">
-                <button className="bg-green-500 hover:bg-green-600 px-4 py-1">
-                  <div className="flex items-center space-x-2">
-                    <User size={20} />
-                    {openMenuDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                  </div>
-                </button>
-                <div
-                  className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 justify-between rounded bg-white py-3 shadow-md`}
-                >
-                  <div className="flex flex-col gap-3 p-3">
-                    <p>{user?.email} </p>
-                    <Separator />
-                    <div className="flex flex-row gap-2 hover:text-green hover:underline">
-                      <User size={18} />
-                      <Link to="/user"> Your Profile </Link>
+        {/* Everything under this div is on the right side of the nav bar */}
+        <div className="flex items-center justify-end">
+          <div className="flex items-center">
+            <div className="hover:text-green">
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link to="/garden/create">
+                      <Plus size={24} />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Create a Garden
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            {/* Auth/user section */}
+            <div
+              onClick={toggleMenuDropdown}
+              className="relative text-sm transition-all duration-500 flex items-center"
+              ref={dropdownRef}
+            >
+              {auth.isAuthenticated ? (
+                <div className="flex items-center">
+                  <button className="bg-green-500 hover:bg-green-600 px-4 py-1">
+                    <div className="flex items-center space-x-2">
+                      <User size={20} />
+                      {openMenuDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </div>
-                    <div className="flex flex-row gap-2 hover:text-green hover:underline">
-                      <Plus size={18} />
-                      <Link to="/garden/create">Create a Garden</Link>
-                    </div>
-                    <div
-                      className="flex flex-row gap-2 hover:cursor-pointer hover:text-green hover:underline"
-                      onClick={handleLogOut}
-                    >
-                      <LogOut size={18} />
-                      <p> Log Out </p>
+                  </button>
+                  <div
+                    className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 justify-between rounded bg-white py-3 shadow-md`}
+                  >
+                    <div className="flex flex-col gap-3 p-3">
+                      <p>{user?.email} </p>
+                      <Separator />
+                      <div className="flex flex-row gap-2 hover:text-green hover:underline">
+                        <User size={18} />
+                        <Link to="/user"> Your Profile </Link>
+                      </div>
+                      <div
+                        className="flex flex-row gap-2 hover:cursor-pointer hover:text-green hover:underline"
+                        onClick={handleLogOut}
+                      >
+                        <LogOut size={18} />
+                        <p> Log Out </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <button
-                className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen"
-                onClick={handleLogin}
-              >
-                Login
-              </button>
-            )}
+              ) : (
+                <button
+                  className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen"
+                  onClick={handleLogin}
+                >
+                  Login
+                </button>
+              )}
+            </div>
+
+            {/* Links menu */}
+            <div className="flex items-center justify-between">
+              {Links.map((link) => (
+                  <Link to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
+                    {link.name}
+                  </Link>
+              ))}
+            </div>
           </div>
-          
-          {/* menu icon for mobile */}
-          <div
-            onClick={() => setIsOpen(!isOpen)}
-            className="ml-4 flex items-center h-8 w-8 cursor-pointer md:hidden"
-          >
-            {isOpen ? <X /> : <Menu />}
-          </div>
-          
-          {/* Links menu */}
-          <ul
-            className={`absolute left-0 z-[-1] w-full bg-white pb-6 pl-9 pt-10 transition-all duration-300 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:pb-0 md:pl-0 md:pt-0 ${isOpen ? "top-10" : "top-[-490px]"}`}
-          >
-            <li>
-              <Link to="/search" className="my-5 no-underline hover:underline md:my-0 md:ml-8">
-                Search
-              </Link>
-            </li>
-            {Links.map((link) => (
-              <li key={link.name} className="my-5 no-underline hover:underline md:my-0 md:ml-8">
-                <a href={link.link} target="_blank">
-                  {link.name}
-                </a>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>

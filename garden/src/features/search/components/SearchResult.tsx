@@ -23,7 +23,7 @@ import { PersonIcon } from "@radix-ui/react-icons";
 import SaveGardenButton from "../../gardens/components/SaveGardenButton";
 
 export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boolean }) => {
-  const entrypoints = [...(garden.entrypoints ?? []), ...(garden.modal_functions ?? [])];
+  const functions = [...(garden.entrypoints ?? []), ...(garden.modal_functions ?? [])];
   return (
     <Card className="transition-colors hover:bg-gray-50 hover:shadow-lg">
       <CardHeader>
@@ -48,8 +48,8 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
           <span>{garden.year}</span>
           <BookOpenIcon className="ml-2 h-4 w-4" />
           <span>
-            {entrypoints?.length} function
-            {entrypoints?.length !== 1 && <span>s</span>}
+            {functions?.length} function
+            {functions?.length !== 1 && <span>s</span>}
           </span>
         </CardDescription>
       </CardHeader>
@@ -59,7 +59,7 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
         content={garden.description || "*No description available*"}
       />
       
-      {verbose && entrypoints?.length > 0 && (
+      {verbose && functions?.length > 0 && (
         <CardContent>
           <div>
             <h3 className="pb-4 font-semibold">Functions</h3>
@@ -73,21 +73,21 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {garden.entrypoints?.map((entrypoint, index) => (
+                  {functions?.map((func, index) => (
                     <TableRow key={index}>
                       <TableCell>
                         <Link
                           className="font-semibold"
-                          to={`/entrypoint/${encodeURIComponent(entrypoint.doi)}`}
+                          to={`/modal-functions/${encodeURIComponent(func.id)}`}
                         >
-                          {entrypoint.title}
+                          {func.title}
                         </Link>
                       </TableCell>
                       <TableCell>
-                        <p className="line-clamp-3">{entrypoint.description}</p>
+                        <p className="line-clamp-3">{func.description}</p>
                       </TableCell>
                       <TableCell>
-                        {entrypoint.tags?.map((tag, index) => (
+                        {func.tags?.map((tag, index) => (
                           <Badge
                             key={index}
                             variant="outline"

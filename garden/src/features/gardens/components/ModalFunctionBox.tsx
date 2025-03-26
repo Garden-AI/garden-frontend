@@ -33,7 +33,7 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
       </CardHeader>
       
       <MarkdownCardContent 
-        className="pt-4 pb-2 text-sm text-gray-700 max-h-[120px] overflow-hidden"
+        className="text-sm text-gray-700 max-h-[120px] overflow-hidden"
         content={modalFunction.description || "No description available"}
       />
       

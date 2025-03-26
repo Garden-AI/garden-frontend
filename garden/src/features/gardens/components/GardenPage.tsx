@@ -11,7 +11,6 @@ import ModalFunctionBox from "./ModalFunctionBox";
 import GardenDropdownOptions from "@/features/gardens/components/GardenDropdownOptions";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
-import ShareModal from "@/components/ShareModal";
 import TombstonePage from "@/components/TombstonePage";
 import SaveGardenButton from "./SaveGardenButton";
 
@@ -102,11 +101,8 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
           <div className="lg:w-2/3">
             <div className="flex justify-between items-start mb-4">
               <EditableTitle garden={garden} ownsThisGarden={ownsThisGarden} />
-              <div className="flex gap-2">
+              <div className="flex">
                 <SaveGardenButton garden={garden} />
-                <ShareModal
-                  doi={garden.doi}
-                />
                 <GardenDropdownOptions garden={garden} />
               </div>
             </div>

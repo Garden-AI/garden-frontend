@@ -5,7 +5,6 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import Breadcrumb from "@/components/Breadcrumb";
 import CopyButton from "@/components/CopyButton";
-import ShareModal from "@/components/ShareModal";
 import { Separator } from "@/components/shadcn/separator";
 import { Entrypoint, Garden } from "@/types";
 import { useGetEntrypoint } from "../api/useGetEntrypoint";
@@ -51,7 +50,6 @@ const EntrypointHeader = ({ entrypoint, doi }: { entrypoint: Entrypoint; doi: st
             icon={<LinkIcon />}
             className="border-none bg-transparent"
           />
-          <ShareModal doi={doi} />
         </div>
       </div>
     </div>
