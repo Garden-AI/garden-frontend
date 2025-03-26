@@ -59,14 +59,12 @@ const SearchPage = () => {
       </div>
       <div className="relative mt-5 mb-6">
         {/* Mobile layout */}
-        <div className="flex flex-col gap-5 lg:hidden">
-          <div className="md:hidden">
-            <SearchFilters
-              searchResult={searchResult}
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-            />
-          </div>
+        <div className="flex flex-col gap-5 md:hidden lg:hidden">
+          <SearchFilters
+            searchResult={searchResult}
+            selectedFilters={selectedFilters}
+            setSelectedFilters={setSelectedFilters}
+          />
           <div>
             <SearchResultsInner />
           </div>

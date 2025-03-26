@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { Card, CardContent, CardHeader, CardTitle, MarkdownCardContent } from "@/components/shadcn/card";
-import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle } from "lucide-react";
+import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle, LucideIcon, FunctionSquare } from "lucide-react";
 import { useModalFunctionMaterials } from "../hooks/useModalFunctionMaterials";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import CopyButton from "@/components/CopyButton";
@@ -23,6 +22,23 @@ interface AssociatedMaterialsProps {
   resource: ModalFunction;
   ownsThisFunction: boolean;
 }
+
+const TabTrigger = ({ icon: Icon, name, value, count }: { icon: LucideIcon, name: string, value: string, count?: number }) => {
+  return (
+    <TabsTrigger
+      value={value}
+      className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm"
+    >
+      <div className="flex items-center justify-center">
+        <Icon className="h-4 w-4" />
+        <span className="hidden lg:block ml-1.5">{name}</span>
+        {count !== undefined && count > 0 && (
+          <span className="hidden sm:inline ml-1">({count})</span>
+        )}
+      </div>
+    </TabsTrigger>
+  );
+};
 
 const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterialsProps) => {
   // Get all materials from the modal function
@@ -94,24 +110,40 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
         className="w-full min-h-[400px]"
       >
         <TabsList className="mb-2 bg-gray-100 p-0.5 grid grid-cols-6">
-          <TabsTrigger value="function" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            Function
-          </TabsTrigger>
-          <TabsTrigger value="apptext" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            App Text
-          </TabsTrigger>
-          <TabsTrigger value="datasets" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            Datasets {datasets.length > 0 && `(${datasets.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="papers" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            Papers {papers.length > 0 && `(${papers.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="repositories" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            Repositories {repositories.length > 0 && `(${repositories.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="notebooks" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            Notebooks {notebooks.length > 0 && `(${notebooks.length})`}
-          </TabsTrigger>
+          <TabTrigger
+            icon={FunctionSquare}
+            name="Function"
+            value="function"
+          />
+          <TabTrigger
+            icon={FileTextIcon}
+            name="App Text"
+            value="apptext"
+          />
+          <TabTrigger
+            icon={DatabaseIcon}
+            name="Datasets"
+            value="datasets"
+            count={datasets.length}
+          />
+          <TabTrigger
+            icon={ScrollTextIcon}
+            name="Papers"
+            value="papers"
+            count={papers.length}
+          />
+          <TabTrigger
+            icon={CodeIcon}
+            name="Repos"
+            value="repositories"
+            count={repositories.length}
+          />
+          <TabTrigger
+            icon={BookIcon}
+            name="Notebooks"
+            value="notebooks"
+            count={notebooks.length}
+          />
         </TabsList>
 
         {/* Function Tab */}
@@ -271,7 +303,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
                     <CodeIcon className="h-5 w-5 mr-2 text-green" />
-                    Code Repositories
+                    Repositories
                   </h3>
                   {ownsThisFunction && (
                     <RepositoryModal

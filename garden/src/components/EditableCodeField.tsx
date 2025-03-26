@@ -5,7 +5,7 @@ import { python } from '@codemirror/lang-python';
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { Button } from './shadcn/button';
-import { XIcon, CheckIcon, PencilIcon, Loader2Icon } from 'lucide-react';
+import { XIcon, CheckIcon, PencilIcon, Loader2Icon, EditIcon } from 'lucide-react';
 import CopyButton from './CopyButton';
 import SyntaxHighlighter from './SyntaxHighlighter';
 
@@ -125,9 +125,8 @@ export const EditableCodeField = ({
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsEditing(true)}
-                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <PencilIcon className="h-3 w-3" />
+                className="h-6 w-6">
+                <EditIcon className="text-green hover:text-dark-green h-3.5 w-3.5" />
               </Button>
             )}
           </div>

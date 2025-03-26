@@ -16,8 +16,9 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 import CopyButton from "@/components/CopyButton";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
+import { FunctionMetadataSidebar } from "./FunctionMetadataSidebar";
 import { EditableCodeField } from "@/components/EditableCodeField";
-import { Metadata, EditableMetadataField } from "@/components/shared/metadata";
+import { EditableMetadataField } from "@/components/shared/metadata";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
@@ -29,7 +30,6 @@ const ModalFunctionPage = () => {
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
   const { data: garden, isLoading: isGardenLoading } = gardenDOI ? useGetGarden(gardenDOI) : { data: undefined, isLoading: false };
   const auth = useGlobusAuth();
-  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
   const ownsThisFunction = auth.isAuthenticated && modalFunction?.owner_identity_id === auth?.authorization?.user?.sub;
 
   if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
@@ -50,7 +50,7 @@ const ModalFunctionPage = () => {
 
   return (
     <div className="container max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
-      <div className="flex flex-col-reverse lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content */}
         <div className="lg:w-2/3">
           <Breadcrumb 
@@ -59,7 +59,6 @@ const ModalFunctionPage = () => {
           />
           <ModalFunctionHeader 
             modalFunction={modalFunction as ModalFunctionWithOwner} 
-            ownsThisFunction={ownsThisFunction} 
             gardenDOI={gardenDOI}
           />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
@@ -71,93 +70,16 @@ const ModalFunctionPage = () => {
         </div>
 
         {/* Sidebar */}
-        <Metadata entity={modalFunction} ownsThisEntity={ownsThisFunction}>
-          <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500 font-medium">DOI</p>
-              <CopyButton 
-                content={modalFunction.doi || ""} 
-                hint="Copy DOI" 
-                className="ml-2" 
-                icon={<LinkIcon className="h-4 w-4" />}
-              />
-            </div>
-            <div className="mt-0.5">
-              <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
-                {modalFunction.doi || "No DOI"}
-              </p>
-            </div>
-          </div>
-
-          <EditableMetadataField
-            label="Model Authors"
-            helpText="Original authors of the models used by this function"
-            value={modalFunction.authors}
-            fieldName="authors"
-            entity={modalFunction}
-            ownsThisEntity={ownsThisFunction}
-            isArray={true}
-            onUpdate={async (updateData) => {
-              await patchModalFunction({
-                id: modalFunction.id,
-                modalFunction: updateData
-              });
-            }}
-          />
-
-          <EditableMetadataField
-            label="Gardeners"
-            helpText="Creator and contriubtors to this function and related materials"
-            value={[modalFunction.owner, ...(modalFunction.contributors || [])]}
-            fieldName="contributors"
-            entity={modalFunction}
-            ownsThisEntity={ownsThisFunction}
-            isArray={true}
-            onUpdate={async (updateData) => {
-              await patchModalFunction({
-                id: modalFunction.id,
-                modalFunction: updateData
-              });
-            }}
-          />
-
-          <EditableMetadataField
-            label="Year"
-            helpText="Year this function was published"
-            value={modalFunction.year}
-            fieldName="year"
-            entity={modalFunction}
-            ownsThisEntity={ownsThisFunction}
-            onUpdate={async (updateData) => {
-              await patchModalFunction({
-                id: modalFunction.id,
-                modalFunction: updateData
-              });
-            }}
-          />
-
-          <EditableMetadataField
-            label="Tags"
-            helpText="Tags help users discover your functions"
-            value={modalFunction.tags}
-            fieldName="tags"
-            entity={modalFunction}
-            ownsThisEntity={ownsThisFunction}
-            isArray={true}
-            onUpdate={async (updateData) => {
-              await patchModalFunction({
-                id: modalFunction.id,
-                modalFunction: updateData
-              });
-            }}
-          />
-        </Metadata>
+        <FunctionMetadataSidebar
+          modalFunction={modalFunction}    
+          ownsThisFunction={ownsThisFunction}
+        />
       </div>
     </div>
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction, ownsThisFunction, gardenDOI }: { modalFunction: ModalFunctionWithOwner; ownsThisFunction: boolean; gardenDOI?: string }) => {
+const ModalFunctionHeader = ({ modalFunction, gardenDOI }: { modalFunction: ModalFunctionWithOwner; gardenDOI?: string }) => {
   return (
     <div className="mb-3 flex items-center justify-between gap-2">
       <h1 className="text-xl md:text-2xl font-medium">{modalFunction.title}</h1>

@@ -185,7 +185,7 @@ const EditableMetadataField = ({
             <TooltipProvider delayDuration={50}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <InfoIcon className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity m-1.5 h-3 w-3" />
+                  <InfoIcon className="text-gray-500 m-1.5 h-3 w-3" />
                 </TooltipTrigger>
                 <TooltipContent className="p-2">
                   {helpText}
@@ -200,7 +200,7 @@ const EditableMetadataField = ({
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-green hover:text-darkgreen"
+                  className="text-green hover:text-darkgreen"
                   aria-label={`Edit ${label.toLowerCase()}`}
                 >
                   <EditIcon className="h-3.5 w-3.5" />
