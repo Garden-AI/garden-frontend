@@ -4,7 +4,6 @@ import { buttonVariants } from "@/components/shadcn/button";
 import { cn } from "@/utils/form.utils";
 import { toast } from "sonner";
 import MultipleSelector from "@/components/shadcn/multiple-select";
-import InputMask from "react-input-mask";
 import { UpdateUserSchema } from "@/types";
 import { useGetUserInfo } from "../api/useGetUserInfo";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -140,28 +139,6 @@ const UserProfileInfo = () => {
             <p>{currUserInfo?.name ?? "No name entered yet."}</p>
           )}
         </div>
-        <div className="space-y-2">
-          <p className="text-gray-600">Phone Number</p>
-          {edit ? (
-            <div className="relative">
-              <InputMask
-                mask="+9 999 999 9999"
-                value={userInfo.phone_number ?? ""}
-                onChange={handleInputChange}
-                maskChar=""
-                name="phone_number"
-                type="text"
-                placeholder="+x xxx xxx xxxx"
-                className="w-full rounded border border-gray-300 px-2 py-1 focus:border-2 focus:border-green focus:outline-none focus:ring-0"
-              />
-              <div className="absolute right-0 top-0 mr-2 mt-1 text-xs text-gray-500">
-                Format: +(country code) xxx-xxx-xxxx
-              </div>
-            </div>
-          ) : (
-            <p>{currUserInfo?.phone_number ?? "No phone number entered yet."}</p>
-          )}
-        </div>
         <div className="space-y-2 ">
           <p className="text-gray-600">Email Address</p>
           {edit ? (
@@ -197,43 +174,6 @@ const UserProfileInfo = () => {
             />
           ) : (
             <RenderTags items={userInfo?.affiliations ?? []} title="Affiliations" />
-          )}
-        </div>
-        <div className="space-y-2 ">
-          {edit ? (
-            <MultipleSelector
-              placeholder="Edit skills"
-              creatable
-              value={userInfo.skills?.map((skill) => ({ label: skill, value: skill }))}
-              onChange={(newValue: any) =>
-                setUserInfo({
-                  ...userInfo,
-                  skills: newValue.map((item: any) => item.value),
-                })
-              }
-              className="bg-white"
-              maxSelected={10}
-            />
-          ) : (
-            <RenderTags items={userInfo?.skills ?? []} title="Skills" />
-          )}
-        </div>
-        <div className="space-y-2 ">
-          {edit ? (
-            <MultipleSelector
-              placeholder="Edit domains"
-              creatable
-              value={userInfo.domains?.map((domain) => ({ label: domain, value: domain }))}
-              onChange={(newValue: any) =>
-                setUserInfo({
-                  ...userInfo,
-                  domains: newValue.map((item: any) => item.value),
-                })
-              }
-              className="bg-white"
-            />
-          ) : (
-            <RenderTags items={userInfo?.domains ?? []} title="Domains" />
           )}
         </div>
       </div>

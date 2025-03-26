@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { Card, CardContent, CardHeader, CardTitle, MarkdownCardContent } from "@/components/shadcn/card";
