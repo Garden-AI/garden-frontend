@@ -9,14 +9,12 @@ import NotFoundPage from "@/components/NotFoundPage";
 
 import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
-import { LinkIcon, PencilIcon } from "lucide-react";
+import { LinkIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 import CopyButton from "@/components/CopyButton";
-import { Button } from "@/components/shadcn/button";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { Metadata, EditableMetadataField } from "@/components/shared/metadata";
@@ -172,7 +170,6 @@ const ModalFunctionHeader = ({ modalFunction, ownsThisFunction, gardenDOI }: { m
           hint="Copy Link"
           className="border-none bg-transparent"
         />
-        {modalFunction.doi && <ShareModal doi={modalFunction.doi} />}
       </div>
     </div>
   );
