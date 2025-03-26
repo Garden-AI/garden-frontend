@@ -55,7 +55,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
 
       {/* Hero Metadata Section */}
       <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
-        <div className="flex flex-col-reverse lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">
             <div className="flex justify-between items-start mb-4">
@@ -76,12 +76,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
               />
             </div>
 
+          </div>
             {/* Metadata Details */}
             <GardenMetadataSidebar 
               garden={garden}
               ownsThisGarden={ownsThisGarden}
             />
-          </div>
         </div>
       </div>
       </div>
