@@ -19,6 +19,7 @@ import ModalAssociatedMaterials from "@/features/materials/components/ModalAssoc
 import { FunctionMetadataSidebar } from "./FunctionMetadataSidebar";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { EditableMetadataField, EditableTitle } from "@/components/shared/metadata";
+import { SUPER_USERS } from "@/utils/utils";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
@@ -30,7 +31,8 @@ const ModalFunctionPage = () => {
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
   const { data: garden, isLoading: isGardenLoading } = gardenDOI ? useGetGarden(gardenDOI) : { data: undefined, isLoading: false };
   const auth = useGlobusAuth();
-  const ownsThisFunction = auth.isAuthenticated && modalFunction?.owner_identity_id === auth?.authorization?.user?.sub;
+  const isSuperUser = SUPER_USERS.includes(auth.authorization?.user?.sub);
+  const ownsThisFunction = auth.isAuthenticated && (modalFunction?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
 
   if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
 
