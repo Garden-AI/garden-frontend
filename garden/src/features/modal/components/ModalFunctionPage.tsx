@@ -10,7 +10,7 @@ import NotFoundPage from "@/components/NotFoundPage";
 import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 
-import { LinkIcon } from "lucide-react";
+import { LinkIcon, EditIcon, SaveIcon, XIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
@@ -18,7 +18,7 @@ import CopyButton from "@/components/CopyButton";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
 import { FunctionMetadataSidebar } from "./FunctionMetadataSidebar";
 import { EditableCodeField } from "@/components/EditableCodeField";
-import { EditableMetadataField } from "@/components/shared/metadata";
+import { EditableMetadataField, EditableTitle } from "@/components/shared/metadata";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
@@ -49,7 +49,7 @@ const ModalFunctionPage = () => {
       ];
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
+    <div className="container mb-6 max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content */}
         <div className="lg:w-2/3">
@@ -60,6 +60,7 @@ const ModalFunctionPage = () => {
           <ModalFunctionHeader 
             modalFunction={modalFunction as ModalFunctionWithOwner} 
             gardenDOI={gardenDOI}
+            ownsThisFunction={ownsThisFunction}
           />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} gardenDOI={gardenDOI} />
@@ -79,10 +80,25 @@ const ModalFunctionPage = () => {
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction, gardenDOI }: { modalFunction: ModalFunctionWithOwner; gardenDOI?: string }) => {
+const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: { 
+  modalFunction: ModalFunctionWithOwner; 
+  gardenDOI?: string;
+  ownsThisFunction: boolean;
+}) => {
+  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
+
   return (
     <div className="mb-3 flex items-center justify-between gap-2">
-      <h1 className="text-xl md:text-2xl font-medium">{modalFunction.title}</h1>
+      <EditableTitle 
+        entity={modalFunction}
+        ownsThisEntity={ownsThisFunction}
+        onUpdate={async (updateData) => {
+          await patchModalFunction({
+            id: modalFunction.id,
+            modalFunction: updateData
+          });
+        }}
+      />
       <div className="flex items-center gap-1">
         <CopyButton
           icon={<LinkIcon className="h-4 w-4" />}

@@ -250,7 +250,7 @@ garden = garden_client.get_garden("10.26311/ep98-br79")
 
 def predict_properties():
     materials = ['AgI', 'CdTe', 'BN']
-    result = garden.predict_piezoelectric(materials)
+    result = garden.predict_piezoelectric_displacement(materials)
     return result
 
 # Run the model and get results
@@ -381,7 +381,7 @@ predictions = predict_properties()`}
           <div className="flex justify-center space-x-4 p-4 ">
             {gardens?.map((res: any, index: any) => (
               <div className="h-[300px] w-[300px]" key={index}>
-                <GardenBox garden={res} />
+                <GardenBox garden={res} allowEdits={false} />
               </div>
             ))}
           </div>
