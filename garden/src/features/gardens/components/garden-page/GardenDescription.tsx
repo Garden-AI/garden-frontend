@@ -93,7 +93,7 @@ const GardenDescription = ({ garden }: GardenDescriptionProps) => {
               <TooltipTrigger asChild>
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-green hover:text-darkgreen"
+                  className="text-green hover:text-darkgreen"
                   aria-label="Edit description"
                 >
                   <EditIcon className="h-4 w-4" />
