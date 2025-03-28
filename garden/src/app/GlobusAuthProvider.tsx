@@ -27,6 +27,10 @@ const TokenRefreshHandler: React.FC<{
     const checkAndRefreshToken = async () => {
       try {
         const tokenData = auth.authorization.getGlobusAuthToken();
+        if (!tokenData?.__metadata?.expires) {
+            await auth.authorization.revoke();
+            return;
+        }
 
         const expiresAt = tokenData.__metadata.expires;
         const now = Date.now();

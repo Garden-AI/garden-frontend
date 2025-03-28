@@ -15,11 +15,10 @@ import { Separator } from "@/components/shadcn/separator";
 import GardenBox from "@/features/gardens/components/GardenBox";
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
 import {
-  SquareStack,
-  LockKeyholeOpen,
-  ShieldCheck,
-  PersonStanding,
-  MoveRight,
+  Container,
+  Cpu,
+  Atom,
+  GitBranch,
   Rocket,
   Share2Icon,
   Lightbulb,
@@ -33,14 +32,14 @@ import ArgonneLogo from "@/svgs/logos/argonne"
 import DOELogo from "@/svgs/logos/doe"
 import MITLogo from "@/svgs/logos/beaver"
 
-const icons = [
-  { icon: Share2Icon, text: "Boost the visibility of your work" },
-  {
-    icon: Search,
-    text: "Search for models specific to your research",
-  },
-  { icon: Lightbulb, text: "Find solutions to similar problems" },
-];
+// const icons = [
+//   { icon: Share2Icon, text: "Boost the visibility of your work" },
+//   {
+//     icon: Search,
+//     text: "Search for models specific to your research",
+//   },
+//   { icon: Lightbulb, text: "Find solutions to similar problems" },
+// ];
 
 const HomePage = () => {
   const auth = useGlobusAuth();
@@ -73,12 +72,12 @@ const HomePage = () => {
       is_test: false,
     },
     {
-      title: "AtomGPT Examples",
+      title: "Materials Property Prediction with MAST-ML",
       description:
-        "This garden lets you try out AtomGPT, a generative materials model developed by Kamal Choudhary at NIST.",
-      doi: "10.26311/vprp-1t41",
-      publisher: "Kamal Choudhary",
-      owner: "Kamal Choudhary",
+        "Random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance. Models are trained and executed with the Materials Simulation Toolkit for Machine Learning (MAST-ML) from the UW-Madison Computational Materials Group. This garden also includes three batch execution variants used to screen candidate perovskites.",
+      doi: "10.26311/ep98-br79",
+      publisher: "Ryan Jacobs",
+      owner: "Ryan Jacobs",
       language: "English",
       version: "1.0",
       is_archived: false,
@@ -105,9 +104,9 @@ const HomePage = () => {
       is_test: false,
     },
     {
-      title: "Chemeleon Examples",
+      title: "Generative Materials Models",
       description:
-        "This is a Garden that runs variants of Chemeleon, a generative materials model by Hyunsoo Park and Aron Walsh at University College London.",
+        "This Garden contains models that take free text as input and produce molecular structures as output. Models include: - Chemeleon from Hyunsoo Park and Aron Walsh at University College London - AtomGPT from Kamal Choudhary at the National Institute of Standards and Technology",
       doi: "10.26311/6phn-gv02",
       publisher: "Hyunsoo Park",
       owner: "Hyunsoo Park",
@@ -127,10 +126,10 @@ const HomePage = () => {
       <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 py-36">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <h1 className="mb-4 text-4xl font-bold text-gray-900 sm:text-6xl">
-            Publish, Share, and Run ML Models with <span className="text-brightgreen">Garden</span>
+            Publish and Run Scientific AI Models with <span className="text-brightgreen">Garden</span>
           </h1>
           <p className="mx-auto mb-8 mt-8 max-w-2xl text-xl text-gray-600">
-            Empower your research with easy-to-use machine learning models for science applications
+            Run frontier models in materials science, biology, and physics with two lines of Python.
           </p>
           <div className="flex justify-center space-x-4">
             <Link to="/search">
@@ -203,86 +202,24 @@ const HomePage = () => {
       <div className="mx-auto max-w-5xl">
         <div className="mt-12 px-4 ">
           <div className="flex items-baseline">
-            <h1 className="text-3xl font-semibold">Start a garden</h1>
-            <p className="ml-4 font-extrabold text-green">
-              <Link to="/garden/create">
-                <span className="group inline-flex items-center text-lg">
-                  The Plot is yours
-                  <MoveRight className="mx-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-                </span>
-              </Link>
-            </p>
+            <h1 className="text-3xl font-semibold">Science Needs More Than Chatbots</h1>
           </div>
           <h2 className="mt-2 text-lg">
-            Gardens are collections of ML models that are linked with data and computing resources
-            to advance the work of research communities. These gardens make it easy to publish
-            models which can be integrated into academia and industry alike. Researchers can provide
-            broad access to their models, without having to worry about the difficulties surrounding
-            discovery, access, and deployment.
+            There are many great platforms for hosting chatbots.
+            But you work in science, and you want the best model for predicting
+            <Link to="/garden/10.26311/ep98-br79" className="text-green hover:text-darkgreen hover:underline"> material tensile strength</Link> or the 
+            <Link to="/garden/10.26311/hhwc-0v60" className="text-green hover:text-darkgreen hover:underline"> behavior of neutron stars</Link>.
+            Garden is the best place to find, share, and run specialized AI models for science. (Scientific chatbots are welcome too.)
           </h2>
         </div>
-        <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
-          {icons.map((icon, index) => (
-            <div key={index} className="flex h-40 flex-col items-center text-center ">
-              <div className="w-full">
-                <icon.icon size={110} className="mx-auto w-full text-primary" />
-              </div>
-              <p className="text-center md:text-xl">{icon.text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <Separator />
 
-      <div className="mx-auto mt-20 max-w-5xl px-4">
-        <h2 className="text-3xl font-semibold">Get Started in Minutes</h2>
-        <p className="mt-4 text-lg">
-          You can publish your first garden within 15 minutes!
-        </p>
-        <div className="mx-auto max-w-6xl pt-4">
-          <div className="flex flex-col items-center space-y-8 md:flex-row md:space-x-12 md:space-y-0">
-            <div className="w-full text-sm md:w-1/2">
-              <SyntaxHighlighter>
-                {`from garden_ai import GardenClient
-
-garden_client = GardenClient()
-garden = garden_client.get_garden("10.26311/ep98-br79")
-
-def predict_properties():
-    materials = ['AgI', 'CdTe', 'BN']
-    result = garden.predict_piezoelectric(materials)
-    return result
-
-# Run the model and get results
-predictions = predict_properties()`}
-              </SyntaxHighlighter>
-            </div>
-            <div className="w-full md:w-1/2">
-              <h3 className="mb-4 text-2xl font-semibold">Easy Integration, Powerful Results</h3>
-              <p className="mb-6 text-lg">
-                With just a few lines of code, you can access and run sophisticated ML models.
-                Garden handles the complexities, so you can focus on your research.
-              </p>
-              <a
-                href="https://garden-ai.readthedocs.io/en/latest/"
-                target="_blank"
-              >
-                <span className="group inline-flex items-center text-lg text-green">
-                  Read the documentation
-                  <MoveRight className="ml-2 h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
-                </span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto mb-12 mt-20 max-w-5xl md:flex">
-        <div className="mt-12 px-4 md:mt-8 md:w-5/12">
-          <h1 className="text-3xl font-semibold">Research using ML doesn't have to be hard.</h1>
+        <div className="mx-auto mb-12 mt-20 max-w-5xl md:flex">
+        <div className="mt-12 px-4 md:mt-4 md:w-5/12">
+          <h1 className="text-3xl font-semibold">Reproducible Science Needs On-Demand Models</h1>
           <h2 className="mt-4 text-lg">
-            We overcome the barriers surrounding ML, so that you can spend more time researching and
-            less time setting up code to run models.
+            It can take days to get another lab's model running. 
+            Models hosted on Garden are runnable in seconds, so you can build on others' work.
+            (And you can get real users and citations for models you've developed.)
           </h2>
         </div>
 
@@ -291,16 +228,16 @@ predictions = predict_properties()`}
             <AccordionItem value="one">
               <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                 <div className="flex items-center gap-x-2 p-2">
-                  <SquareStack className="text-gray-500" />
-                  <span className="font-medium text-gray-700">Reproducibility</span>
+                  <Container className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Containerized Model Runtimes</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="grid grid-cols-1 gap-4 py-6">
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      There's a lot of code that goes into reproducing an ML pipeline to get the
-                      desired output. We make every garden easy to follow.{" "}
+                      Even if someone shares a conda.yml, getting the right mix of science and ML libraries installed can be a pain.
+                      Models on Garden are pre-bundled with their requirements so you don't have to worry about it.{" "}
                     </p>
                   </div>
                 </>
@@ -309,18 +246,20 @@ predictions = predict_properties()`}
             <AccordionItem value="two">
               <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                 <div className="flex items-center gap-x-2 p-2">
-                  <LockKeyholeOpen className="text-gray-500" />
-                  <span className="font-medium text-gray-700">Accessibility</span>
+                  <Cpu className="text-gray-500" />
+                  <span className="font-medium text-gray-700">GPU Access</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="grid grid-cols-1 gap-4 py-6">
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      All code, data, testing is available and free without any barriers to access.
-                      You can run models using our compute resources at UChicago or any Globus
-                      Compute endpoint.{" "}
+                      Models are paired with the GPU they need to run effectively. Garden provides researchers free monthly GPU quotas to try out models. 
                     </p>
+                    <p className="text-base text-gray-800 pt-2">
+                      For large production runs, you can "bring your own compute" by applying HPC allocations or cloud credits.{" "}
+                    </p>
+                    
                   </div>
                 </>
               </AccordionContent>
@@ -328,16 +267,24 @@ predictions = predict_properties()`}
             <AccordionItem value="three">
               <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                 <div className="flex items-center gap-x-2 p-2">
-                  <ShieldCheck className="text-gray-500" />
-                  <span className="font-medium text-gray-700">Quality</span>
+                  <Atom className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Linked Scientific Datasets</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="grid grid-cols-1 gap-4 py-6">
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      We test and evaluate models on our side, so you can browse research without
-                      the time investment of doing all of that yourself.{" "}
+                      Pull in large scientific datasets from repositories like the{" "}
+                      <a
+                        href="https://materialsdatafacility.org/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green hover:text-darkgreen hover:underline"
+                      >
+                        Materials Data Facility
+                      </a>{" "}
+                      and set up benchmarks for your sub-discipline.
                     </p>
                   </div>
                 </>
@@ -346,16 +293,20 @@ predictions = predict_properties()`}
             <AccordionItem value="four">
               <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
                 <div className="flex items-center gap-x-2 p-2">
-                  <PersonStanding className="text-gray-500" />
-                  <span className="font-medium text-gray-700">Community</span>
+                  <GitBranch className="text-gray-500" />
+                  <span className="font-medium text-gray-700">Hugging Face and GitHub Integration</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="grid grid-cols-1 gap-4 py-6">
                 <>
                   <div className="rounded-md border bg-white p-6">
                     <p className="text-base text-gray-800 ">
-                      Garden is a collaborative platform that connects like-minded people. Find your
-                      ML community, collaborate, and set new benchmarks in your domain.{" "}
+                      If you already publish your model weights on Hugging Face, that's great! 
+                      Garden's job is on-demand inference, not file storage.
+                    </p>
+                    <p className="text-base text-gray-800 pt-2">
+                      We recommend users publish their model weights and code on open repositories 
+                      like Hugging Face and use Garden to make them runnable on-demand.{" "}
                     </p>
                   </div>
                 </>
@@ -364,6 +315,77 @@ predictions = predict_properties()`}
           </Accordion>
         </div>
       </div>
+
+        {/* <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
+          {icons.map((icon, index) => (
+            <div key={index} className="flex h-40 flex-col items-center text-center ">
+              <div className="w-full">
+                <icon.icon size={110} className="mx-auto w-full text-primary" />
+              </div>
+              <p className="text-center md:text-xl">{icon.text}</p>
+            </div>
+          ))}
+        </div> */}
+      </div>
+      <Separator />
+
+      <div className="mx-auto mt-20 max-w-5xl px-4">
+        <h2 className="text-3xl font-semibold">Get Started in Seconds</h2>
+        <div className="mx-auto max-w-6xl pt-4">
+          <div className="flex flex-col items-center space-y-8 md:flex-row md:space-x-12 md:space-y-0">
+            <div className="w-full text-sm md:w-1/2">
+              <SyntaxHighlighter>
+                {`# "pip install garden-ai" first
+from garden_ai import GardenClient
+
+garden_client = GardenClient()
+g = garden_client.get_garden("10.26311/ep98-br79")
+
+materials = ['AgI', 'CdTe', 'BN']
+# Run the model remotely and retrieve your results
+result = g.predict_piezoelectric_displacement(materials)`}
+              </SyntaxHighlighter>
+            </div>
+            <div className="w-full md:w-1/2">
+              <h3 className="mb-4 text-2xl font-semibold">Easy To Run, Easy To Publish</h3>
+              <p className="mb-6 text-lg">
+                  Garden uses{" "}
+                  <a
+                    href="https://modal.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green hover:text-darkgreen hover:underline"
+                  >
+                    Modal
+                  </a>{" "}
+                  to run models in the cloud and{" "}
+                  <a
+                    href="https://www.globus.org/compute"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green hover:text-darkgreen hover:underline"
+                  >
+                    Globus Compute
+                  </a>{" "}
+                  to run models on scientific computing clusters.
+                  
+                  {" "}
+                  <a
+                    href="https://garden-ai.readthedocs.io/en/latest/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green hover:text-darkgreen hover:underline"
+                  >
+                    Read our documentation
+                  </a>{" "}
+                  to learn how to publish your models with Garden.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
 
       <div className="bg-green pt-6">
         <div className="mx-auto max-w-5xl px-4 pb-2">
