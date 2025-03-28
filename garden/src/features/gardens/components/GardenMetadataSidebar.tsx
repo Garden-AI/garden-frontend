@@ -15,7 +15,7 @@ export const GardenMetadataSidebar = ({garden, ownsThisGarden}: {garden: Garden,
     };
 
     return (
-        <Metadata entity={garden} ownsThisEntity={ownsThisGarden}>
+        <Metadata name={"Garden"} entity={garden} ownsThisEntity={ownsThisGarden}>
             {/* DOI Field */}
             <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
                 <div className="flex items-center justify-between">
