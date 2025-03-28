@@ -118,8 +118,6 @@ const GardenPage = () => {
   }
 
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub)
-  console.log(`User ID: ${auth?.authorization?.user?.sub}`)
-  console.log(`Is Super User: ${isSuperUser}`);
   const ownsThisGarden = auth?.isAuthenticated && (garden.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
 
   return (
