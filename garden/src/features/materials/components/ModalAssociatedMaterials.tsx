@@ -104,7 +104,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
   };
 
   return (
-    <div className="mt-6 mb-6">
+    <div className="mt-6">
       <Tabs 
         defaultValue="function" 
         className="w-full min-h-[400px]"

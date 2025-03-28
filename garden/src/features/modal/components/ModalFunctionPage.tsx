@@ -49,7 +49,7 @@ const ModalFunctionPage = () => {
       ];
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
+    <div className="container mb-6 max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content */}
         <div className="lg:w-2/3">
