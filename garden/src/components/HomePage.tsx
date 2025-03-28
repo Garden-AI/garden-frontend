@@ -19,10 +19,7 @@ import {
   Cpu,
   Atom,
   GitBranch,
-  Rocket,
-  Share2Icon,
-  Lightbulb,
-  Search,
+  Sprout,
 } from "lucide-react";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import UChicagoLogo from "@/svgs/logos/uchicago"
@@ -31,15 +28,6 @@ import WisconsinLogo from "@/svgs/logos/badger"
 import ArgonneLogo from "@/svgs/logos/argonne"
 import DOELogo from "@/svgs/logos/doe"
 import MITLogo from "@/svgs/logos/beaver"
-
-// const icons = [
-//   { icon: Share2Icon, text: "Boost the visibility of your work" },
-//   {
-//     icon: Search,
-//     text: "Search for models specific to your research",
-//   },
-//   { icon: Lightbulb, text: "Find solutions to similar problems" },
-// ];
 
 const HomePage = () => {
   const auth = useGlobusAuth();
@@ -199,7 +187,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-5xl mb-12">
         <div className="mt-12 px-4 ">
           <div className="flex items-baseline">
             <h1 className="text-3xl font-semibold">Science Needs More Than Chatbots</h1>
@@ -212,124 +200,140 @@ const HomePage = () => {
             Garden is the best place to find, share, and run specialized AI models for science. (Scientific chatbots are welcome too.)
           </h2>
         </div>
-
-        <div className="mx-auto mb-12 mt-20 max-w-5xl md:flex">
-        <div className="mt-12 px-4 md:mt-4 md:w-5/12">
-          <h1 className="text-3xl font-semibold">Reproducible Science Needs On-Demand Models</h1>
-          <h2 className="mt-4 text-lg">
-            It can take days to get another lab's model running. 
-            Models hosted on Garden are runnable in seconds, so you can build on others' work.
-            (And you can get real users and citations for models you've developed.)
-          </h2>
-        </div>
-
-        <div className="mx-auto mt-4 md:w-5/12">
-          <Accordion type="single" collapsible className="mb-10 border-y" defaultValue="materials">
-            <AccordionItem value="one">
-              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                <div className="flex items-center gap-x-2 p-2">
-                  <Container className="text-gray-500" />
-                  <span className="font-medium text-gray-700">Containerized Model Runtimes</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                <>
-                  <div className="rounded-md border bg-white p-6">
-                    <p className="text-base text-gray-800 ">
-                      Even if someone shares a conda.yml, getting the right mix of science and ML libraries installed can be a pain.
-                      Models on Garden are pre-bundled with their requirements so you don't have to worry about it.{" "}
-                    </p>
-                  </div>
-                </>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="two">
-              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                <div className="flex items-center gap-x-2 p-2">
-                  <Cpu className="text-gray-500" />
-                  <span className="font-medium text-gray-700">GPU Access</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                <>
-                  <div className="rounded-md border bg-white p-6">
-                    <p className="text-base text-gray-800 ">
-                      Models are paired with the GPU they need to run effectively. Garden provides researchers free monthly GPU quotas to try out models. 
-                    </p>
-                    <p className="text-base text-gray-800 pt-2">
-                      For large production runs, you can "bring your own compute" by applying HPC allocations or cloud credits.{" "}
-                    </p>
-                    
-                  </div>
-                </>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="three">
-              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                <div className="flex items-center gap-x-2 p-2">
-                  <Atom className="text-gray-500" />
-                  <span className="font-medium text-gray-700">Linked Scientific Datasets</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                <>
-                  <div className="rounded-md border bg-white p-6">
-                    <p className="text-base text-gray-800 ">
-                      Pull in large scientific datasets from repositories like the{" "}
-                      <a
-                        href="https://materialsdatafacility.org/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-green hover:text-darkgreen hover:underline"
-                      >
-                        Materials Data Facility
-                      </a>{" "}
-                      and set up benchmarks for your sub-discipline.
-                    </p>
-                  </div>
-                </>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="four">
-              <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
-                <div className="flex items-center gap-x-2 p-2">
-                  <GitBranch className="text-gray-500" />
-                  <span className="font-medium text-gray-700">Hugging Face and GitHub Integration</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="grid grid-cols-1 gap-4 py-6">
-                <>
-                  <div className="rounded-md border bg-white p-6">
-                    <p className="text-base text-gray-800 ">
-                      If you already publish your model weights on Hugging Face, that's great! 
-                      Garden's job is on-demand inference, not file storage.
-                    </p>
-                    <p className="text-base text-gray-800 pt-2">
-                      We recommend users publish their model weights and code on open repositories 
-                      like Hugging Face and use Garden to make them runnable on-demand.{" "}
-                    </p>
-                  </div>
-                </>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
       </div>
 
-        {/* <div className="mx-auto grid grid-cols-1 justify-around gap-x-12 gap-y-8 px-20 py-12 sm:grid-cols-3 ">
-          {icons.map((icon, index) => (
-            <div key={index} className="flex h-40 flex-col items-center text-center ">
-              <div className="w-full">
-                <icon.icon size={110} className="mx-auto w-full text-primary" />
+      <div className="bg-green pt-6">
+        <div className="mx-auto max-w-5xl px-4 pb-2">
+          <div className="text-white">
+            <h1 className="text-left text-3xl font-semibold">
+              <div className="flex space-x-4">
+                <Sprout size={35} className="my-auto" />
+                <h3>Featured Gardens </h3>
               </div>
-              <p className="text-center md:text-xl">{icon.text}</p>
-            </div>
-          ))}
-        </div> */}
-      </div>
-      <Separator />
+            </h1>
+          </div>
+        </div>
 
-      <div className="mx-auto mt-20 max-w-5xl px-4">
+        <ScrollArea className="w-full">
+          <div className="flex justify-center space-x-4 p-4 ">
+            {gardens?.map((res: any, index: any) => (
+              <div className="h-[250px] w-[300px]" key={index}>
+                <GardenBox garden={res} />
+              </div>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </div>
+
+      <div className="mx-auto max-w-5xl">
+        <div className="mx-auto mb-12 mt-16 max-w-5xl md:flex">
+          <div className="mt-12 px-4 md:mt-4 md:w-5/12">
+            <h1 className="text-3xl font-semibold">Reproducible Science Needs On-Demand Models</h1>
+            <h2 className="mt-4 text-lg">
+              It can take days to get another lab's model running. 
+              Models hosted on Garden are runnable in seconds, so you can build on others' work.
+              (And you can get real users and citations for models you've developed.)
+            </h2>
+          </div>
+
+          <div className="mx-auto mt-4 md:w-5/12">
+            <Accordion type="single" collapsible className="mb-10 border-y" defaultValue="materials">
+              <AccordionItem value="one">
+                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                  <div className="flex items-center gap-x-2 p-2">
+                    <Container className="text-gray-500" />
+                    <span className="font-medium text-gray-700">Containerized Model Runtimes</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                  <>
+                    <div className="rounded-md border bg-white p-6">
+                      <p className="text-base text-gray-800 ">
+                        Even if someone shares a conda.yml, getting the right mix of science and ML libraries installed can be a pain.
+                        Models on Garden are pre-bundled with their requirements so you don't have to worry about it.{" "}
+                      </p>
+                    </div>
+                  </>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="two">
+                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                  <div className="flex items-center gap-x-2 p-2">
+                    <Cpu className="text-gray-500" />
+                    <span className="font-medium text-gray-700">GPU Access</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                  <>
+                    <div className="rounded-md border bg-white p-6">
+                      <p className="text-base text-gray-800 ">
+                        Models are paired with the GPU they need to run effectively. Garden provides researchers free monthly GPU quotas to try out models. 
+                      </p>
+                      <p className="text-base text-gray-800 pt-2">
+                        For large production runs, you can "bring your own compute" by applying HPC allocations or cloud credits.{" "}
+                      </p>
+                      
+                    </div>
+                  </>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="three">
+                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                  <div className="flex items-center gap-x-2 p-2">
+                    <Atom className="text-gray-500" />
+                    <span className="font-medium text-gray-700">Linked Scientific Datasets</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                  <>
+                    <div className="rounded-md border bg-white p-6">
+                      <p className="text-base text-gray-800 ">
+                        Pull in large scientific datasets from repositories like the{" "}
+                        <a
+                          href="https://materialsdatafacility.org/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green hover:text-darkgreen hover:underline"
+                        >
+                          Materials Data Facility
+                        </a>{" "}
+                        and set up benchmarks for your sub-discipline.
+                      </p>
+                    </div>
+                  </>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="four">
+                <AccordionTrigger className="px-4 py-2 transition-colors duration-200 hover:bg-gray-100 data-[state=open]:bg-gray-100">
+                  <div className="flex items-center gap-x-2 p-2">
+                    <GitBranch className="text-gray-500" />
+                    <span className="font-medium text-gray-700">Hugging Face and GitHub Integration</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="grid grid-cols-1 gap-4 py-6">
+                  <>
+                    <div className="rounded-md border bg-white p-6">
+                      <p className="text-base text-gray-800 ">
+                        If you already publish your model weights on Hugging Face, that's great! 
+                        Garden's job is on-demand inference, not file storage.
+                      </p>
+                      <p className="text-base text-gray-800 pt-2">
+                        We recommend users publish their model weights and code on open repositories 
+                        like Hugging Face and use Garden to make them runnable on-demand.{" "}
+                      </p>
+                    </div>
+                  </>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+
+      </div>
+      
+
+      <div className="mx-auto mt-12 max-w-5xl px-4 mb-12">
         <h2 className="text-3xl font-semibold">Get Started in Seconds</h2>
         <div className="mx-auto max-w-6xl pt-4">
           <div className="flex flex-col items-center space-y-8 md:flex-row md:space-x-12 md:space-y-0">
@@ -367,7 +371,7 @@ result = g.predict_piezoelectric_displacement(materials)`}
                   >
                     Globus Compute
                   </a>{" "}
-                  to run models on scientific computing clusters.
+                  to run models on Research computing clusters.
                   
                   {" "}
                   <a
@@ -387,29 +391,7 @@ result = g.predict_piezoelectric_displacement(materials)`}
 
       
 
-      <div className="bg-green pt-6">
-        <div className="mx-auto max-w-5xl px-4 pb-2">
-          <div className="text-white">
-            <h1 className="text-left text-3xl font-semibold">
-              <div className="flex space-x-4">
-                <Rocket size={35} className="my-auto" />
-                <h3>Featured Gardens </h3>
-              </div>
-            </h1>
-          </div>
-        </div>
-
-        <ScrollArea className="w-full">
-          <div className="flex justify-center space-x-4 p-4 ">
-            {gardens?.map((res: any, index: any) => (
-              <div className="h-[300px] w-[300px]" key={index}>
-                <GardenBox garden={res} />
-              </div>
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-      </div>
+      
     </div>
   );
 };
