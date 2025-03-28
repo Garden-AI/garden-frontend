@@ -1,70 +1,68 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { EditIcon, SaveIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { toast } from "sonner";
-import { Garden } from "@/types";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
-import { usePatchGarden } from "../../api/usePatchGarden";
-import { z } from "zod";
-import { formSchema } from "../EditGardenschemas";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
+import { Garden, ModalFunction } from "@/types";
+
+type Entity = Garden | ModalFunction;
 
 export interface EditableTitleProps {
-  garden: Garden;
-  ownsThisGarden: boolean;
+  entity: Entity;
+  ownsThisEntity: boolean;
+  onUpdate: (updateData: any) => Promise<void>;
 }
 
-const EditableTitle = ({ garden, ownsThisGarden }: EditableTitleProps) => {
+const EditableTitle = ({ entity, ownsThisEntity, onUpdate }: EditableTitleProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState(garden.title);
-  const { mutate: updateGarden } = usePatchGarden();
+  const [inputValue, setInputValue] = useState(entity.title);
 
-  const handleSave = () => {
-    // Validate using the schema
-    const schema = formSchema.shape.title;
-    const result = schema.safeParse(inputValue);
-    
-    if (!result.success) {
-      // Display the first validation error
-      const errorMessage = result.error.errors[0]?.message || "Invalid title";
-      toast.error(errorMessage);
+  const handleSave = async () => {
+    if (!inputValue.trim()) {
+      toast.error("Title cannot be empty");
       return;
     }
-    
-    updateGarden({
-      doi: garden.doi,
-      garden: { title: inputValue }
-    });
-    
-    setIsEditing(false);
-    toast.success("Title updated");
+
+    try {
+      await onUpdate({ title: inputValue });
+      toast.success("Title updated successfully");
+      setIsEditing(false);
+    } catch (error: any) {
+      toast.error(`Error updating title: ${error.message}`);
+    }
   };
-  
+
   const handleCancel = () => {
-    setInputValue(garden.title);
+    setInputValue(entity.title);
     setIsEditing(false);
   };
 
-  if (isEditing && ownsThisGarden) {
+  if (isEditing && ownsThisEntity) {
     return (
       <div className="flex flex-col gap-2">
-        <Input 
+        <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="text-2xl font-bold w-full"
-          placeholder="Garden Title"
+          className="text-xl md:text-2xl font-medium"
+          placeholder="Title"
         />
         <div className="flex gap-2">
-          <Button 
-            size="sm" 
-            onClick={handleSave} 
+          <Button
+            size="sm"
+            onClick={handleSave}
             className="flex items-center gap-1"
           >
             <SaveIcon className="h-3.5 w-3.5" /> Save
           </Button>
-          <Button 
-            size="sm" 
-            variant="outline" 
+          <Button
+            size="sm"
+            variant="outline"
             onClick={handleCancel}
             className="flex items-center gap-1"
           >
@@ -74,18 +72,18 @@ const EditableTitle = ({ garden, ownsThisGarden }: EditableTitleProps) => {
       </div>
     );
   }
-  
+
   return (
     <div className="flex items-center gap-2 group">
-      <h1 className="text-2xl font-bold">{garden.title}</h1>
-      {ownsThisGarden && (
+      <h1 className="text-xl md:text-2xl font-medium">{entity.title}</h1>
+      {ownsThisEntity && (
         <div className="flex items-center gap-1 h-8">
           <TooltipProvider delayDuration={150}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button 
+                <button
                   onClick={() => setIsEditing(true)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-green hover:text-darkgreen"
+                  className="text-green hover:text-darkgreen"
                   aria-label="Edit title"
                 >
                   <EditIcon className="h-4 w-4" />

@@ -218,7 +218,7 @@ const HomePage = () => {
           <div className="flex justify-center space-x-4 p-4 ">
             {gardens?.map((res: any, index: any) => (
               <div className="h-[250px] w-[300px]" key={index}>
-                <GardenBox garden={res} />
+                <GardenBox garden={res} allowEdits={false} />
               </div>
             ))}
           </div>

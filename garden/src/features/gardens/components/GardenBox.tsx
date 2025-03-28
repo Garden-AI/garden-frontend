@@ -5,7 +5,7 @@ import { Garden } from "@/types";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useGetGardens } from "@/features/gardens/api/useGetGardens";
 
-const GardenBox = ({ garden }: { garden: Garden }) => {
+const GardenBox = ({ garden, allowEdits }: { garden: Garden, allowEdits: boolean }) => {
   const navigate = useNavigate();
 
   const { data: currUserInfo } = useGetUserInfo();
@@ -53,7 +53,7 @@ const GardenBox = ({ garden }: { garden: Garden }) => {
             </div>
           )}
           <div className="ml-auto flex items-center">
-            {canEditGarden && (
+            {canEditGarden && allowEdits && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

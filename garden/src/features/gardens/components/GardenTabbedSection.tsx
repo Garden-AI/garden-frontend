@@ -22,7 +22,7 @@ const TabTrigger = ({ icon: Icon, garden, name, value }: { icon: LucideIcon, gar
             value={value}
             className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm"
         >
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-between">
                 <Icon className="h-4 w-4" />
                 <span className="hidden lg:block ml-1.5">{name}</span>
                 {((garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)) > 0 && (
@@ -75,7 +75,7 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
             }
             className="flex flex-col w-full"
         >
-            <TabsList className="bg-gray-200 flex flex-row justify-around">
+            <TabsList className="mb-2 bg-gray-200 p-0.5 grid grid-cols-5">
                 <TabTrigger
                     icon={FunctionSquare}
                     garden={garden}

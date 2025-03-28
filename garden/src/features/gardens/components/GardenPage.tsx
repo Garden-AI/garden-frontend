@@ -18,12 +18,11 @@ import { Garden } from "@/types";
 import {
   GardenDescription,
   VisibilityWarning,
-  EditableTitle,
   ReviewNotice,
 } from "./garden-page";
 import { GardenTabbedSection } from "./GardenTabbedSection";
 import { GardenMetadataSidebar } from "./GardenMetadataSidebar";
-
+import { EditableTitle } from "@/components/shared/metadata";
 
 interface GardenContentProps {
   garden: Garden;
@@ -59,7 +58,16 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">
             <div className="flex justify-between items-start mb-4">
-              <EditableTitle garden={garden} ownsThisGarden={ownsThisGarden} />
+              <EditableTitle 
+                entity={garden}
+                ownsThisEntity={ownsThisGarden}
+                onUpdate={async (updateData) => {
+                  await patchGarden({
+                    doi: garden.doi,
+                    garden: updateData
+                  });
+                }}
+              />
               <div className="flex">
                 <SaveGardenButton garden={garden} />
                 <GardenDropdownOptions garden={garden} />
@@ -87,7 +95,6 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
       </div>
       );
 };
-
 
 const GardenPage = () => {
   const { doi } = useParams();
