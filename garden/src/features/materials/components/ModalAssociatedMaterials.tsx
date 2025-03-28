@@ -109,7 +109,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
         defaultValue="function" 
         className="w-full min-h-[400px]"
       >
-        <TabsList className="mb-2 bg-gray-100 p-0.5 grid grid-cols-6">
+        <TabsList className="mb-2 bg-gray-200 p-0.5 grid grid-cols-6">
           <TabTrigger
             icon={FunctionSquare}
             name="Function"
