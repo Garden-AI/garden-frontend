@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Garden } from "@/types";
@@ -21,9 +22,15 @@ import { BookOpenIcon, CalendarIcon, TagIcon } from "lucide-react";
 import { PersonIcon } from "@radix-ui/react-icons";
 
 import SaveGardenButton from "../../gardens/components/SaveGardenButton";
+import { Button } from "@/components/shadcn/button";
 
 export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boolean }) => {
   const functions = [...(garden.entrypoints ?? []), ...(garden.modal_functions ?? [])];
+  const [showMore, setShowMore] = useState(false);
+
+  const handleShowMore = () => {
+    setShowMore(!showMore);
+  }
   return (
     <Card className="transition-colors hover:bg-gray-50 hover:shadow-lg">
       <CardHeader>
@@ -54,10 +61,18 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
         </CardDescription>
       </CardHeader>
       
-      <MarkdownCardContent 
-        className="line-clamp-3"
-        content={garden.description || "*No description available*"}
-      />
+      <div className="p-1">
+        <MarkdownCardContent 
+          className={`m-2 p-2 text-balanced ${(showMore) ? "" : "line-clamp-3"}`}
+          content={garden.description || "*No description available*"}
+        />
+        <Button 
+          onClick={handleShowMore}
+          className="text-black text-xs bg-inherit hover:text-blue-400 hover:bg-inherit hover:underline"
+        >
+          {(showMore) ? "Show Less" : "Show More"}
+        </Button>
+      </div>
       
       {verbose && functions?.length > 0 && (
         <CardContent>
