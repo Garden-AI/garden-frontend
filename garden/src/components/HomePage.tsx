@@ -250,7 +250,7 @@ garden = garden_client.get_garden("10.26311/ep98-br79")
 
 def predict_properties():
     materials = ['AgI', 'CdTe', 'BN']
-    result = garden.predict_piezoelectric(materials)
+    result = garden.predict_piezoelectric_displacement(materials)
     return result
 
 # Run the model and get results
