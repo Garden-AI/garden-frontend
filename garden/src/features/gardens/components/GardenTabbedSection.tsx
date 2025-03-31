@@ -6,6 +6,7 @@ import { Garden } from "@/types";
 import EntrypointBox from "./EntrypointBox";
 import ModalFunctionBox from "./ModalFunctionBox";
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
+import { getUniqueItemCount } from "../utils/garden.utils";
 import {
     AddMaterialWithFunctionSelect,
     AddModalFunctionSelector,
@@ -16,7 +17,7 @@ import {
 } from "./garden-page";
 
 
-const TabTrigger = ({ icon: Icon, garden, name, value }: { icon: LucideIcon, garden: Garden, name: string, value: string }) => {
+const TabTrigger = ({ icon: Icon, name, count, value }: { icon: LucideIcon, name: string, count: number, value: string }) => {
     return (
         <TabsTrigger
             value={value}
@@ -25,9 +26,9 @@ const TabTrigger = ({ icon: Icon, garden, name, value }: { icon: LucideIcon, gar
             <div className="flex items-center justify-between">
                 <Icon className="h-4 w-4" />
                 <span className="hidden lg:block ml-1.5">{name}</span>
-                {((garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)) > 0 && (
+                {count> 0 && (
                     <span className="hidden sm:inline ml-1">
-                        ({(garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)})
+                        ({count})
                     </span>
                 )}
             </div>
@@ -78,31 +79,31 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
             <TabsList className="mb-2 bg-gray-200 p-0.5 grid grid-cols-5">
                 <TabTrigger
                     icon={FunctionSquare}
-                    garden={garden}
+                    count={garden.modal_functions?.length || 0}
                     name="Functions"
                     value="functions"
                 />
                 <TabTrigger
                     icon={DatabaseIcon}
-                    garden={garden}
-                    name="Datasets"
+                    count={getUniqueItemCount(garden.modal_functions, 'datasets')}
+                    name="Datasets" 
                     value="datasets"
                 />
                 <TabTrigger
                     icon={ScrollTextIcon}
-                    garden={garden}
+                    count={getUniqueItemCount(garden.modal_functions, 'papers')}
                     name="Papers"
                     value="papers"
                 />
                 <TabTrigger
                     icon={CodeIcon}
-                    garden={garden}
+                    count={getUniqueItemCount(garden.modal_functions, 'repositories')}
                     name="Repos"
                     value="repositories"
                 />
                 <TabTrigger
                     icon={BookIcon}
-                    garden={garden}
+                    count={getUniqueItemCount(garden.modal_functions, 'notebooks')}
                     name="Notebooks"
                     value="notebooks"
                 />
@@ -276,7 +277,7 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
                                     Notebooks
                                 </h3>
 
-                                {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
+                                {ownsThisGarden && (
                                     <AddMaterialWithFunctionSelect
                                         garden={garden}
                                         materialType="notebooks"

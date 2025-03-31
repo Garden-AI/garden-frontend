@@ -1,5 +1,6 @@
 import { Option } from "@/components/shadcn/multiple-select";
 import { AxiosError } from "axios";
+import { ModalFunction } from "@/types";
 
 // Converts file to string for backend processing
 export const fileToString = (file: File): Promise<string> => {
@@ -97,3 +98,29 @@ export class ApiError extends Error {
     return str + suggestedFix;
   }
 }
+
+export type MaterialType = 'datasets' | 'papers' | 'repositories' | 'notebooks';
+
+export const getUniqueItemCount = (modalFunctions: ModalFunction[] | undefined, materialType: MaterialType): number => {
+    if (!modalFunctions) return 0;
+    
+    const getIdentifier = (item: any) => {
+        switch (materialType) {
+            case 'datasets':
+            case 'papers':
+                return item.doi || item.url || item.title;
+            case 'repositories':
+            case 'notebooks':
+                return item.url;
+        }
+    };
+
+    return modalFunctions.reduce((uniqueItems, mf) => {
+        const items = mf[materialType];
+        if (!items) return uniqueItems;
+        
+        const ids = new Set(items.map(getIdentifier));
+        ids.forEach(id => uniqueItems.add(id));
+        return uniqueItems;
+    }, new Set()).size;
+};
