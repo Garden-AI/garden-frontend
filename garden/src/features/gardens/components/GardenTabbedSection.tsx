@@ -6,6 +6,7 @@ import { Garden } from "@/types";
 import EntrypointBox from "./EntrypointBox";
 import ModalFunctionBox from "./ModalFunctionBox";
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
+import { getUniqueItemCount } from "../utils/garden.utils";
 import {
     AddMaterialWithFunctionSelect,
     AddModalFunctionSelector,
@@ -84,41 +85,25 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
                 />
                 <TabTrigger
                     icon={DatabaseIcon}
-                    count={garden.modal_functions?.reduce((uniqueDatasets, mf) => {
-                        const datasetIds = new Set(mf.datasets?.map(d => d.doi || d.url) || []);
-                        datasetIds.forEach(id => uniqueDatasets.add(id));
-                        return uniqueDatasets;
-                    }, new Set()).size || 0}
+                    count={getUniqueItemCount(garden.modal_functions, 'datasets')}
                     name="Datasets" 
                     value="datasets"
                 />
                 <TabTrigger
                     icon={ScrollTextIcon}
-                    count={garden.modal_functions?.reduce((uniquePapers, mf) => {
-                        const paperIds = new Set(mf.papers?.map(p => p.doi || p.title) || []);
-                        paperIds.forEach(id => uniquePapers.add(id));
-                        return uniquePapers;
-                    }, new Set()).size || 0}
+                    count={getUniqueItemCount(garden.modal_functions, 'papers')}
                     name="Papers"
                     value="papers"
                 />
                 <TabTrigger
                     icon={CodeIcon}
-                    count={garden.modal_functions?.reduce((uniqueRepos, mf) => {
-                        const repoUrls = new Set(mf.repositories?.map(r => r.url) || []);
-                        repoUrls.forEach(url => uniqueRepos.add(url));
-                        return uniqueRepos;
-                    }, new Set()).size || 0}
+                    count={getUniqueItemCount(garden.modal_functions, 'repositories')}
                     name="Repos"
                     value="repositories"
                 />
                 <TabTrigger
                     icon={BookIcon}
-                    count={garden.modal_functions?.reduce((uniqueNotebooks, mf) => {
-                        const notebookUrls = new Set(mf.notebooks?.map(n => n.url) || []);
-                        notebookUrls.forEach(url => uniqueNotebooks.add(url));
-                        return uniqueNotebooks;
-                    }, new Set()).size || 0}
+                    count={getUniqueItemCount(garden.modal_functions, 'notebooks')}
                     name="Notebooks"
                     value="notebooks"
                 />
