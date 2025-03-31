@@ -16,7 +16,7 @@ import {
 } from "./garden-page";
 
 
-const TabTrigger = ({ icon: Icon, garden, name, value }: { icon: LucideIcon, garden: Garden, name: string, value: string }) => {
+const TabTrigger = ({ icon: Icon, name, count, value }: { icon: LucideIcon, name: string, count: number, value: string }) => {
     return (
         <TabsTrigger
             value={value}
@@ -25,9 +25,9 @@ const TabTrigger = ({ icon: Icon, garden, name, value }: { icon: LucideIcon, gar
             <div className="flex items-center justify-between">
                 <Icon className="h-4 w-4" />
                 <span className="hidden lg:block ml-1.5">{name}</span>
-                {((garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)) > 0 && (
+                {count> 0 && (
                     <span className="hidden sm:inline ml-1">
-                        ({(garden.entrypoints?.length || 0) + (garden.modal_functions?.length || 0)})
+                        ({count})
                     </span>
                 )}
             </div>
@@ -78,31 +78,47 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
             <TabsList className="mb-2 bg-gray-200 p-0.5 grid grid-cols-5">
                 <TabTrigger
                     icon={FunctionSquare}
-                    garden={garden}
+                    count={garden.modal_functions?.length || 0}
                     name="Functions"
                     value="functions"
                 />
                 <TabTrigger
                     icon={DatabaseIcon}
-                    garden={garden}
-                    name="Datasets"
+                    count={garden.modal_functions?.reduce((uniqueDatasets, mf) => {
+                        const datasetIds = new Set(mf.datasets?.map(d => d.doi || d.url) || []);
+                        datasetIds.forEach(id => uniqueDatasets.add(id));
+                        return uniqueDatasets;
+                    }, new Set()).size || 0}
+                    name="Datasets" 
                     value="datasets"
                 />
                 <TabTrigger
                     icon={ScrollTextIcon}
-                    garden={garden}
+                    count={garden.modal_functions?.reduce((uniquePapers, mf) => {
+                        const paperIds = new Set(mf.papers?.map(p => p.doi || p.title) || []);
+                        paperIds.forEach(id => uniquePapers.add(id));
+                        return uniquePapers;
+                    }, new Set()).size || 0}
                     name="Papers"
                     value="papers"
                 />
                 <TabTrigger
                     icon={CodeIcon}
-                    garden={garden}
+                    count={garden.modal_functions?.reduce((uniqueRepos, mf) => {
+                        const repoUrls = new Set(mf.repositories?.map(r => r.url) || []);
+                        repoUrls.forEach(url => uniqueRepos.add(url));
+                        return uniqueRepos;
+                    }, new Set()).size || 0}
                     name="Repos"
                     value="repositories"
                 />
                 <TabTrigger
                     icon={BookIcon}
-                    garden={garden}
+                    count={garden.modal_functions?.reduce((uniqueNotebooks, mf) => {
+                        const notebookUrls = new Set(mf.notebooks?.map(n => n.url) || []);
+                        notebookUrls.forEach(url => uniqueNotebooks.add(url));
+                        return uniqueNotebooks;
+                    }, new Set()).size || 0}
                     name="Notebooks"
                     value="notebooks"
                 />
@@ -276,7 +292,7 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
                                     Notebooks
                                 </h3>
 
-                                {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
+                                {ownsThisGarden && (
                                     <AddMaterialWithFunctionSelect
                                         garden={garden}
                                         materialType="notebooks"
