@@ -24,6 +24,8 @@ import { GardenTabbedSection } from "./GardenTabbedSection";
 import { GardenMetadataSidebar } from "./GardenMetadataSidebar";
 import { EditableTitle } from "@/components/shared/metadata";
 
+import { SUPER_USERS } from "@/utils/utils";
+
 interface GardenContentProps {
   garden: Garden;
   ownsThisGarden: boolean;
@@ -115,7 +117,8 @@ const GardenPage = () => {
     return <TombstonePage garden={garden} />;
   }
 
-  const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
+  const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub)
+  const ownsThisGarden = auth?.isAuthenticated && (garden.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
 
   return (
     <MaterialsProvider garden={garden} refetchGarden={async () => { await refetch(); }}>
