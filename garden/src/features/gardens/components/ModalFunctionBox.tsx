@@ -1,7 +1,7 @@
 import { ModalFunction } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/shadcn/card";
-import { FunctionSquare } from "lucide-react";
+import { FunctionSquare, Cpu } from "lucide-react";
 
 interface ModalFunctionBoxProps {
   modalFunction: ModalFunction;
@@ -37,26 +37,36 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
         content={modalFunction.description || "No description available"}
       />
       
-      {modalFunction.tags && modalFunction.tags.length > 0 && (
-        <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex items-center">
-          <div className="flex gap-2 text-gray-600 text-xs">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="h-4 w-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
-              />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
-            </svg>
-            <span>{modalFunction.tags.join(", ")}</span>
-          </div>
+      {(modalFunction.tags && modalFunction.tags.length > 0 || modalFunction.hardware_spec?.gpus) && (
+        <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex flex-row items-center">
+          {/* Tags Section */}
+          {modalFunction.tags && modalFunction.tags.length > 0 && (
+            <div className="flex gap-2 text-gray-600 text-xs items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-4 w-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+              </svg>
+              <span>{modalFunction.tags.join(", ")}</span>
+            </div>
+          )}
+          {/* Hardware Spec Section */}
+          {modalFunction.hardware_spec?.gpus && (
+             <div className="flex gap-2 text-gray-600 text-xs items-center ml-auto">
+               <Cpu className="h-4 w-4 flex-shrink-0"/>
+               <span>GPU: {modalFunction.hardware_spec.gpus}</span>
+             </div>
+          )}
         </CardFooter>
       )}
     </Card>

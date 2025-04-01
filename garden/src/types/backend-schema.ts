@@ -280,23 +280,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/modal-invocations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Invoke Modal Fn */
-        post: operations["invoke_modal_fn_modal_invocations_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/modal-invocations/async": {
         parameters: {
             query?: never;
@@ -1418,8 +1401,6 @@ export interface components {
             title: string;
             /** Authors */
             authors?: string[];
-            /** Owner */
-            owner: string,
             /** Contributors */
             contributors?: string[];
             /** Doi */
@@ -1461,6 +1442,8 @@ export interface components {
              * @default false
              */
             is_archived: boolean;
+            /** Owner */
+            owner: string;
             /**
              * Owner Identity Id
              * Format: uuid
@@ -1865,8 +1848,6 @@ export interface components {
         };
         /** ModalFunctionMetadataResponse */
         ModalFunctionMetadataResponse: {
-            /** Owner */
-            owner: string;
             /**
              * Is Archived
              * @default false
@@ -1918,6 +1899,17 @@ export interface components {
             id: number;
             /** Modal App Id */
             modal_app_id: number;
+            /** Owner */
+            owner: string;
+            /**
+             * Owner Identity Id
+             * Format: uuid
+             */
+            owner_identity_id: string;
+            /** Hardware Spec */
+            hardware_spec: {
+                [key: string]: string;
+            };
         };
         /** ModalFunctionPatchRequest */
         ModalFunctionPatchRequest: {
@@ -1973,12 +1965,6 @@ export interface components {
             args_kwargs_serialized?: string | null;
             /** Args Blob Id */
             args_blob_id?: string | null;
-        };
-        /** ModalInvocationResponse */
-        ModalInvocationResponse: {
-            /** Data Format */
-            data_format: number;
-            result: components["schemas"]["_ModalGenericResult"];
         };
         /** NameIdentifier */
         NameIdentifier: {
@@ -3223,39 +3209,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    invoke_modal_fn_modal_invocations_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ModalInvocationRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ModalInvocationResponse"];
                 };
             };
             /** @description Validation Error */
