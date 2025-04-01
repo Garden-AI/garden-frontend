@@ -20,6 +20,26 @@ export const FunctionMetadataSidebar = ({
             modalFunction: updateData,
         });
     };
+
+    // Helper function to format hardware specifications
+    const formatHardwareSpec = (spec: { [key: string]: string } | undefined | null): string[] => {
+        if (!spec) {
+            return [];
+        }
+        return Object.entries(spec).map(([key, value]) => {
+            let displayKey = key;
+            if (key.toLowerCase() === 'gpus' || key.toLowerCase() === 'cpu') {
+                displayKey = key.toUpperCase();
+            } else if (key.toLowerCase() === 'memory') {
+                displayKey = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
+            }
+            if(!value) {
+              value = "Not Specified";
+            }
+            return `${displayKey}: ${value}`;
+        });
+    };
+
     return (
         <Metadata name={"Function"} entity={modalFunction} ownsThisEntity={ownsThisFunction}>
           <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
@@ -81,6 +101,19 @@ export const FunctionMetadataSidebar = ({
             isArray={true}
             onUpdate={updateFunction}
           />
+
+          {/* Add EditableMetadataField for Hardware Specifications (Read-Only) */}
+          <EditableMetadataField
+            label="Hardware Specifications"
+            helpText="Compute resources allocated for the function"
+            value={formatHardwareSpec(modalFunction.hardware_spec)}
+            fieldName="hardware_spec"
+            entity={modalFunction}
+            ownsThisEntity={false}
+            isArray={true}
+            onUpdate={updateFunction}
+          />
+
         </Metadata>
     );
 }
