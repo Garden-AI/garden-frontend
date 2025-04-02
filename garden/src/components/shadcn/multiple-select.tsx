@@ -280,6 +280,84 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
 
+    const handlePaste = React.useCallback(
+      // Supports pasting a comma or newline separted list of items
+      (event: React.ClipboardEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        const pastedText = event.clipboardData.getData("text");
+        
+        // Parse the pasted content into individual items
+        const parsedItems = pastedText
+          .split(/,|\n/)
+          .map(item => item.trim())
+          .filter(Boolean);
+        
+        if (parsedItems.length === 0) {
+          inputProps?.onPaste?.(event);
+          return;
+        }
+        
+        // Create a Set of existing values for O(1) lookups
+        const existingValues = new Set(selected.map(opt => opt.value));
+        
+        // Get all available options as a Map for quick lookups
+        const availableOptionsMap = new Map(
+          // Flatten all available options from different sources
+          [...Object.values(options).flat(), ...arrayDefaultOptions, ...(arrayOptions || [])]
+            .filter(opt => !opt.disable)
+            .map(opt => [opt.value, opt])
+        );
+        
+        // Process the parsed items
+        const newOptions = parsedItems
+          // Skip if already selected
+          .filter(value => !existingValues.has(value))
+          // Map to option objects (existing or new)
+          .map(value => {
+            // Use existing option if available
+            if (availableOptionsMap.has(value)) {
+              return availableOptionsMap.get(value);
+            }
+            // Create new option if creatable
+            if (creatable) {
+              return { value, label: value };
+            }
+            // Skip if not creatable and no matching option
+            return null;
+          })
+          // Filter out nulls (items that couldn't be resolved)
+          .filter(Boolean) as Option[];
+        
+        // Respect the maxSelected limit
+        const itemsToAdd = newOptions.slice(0, Math.max(0, maxSelected - selected.length));
+        
+        // Notify if we hit the max limit
+        if (selected.length + newOptions.length > maxSelected) {
+          onMaxSelected?.(maxSelected);
+        }
+        
+        if (itemsToAdd.length > 0) {
+          const nextSelected = [...selected, ...itemsToAdd];
+          setSelected(nextSelected);
+          onChange?.(nextSelected);
+        }
+        
+        setInputValue("");
+        inputProps?.onPaste?.(event);
+      },
+      [
+        selected,
+        options,
+        arrayDefaultOptions,
+        arrayOptions,
+        creatable,
+        maxSelected,
+        onMaxSelected,
+        onChange,
+        inputProps,
+      ],
+    );
+
     const CreatableItem = () => {
       if (!creatable) return undefined;
       if (
@@ -308,7 +386,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             onChange?.(newOptions);
           }}
         >
-          {`Create "${inputValue}"`}
+           {`Create "${inputValue}"`}
         </CommandItem>
       );
 
@@ -443,6 +521,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 triggerSearchOnFocus && onSearch?.(debouncedSearchTerm);
                 inputProps?.onFocus?.(event);
               }}
+              onPaste={handlePaste} // <-- Attach the paste handler
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? "" : placeholder}
               className={cn(
                 "flex-1 bg-transparent outline-none placeholder:text-muted-foreground",
