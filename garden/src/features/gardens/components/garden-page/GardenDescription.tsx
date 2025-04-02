@@ -5,12 +5,11 @@ import { EditableMetadataField } from "@/components/shared/metadata";
 
 interface GardenDescriptionProps {
   garden: Garden;
+  ownsThisGarden: boolean,
 }
 
-const GardenDescription = ({ garden }: GardenDescriptionProps) => {
-  const { mutateAsync: updateGarden } = usePatchGarden();
-  const auth = useGlobusAuth();
-  const ownsThisGarden = auth.isAuthenticated && garden.owner_identity_id === auth?.authorization?.user?.sub;
+const GardenDescription = ({ garden, ownsThisGarden }: GardenDescriptionProps) => {
+  const { mutateAsync: updateGarden} = usePatchGarden();
 
   return (
     <div className="space-y-3 py-2">
