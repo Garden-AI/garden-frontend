@@ -31,13 +31,16 @@ export const transformSearchResultToGardens = (searchResult?: GardenSearchRespon
 };
 
 export const transformSearchParamsToSearchRequest = (searchParams: URLSearchParams): any => {
-  const filterKeys = ["year", "authors", "tags"];
+  const filterKeys = ["year", "model_authors", "gardeners", "tags"];
   const userFilters: GardenSearchFilter[] =
     filterKeys
       .filter((key) => searchParams.has(key))
       .map((key) => {
+        let field_name = key;
+        if (key === "model_authors") field_name = "authors";
+        if (key === "gardeners") field_name = "owner";
         return {
-          field_name: key,
+          field_name: field_name,
           values: searchParams.get(key)!.split(",").map(decodeURIComponent),
         };
       }) || [];

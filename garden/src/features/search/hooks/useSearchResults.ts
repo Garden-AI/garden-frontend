@@ -8,7 +8,7 @@ import {
 import { Garden, GardenSearchRequest } from "@/types";
 
 type SortOrder = "asc" | "desc" | "relevance" | null;
-const filterKeys = ["tags", "authors", "year"];
+const filterKeys = ["tags", "model_authors", "gardeners", "year"];
 
 interface GardenSearchResult {
   total: number;
