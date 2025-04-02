@@ -281,7 +281,8 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
 
     const handlePaste = React.useCallback(
-      // Supports pasting a comma or newline separted list of items
+      // Supports pasting a comma or newline separted list of items into the input field.
+      // De-duplicates new items with any item already in the input.
       (event: React.ClipboardEvent<HTMLInputElement>) => {
         event.preventDefault();
         const pastedText = event.clipboardData.getData("text");
@@ -297,10 +298,8 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           return;
         }
         
-        // Create a Set of existing values for O(1) lookups
         const existingValues = new Set(selected.map(opt => opt.value));
         
-        // Get all available options as a Map for quick lookups
         const availableOptionsMap = new Map(
           // Flatten all available options from different sources
           [...Object.values(options).flat(), ...arrayDefaultOptions, ...(arrayOptions || [])]
