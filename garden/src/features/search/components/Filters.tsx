@@ -46,7 +46,7 @@ const SearchFilters = ({
               return (
                 <AccordionItem key={facet.name} value={facet.name}>
                   <AccordionTrigger>
-                    <Label className="capitalize">{facet.name}</Label>
+                    <Label className="capitalize">{facet.name.split("_").join(" ")}</Label>
                   </AccordionTrigger>
                   <AccordionContent className="pl-2">
                     {facet?.values?.slice(0, 7).map((bucket, index) => (
