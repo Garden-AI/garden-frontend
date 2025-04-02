@@ -76,7 +76,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
               </div>
             </div>
 
-            <GardenDescription garden={garden} />
+            <GardenDescription garden={garden} ownsThisGarden={ownsThisGarden}/>
 
             {/* Tabbed Section */}
             <div className="mt-4">
