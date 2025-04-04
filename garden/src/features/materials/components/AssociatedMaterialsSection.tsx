@@ -39,6 +39,7 @@ const AssociatedMaterialsSection = ({
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold capitalize">{fieldName}</h3>
         <ModalComponent
+          context={{ garden: undefined }}
           onSave={(data) => append(data)}
           trigger={
             <Button type="button" variant="outline">

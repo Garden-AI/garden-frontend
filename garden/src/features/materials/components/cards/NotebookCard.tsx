@@ -2,7 +2,7 @@ import React from 'react';
 import { Notebook, Garden, ModalFunction } from "@/types";
 import { BookOpen, FileType, Link, Book, Laptop } from "lucide-react";
 import { useState, useRef } from "react";
-import NotebookModal from "@/features/entrypoints/components/modals/NotebookModal";
+import { NotebookModal } from "@/features/materials/components/modals/NotebookModal";
 import { Button } from "@/components/shadcn/button";
 import { Edit2, Trash2 } from "lucide-react";
 import { useMaterialActions } from "../../hooks/useMaterialActions";
@@ -49,7 +49,7 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
     setIsSelectiveEditing,
     editAffectedFunctions,
     editSelectiveFunctions,
-    prepareFunctionsForEdit,
+    // prepareFunctionsForEdit,
     applyEditToAllFunctions,
     applySelectiveEdit,
     toggleEditFunction,
@@ -94,7 +94,12 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
     
     // Show the confirmation dialog for function selection
     if (notebook.url && findAffectedFunctions) {
-      await prepareFunctionsForEdit(cleanUpdatedNotebook);
+      // Comment out this line as prepareFunctionsForEdit is not available
+      // await prepareFunctionsForEdit(cleanUpdatedNotebook);
+      // Instead, refresh directly
+      if (onUpdate) {
+        await onUpdate();
+      }
     } else {
       // If no URL or findAffectedFunctions, just refresh
       if (onUpdate) {
@@ -176,6 +181,7 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
         edit
         initialData={notebook}
         onSave={handleEdit}
+        context={{ garden }}
         trigger={<Button ref={triggerButtonRef} className="hidden">Edit</Button>}
       />
     </>
