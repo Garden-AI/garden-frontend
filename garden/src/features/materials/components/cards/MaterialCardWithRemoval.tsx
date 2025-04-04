@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Garden, ModalFunction } from '@/types';
 import { useMaterialActions } from '@/features/materials/hooks/useMaterialActions';
-import { RemoveDialog } from './MaterialDialogs';
+import { RemoveDialog, EditDialog } from './MaterialDialogs';
 import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from '@/features/materials';
 
 interface MaterialCardWithRemovalProps {
@@ -33,7 +33,15 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
         toggleFunction,
         toggleAll,
         prepareFunctionsForRemoval,
-        handleSelectiveRemove
+        handleSelectiveRemove,
+        isSelectiveEditing,
+        editAffectedFunctions,
+        editSelectiveFunctions,
+        toggleEditFunction,
+        toggleEditAll,
+        applyEditToAllFunctions,
+        applySelectiveEdit,
+        handleEdit
     } = useMaterialActions({
         material,
         garden,
@@ -52,7 +60,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         dataset={material}
                         isOwner={ownsThisGarden}
                         context={{ parentFunction: {} as ModalFunction }}
-                        onUpdate={onMaterialUpdated}
+                        onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />
                 );
@@ -63,7 +71,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         paper={material}
                         isOwner={ownsThisGarden}
                         context={{ parentFunction: {} as ModalFunction }}
-                        onUpdate={onMaterialUpdated}
+                        onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />
                 );
@@ -74,7 +82,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         repository={material}
                         isOwner={ownsThisGarden}
                         context={{ parentFunction: {} as ModalFunction }}
-                        onUpdate={onMaterialUpdated}
+                        onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />
                 );
@@ -85,7 +93,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         notebook={material}
                         isOwner={ownsThisGarden}
                         context={{ parentFunction: {} as ModalFunction }}
-                        onUpdate={onMaterialUpdated}
+                        onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />
                 );
@@ -107,6 +115,17 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                 handleSelectiveRemove={handleSelectiveRemove}
                 isSelectiveRemoval={isSelectiveRemoval}
                 setIsSelectiveRemoval={setIsSelectiveRemoval}
+            />
+            <EditDialog
+                isOpen={isSelectiveEditing}
+                onClose={() => applyEditToAllFunctions()}
+                materialType={materialType}
+                editAffectedFunctions={editAffectedFunctions}
+                editSelectiveFunctions={editSelectiveFunctions}
+                toggleEditFunction={toggleEditFunction}
+                toggleEditAll={toggleEditAll}
+                applyEditToAllFunctions={applyEditToAllFunctions}
+                applySelectiveEdit={applySelectiveEdit}
             />
         </>
     );
