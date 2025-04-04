@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { DatabaseIcon, BookIcon, CodeIcon, FunctionSquare, ScrollTextIcon, LucideIcon } from "lucide-react";
-import { Garden } from "@/types";
+import { Garden, ModalFunction } from "@/types";
 import EntrypointBox from "./EntrypointBox";
 import ModalFunctionBox from "./ModalFunctionBox";
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
@@ -13,12 +13,8 @@ import {
 
 import {
     AddMaterialWithFunctionSelect,
-    DatasetCard,
-    PaperCard,
-    RepositoryCard,
-    NotebookCard
+    MaterialCardWithRemoval
 } from "@/features/materials";
-
 
 const TabTrigger = ({ icon: Icon, name, count, value }: { icon: LucideIcon, name: string, count: number, value: string }) => {
     return (
@@ -38,7 +34,6 @@ const TabTrigger = ({ icon: Icon, name, count, value }: { icon: LucideIcon, name
         </TabsTrigger>
     );
 };
-
 
 export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
     const { materials: datasets, refreshMaterials: refreshDatasets, findFunctionsWithMaterial: findDatasetFunctions } = useDatasetManagement(garden);
@@ -67,7 +62,7 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
     const handleMaterialRemoved = useCallback(async () => {
         await handleMaterialsChange();
     }, [handleMaterialsChange]);
-
+    
     return (
         <Tabs
             defaultValue={
@@ -171,14 +166,16 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
 
                             {datasets.length > 0 ? (
                                 <div className="grid grid-cols-1 gap-8 py-2">
-                                    {datasets.map((dataset) => (
-                                        <DatasetCard
-                                            key={dataset.doi}
-                                            dataset={dataset}
-                                            isOwner={ownsThisGarden}
-                                            garden={garden}
+                                    {datasets.map((dataset, index) => (
+                                        <MaterialCardWithRemoval
+                                            key={dataset.doi || index}
+                                            material={dataset}
+                                            materialType="dataset"
                                             findAffectedFunctions={findDatasetFunctions}
-                                            onUpdate={handleMaterialUpdated}
+                                            ownsThisGarden={ownsThisGarden}
+                                            onMaterialUpdated={handleMaterialUpdated}
+                                            onMaterialRemoved={handleMaterialRemoved}
+                                            garden={garden}
                                         />
                                     ))}
                                 </div>
@@ -211,14 +208,16 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
 
                             {papers.length > 0 ? (
                                 <div className="grid grid-cols-1 gap-8 py-2">
-                                    {papers.map((paper) => (
-                                        <PaperCard
-                                            key={paper.doi || paper.title}
-                                            paper={paper}
-                                            isOwner={ownsThisGarden}
-                                            garden={garden}
+                                    {papers.map((paper, index) => (
+                                        <MaterialCardWithRemoval
+                                            key={paper.doi || paper.title || index}
+                                            material={paper}
+                                            materialType="paper"
                                             findAffectedFunctions={findPaperFunctions}
-                                            onUpdate={handleMaterialUpdated}
+                                            ownsThisGarden={ownsThisGarden}
+                                            onMaterialUpdated={handleMaterialUpdated}
+                                            onMaterialRemoved={handleMaterialRemoved}
+                                            garden={garden}
                                         />
                                     ))}
                                 </div>
@@ -251,14 +250,16 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
 
                             {repositories.length > 0 ? (
                                 <div className="grid grid-cols-1 gap-8 py-2">
-                                    {repositories.map((repo) => (
-                                        <RepositoryCard
-                                            key={repo.url}
-                                            repository={repo}
-                                            isOwner={ownsThisGarden}
-                                            garden={garden}
+                                    {repositories.map((repo, index) => (
+                                        <MaterialCardWithRemoval
+                                            key={repo.url || index}
+                                            material={repo}
+                                            materialType="repository"
                                             findAffectedFunctions={findRepositoryFunctions}
-                                            onUpdate={handleMaterialUpdated}
+                                            ownsThisGarden={ownsThisGarden}
+                                            onMaterialUpdated={handleMaterialUpdated}
+                                            onMaterialRemoved={handleMaterialRemoved}
+                                            garden={garden}
                                         />
                                     ))}
                                 </div>
@@ -291,14 +292,16 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
 
                             {notebooks.length > 0 ? (
                                 <div className="grid grid-cols-1 gap-8 py-2">
-                                    {notebooks.map((notebook) => (
-                                        <NotebookCard
-                                            key={notebook.url}
-                                            notebook={notebook}
-                                            isOwner={ownsThisGarden}
-                                            garden={garden}
+                                    {notebooks.map((notebook, index) => (
+                                        <MaterialCardWithRemoval
+                                            key={notebook.url || index}
+                                            material={notebook}
+                                            materialType="notebook"
                                             findAffectedFunctions={findNotebookFunctions}
-                                            onUpdate={handleMaterialUpdated}
+                                            ownsThisGarden={ownsThisGarden}
+                                            onMaterialUpdated={handleMaterialUpdated}
+                                            onMaterialRemoved={handleMaterialRemoved}
+                                            garden={garden}
                                         />
                                     ))}
                                 </div>

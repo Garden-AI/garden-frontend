@@ -7,6 +7,7 @@ export { AssociatedMaterialsSection } from './components/AssociatedMaterialsSect
 
 // Cards
 export * from "./components/cards/MaterialCards";
+export { MaterialCardWithRemoval } from './components/cards/MaterialCardWithRemoval';
 
 // Utils
 export * from './utils/arxiv';
