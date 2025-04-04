@@ -26,8 +26,9 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { datasetSchema, DatasetFormData } from "../../types/material.types";
 import { extractZenodoId, fetchZenodoMetadata } from "../../utils/zenodo";
+import { MaterialModalProps } from "./MaterialModal";
 
-interface DatasetModalProps {
+interface DatasetModalProps extends MaterialModalProps {
   edit?: boolean;
   index?: number;
   onSave: (data: DatasetFormData) => void;

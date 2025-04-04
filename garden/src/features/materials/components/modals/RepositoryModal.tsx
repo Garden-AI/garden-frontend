@@ -28,8 +28,9 @@ import { repositorySchema, RepositoryFormData } from "../../types/material.types
 import { extractGitHubInfo, fetchGitHubMetadata } from "../../utils/github";
 import { toast } from "sonner";
 import { Textarea } from "@/components/shadcn/textarea";
+import { MaterialModalProps } from "./MaterialModal";
 
-interface RepositoryModalProps {
+interface RepositoryModalProps extends MaterialModalProps {
   edit?: boolean;
   index?: number;
   onSave: (data: Repository) => void;

@@ -1,4 +1,4 @@
-import { Paper, Dataset, Repository, Notebook } from "@/types";
+import { Paper, Dataset, Repository, Notebook, Garden, } from "@/types";
 import { BookOpen, FolderGit2, Database, Book } from "lucide-react";
 import { useState, useRef } from "react";
 import { DatasetModal } from "../modals/DatasetModal";
@@ -20,11 +20,13 @@ export const PaperCard = ({
   onUpdate,
   onDelete,
   index,
+  garden,
 }: { 
   paper: Paper;
   onUpdate: (data: Paper) => Promise<void>;
   onDelete: () => void;
   index?: number;
+  garden?: Garden,
 } & MaterialCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
@@ -86,6 +88,7 @@ export const PaperCard = ({
       </BaseMaterialCard>
       
       <PaperModal
+        context={{garden: garden}}
         edit
         initialData={paper}
         onSave={handleEdit}
@@ -168,6 +171,7 @@ export const DatasetCard = ({
       </BaseMaterialCard>
       
       <DatasetModal
+        context={{}}
         edit
         initialData={dataset}
         onSave={handleEdit}
@@ -261,6 +265,7 @@ export const RepositoryCard = ({
       </BaseMaterialCard>
       
       <RepositoryModal
+        context={{}}
         edit
         initialData={repository}
         onSave={handleEdit}
@@ -339,6 +344,7 @@ export const NotebookCard = ({
       </BaseMaterialCard>
       
       <NotebookModal
+        context={{}}
         edit
         initialData={notebook}
         onSave={handleEdit}

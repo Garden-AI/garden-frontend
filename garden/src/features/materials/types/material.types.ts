@@ -32,6 +32,11 @@ export const paperSchema = z.object({
   url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
 });
 
-export type PaperFormData = z.infer<typeof paperSchema>;
+export const paperFormData = paperSchema.extend({
+  addAuthorsToEntity: z.boolean().default(false),
+});
+
+export type PaperFormData = z.infer<typeof paperFormData>;
+export type PaperSchema = z.infer<typeof paperSchema>;
 export type RepositoryFormData = z.infer<typeof repositorySchema>;
 export type DatasetFormData = z.infer<typeof datasetSchema>; 

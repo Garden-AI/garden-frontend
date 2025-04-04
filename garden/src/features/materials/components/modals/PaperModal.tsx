@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Book, FileText, Hash, Link, Loader2 } from "lucide-react";
+import { Book, CheckCheck, FileText, Hash, Link, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -26,11 +26,15 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
-import { Paper } from "@/types";
-import { paperSchema, PaperFormData } from "../../types/material.types";
+import { Garden, ModalFunction, Paper } from "@/types";
+import { paperSchema, PaperSchema} from "../../types/material.types";
 import { extractArxivId, fetchArxivMetadata } from "../../utils/arxiv";
+import { Checkbox } from "@/components/shadcn/checkbox";
+import { usePatchGarden } from "@/features/gardens/api/usePatchGarden";
+import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
+import { MaterialModalProps } from "./MaterialModal";
 
-interface PaperModalProps {
+interface PaperModalProps extends MaterialModalProps {
   edit?: boolean;
   index?: number;
   onSave: (data: Paper) => void;
@@ -38,12 +42,15 @@ interface PaperModalProps {
   trigger: React.ReactNode;
 }
 
-const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => {
+const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
   const [previousUrl, setPreviousUrl] = useState("");
+  const [addAuthorsToEntity, setAddAuthorsToEntity] = useState(false);
+  const { mutate: patchGarden} = usePatchGarden();
+  const { mutate: patchModalFunction} = usePatchModalFunction();
 
-  const form = useForm<PaperFormData>({
+  const form = useForm<PaperSchema>({
     resolver: zodResolver(paperSchema),
     defaultValues: {
       title: initialData?.title || "",
@@ -150,7 +157,38 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
     }
   }, [url, form, previousUrl]);
 
-  const handleSave = (data: PaperFormData) => {
+  const handleSave = (data: PaperSchema) => {
+    if (addAuthorsToEntity) {
+      if (context.garden) {
+        // Get unique authors by comparing string values rather than object references
+        const existingGardenAuthors = context.garden.authors || [];
+        const newAuthors = data.authors?.map(a => a.value) || [];
+        
+        // Create a properly deduplicated list by using a Set with string values
+        const uniqueGardenAuthors = Array.from(new Set([...existingGardenAuthors, ...newAuthors]));
+
+        patchGarden({
+          doi: context.garden.doi,
+          garden: {
+            authors: uniqueGardenAuthors
+          }
+        });
+      }
+      if (context.modalFunction) {
+        const existingModalAuthors = context.modalFunction.authors || [];
+        const newAuthors = data.authors?.map(a => a.value) || [];
+        
+        // Create a properly deduplicated list by using a Set with string values
+        const uniqueModalAuthors = Array.from(new Set([...existingModalAuthors, ...newAuthors]));
+
+        patchModalFunction({
+          id: context.modalFunction.id,
+          modalFunction: {
+            authors: uniqueModalAuthors
+          }
+        });
+      }
+    }
     onSave({
       ...data,
       authors: data.authors?.map((author) => author.value) || [],
@@ -254,7 +292,19 @@ const PaperModal = ({ edit, onSave, initialData, trigger }: PaperModalProps) => 
               )}
             />
 
+
             <DialogFooter>
+              {((context.garden) || (context.modalFunction)) && (
+                <div className="flex flex-row items-center space-x-3 space-y-0">
+                  <Checkbox
+                    checked={addAuthorsToEntity}
+                    onCheckedChange={(checked) => setAddAuthorsToEntity(checked === true)}
+                  />
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Add authors to {(context.garden) ? "Garden" : (context.modalFunction) ? "Function" : ""}</FormLabel>
+                  </div>
+                </div>
+              )}
               <Button type="submit" onClick={form.handleSubmit(handleSave)}>
                 {edit ? "Save Changes" : "Add Paper"}
               </Button>

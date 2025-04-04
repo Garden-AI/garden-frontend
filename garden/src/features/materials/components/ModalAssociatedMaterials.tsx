@@ -213,6 +213,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                   </h3>
                   {ownsThisFunction && (
                     <DatasetModal
+                      context={{}}
                       onSave={(data) => handleAddMaterial('datasets', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -260,6 +261,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                   </h3>
                   {ownsThisFunction && (
                     <PaperModal
+                      context={{modalFunction: resource}}
                       onSave={(data) => handleAddMaterial('papers', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -307,6 +309,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                   </h3>
                   {ownsThisFunction && (
                     <RepositoryModal
+                      context={{}}
                       onSave={(data) => handleAddMaterial('repositories', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -354,6 +357,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                   </h3>
                   {ownsThisFunction && (
                     <NotebookModal
+                      context={{}}
                       onSave={(data) => handleAddMaterial('notebooks', data)}
                       trigger={
                         <Button type="button" variant="outline">
