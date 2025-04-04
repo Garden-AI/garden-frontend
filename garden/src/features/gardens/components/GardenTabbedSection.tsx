@@ -8,13 +8,16 @@ import ModalFunctionBox from "./ModalFunctionBox";
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
 import { getUniqueItemCount } from "../utils/garden.utils";
 import {
-    AddMaterialWithFunctionSelect,
     AddModalFunctionSelector,
+} from "./garden-page";
+
+import {
+    AddMaterialWithFunctionSelect,
     DatasetCard,
     PaperCard,
     RepositoryCard,
     NotebookCard
-} from "./garden-page";
+} from "@/features/materials";
 
 
 const TabTrigger = ({ icon: Icon, name, count, value }: { icon: LucideIcon, name: string, count: number, value: string }) => {

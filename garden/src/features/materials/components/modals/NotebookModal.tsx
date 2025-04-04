@@ -22,6 +22,7 @@ import {
 } from "@/components/shadcn/form";
 import { Notebook } from "@/types";
 import { z } from "zod";
+import { MaterialModalProps } from "./MaterialModal";
 
 const notebookSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -31,7 +32,7 @@ const notebookSchema = z.object({
 
 type NotebookFormData = z.infer<typeof notebookSchema>;
 
-interface NotebookModalProps {
+interface NotebookModalProps extends MaterialModalProps {
   edit?: boolean;
   onSave: (data: Notebook) => void;
   initialData?: Notebook;

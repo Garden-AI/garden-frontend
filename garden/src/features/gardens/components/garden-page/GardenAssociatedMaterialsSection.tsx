@@ -170,6 +170,7 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
         <h3 className="text-lg font-semibold capitalize">{fieldName}</h3>
         <ModalComponent
           onSave={handleAddMaterial}
+          context={{garden: garden}}
           trigger={
             <Button type="button" variant="outline">
               <PlusCircle className="mr-2 h-4 w-4" />
