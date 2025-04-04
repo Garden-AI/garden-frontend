@@ -1,4 +1,4 @@
-import { Paper, Dataset, Repository, Notebook } from "@/types";
+import { Paper, Dataset, Repository, Notebook, Garden, } from "@/types";
 import { BookOpen, FolderGit2, Database, Book } from "lucide-react";
 import { useState, useRef } from "react";
 import { DatasetModal } from "../modals/DatasetModal";
