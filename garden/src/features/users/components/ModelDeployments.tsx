@@ -9,34 +9,29 @@ import {
 } from "@/components/shadcn/table";
 
 interface ModelDeployment {
-    id: number,
     name: string,
-    status: "frozen" | "deployed" | "undeployed",
+    status: "frozen" | "deployed" | "undeployed" | "error",
     type: "Modal App" | "GCMU",
 }
 
 // Some fake data so we can populate the table while building it out
 export const fakeDeployments: ModelDeployment[] = [
     {
-        id: 1,
         name: "Test Modal App",
         status: "deployed",
         type: "Modal App",
     },
     {
-        id: 2,
         name: "Test GCMU",
-        status: "deployed",
+        status: "undeployed",
         type: "GCMU",
     },
     {
-        id: 3,
         name: "Test Modal App 2",
-        status: "undeployed",
+        status: "error",
         type: "Modal App",
     },
     {
-        id: 4,
         name: "Test GCMU 2",
         status: "frozen",
         type: "GCMU",
@@ -45,12 +40,23 @@ export const fakeDeployments: ModelDeployment[] = [
 
 export const columns: ColumnDef<ModelDeployment>[] = [
     {
-        accessorKey: 'id',
-        header: 'ID',
-    },
-    {
         accessorKey: 'status',
         header: 'Status',
+        cell: ({ row }) => {
+            const status = row.getValue('status') as ModelDeployment['status'];
+            const statusColors = {
+                frozen: 'bg-blue-100 text-blue-800',
+                deployed: 'bg-green/30 text-darkgreen',
+                undeployed: 'bg-gray-400 text-black',
+                error: 'bg-red-100 text-red-800',
+            };
+            const colorClass = statusColors[status];
+            return (
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>
+                    {status}
+                </span>
+            );
+        },
     },
     {
         accessorKey: "name",
