@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/ta
 import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
 import SavedGardens from "./SavedGardens";
+import { fakeDeployments, ModelDeployments } from "./ModelDeployments";
 
 const UserProfileTabs = () => {
   return (
@@ -51,7 +52,7 @@ const UserProfileTabs = () => {
         </TabsContent>
         <TabsContent value="model-deployments">
           <div className="px-6">
-            Coming soon!
+            <ModelDeployments modelDeployments={fakeDeployments}></ModelDeployments>
           </div>
         </TabsContent>
       </div>
