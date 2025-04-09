@@ -66,12 +66,19 @@ const statusColors = {
 };
 
 const StatusHeader = () => {
+    const [open, setOpen] = useState(false);
+    
     return (<div className="flex items-center gap-2">
         <span>Status</span>
         <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger>
-                    <InfoIcon className="h-4 w-4 text-gray-500" />
+            <Tooltip open={open} onOpenChange={setOpen}>
+                <TooltipTrigger asChild>
+                    <button 
+                        onClick={() => setOpen(!open)}
+                        className="focus:outline-none"
+                    >
+                        <InfoIcon className="h-4 w-4 text-gray-500" />
+                    </button>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                     <div className="space-y-2">
