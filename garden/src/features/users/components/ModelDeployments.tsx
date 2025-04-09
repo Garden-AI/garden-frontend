@@ -7,7 +7,7 @@ import {
 } from "@/components/shadcn/table";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { StatusHeader } from "./model-deployments/StatusHeader";
-import { DataTable } from "./model-deployments/DataTable";
+import { ModelDeploymentsTable } from "./model-deployments/ModelDeploymentsTable";
 
 export interface ModelDeployment {
     name: string,
@@ -117,7 +117,7 @@ interface ModelDeploymentsProps {
 export const ModelDeployments = ({ modelDeployments }: ModelDeploymentsProps) => {
     return (
         <div>
-            <DataTable columns={columns} data={modelDeployments} />
+            <ModelDeploymentsTable columns={columns} data={modelDeployments} />
         </div>
     )
 }

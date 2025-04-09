@@ -5,15 +5,15 @@ import { ModelDeploymentActions } from "./ModelDeploymentActions";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
 
-interface DataTableProps<TData, TValue> {
+interface ModelDeploymentsTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[],
     data: TData[],
 }
 
-export function DataTable<TData, TValue>({
+export function ModelDeploymentsTable<TData, TValue>({
     columns,
     data,
-}: DataTableProps<TData, TValue>) {
+}: ModelDeploymentsTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
