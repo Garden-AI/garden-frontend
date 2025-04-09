@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/shadcn/table";
-import { InfoIcon, PlayIcon, SquareIcon, Trash2Icon } from "lucide-react";
+import { InfoIcon, PlayIcon, SquareIcon, Trash2Icon, ChevronDown, ChevronRight } from "lucide-react";
 import {
     Tooltip,
     TooltipContent,
@@ -146,7 +146,7 @@ export const columns: ColumnDef<ModelDeployment>[] = [
             const colorClass = statusColors[status];
             return (
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>
-                    {status}
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
                 </span>
             );
         },
@@ -166,11 +166,27 @@ interface DataTableProps<TData, TValue> {
     data: TData[],
 }
 
+const DeploymentDetails = ({ deployment }: { deployment: ModelDeployment }) => {
+    return (
+        <div className="bg-gray-50 p-4">
+            <Table>
+                <TableBody>
+                    <TableRow>
+                        <TableCell className="font-medium">Details</TableCell>
+                        <TableCell>More data here</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </div>
+    );
+};
+
 export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
     const table = useReactTable({
         data,
@@ -186,6 +202,22 @@ export function DataTable<TData, TValue>({
     const selectedRows = table.getSelectedRowModel().rows;
     const selectedDeployments = selectedRows.map(row => row.original as ModelDeployment);
 
+    const handleRowClick = (rowId: string, event: React.MouseEvent) => {
+        // Check if the click was on a checkbox or its label,
+        // avoids surprsing behavior of expanding the row when clicking the checkbox
+        const target = event.target as HTMLElement;
+        const isCheckboxClick = target.closest('input[type="checkbox"]') || 
+                              target.closest('label') || 
+                              target.closest('button');
+        
+        if (!isCheckboxClick) {
+            if (expandedRow === rowId) {
+                setExpandedRow(null);
+            } else {
+                setExpandedRow(rowId);
+            }
+        }
+    };
 
     const handleDeploy = () => {
         // TODO: Implement deploy action
@@ -233,16 +265,34 @@ export function DataTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                <>
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                        className="cursor-pointer"
+                                        onClick={(e) => handleRowClick(row.id, e)}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                        <TableCell className="w-8">
+                                            {expandedRow === row.id ? (
+                                                <ChevronDown className="h-4 w-4" />
+                                            ) : (
+                                                <ChevronRight className="h-4 w-4" />
+                                            )}
                                         </TableCell>
-                                    ))}
-                                </TableRow>
+                                    </TableRow>
+                                    {expandedRow === row.id && (
+                                        <TableRow>
+                                            <TableCell colSpan={columns.length + 1} className="p-0">
+                                                <DeploymentDetails deployment={row.original as ModelDeployment} />
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </>
                             ))
                         ) : (
                             <TableRow>
