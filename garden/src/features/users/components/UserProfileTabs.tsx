@@ -2,9 +2,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/ta
 import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
 import SavedGardens from "./SavedGardens";
-import { fakeDeployments, ModelDeployments } from "./ModelDeployments";
+import { ModelDeployments } from "./ModelDeployments";
+import { useGetModelDeployments } from "../api/useGetModelDeployments";
 
 const UserProfileTabs = () => {
+  const modelDeployments = useGetModelDeployments().data || [];
   return (
     <Tabs defaultValue="profile" className="w-full font-display">
       <TabsList className="h-12 w-full bg-transparent">
@@ -52,7 +54,7 @@ const UserProfileTabs = () => {
         </TabsContent>
         <TabsContent value="model-deployments">
           <div className="px-6">
-            <ModelDeployments modelDeployments={fakeDeployments}></ModelDeployments>
+            <ModelDeployments modelDeployments={modelDeployments}></ModelDeployments>
           </div>
         </TabsContent>
       </div>

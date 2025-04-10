@@ -1,7 +1,5 @@
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, RowSelectionState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
-import { DeploymentDetails, ModelDeployment } from "../ModelDeployments";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
 
 interface ModelDeploymentsTableProps<TData, TValue> {

@@ -348,6 +348,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/modal-apps/redeploy/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Redeploy Modal App
+         * @description Redeploy a modal app in-place. Only available to super users.
+         */
+        post: operations["redeploy_modal_app_modal_apps_redeploy__id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/modal-apps/{id}": {
         parameters: {
             query?: never;
@@ -361,6 +381,26 @@ export interface paths {
         post?: never;
         /** Delete Modal App */
         delete: operations["delete_modal_app_modal_apps__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/modal-apps/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Modal Apps
+         * @description Get all of the current user's Modal Apps
+         */
+        get: operations["get_modal_apps_modal_apps__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1501,8 +1541,12 @@ export interface components {
             tags?: {
                 [key: string]: number;
             };
-            /** Authors */
-            authors?: {
+            /** Model Authors */
+            model_authors?: {
+                [key: string]: number;
+            };
+            /** Gardeners */
+            gardeners?: {
                 [key: string]: number;
             };
             /** Year */
@@ -1907,9 +1951,7 @@ export interface components {
              */
             owner_identity_id: string;
             /** Hardware Spec */
-            hardware_spec: {
-                [key: string]: string;
-            };
+            hardware_spec: Record<string, never>;
         };
         /** ModalFunctionPatchRequest */
         ModalFunctionPatchRequest: {
@@ -3352,6 +3394,37 @@ export interface operations {
             };
         };
     };
+    redeploy_modal_app_modal_apps_redeploy__id__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AsyncModalAppMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_modal_app_modal_apps__id__get: {
         parameters: {
             query?: never;
@@ -3410,6 +3483,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_modal_apps_modal_apps__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AsyncModalAppMetadataResponse"][];
                 };
             };
         };
