@@ -4,9 +4,11 @@ import { ModelDeploymentDetails } from "./ModelDeplotmentDetails";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useGetUserInfo } from "../../api/useGetUserInfo";
 import { useGlobusAuth } from "@globus/react-auth-context";
+import { SUPER_USERS } from "@/utils/utils";
+import NotFoundPage from "@/components/NotFoundPage";
 
 const ModelDeploymentPage = () => {
-    const { name } = useParams<{ name: string }>();
+    const { id } = useParams<{ id: string }>();
     const { data: modelDeployments, isLoading: isLoadingDeployments } = useGetModelDeployments();
     const { data: userInfo, isLoading: isLoadingUser } = useGetUserInfo();
     const auth = useGlobusAuth();
@@ -15,14 +17,21 @@ const ModelDeploymentPage = () => {
         return <LoadingOverlay />;
     }
 
-    const modelDeployment = modelDeployments?.find(deployment => deployment.name === name);
+    const deploymentId = parseInt(id || '', 10);
+    
+    // Handle NaN case for invalid IDs
+    if (isNaN(deploymentId)) {
+        return <NotFoundPage />;
+    }
+    
+    const modelDeployment = modelDeployments?.find(deployment => deployment.originalData.id === deploymentId);
 
     if (!modelDeployment) {
-        return <div>Model deployment not found</div>;
+        return <NotFoundPage />;
     }
 
-    // Check if the current user is the owner of the deployment
-    const isOwner = modelDeployment.originalData?.owner_identity_id === userInfo?.identity_id;
+    // Check if the current user is the owner of the deployment, or a super user
+    const isOwner = (modelDeployment.originalData?.owner_identity_id === userInfo?.identity_id) || SUPER_USERS.includes(userInfo?.identity_id || "");
 
     // If user is not the owner, redirect to home page
     if (!isOwner) {
@@ -31,7 +40,6 @@ const ModelDeploymentPage = () => {
 
     return (
         <div>
-            <h1>{modelDeployment.name}</h1>
             <ModelDeploymentDetails entity={modelDeployment.originalData} />
         </div>
     );

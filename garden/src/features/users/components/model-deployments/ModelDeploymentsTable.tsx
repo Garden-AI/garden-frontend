@@ -1,7 +1,6 @@
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, RowSelectionState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
-import { ModelDeploymentDetails } from "./ModelDeplotmentDetails";
 import { useNavigate } from "react-router-dom";
 import { ModelDeployment } from "../../components/ModelDeployments";
 
@@ -57,7 +56,7 @@ export function ModelDeploymentsTable<TData extends ModelDeployment, TValue>({
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                     className="cursor-pointer"
-                                    onClick={() => navigate(`/model-deployments/${row.original.name}`)}
+                                    onClick={() => navigate(`/model-deployments/${row.original.originalData.id}`)}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
