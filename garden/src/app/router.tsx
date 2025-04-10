@@ -51,7 +51,7 @@ const Router: React.FC = () => {
 
         {/* Model Deployment Routes */}
         <Route element={<PrivateRoutes />}>
-          <Route path="model-deployments/:name" element={<ModelDeploymentPage />} />
+          <Route path="model-deployments/:id" element={<ModelDeploymentPage />} />
         </Route>
 
         {/* Misc Routes */}
