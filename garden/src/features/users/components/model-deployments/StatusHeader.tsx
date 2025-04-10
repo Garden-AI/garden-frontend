@@ -10,7 +10,6 @@ import {
 export interface StatusColors {
     deployed: string,
     undeployed: string,
-    frozen: string,
     error: string,
 }
 
@@ -48,12 +47,6 @@ export const StatusHeader = ({colors}: StatusHeaderProps) => {
                                     Undeployed
                                 </span>
                                 <span> - model is not deployed and cannot be run</span>
-                            </li>
-                            <li>
-                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${colors.frozen}`}>
-                                    Frozen
-                                </span>
-                                <span> - model has been temporarily undeployed because it has been unused, it will automatically re-deploy when run</span>
                             </li>
                             <li>
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${colors.error}`}>

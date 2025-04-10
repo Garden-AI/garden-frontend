@@ -1,7 +1,6 @@
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, RowSelectionState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import { DeploymentDetails, ModelDeployment } from "../ModelDeployments";
-import { ModelDeploymentActions } from "./ModelDeploymentActions";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
 
@@ -15,7 +14,6 @@ export function ModelDeploymentsTable<TData, TValue>({
     data,
 }: ModelDeploymentsTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-    const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
     const table = useReactTable({
         data,
@@ -28,49 +26,8 @@ export function ModelDeploymentsTable<TData, TValue>({
         },
     });
 
-    const selectedRows = table.getSelectedRowModel().rows;
-    const selectedDeployments = selectedRows.map(row => row.original as ModelDeployment);
-
-    const handleRowClick = (rowId: string, event: React.MouseEvent) => {
-        // Check if the click was on a checkbox or its label,
-        // avoids surprsing behavior of expanding the row when clicking the checkbox
-        const target = event.target as HTMLElement;
-        const isCheckboxClick = target.closest('input[type="checkbox"]') ||
-            target.closest('label') ||
-            target.closest('button');
-
-        if (!isCheckboxClick) {
-            if (expandedRow === rowId) {
-                setExpandedRow(null);
-            } else {
-                setExpandedRow(rowId);
-            }
-        }
-    };
-
-    const handleDeploy = () => {
-        // TODO: Implement deploy action
-        console.log("Deploying:", selectedDeployments);
-    };
-
-    const handleUndeploy = () => {
-        // TODO: Implement undeploy action
-        console.log("Undeploying:", selectedDeployments);
-    };
-
-    const handleRemove = () => {
-        // TODO: Implement remove action
-        console.log("Removing:", selectedDeployments);
-    };
-
     return (
         <div className="flex flex-col">
-            <ModelDeploymentActions
-                selectedDeployments={selectedDeployments}
-                onDeploy={handleDeploy}
-                onRemove={handleRemove}
-                onUndeploy={handleUndeploy}
-            />
             <div className="rounded-md border mt-4">
                 <Table>
                     <TableHeader>
@@ -99,28 +56,14 @@ export function ModelDeploymentsTable<TData, TValue>({
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
                                         className="cursor-pointer"
-                                        onClick={(e) => handleRowClick(row.id, e)}
+                                        onClick={() => {}} // TODO navigate to detailed view
                                     >
                                         {row.getVisibleCells().map((cell) => (
                                             <TableCell key={cell.id}>
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </TableCell>
                                         ))}
-                                        <TableCell className="w-8">
-                                            {expandedRow === row.id ? (
-                                                <ChevronDown className="h-4 w-4" />
-                                            ) : (
-                                                <ChevronRight className="h-4 w-4" />
-                                            )}
-                                        </TableCell>
                                     </TableRow>
-                                    {expandedRow === row.id && (
-                                        <TableRow>
-                                            <TableCell colSpan={columns.length + 1} className="p-0">
-                                                <DeploymentDetails deployment={row.original as ModelDeployment} />
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
                                 </>
                             ))
                         ) : (
