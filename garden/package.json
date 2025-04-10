@@ -37,6 +37,7 @@
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.1",
     "@tanstack/react-query": "^5.49.2",
+    "@tanstack/react-table": "^8.21.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
@@ -77,6 +78,7 @@
     "deploy-prod": "gh-pages -d build",
     "remove-mock-service-worker": "sh -c \"rm -f build/mockServiceWorker.js\"",
     "refresh-types": "curl -s https://api-dev.thegardens.ai/openapi.json | npx openapi-typescript -o ./src/types/backend-schema.ts",
+    "refresh-types-local": "curl -s http://localhost:5500/openapi.json | npx openapi-typescript -o ./src/types/backend-schema.ts",
     "test": "vitest"
   },
   "eslintConfig": {
