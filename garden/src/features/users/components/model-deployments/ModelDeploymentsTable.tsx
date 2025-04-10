@@ -1,17 +1,21 @@
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, RowSelectionState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
+import { ModelDeploymentDetails } from "./ModelDeplotmentDetails";
+import { useNavigate } from "react-router-dom";
+import { ModelDeployment } from "../../components/ModelDeployments";
 
 interface ModelDeploymentsTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[],
     data: TData[],
 }
 
-export function ModelDeploymentsTable<TData, TValue>({
+export function ModelDeploymentsTable<TData extends ModelDeployment, TValue>({
     columns,
     data,
 }: ModelDeploymentsTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const navigate = useNavigate();
 
     const table = useReactTable({
         data,
@@ -49,20 +53,18 @@ export function ModelDeploymentsTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <>
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={row.getIsSelected() && "selected"}
-                                        className="cursor-pointer"
-                                        onClick={() => {}} // TODO navigate to detailed view
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                </>
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                    className="cursor-pointer"
+                                    onClick={() => navigate(`/model-deployments/${row.original.name}`)}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
                             ))
                         ) : (
                             <TableRow>

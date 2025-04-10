@@ -16,6 +16,7 @@ const getModelDeployments = async (): Promise<ModelDeployment[]> => {
                 ma.deploy_status === "error" ? "error" :
                     ma.deploy_status === "timed_out" ? "error" : "undeployed",
             type: "Modal App",
+            originalData: ma,
         };
     });
 };

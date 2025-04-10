@@ -6,6 +6,7 @@ export interface ModelDeployment {
     name: string,
     status: "deployed" | "undeployed" | "error",
     type: "Modal App" | "GCMU",
+    originalData: any, // Will be either ModalAppMetadataResponse or future GCMU type
 }
 
 const statusColors = {
