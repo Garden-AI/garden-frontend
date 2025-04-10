@@ -33,8 +33,13 @@ export const useGardensUsingFunctions = (
     queryFn: async () => {
       if (!functionIds.length) return [];
       
-      // Send the function_ids array directly as the request body
-      const response = await axios.post<Garden[]>("/gardens/gardens-using-functions", functionIds);
+      // Create URLSearchParams with repeated function_ids parameters
+      const params = new URLSearchParams();
+      functionIds.forEach(id => {
+        params.append('function_ids', id.toString());
+      });
+      
+      const response = await axios.get<Garden[]>(`/gardens/gardens-using-functions?${params.toString()}`);
       return response.data;
     },
     enabled: !!entity && functionIds.length > 0 && (options.enabled !== false),
