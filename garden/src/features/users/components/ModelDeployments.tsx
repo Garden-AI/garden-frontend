@@ -8,30 +8,6 @@ export interface ModelDeployment {
     type: "Modal App" | "GCMU",
 }
 
-// Some fake data so we can populate the table while building it out
-export const fakeDeployments: ModelDeployment[] = [
-    {
-        name: "Test Modal App",
-        status: "deployed",
-        type: "Modal App",
-    },
-    {
-        name: "Test GCMU",
-        status: "undeployed",
-        type: "GCMU",
-    },
-    {
-        name: "Test Modal App 2",
-        status: "error",
-        type: "Modal App",
-    },
-    {
-        name: "Test GCMU 2",
-        status: "deployed",
-        type: "GCMU",
-    },
-];
-
 const statusColors = {
     deployed: 'bg-green/30 text-darkgreen',
     undeployed: 'bg-gray-200 text-black',
