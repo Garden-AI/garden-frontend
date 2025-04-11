@@ -152,6 +152,33 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/gardens/gardens-using-functions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Gardens By Function Ids
+         * @description Get all gardens that use any of the provided function IDs.
+         *
+         *     Args:
+         *         function_ids: List of function IDs to search for as query parameters
+         *         db: Database session
+         *
+         *     Returns:
+         *         List of gardens that use any of the provided functions
+         */
+        get: operations["get_gardens_by_function_ids_gardens_gardens_using_functions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/gardens/search": {
         parameters: {
             query?: never;
@@ -368,24 +395,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/modal-apps/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Modal App */
-        get: operations["get_modal_app_modal_apps__id__get"];
-        put?: never;
-        post?: never;
-        /** Delete Modal App */
-        delete: operations["delete_modal_app_modal_apps__id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/modal-apps/": {
         parameters: {
             query?: never;
@@ -401,6 +410,24 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/modal-apps/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Modal App */
+        get: operations["get_modal_app_modal_apps__id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Modal App */
+        delete: operations["delete_modal_app_modal_apps__id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2918,6 +2945,37 @@ export interface operations {
             };
         };
     };
+    get_gardens_by_function_ids_gardens_gardens_using_functions_get: {
+        parameters: {
+            query: {
+                function_ids: number[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenMetadataResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     search_gardens_search_post: {
         parameters: {
             query?: never;
@@ -3425,6 +3483,26 @@ export interface operations {
             };
         };
     };
+    get_modal_apps_modal_apps__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AsyncModalAppMetadataResponse"][];
+                };
+            };
+        };
+    };
     get_modal_app_modal_apps__id__get: {
         parameters: {
             query?: never;
@@ -3483,26 +3561,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_modal_apps_modal_apps__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AsyncModalAppMetadataResponse"][];
                 };
             };
         };

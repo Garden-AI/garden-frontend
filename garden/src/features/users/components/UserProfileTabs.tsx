@@ -28,13 +28,14 @@ const UserProfileTabs = () => {
         >
           Saved Gardens
         </TabsTrigger>
-
+        {/* Hidden until the feature is more fleshed out 
         <TabsTrigger
           value="model-deployments"
           className="h-full w-full border-b-4 bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green data-[state=active]:border-green data-[state=active]:bg-green data-[state=active]:bg-opacity-30"
         >
           Model Deployments
         </TabsTrigger>
+        */}
       </TabsList>
       <div className="min-h-[60vh] flex-grow overflow-auto pt-4 sm:pt-8">
         <TabsContent value="profile">
@@ -52,11 +53,13 @@ const UserProfileTabs = () => {
             <SavedGardens />
           </div>
         </TabsContent>
+        {/* Hidden until the feature is more fleshed out
         <TabsContent value="model-deployments">
           <div className="px-6">
             <ModelDeployments modelDeployments={modelDeployments}></ModelDeployments>
           </div>
         </TabsContent>
+        */}
       </div>
     </Tabs>
   );
