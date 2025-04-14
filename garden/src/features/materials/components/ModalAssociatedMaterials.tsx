@@ -380,8 +380,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                           parentFunction: resource,
                           parentDoi: resource.doi || undefined
                         }}
-                        onUpdate={async () => {
-                          const updatedNotebook = notebooks[index];
+                        onUpdate={async (updatedNotebook) => {
                           await handleUpdateMaterial('notebooks', index, updatedNotebook);
                         }}
                         onDelete={() => handleDeleteMaterial('notebooks', index)}
