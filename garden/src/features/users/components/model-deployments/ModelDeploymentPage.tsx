@@ -1,6 +1,6 @@
 import { useParams, Navigate } from "react-router-dom";
 import { useGetModelDeployments } from "../../api/useGetModelDeployments";
-import { ModelDeploymentDetails } from "./ModelDeplotmentDetails";
+import { ModelDeploymentDetails } from "./ModelDeploymentDetails";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useGetUserInfo } from "../../api/useGetUserInfo";
 import { useGlobusAuth } from "@globus/react-auth-context";

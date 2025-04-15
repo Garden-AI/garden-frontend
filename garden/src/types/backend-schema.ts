@@ -140,39 +140,15 @@ export interface paths {
         };
         /**
          * Search Gardens
-         * @description Fetch multiple gardens according to query parameters
+         * @description Fetch multiple gardens according to query parameters.
+         *
+         *     If function_ids is provided, only search for gardens using those functions.
+         *     Otherwise, perform a general search using the other parameters.
          */
         get: operations["search_gardens_gardens_get"];
         put?: never;
         /** Add Garden */
         post: operations["add_garden_gardens_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/gardens/gardens-using-functions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Gardens By Function Ids
-         * @description Get all gardens that use any of the provided function IDs.
-         *
-         *     Args:
-         *         function_ids: List of function IDs to search for as query parameters
-         *         db: Database session
-         *
-         *     Returns:
-         *         List of gardens that use any of the provided functions
-         */
-        get: operations["get_gardens_by_function_ids_gardens_gardens_using_functions_get"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2884,6 +2860,7 @@ export interface operations {
                 contributors?: string[] | null;
                 tags?: string[] | null;
                 year?: string | null;
+                function_ids?: number[] | null;
                 limit?: number | null;
             };
             header?: never;
@@ -2932,37 +2909,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GardenMetadataResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_gardens_by_function_ids_gardens_gardens_using_functions_get: {
-        parameters: {
-            query: {
-                function_ids: number[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GardenMetadataResponse"][];
                 };
             };
             /** @description Validation Error */

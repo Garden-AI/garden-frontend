@@ -16,7 +16,7 @@ import SearchPage from "@/features/search/components/SearchPage";
 import TeamsPage from "@/features/team/components/TeamsPage";
 import UserProfilePage from "@/features/users/components/UserProfilePage";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import { ModelDeploymentDetails } from "@/features/users/components/model-deployments/ModelDeplotmentDetails";
+import { ModelDeploymentDetails } from "@/features/users/components/model-deployments/ModelDeploymentDetails";
 import ModelDeploymentPage from "@/features/users/components/model-deployments/ModelDeploymentPage";
 
 const Router: React.FC = () => {
