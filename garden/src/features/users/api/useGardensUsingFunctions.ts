@@ -39,7 +39,7 @@ export const useGardensUsingFunctions = (
         params.append('function_ids', id.toString());
       });
       
-      const response = await axios.get<Garden[]>(`/gardens/gardens-using-functions?${params.toString()}`);
+      const response = await axios.get<Garden[]>(`/gardens?${params.toString()}`);
       return response.data;
     },
     enabled: !!entity && functionIds.length > 0 && (options.enabled !== false),

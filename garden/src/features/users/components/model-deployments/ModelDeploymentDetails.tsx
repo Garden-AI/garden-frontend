@@ -24,11 +24,11 @@ import CopyButton from "@/components/CopyButton";
 import { useGardensUsingFunctions } from "../../api/useGardensUsingFunctions";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
-interface ModelDeplotmentDetailsProps {
+interface ModelDeploymentDetailsProps {
     entity: ModalAppMetadataResponse | AsyncModalAppMetadataResponse,
 }
 
-export const ModelDeploymentDetails = ({entity}: ModelDeplotmentDetailsProps) => {
+export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) => {
     // Fetch gardens that use functions from this deployment
     const { data: relatedGardens = [], isLoading: isLoadingGardens } = useGardensUsingFunctions(entity);
     
