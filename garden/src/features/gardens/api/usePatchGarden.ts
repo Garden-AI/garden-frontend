@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 interface PatchGardenProps {
   doi: string;
   garden: GardenPatchRequest;
+  successMessage?: string;
 }
 
 const patchGarden = async ({ doi, garden }: PatchGardenProps): Promise<Garden> => {
@@ -64,7 +65,7 @@ export const usePatchGarden = () => {
       }
       toast.error("Failed to update garden");
     },
-    onSuccess: (data) => {
+    onSuccess: (data, input) => {
       // Update the cache with the new data
       queryClient.setQueryData(["garden", data.doi], data);
       
@@ -73,7 +74,8 @@ export const usePatchGarden = () => {
       queryClient.invalidateQueries({ queryKey: ["gardens"] });
       queryClient.invalidateQueries({ queryKey: ["search"] });
       
-      toast.success("Garden updated successfully!");
+      // Use custom success message if provided, otherwise use default
+      toast.success(input.successMessage || "Garden updated successfully!");
     },
   });
 };

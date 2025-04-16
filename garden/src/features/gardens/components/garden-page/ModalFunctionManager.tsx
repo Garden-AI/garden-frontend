@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { PlusCircle, RefreshCcwIcon } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { Garden, ModalFunction } from '@/types';
+import { Garden } from '@/types';
 import { Checkbox } from '@/components/shadcn/checkbox';
-import { Label } from '@/components/shadcn/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shadcn/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/shadcn/dialog';
 import {
   Table,
   TableHeader,
@@ -19,15 +18,13 @@ import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import WithTooltip from '@/components/WithTooltip';
-import { cn } from '@/utils/form.utils';
 
-interface AddModalFunctionSelectorProps {
+interface ModalFunctionManagerProps {
   garden: Garden;
   onSuccess?: () => void;
 }
 
-const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
+const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   garden,
   onSuccess
 }) => {
@@ -35,7 +32,7 @@ const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
   const currentFunctionIds = garden.modal_functions?.map(f => f.id) || [];
   
   // State for selected function IDs
-  const [selectedFunctionIds, setSelectedFunctionIds] = useState<number[]>([]);
+  const [selectedFunctionIds, setSelectedFunctionIds] = useState<number[]>(currentFunctionIds);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   // Get user's modal functions
@@ -44,9 +41,7 @@ const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
     refetch,
     isFetching,
     isLoading
-  } = useGetUserModalFunctions({
-    excludeFunctionIds: currentFunctionIds,
-  });
+  } = useGetUserModalFunctions();
   
   const { mutateAsync: patchGarden } = usePatchGarden();
   
@@ -61,42 +56,39 @@ const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
   
   // Handle saving functions to the garden
   const handleSave = async () => {
-    if (selectedFunctionIds.length === 0) {
-      toast.error("Please select at least one function");
-      return;
-    }
-    
     try {
-      // Get the selected functions
-      const selectedFunctions = functions?.filter(f => selectedFunctionIds.includes(f.id)) || [];
+      const addedCount = selectedFunctionIds.filter(id => !currentFunctionIds.includes(id)).length;
+      const removedCount = currentFunctionIds.filter(id => !selectedFunctionIds.includes(id)).length;
       
-      // Get current modal functions from garden
-      const currentFunctions = garden.modal_functions || [];
+      let successMessage = "Garden functions updated successfully";
+      if (addedCount > 0 && removedCount > 0) {
+        successMessage = `Added ${addedCount} and removed ${removedCount} functions`;
+      } else if (addedCount > 0) {
+        successMessage = `Added ${addedCount} function${addedCount > 1 ? 's' : ''}`;
+      } else if (removedCount > 0) {
+        successMessage = `Removed ${removedCount} function${removedCount > 1 ? 's' : ''}`;
+      }
       
-      // Add new functions to existing ones
-      const updatedFunctions = [...currentFunctions, ...selectedFunctions];
-      
-      // Update the garden with the new functions
+      // Update the garden with the new set of functions
       await patchGarden({
         doi: garden.doi,
         garden: {
-          modal_function_ids: updatedFunctions.map(f => f.id)
-        }
+          modal_function_ids: selectedFunctionIds
+        },
+        successMessage
       });
       
-      toast.success("Functions added to garden successfully");
       setIsDialogOpen(false);
-      setSelectedFunctionIds([]);
       
       // Call onSuccess callback if provided
       if (onSuccess) onSuccess();
     } catch (error) {
-      toast.error("Failed to add functions to garden");
-      console.error('Error adding functions to garden:', error);
+      toast.error("Failed to update garden functions");
+      console.error('Error updating garden functions:', error);
     }
   };
   
-  // Don't render if there are no available functions to add
+  // Don't render if there are no functions available
   if ((functions?.length || 0) === 0 && !isLoading && !isFetching) return null;
   
   return (
@@ -107,37 +99,19 @@ const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
         onClick={() => setIsDialogOpen(true)}
       >
         <PlusCircle className="mr-2 h-4 w-4" />
-        Add function
+        Add/Remove functions
       </Button>
       
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Add Functions to Garden</DialogTitle>
+            <DialogTitle>Manage Garden Functions</DialogTitle>
           </DialogHeader>
           
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm text-gray-500">
-              Select functions to add to this garden:
+              Select functions to include in this garden:
             </p>
-            <div className="flex items-center pr-4 text-sm">
-              <span className="text-gray-500">{isFetching && "Refreshing..."}</span>
-              <WithTooltip hint="Refresh functions list">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => refetch()}
-                  type="button"
-                  disabled={isFetching}
-                  className={cn(
-                    "border-none bg-transparent p-2 hover:bg-transparent",
-                    isFetching && "cursor-not-allowed opacity-50",
-                  )}
-                >
-                  <RefreshCcwIcon className={cn("h-5 w-5", isFetching && "animate-spin")} />
-                </Button>
-              </WithTooltip>
-            </div>
           </div>
           
           <div className="relative mb-4 rounded-md border bg-white">
@@ -163,7 +137,7 @@ const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
                   ) : functions?.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={4} className="text-center text-gray-500">
-                        No additional modal functions available
+                        No modal functions available
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -206,8 +180,8 @@ const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={selectedFunctionIds.length === 0}>
-              Add to Garden
+            <Button onClick={handleSave}>
+              Update Garden
             </Button>
           </div>
         </DialogContent>
@@ -216,4 +190,4 @@ const AddModalFunctionSelector: React.FC<AddModalFunctionSelectorProps> = ({
   );
 };
 
-export default AddModalFunctionSelector; 
+export default ModalFunctionManager; 
