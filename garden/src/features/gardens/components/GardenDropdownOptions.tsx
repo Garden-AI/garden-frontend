@@ -59,12 +59,6 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
         <DropdownMenuContent className="w-56" align="end">
           <DropdownMenuLabel>Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {!garden.is_archived && (
-            <DropdownMenuItem onSelect={() => navigate(`edit`)}>
-              <Edit className="mr-2 h-5 w-5" />
-              <span className="">Edit Garden</span>
-            </DropdownMenuItem>
-          )}
 
           {garden.doi_is_draft ? (
             <>

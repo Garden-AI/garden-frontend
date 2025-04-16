@@ -7,7 +7,6 @@ import RootLayout from "@/components/Layout";
 import EditEntrypointPage from "@/features/entrypoints/components/EditEntrypointPage";
 import EntrypointPage from "@/features/entrypoints/components/EntrypointPage";
 import CreateGardenPage from "@/features/gardens/components/create/CreateGardenPage";
-import EditGardenPage from "@/features/gardens/components/edit/EditGardenPage";
 import GardenPage from "@/features/gardens/components/GardenPage";
 import HomePage from "@/components/HomePage";
 import LoginPage from "@/features/auth/components/LoginPage";
@@ -30,7 +29,6 @@ const Router: React.FC = () => {
         <Route path="garden">
           <Route element={<PrivateRoutes />}>
             <Route path="create" element={<CreateGardenPage />} />
-            <Route path=":doi/edit" element={<EditGardenPage />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
           <Route path=":doi/modal-functions/:id" element={<ModalFunctionPage />} />
