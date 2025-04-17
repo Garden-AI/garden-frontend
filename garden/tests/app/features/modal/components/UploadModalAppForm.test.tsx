@@ -140,7 +140,7 @@ describe("UploadModalAppForm", () => {
             );
 
             // Core assertion: After successful validation, the deploy button should be enabled
-            const deployButton = screen.getByRole('button', { name: /Deploy Modal App & Continue/i });
+            const deployButton = screen.getByRole('button', { name: /Deploy Modal App/i });
             expect(deployButton).toBeEnabled();
         });
     });
@@ -212,7 +212,7 @@ describe("UploadModalAppForm", () => {
             );
             
             // Get the deploy button and verify it's enabled
-            const deployButton = screen.getByRole('button', { name: /Deploy Modal App & Continue/i });
+            const deployButton = screen.getByRole('button', { name: /Deploy Modal App/i });
             expect(deployButton).toBeEnabled();
         });
     });
