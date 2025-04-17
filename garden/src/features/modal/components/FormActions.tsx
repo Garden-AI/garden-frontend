@@ -32,7 +32,7 @@ export const FormActions = ({
         type="submit" 
         disabled={!isValidated || isDeploying}
       >
-        {isDeploying ? "Deploying..." : "Deploy Modal App & Continue"}
+        {isDeploying ? "Deploying..." : "Deploy Modal App"}
       </Button>
     </div>
   </div>

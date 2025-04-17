@@ -9,6 +9,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { ApiError } from "@/features/gardens/utils/garden.utils";
 import { ModalFileMetadataResponse } from "@/types";
 import { ValidationError, DeploymentError } from "./useModalAppUpload";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const modalAppFormSchema = z.object({
   file_contents: z.string().min(1, "Modal file is required"),
@@ -43,6 +44,7 @@ export const useModalAppForm = ({
   const auth = useGlobusAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
   const uuid = auth?.authorization?.user?.sub;
   const [file, setFile] = useState<File | null>(null);
   const [modalMetadata, setModalMetadata] = useState<ModalFileMetadataResponse | null>(null);
@@ -297,6 +299,9 @@ export const useModalAppForm = ({
       const appId = await deployModalApp(data.file_contents, updatedMetadata, uuid);
       setDeployedAppId(appId);
       toast.success("Modal app deployed successfully!");
+      
+      // Invalidate the modelDeployments query to ensure fresh data is fetched
+      queryClient.invalidateQueries({ queryKey: ["modelDeployments"] });
       
       if (showSuccessScreen) {
         // Show success screen in the form (don't navigate away immediately)
