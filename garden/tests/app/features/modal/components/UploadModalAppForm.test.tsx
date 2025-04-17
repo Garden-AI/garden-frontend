@@ -21,10 +21,13 @@ const createValidationResponse = (error: boolean, errorMessage: string) => ({
     handleFunctionMetadataChange: vi.fn(),
     handleValidate: vi.fn(),
     handleSubmit: vi.fn(),
+    resetForm: vi.fn(),
     modalMetadata: null,
     isValidating: false,
     isValidated: error,
     isDeploying: false,
+    isDeploymentComplete: false,
+    deployedAppId: null,
     validationError: error ? {
         message: errorMessage,
         isApiError: false
@@ -66,10 +69,13 @@ const createDeploymentErrorResponse = (errorMessage: string, isTimeout: boolean 
     handleFunctionMetadataChange: vi.fn(),
     handleValidate: vi.fn(),
     handleSubmit: vi.fn(),
+    resetForm: vi.fn(),
     modalMetadata: fakeModalMetadata, // Needs metadata to show deployment happened after validation
     isValidating: false,
     isValidated: true, // Must be true for deployment to have been attempted
     isDeploying: false, // Set to false to show deployment finished (with error)
+    isDeploymentComplete: false,
+    deployedAppId: null,
     validationError: null,
     deploymentError: {
         message: errorMessage,
@@ -91,10 +97,13 @@ const createDeployingResponse = () => ({
     handleFunctionMetadataChange: vi.fn(),
     handleValidate: vi.fn(),
     handleSubmit: vi.fn(),
+    resetForm: vi.fn(),
     modalMetadata: fakeModalMetadata,
     isValidating: false,
     isValidated: true,
     isDeploying: true, // This is what we're testing - the component in deploying state
+    isDeploymentComplete: false,
+    deployedAppId: null,
     validationError: null,
     deploymentError: null,
 });
