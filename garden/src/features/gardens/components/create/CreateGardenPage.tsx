@@ -1,11 +1,11 @@
 import { CreateGardenForm } from "./CreateGardenForm";
-import { UploadModalAppForm } from "@/features/modal/components/UploadModalAppForm";
+import { ModalAppForm } from "@/features/modal/components/ModalAppForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/shadcn/button";
 import { useGetGlobusGroups } from "@/features/gardens/api/useGetGlobusGroups";
 
 const CreateGardenPage = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const modalAppId = searchParams.get("modalAppId");
 
   const { data: groups } = useGetGlobusGroups();
@@ -20,7 +20,13 @@ const CreateGardenPage = () => {
       {modalAppId ? (
         <CreateGardenForm modalAppId={modalAppId} />
       ) : (
-        <UploadModalAppForm />
+        <ModalAppForm 
+          showOverallProgress={true}
+          currentPhase={1}
+          // Don't show success screen since we'll redirect immediately
+          showSuccessScreen={false}
+          // Default navigation behavior will set search params to include modalAppId
+        />
       )}
     </div>
   );

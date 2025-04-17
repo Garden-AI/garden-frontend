@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useModalAppUpload } from "./useModalAppUpload";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { toast } from "sonner";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { ApiError } from "@/features/gardens/utils/garden.utils";
 import { ModalFileMetadataResponse } from "@/types";
 import { ValidationError, DeploymentError } from "./useModalAppUpload";
@@ -19,19 +19,38 @@ export const modalAppFormSchema = z.object({
 
 export type ModalAppFormValues = z.infer<typeof modalAppFormSchema>;
 
+export interface UseModalAppFormOptions {
+  /**
+   * Function called after successful deployment
+   * @param appId The ID of the deployed app
+   */
+  onDeploymentSuccess?: (appId: number) => void;
+  /**
+   * Whether to show a success screen after deployment
+   * @default false
+   */
+  showSuccessScreen?: boolean;
+}
+
 /**
  * Hook for managing the Modal app upload form state and submission
  * Handles file reading, form state, and integration with the Modal API
  */
-export const useModalAppForm = () => {
+export const useModalAppForm = ({
+  onDeploymentSuccess,
+  showSuccessScreen = false,
+}: UseModalAppFormOptions = {}) => {
   const auth = useGlobusAuth();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const uuid = auth?.authorization?.user?.sub;
-  const [, setSearchParams] = useSearchParams();
   const [file, setFile] = useState<File | null>(null);
   const [modalMetadata, setModalMetadata] = useState<ModalFileMetadataResponse | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isDeploying, setIsDeploying] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
+  const [isDeploymentComplete, setIsDeploymentComplete] = useState(false);
+  const [deployedAppId, setDeployedAppId] = useState<number | null>(null);
   const [validationError, setValidationError] = useState<ValidationError | null>(null);
   const [deploymentError, setDeploymentError] = useState<DeploymentError | null>(null);
 
@@ -54,6 +73,18 @@ export const useModalAppForm = () => {
     },
   });
 
+  // Reset the form state
+  const resetForm = () => {
+    setFile(null);
+    setModalMetadata(null);
+    setIsValidated(false);
+    setIsDeploymentComplete(false);
+    setDeployedAppId(null);
+    setValidationError(null);
+    setDeploymentError(null);
+    form.reset();
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
@@ -73,6 +104,8 @@ export const useModalAppForm = () => {
     
     // Reset modalMetadata when a new file is selected
     setModalMetadata(null);
+    setIsDeploymentComplete(false);
+    setDeployedAppId(null);
     
     setFile(selectedFile);
     setIsValidating(true);
@@ -262,10 +295,20 @@ export const useModalAppForm = () => {
       };
       
       const appId = await deployModalApp(data.file_contents, updatedMetadata, uuid);
+      setDeployedAppId(appId);
       toast.success("Modal app deployed successfully!");
       
-      // Navigate to the garden creation form with just the modal app ID
-      setSearchParams({ modalAppId: appId.toString() });
+      if (showSuccessScreen) {
+        // Show success screen in the form (don't navigate away immediately)
+        setIsDeploymentComplete(true);
+      }
+      
+      if (onDeploymentSuccess) {
+        onDeploymentSuccess(appId);
+      } else {
+        // Default behavior - navigate to garden creation with the modal app ID
+        setSearchParams({ modalAppId: appId.toString() });
+      }
     } catch (error: any) {
       setDeploymentError(error as DeploymentError);
     } finally {
@@ -280,10 +323,13 @@ export const useModalAppForm = () => {
     handleFunctionMetadataChange,
     handleValidate,
     handleSubmit: form.handleSubmit(handleSubmit),
+    resetForm,
     modalMetadata,
     isValidating,
     isDeploying,
     isValidated,
+    isDeploymentComplete,
+    deployedAppId,
     validationError,
     deploymentError
   };
