@@ -1,6 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { StatusHeader } from "./model-deployments/StatusHeader";
 import { ModelDeploymentsTable } from "./model-deployments/ModelDeploymentsTable";
+import { Button } from "@/components/shadcn/button";
+import { useNavigate } from "react-router-dom";
+import { Plus } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 
 export interface ModelDeployment {
     name: string,
@@ -49,8 +53,28 @@ interface ModelDeploymentsProps {
 }
 
 export const ModelDeployments = ({ modelDeployments }: ModelDeploymentsProps) => {
+    const navigate = useNavigate();
+
+    const handleCreateDeployment = () => {
+        navigate("/modal-app/create");
+    };
+
     return (
         <div>
+            <div className="flex justify-end">
+                <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleCreateDeployment} size={"sm"} variant={"outline"} aria-description="Create a new model deployment">
+                                <Plus></Plus>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Create a new Deployment</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
             <ModelDeploymentsTable columns={columns} data={modelDeployments} />
         </div>
     )

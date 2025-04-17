@@ -5,10 +5,14 @@ import SavedGardens from "./SavedGardens";
 import { ModelDeployments } from "./ModelDeployments";
 import { useGetModelDeployments } from "../api/useGetModelDeployments";
 
-const UserProfileTabs = () => {
+interface UserProfileTabsProps {
+  defaultTab?: "profile" | "my-gardens" | "saved-gardens" | "model-deployments";
+}
+
+const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
   const modelDeployments = useGetModelDeployments().data || [];
   return (
-    <Tabs defaultValue="profile" className="w-full font-display">
+    <Tabs defaultValue={defaultTab} className="w-full font-display">
       <TabsList className="h-12 w-full bg-transparent">
         <TabsTrigger
           value="profile"
@@ -28,7 +32,7 @@ const UserProfileTabs = () => {
         >
           Saved Gardens
         </TabsTrigger>
-        {/* Hidden until the feature is more fleshed out 
+        {/* hidden until feature is complete
         <TabsTrigger
           value="model-deployments"
           className="h-full w-full border-b-4 bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green data-[state=active]:border-green data-[state=active]:bg-green data-[state=active]:bg-opacity-30"
@@ -53,7 +57,7 @@ const UserProfileTabs = () => {
             <SavedGardens />
           </div>
         </TabsContent>
-        {/* Hidden until the feature is more fleshed out
+        {/* hidden until feature is complete 
         <TabsContent value="model-deployments">
           <div className="px-6">
             <ModelDeployments modelDeployments={modelDeployments}></ModelDeployments>

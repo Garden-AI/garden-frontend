@@ -25,7 +25,7 @@ export const ProgressSteps = ({ currentStep }: ProgressStepsProps) => {
         {/* Progress Bar Fill - This shows completed steps with primary color */}
         <div 
           className="absolute left-0 top-4 h-0.5 bg-primary transition-all duration-300 ease-in-out"
-          style={{ width: `${(currentStep - 1) / (steps.length - 1) * 100}%` }}
+          style={{ width: `${(currentStep - 1) / (steps.length - 1) * 75}%` }}
         ></div>
         
         {/* Steps */}
