@@ -15,8 +15,8 @@ import SearchPage from "@/features/search/components/SearchPage";
 import TeamsPage from "@/features/team/components/TeamsPage";
 import UserProfilePage from "@/features/users/components/UserProfilePage";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import { ModelDeploymentDetails } from "@/features/users/components/model-deployments/ModelDeploymentDetails";
 import ModelDeploymentPage from "@/features/users/components/model-deployments/ModelDeploymentPage";
+import ModalAppUploadPage from "@/features/modal/components/ModalAppUploadPage";
 
 const Router: React.FC = () => {
   return (
@@ -45,6 +45,10 @@ const Router: React.FC = () => {
         {/* Modal Routes */}
         <Route path="modal-functions">
           <Route path=":id" element={<ModalFunctionPage />} />
+        </Route>
+
+        <Route element={<PrivateRoutes />}>
+          <Route path="modal-app/create" element={<ModalAppUploadPage />} />
         </Route>
 
         {/* Model Deployment Routes */}

@@ -54,7 +54,7 @@ interface ModelDeploymentsProps {
 
 export const ModelDeployments = ({ modelDeployments }: ModelDeploymentsProps) => {
     const navigate = useNavigate();
-    
+
     const handleCreateDeployment = () => {
         navigate("/modal-app/create");
     };
@@ -62,18 +62,18 @@ export const ModelDeployments = ({ modelDeployments }: ModelDeploymentsProps) =>
     return (
         <div>
             <div className="flex justify-end">
-            <Button onClick={handleCreateDeployment}>
                 <TooltipProvider>
-               <Tooltip>
-                 <TooltipTrigger asChild>
-                    <Plus></Plus> 
-                 </TooltipTrigger>
-                 <TooltipContent>
-                   <p>Create a new Deployment</p>
-                 </TooltipContent>
-               </Tooltip>
+                    <Tooltip delayDuration={100}>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleCreateDeployment} size={"sm"} variant={"outline"} aria-description="Create a new model deployment">
+                                <Plus></Plus>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Create a new Deployment</p>
+                        </TooltipContent>
+                    </Tooltip>
                 </TooltipProvider>
-            </Button>
             </div>
             <ModelDeploymentsTable columns={columns} data={modelDeployments} />
         </div>
