@@ -1,48 +1,56 @@
-import { ModalAppMetadataResponse, Garden, AsyncModalAppMetadataResponse } from "@/types";
-import { 
-    Card, 
-    CardHeader, 
-    CardTitle, 
+import { ModalAppMetadataResponse, AsyncModalAppMetadataResponse } from "@/types";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
     CardDescription,
     CardContent
 } from "@/components/shadcn/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/shadcn/accordion";
 import { Badge } from "@/components/shadcn/badge";
-import { 
-    CodeIcon, 
-    PackageIcon, 
-    FunctionSquareIcon, 
+import {
+    CodeIcon,
+    PackageIcon,
+    FunctionSquareIcon,
     AlertTriangleIcon,
     CheckCircleIcon,
     XCircleIcon,
     ClockIcon,
     LeafIcon,
-    InfoIcon
+    InfoIcon,
+    Trash
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CopyButton from "@/components/CopyButton";
 import { useGardensUsingFunctions } from "../../api/useGardensUsingFunctions";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
+import { Button } from "@/components/shadcn/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import  instance  from "@/lib/axios";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ModelDeploymentDetailsProps {
     entity: ModalAppMetadataResponse | AsyncModalAppMetadataResponse,
 }
 
-export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) => {
+export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) => {
     // Fetch gardens that use functions from this deployment
     const { data: relatedGardens = [], isLoading: isLoadingGardens } = useGardensUsingFunctions(entity);
-    
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
     // Get display name (prefer original_app_name if available)
     const displayName = entity.original_app_name || entity.app_name;
-    
+
     // Check if entity is AsyncModalAppMetadataResponse which has deploy status
     const isAsyncEntity = 'deploy_status' in entity;
     const deployStatus = isAsyncEntity ? (entity as AsyncModalAppMetadataResponse).deploy_status : 'done';
     const deployError = isAsyncEntity ? (entity as AsyncModalAppMetadataResponse).deploy_error : null;
-    
+
     // Status display helpers
     const getStatusDisplay = () => {
-        switch(deployStatus) {
+        switch (deployStatus) {
             case 'pending':
                 return {
                     icon: <ClockIcon className="h-5 w-5 text-amber-500" />,
@@ -70,17 +78,50 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                 };
         }
     };
-    
+
     const statusDisplay = getStatusDisplay();
-    
+
+    const handleDelete = async () => {
+       try {
+           await instance.delete(`/modal-apps/${entity.id}`);
+           queryClient.invalidateQueries({queryKey: ['modelDeployments']});
+           navigate("/user?tab=model-deployments");
+           toast(`Deployment Deleted: ${entity.original_app_name || entity.app_name}`);
+       } catch (error: any) {
+           const errorMessage = error.response?.data?.detail 
+               || error.message 
+               || 'Unknown error occurred';
+           toast.error(`Failed to delete deployment: ${errorMessage}`);
+       }
+    };
+
     return (
         <div className="p-6 space-y-6 max-w-6xl mx-auto">
             {/* Header with Status Section */}
             <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
+                    <div className="flex justify-end">
+                        <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        size={"sm"}
+                                        aria-description="Delete this model deployment"
+                                        onClick={handleDelete}
+                                    >
+                                        <Trash />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Delete this Deployment</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
                 </div>
-                
+
                 {/* Deployment Status Card */}
                 <Card className={`w-full ${statusDisplay.color}`}>
                     <CardContent className="p-6">
@@ -88,7 +129,7 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                             {statusDisplay.icon}
                             <div className="flex-1">
                                 <h3 className="text-lg font-medium">{statusDisplay.label}</h3>
-                                
+
                                 {/* Error Display */}
                                 {deployStatus === 'error' && deployError && (
                                     <div className="mt-4">
@@ -103,7 +144,7 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 {/* Timeout Message */}
                                 {deployStatus === 'timed_out' && (
                                     <div className="mt-4 bg-white/60 p-3 rounded border border-red-200">
@@ -118,7 +159,7 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                     </CardContent>
                 </Card>
             </div>
-            
+
             {/* Gardens Using This Model */}
             <Card className="shadow-md border-blue-100">
                 <CardHeader>
@@ -156,7 +197,7 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                     )}
                 </CardContent>
             </Card>
-            
+
             {/* Functions List */}
             <Card>
                 <CardHeader>
@@ -179,7 +220,7 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                     )}
                 </CardContent>
             </Card>
-            
+
             {/* Additional Details in Accordion */}
             <Accordion type="single" collapsible className="w-full shadow-sm border rounded-md">
                 <AccordionItem value="dependencies">
@@ -206,7 +247,7 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                                     <p className="text-gray-500 italic text-sm">None specified</p>
                                 )}
                             </div>
-                            
+
                             <div>
                                 <h3 className="text-sm font-medium text-gray-500 mb-2">Base Image</h3>
                                 <Badge variant="outline" className="bg-blue-50 border border-blue-200 text-blue-800">
@@ -216,7 +257,7 @@ export const ModelDeploymentDetails = ({entity}: ModelDeploymentDetailsProps) =>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-                
+
                 <AccordionItem value="source-code">
                     <AccordionTrigger className="px-4 py-3 font-medium">
                         <div className="flex items-center">
