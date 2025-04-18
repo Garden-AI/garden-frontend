@@ -26,9 +26,11 @@ import { useGardensUsingFunctions } from "../../api/useGardensUsingFunctions";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { Button } from "@/components/shadcn/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shadcn/alert-dialog";
 import  instance  from "@/lib/axios";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 interface ModelDeploymentDetailsProps {
     entity: ModalAppMetadataResponse | AsyncModalAppMetadataResponse,
@@ -39,6 +41,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
     const { data: relatedGardens = [], isLoading: isLoadingGardens } = useGardensUsingFunctions(entity);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     // Get display name (prefer original_app_name if available)
     const displayName = entity.original_app_name || entity.app_name;
@@ -81,7 +84,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
 
     const statusDisplay = getStatusDisplay();
 
-    const handleDelete = async () => {
+    const performDelete = async () => {
        try {
            await instance.delete(`/modal-apps/${entity.id}`);
            queryClient.invalidateQueries({queryKey: ['modelDeployments']});
@@ -95,6 +98,10 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
        }
     };
 
+    const handleDelete = () => {
+        setShowDeleteDialog(true);
+    };
+
     return (
         <div className="p-6 space-y-6 max-w-6xl mx-auto">
             {/* Header with Status Section */}
@@ -106,7 +113,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
-                                        variant={"outline"}
+                                        variant={"destructive"}
                                         size={"sm"}
                                         aria-description="Delete this model deployment"
                                         onClick={handleDelete}
@@ -277,6 +284,27 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Deployment</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this model deployment? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={performDelete}
+                            className="bg-red-600 hover:bg-red-500"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
