@@ -19,7 +19,7 @@ import {
     LeafIcon,
     InfoIcon,
     Trash,
-    RefreshCcw
+    RotateCw
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import CopyButton from "@/components/CopyButton";
