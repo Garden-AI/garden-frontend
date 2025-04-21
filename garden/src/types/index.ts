@@ -10,6 +10,7 @@ type EntrypointCreateRequest = components["schemas"]["EntrypointCreateRequest"];
 type EntrypointPatchRequest = components["schemas"]["EntrypointPatchRequest"];
 
 type ModalAppCreateRequest = components["schemas"]["ModalAppCreateRequest"];
+type ModalAppPatchRequest = components["schemas"]["ModalAppPatchRequest"]
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
 type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 
@@ -69,6 +70,7 @@ export type {
   AsyncModalJobStatus,
   ModalFileMetadataRequest,
   ModalFileMetadataResponse,
+  ModalAppPatchRequest,
   Model,
   Notebook
 };

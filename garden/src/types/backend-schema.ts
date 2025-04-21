@@ -181,8 +181,7 @@ export interface paths {
         };
         /** Get Garden By Doi */
         get: operations["get_garden_by_doi_gardens__doi__get"];
-        /** Create Or Replace Garden */
-        put: operations["create_or_replace_garden_gardens__doi__put"];
+        put?: never;
         post?: never;
         /** Delete Garden */
         delete: operations["delete_garden_gardens__doi__delete"];
@@ -369,6 +368,28 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/modal-apps/async/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Modal App
+         * @description Update a modal app's metadata in-place.
+         *
+         *     Triggers a redeployment if file_contents has changed.
+         */
+        patch: operations["patch_modal_app_modal_apps_async__id__patch"];
         trace?: never;
     };
     "/modal-apps/": {
@@ -1813,6 +1834,17 @@ export interface components {
             /** Modal Function Ids */
             readonly modal_function_ids: number[];
         };
+        /** ModalAppPatchRequest */
+        ModalAppPatchRequest: {
+            /** Base Image Name */
+            base_image_name?: string | null;
+            /** Requirements */
+            requirements?: string[] | null;
+            /** Conda Requirements */
+            conda_requirements?: string[] | null;
+            /** File Contents */
+            file_contents?: string | null;
+        };
         /** ModalBlobUploadURLRequest */
         ModalBlobUploadURLRequest: {
             /** Content Length */
@@ -2986,41 +3018,6 @@ export interface operations {
             };
         };
     };
-    create_or_replace_garden_gardens__doi__put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                doi: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GardenCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GardenMetadataResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     delete_garden_gardens__doi__delete: {
         parameters: {
             query?: never;
@@ -3408,6 +3405,41 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AsyncModalAppMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_modal_app_modal_apps_async__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModalAppPatchRequest"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

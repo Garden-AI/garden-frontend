@@ -317,7 +317,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                         <DialogTitle>Update Model Deployment</DialogTitle>
                         <DialogDescription>Upload an updated Modal App file to update this model deployment.</DialogDescription>
                     </DialogHeader>
-                    <ModalAppForm></ModalAppForm>
+                    <ModalAppForm toUpdate={entity.id} onDeploymentSuccess={(_) => setShowUpdateDialog(false)}></ModalAppForm>
                 </DialogContent>
             </Dialog>
 

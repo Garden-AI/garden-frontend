@@ -1,12 +1,12 @@
 import axios from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosResponse, AxiosError } from "axios";
-import { ModalAppCreateRequest, ModalAppMetadataResponse } from "@/types";
-import { ApiError } from "../utils/garden.utils";
+import { ModalAppCreateRequest, ModalAppMetadataResponse, ModalAppPatchRequest } from "@/types";
+import { ApiError } from "../../gardens/utils/garden.utils";
 
 export const useCreateModalApp = () => {
-  return useMutation<AxiosResponse<ModalAppMetadataResponse>, Error, ModalAppCreateRequest>({
-    mutationFn: createModalApp,
+  return useMutation<AxiosResponse<ModalAppMetadataResponse>, Error, ModalAppCreateRequest | ModalAppPatchRequest>({
+    mutationFn: createOrUpdateModalApp,
   });
 };
 
@@ -21,13 +21,16 @@ export class DeployTimeoutError extends Error {
   }
 }
 
-const createModalApp = async (
-  req: ModalAppCreateRequest,
+export const createOrUpdateModalApp = async (
+  req: ModalAppCreateRequest | ModalAppPatchRequest,
+  update: number = 0,
 ): Promise<AxiosResponse<ModalAppMetadataResponse>> => {
   try {
     // Make the initial request
-    const response = await axios.post(`/modal-apps/async`, req);
-    
+    const response = update ?
+      await axios.patch(`/modal-apps/async/${update}`, req) :
+      await axios.post(`/modal-apps/async`, req);
+
     // Extract the job id from the response
     const appId = response.data.id
 
