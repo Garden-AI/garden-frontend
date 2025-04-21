@@ -146,6 +146,7 @@ export const ModalAppForm = ({
                 isValidated={isValidated}
                 isValidating={isValidating}
                 isDeploying={isDeploying}
+                toUpdate={hookOptions.toUpdate || 0}
                 handleValidate={handleValidate}
                 resetForm={resetForm}
               />

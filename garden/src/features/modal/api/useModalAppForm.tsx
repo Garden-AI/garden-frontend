@@ -31,6 +31,12 @@ export interface UseModalAppFormOptions {
    * @default false
    */
   showSuccessScreen?: boolean;
+
+  /**
+   * Update an existing modal app, otherwise create a new one
+   * @default undefined
+   */
+  toUpdate?: number;
 }
 
 /**
@@ -40,6 +46,7 @@ export interface UseModalAppFormOptions {
 export const useModalAppForm = ({
   onDeploymentSuccess,
   showSuccessScreen = false,
+  toUpdate,
 }: UseModalAppFormOptions = {}) => {
   const auth = useGlobusAuth();
   const navigate = useNavigate();
@@ -59,6 +66,7 @@ export const useModalAppForm = ({
   const {
     validateModalFile,
     deployModalApp,
+    updateModalApp,
     isValidating: useModalAppUploadIsValidating,
     validationError: useModalAppUploadValidationError,
     deploymentError: useModalAppUploadDeploymentError,
@@ -289,16 +297,26 @@ export const useModalAppForm = ({
     try {
       clearErrors();
       window.scrollTo(0, 0);
-      
+
       // Update the metadata with any edited function details
       const updatedMetadata = {
         ...modalMetadata,
         modal_functions: data.modal?.modal_functions || modalMetadata.modal_functions,
       };
       
-      const appId = await deployModalApp(data.file_contents, updatedMetadata, uuid);
+      let appId: number | undefined;
+      if (toUpdate) {
+        appId = await updateModalApp(data.file_contents, toUpdate);
+      } else {
+        appId = await deployModalApp(data.file_contents, updatedMetadata, uuid);
+      }
+      
+      if (appId === undefined) {
+        throw new Error("Failed to deploy Modal app. App ID not returned.");
+      }
+      
       setDeployedAppId(appId);
-      toast.success("Modal app deployed successfully!");
+      toast.success(`Modal app ${toUpdate ? "updated" : "deployed"} successfully!`);
       
       // Invalidate the modelDeployments query to ensure fresh data is fetched
       queryClient.invalidateQueries({ queryKey: ["modelDeployments"] });
@@ -308,14 +326,39 @@ export const useModalAppForm = ({
         setIsDeploymentComplete(true);
       }
       
-      if (onDeploymentSuccess) {
+      if (onDeploymentSuccess && appId !== undefined) {
         onDeploymentSuccess(appId);
+      } else if (toUpdate) {
+        console.log("UPDATED!!");
       } else {
         // Default behavior - navigate to garden creation with the modal app ID
         setSearchParams({ modalAppId: appId.toString() });
       }
     } catch (error: any) {
-      setDeploymentError(error as DeploymentError);
+      // Get the properly formatted error from useModalAppUpload
+      if (useModalAppUploadDeploymentError) {
+        setDeploymentError(useModalAppUploadDeploymentError);
+      } else if (error instanceof ApiError) {
+        setDeploymentError({
+          message: error.message,
+          suggestedFix: error.suggestedFix,
+          isTimeout: false,
+          isApiError: true
+        });
+      } else if (error instanceof Error) {
+        setDeploymentError({
+          message: error.message,
+          isTimeout: false,
+          isApiError: false
+        });
+      } else {
+        // Fallback for unknown error types
+        setDeploymentError({
+          message: "Failed to deploy Modal app. Please try again.",
+          isTimeout: false,
+          isApiError: false
+        });
+      }
     } finally {
       setIsDeploying(false);
     }

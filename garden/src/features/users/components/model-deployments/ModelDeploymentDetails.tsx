@@ -18,7 +18,8 @@ import {
     ClockIcon,
     LeafIcon,
     InfoIcon,
-    Trash
+    Trash,
+    RotateCw
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import CopyButton from "@/components/CopyButton";
@@ -31,6 +32,8 @@ import  instance  from "@/lib/axios";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
+import { ModalAppForm } from "@/features/modal/components/ModalAppForm";
 
 interface ModelDeploymentDetailsProps {
     entity: ModalAppMetadataResponse | AsyncModalAppMetadataResponse,
@@ -42,6 +45,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
     // Get display name (prefer original_app_name if available)
     const displayName = entity.original_app_name || entity.app_name;
@@ -102,23 +106,48 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
         setShowDeleteDialog(true);
     };
 
+    const handleUpdate = () => {
+        setShowUpdateDialog(true);
+    };
+
     return (
         <div className="p-6 space-y-6 max-w-6xl mx-auto">
             {/* Header with Status Section */}
             <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
-                    <div className="flex justify-end">
+                    <div className="flex items-center space-x-3">
+                        <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        size={"sm"}
+                                        className="flex items-center gap-2"
+                                        aria-description="Update this model deployment"
+                                        onClick={handleUpdate}
+                                    >
+                                        <RotateCw className="h-4 w-4" />
+                                        <span>Update</span>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Update this Deployment</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
                                         variant={"destructive"}
                                         size={"sm"}
+                                        className="flex items-center gap-2"
                                         aria-description="Delete this model deployment"
                                         onClick={handleDelete}
                                     >
-                                        <Trash />
+                                        <Trash className="h-4 w-4" />
+                                        <span>Delete</span>
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -284,6 +313,17 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
+
+            {/* Update deployment dialog */}
+            <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
+                <DialogContent className="w-[95%] md:w-4/5 lg:w-3/4 max-w-4xl">
+                    <DialogHeader>
+                        <DialogTitle>Update Model Deployment</DialogTitle>
+                        <DialogDescription>Upload an updated Modal App file to update this model deployment.</DialogDescription>
+                    </DialogHeader>
+                    <ModalAppForm toUpdate={entity.id} onDeploymentSuccess={(_) => setShowUpdateDialog(false)}></ModalAppForm>
+                </DialogContent>
+            </Dialog>
 
             {/* Delete Confirmation Dialog */}
             <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

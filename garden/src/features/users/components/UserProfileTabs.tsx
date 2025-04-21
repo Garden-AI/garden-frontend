@@ -39,7 +39,7 @@ const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
         >
           Model Deployments
         </TabsTrigger>
-        */}
+       */}
       </TabsList>
       <div className="min-h-[60vh] flex-grow overflow-auto pt-4 sm:pt-8">
         <TabsContent value="profile">
@@ -63,7 +63,7 @@ const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
             <ModelDeployments modelDeployments={modelDeployments}></ModelDeployments>
           </div>
         </TabsContent>
-        */ }
+       */ }
       </div>
     </Tabs>
   );

@@ -5,6 +5,7 @@ interface FormActionsProps {
   isValidated: boolean;
   isValidating: boolean;
   isDeploying: boolean;
+  toUpdate?: number;
   handleValidate: () => void;
   resetForm: () => void;
 }
@@ -14,8 +15,9 @@ export const FormActions = ({
   isValidated, 
   isValidating, 
   isDeploying,
+  toUpdate = 0,
   handleValidate,
-  resetForm
+  resetForm,
 }: FormActionsProps) => (
   <div className="flex justify-between">
     <Button
@@ -32,7 +34,7 @@ export const FormActions = ({
         type="submit" 
         disabled={!isValidated || isDeploying}
       >
-        {isDeploying ? "Deploying..." : "Deploy Modal App"}
+        {isDeploying ? "Deploying..." :  toUpdate ? "Update Modal App" : "Deploy Modal App"}
       </Button>
     </div>
   </div>

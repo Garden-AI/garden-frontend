@@ -12,7 +12,7 @@ import { useCreateGardenAndDOI } from "../../api/useCreateGardenAndDOI";
 import { GardenCreateRequest } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
-import { useModalAppMetadata } from "../../api/useModalAppMetadata";
+import { useModalAppMetadata } from "../../../modal/api/useModalAppMetadata";
 import { OverallProgress } from "@/components/progress/OverallProgress";
 import { cn } from "@/utils/form.utils";
 import { CheckCircle2 } from "lucide-react";
