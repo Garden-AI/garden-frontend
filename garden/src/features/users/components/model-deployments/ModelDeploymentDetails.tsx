@@ -19,7 +19,7 @@ import {
     LeafIcon,
     InfoIcon,
     Trash,
-    RefreshCcw
+    RotateCw
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import CopyButton from "@/components/CopyButton";
@@ -116,17 +116,19 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
             <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
-                    <div className="flex justify-between">
+                    <div className="flex items-center space-x-3">
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
                                         variant={"outline"}
                                         size={"sm"}
+                                        className="flex items-center gap-2"
                                         aria-description="Update this model deployment"
                                         onClick={handleUpdate}
                                     >
-                                        <RefreshCcw />
+                                        <RotateCw className="h-4 w-4" />
+                                        <span>Update</span>
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -140,10 +142,12 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                                     <Button
                                         variant={"destructive"}
                                         size={"sm"}
+                                        className="flex items-center gap-2"
                                         aria-description="Delete this model deployment"
                                         onClick={handleDelete}
                                     >
-                                        <Trash />
+                                        <Trash className="h-4 w-4" />
+                                        <span>Delete</span>
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -312,7 +316,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
 
             {/* Update deployment dialog */}
             <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
-                <DialogContent>
+                <DialogContent className="w-[95%] md:w-4/5 lg:w-3/4 max-w-4xl">
                     <DialogHeader>
                         <DialogTitle>Update Model Deployment</DialogTitle>
                         <DialogDescription>Upload an updated Modal App file to update this model deployment.</DialogDescription>
