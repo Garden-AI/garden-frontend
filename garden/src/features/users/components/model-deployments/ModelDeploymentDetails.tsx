@@ -19,7 +19,7 @@ import {
     LeafIcon,
     InfoIcon,
     Trash,
-    RotateCw
+    RefreshCcw
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import CopyButton from "@/components/CopyButton";
@@ -45,6 +45,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
     // Get display name (prefer original_app_name if available)
@@ -104,6 +105,10 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
 
     const handleDelete = () => {
         setShowDeleteDialog(true);
+    };
+
+    const handleUpdate = () => {
+        setShowUpdateDialog(true);
     };
 
     const handleUpdate = () => {
