@@ -52,7 +52,7 @@ export const OverallProgress = ({
               >
                 <div 
                   className={cn(
-                    "relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors duration-300",
+                    "relative flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors duration-300",
                     currentPhase >= phase.number 
                       ? "border-primary bg-primary text-white"
                       : "border-gray-300 bg-white text-gray-400"

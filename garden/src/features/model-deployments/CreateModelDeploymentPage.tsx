@@ -8,21 +8,12 @@ export interface CreateModelDeploymentPageProps {
      * @param id The ID of the deployed model
      */
     onSuccess: (id: number) => void,
-    /**
-     * Optional custom title for the page
-     * @default "Create a Model Deployment"
-     */
-    title?: string,
-    /**
-     * Optional subtitle for the page
-     */
-    subtitle?: string,
 }
 
 /**
- * A generic container for model deployment creation pages
- * This component provides consistent layout and styling for different
- * types of model deployment forms (e.g., Modal Apps, HuggingFace models, etc.)
+ * A generic container for model deployment creation pages.
+ * This gives us a reusable abstraction for different types of deployments,
+ * it is up to the deployment type what form is rendered.
  */
 export const CreateModelDeploymentPage = ({
     form,
