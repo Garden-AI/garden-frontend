@@ -2,15 +2,15 @@ import { ModalAppForm } from "./ModalAppForm";
 
 interface ModalAppUploadPageProps {
   onSuccess?: (id: number) => void;
+  /** Optional prop to indicate if this is part of a multi-step process */
+  isMultiStep?: boolean;
 }
 
-const ModalAppUploadPage = ({ onSuccess }: ModalAppUploadPageProps = {}) => {
-
+const ModalAppUploadPage = ({ onSuccess, isMultiStep = false }: ModalAppUploadPageProps) => {
   return (
-    <div className="mx-auto max-w-6xl px-8 py-16 font-display">
+    <>
       <div className="mb-12 flex items-center space-x-8">
         <div className="space-y-4">
-          <h1 className="text-4xl font-light">Create a New Modal App Deployment</h1>
         </div>
       </div>
       <ModalAppForm 
@@ -19,7 +19,7 @@ const ModalAppUploadPage = ({ onSuccess }: ModalAppUploadPageProps = {}) => {
         viewDeploymentsUrl="/user?tab=model-deployments"
         onSuccess={onSuccess}
       />
-    </div>
+    </>
   );
 };
 

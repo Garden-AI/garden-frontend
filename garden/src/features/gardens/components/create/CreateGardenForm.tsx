@@ -13,7 +13,7 @@ import { GardenCreateRequest } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
 import { useModalAppMetadata } from "../../../modal/api/useModalAppMetadata";
-import { OverallProgress } from "@/components/progress/OverallProgress";
+import { useEffect } from "react";
 
 /**
  * Component for creating a new garden
@@ -28,9 +28,15 @@ interface CreateGardenFormProps {
    * When false (default), the modal app upload fields are hidden.
    */
   hasModalApp?: boolean;
+  /** Callback for tracking form submission state */
+  onFormStateChange?: (isSubmitting: boolean) => void;
 }
 
-export const CreateGardenForm = ({ modalAppId, hasModalApp = false }: CreateGardenFormProps) => {
+export const CreateGardenForm = ({ 
+  modalAppId, 
+  hasModalApp = false,
+  onFormStateChange 
+}: CreateGardenFormProps) => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
   const uuid = auth?.authorization?.user?.sub;
@@ -63,6 +69,13 @@ export const CreateGardenForm = ({ modalAppId, hasModalApp = false }: CreateGard
       },
     },
   });
+
+  // Notify parent component of submission state changes
+  useEffect(() => {
+    if (onFormStateChange) {
+      onFormStateChange(form.formState.isSubmitting);
+    }
+  }, [form.formState.isSubmitting, onFormStateChange]);
 
   // Use the modal app metadata hook to pre-populate the form when modalAppId is provided
   const { modalApp } = useModalAppMetadata(modalAppId, form, "modal");
@@ -135,8 +148,6 @@ export const CreateGardenForm = ({ modalAppId, hasModalApp = false }: CreateGard
 
   return (
     <>
-      {modalAppId && <OverallProgress currentPhase={2} isSubmitting={form.formState.isSubmitting} />}
-      
       <div className="rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-bold">Create Garden</h2>
         

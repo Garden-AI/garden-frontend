@@ -31,7 +31,6 @@ const Router: React.FC = () => {
         <Route path="garden">
           <Route element={<PrivateRoutes />}>
             <Route path="create" element={<CreateGardenPage />} />
-            <Route path="deploy-and-create" element={<ModalAppUploadPage onSuccess={(id: number) => {navigate(`/garden/create?modalAppId=${id}`)}} />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
           <Route path=":doi/modal-functions/:id" element={<ModalFunctionPage />} />

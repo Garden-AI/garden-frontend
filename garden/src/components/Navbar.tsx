@@ -110,12 +110,12 @@ const Navbar = () => {
                     <span className="text-xs text-gray-500">Deploy a new model</span>
                   </Link>
                   <Link 
-                    to="/garden/deploy-and-create" 
+                    to="/garden/create?deploy=modal-app" 
                     className="flex flex-col gap-1 p-2 hover:bg-gray-100 rounded"
                     onClick={() => setOpenCreateDropdown(false)}
                   >
                     <span className="font-medium">Deploy & Create</span>
-                    <span className="text-xs text-gray-500">Delpoy a new model, then create a garden</span>
+                    <span className="text-xs text-gray-500">Deploy a new model, then create a garden</span>
                   </Link>
                 </div>
               </div>
