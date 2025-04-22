@@ -4,16 +4,13 @@ export const gardenFormSchema = z.object({
   title: z
     .string()
     .min(1, { message: "Title is required" })
-    .min(8, { message: "Title must be at least 8 characters" })
     .max(100, { message: "Title must not exceed 100 characters" }),
 
   description: z
     .string()
-    .min(1, { message: "Description is required" })
-    .min(10, { message: "Description must be at least 10 characters" })
     .max(1000, { message: "Description must not exceed 1000 characters" }),
   
-  authors: z.array(z.string()).min(1, { message: "Please add at least one author." }),
+  authors: z.array(z.string()),
   contributors: z.array(z.string()),
   tags: z.array(z.string()),
   doi: z.string(), // Will be generated

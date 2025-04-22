@@ -34,7 +34,6 @@ interface CreateGardenFormProps {
 
 export const CreateGardenForm = ({ 
   modalAppId, 
-  hasModalApp = false,
   onFormStateChange 
 }: CreateGardenFormProps) => {
   const navigate = useNavigate();
@@ -153,10 +152,7 @@ export const CreateGardenForm = ({
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CreateGardenFormFields 
-              hideModalUpload={!!modalAppId} 
-              hasModalApp={hasModalApp}
-            />
+            <CreateGardenFormFields />
             <LoadingOverlay />
             <UnsavedChangesDialog blocker={blocker} />
           </form>
