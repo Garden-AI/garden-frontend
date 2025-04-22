@@ -1,6 +1,10 @@
 import { ModalAppForm } from "./ModalAppForm";
 
-const ModalAppUploadPage = () => {
+interface ModalAppUploadPageProps {
+  onSuccess?: (id: number) => void;
+}
+
+const ModalAppUploadPage = ({ onSuccess }: ModalAppUploadPageProps = {}) => {
 
   return (
     <div className="mx-auto max-w-6xl px-8 py-16 font-display">
@@ -13,6 +17,7 @@ const ModalAppUploadPage = () => {
         showOverallProgress={false}
         showSuccessScreen={true}
         viewDeploymentsUrl="/user?tab=model-deployments"
+        onSuccess={onSuccess}
       />
     </div>
   );

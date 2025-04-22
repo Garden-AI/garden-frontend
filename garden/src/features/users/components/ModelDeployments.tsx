@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { StatusHeader } from "./model-deployments/StatusHeader";
-import { ModelDeploymentsTable } from "./model-deployments/ModelDeploymentsTable";
+import { StatusHeader } from "@/features/model-deployments/StatusHeader";
+import { ModelDeploymentsTable } from "@/features/model-deployments/ModelDeploymentsTable";
 import { Button } from "@/components/shadcn/button";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";

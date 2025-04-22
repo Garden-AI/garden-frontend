@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Routes, Route, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
@@ -16,10 +16,12 @@ import SearchPage from "@/features/search/components/SearchPage";
 import TeamsPage from "@/features/team/components/TeamsPage";
 import UserProfilePage from "@/features/users/components/UserProfilePage";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import ModelDeploymentPage from "@/features/users/components/model-deployments/ModelDeploymentPage";
-import DeploymentPage from "@/features/modal/components/DeploymentPage";
+import ModelDeploymentPage from "@/features/model-deployments/ModelDeploymentPage";
+import { CreateModelDeploymentPage } from "@/features/model-deployments/CreateModelDeploymentPage";
+import ModalAppUploadPage from "@/features/modal/components/ModalAppUploadPage";
 
 const Router: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <Routes>
       <Route element={<RootLayout />}>
@@ -50,7 +52,12 @@ const Router: React.FC = () => {
         </Route>
 
         <Route element={<PrivateRoutes />}>
-          <Route path="modal-app/create" element={<DeploymentPage />} />
+          <Route path="modal-app/create" element={
+            <CreateModelDeploymentPage 
+              form={<ModalAppUploadPage onSuccess={(id: number) => {navigate(`/model-deployments/${id}`)}} />} 
+              onSuccess={(id: number) => {navigate(`/model-deployments/${id}`)}}
+            />
+          } />
         </Route>
 
         {/* Model Deployment Routes */}

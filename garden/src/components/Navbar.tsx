@@ -93,15 +93,21 @@ const Navbar = () => {
                 className={`absolute ${openCreateDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 w-64 justify-between rounded bg-white py-3 shadow-md`}
               >
                 <div className="flex flex-col gap-3 p-3">
-                  <h3 className="font-semibold">Create</h3>
-                  <Separator />
                   <Link 
                     to="/garden/create" 
                     className="flex flex-col gap-1 p-2 hover:bg-gray-100 rounded"
                     onClick={() => setOpenCreateDropdown(false)}
                   >
                     <span className="font-medium">Create Garden</span>
-                    <span className="text-xs text-gray-500">Create a garden with existing functions</span>
+                    <span className="text-xs text-gray-500">Create a garden from existing models</span>
+                  </Link>
+                  <Link 
+                    to="/modal-app/create" 
+                    className="flex flex-col gap-1 p-2 hover:bg-gray-100 rounded"
+                    onClick={() => setOpenCreateDropdown(false)}
+                  >
+                    <span className="font-medium">Deploy Model</span>
+                    <span className="text-xs text-gray-500">Deploy a new model</span>
                   </Link>
                   <Link 
                     to="/garden/deploy-and-create" 
@@ -109,15 +115,7 @@ const Navbar = () => {
                     onClick={() => setOpenCreateDropdown(false)}
                   >
                     <span className="font-medium">Deploy Model & Create Garden</span>
-                    <span className="text-xs text-gray-500">Upload a model, then create a garden</span>
-                  </Link>
-                  <Link 
-                    to="/modal-app/create" 
-                    className="flex flex-col gap-1 p-2 hover:bg-gray-100 rounded"
-                    onClick={() => setOpenCreateDropdown(false)}
-                  >
-                    <span className="font-medium">Deploy Model Only</span>
-                    <span className="text-xs text-gray-500">Upload and deploy a model</span>
+                    <span className="text-xs text-gray-500">Delpoy a new model, then create a garden</span>
                   </Link>
                 </div>
               </div>

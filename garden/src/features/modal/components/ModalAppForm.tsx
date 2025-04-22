@@ -39,6 +39,11 @@ export interface ModalAppFormProps extends UseModalAppFormOptions {
    * @default undefined - if not specified, will use the default behavior
    */
   redirectUrl?: string;
+  /**
+   * Function called after successful deployment
+   * @param id The ID of the deployed app
+   */
+  onSuccess?: (id: number) => void;
 }
 
 export const ModalAppForm = ({
@@ -46,6 +51,7 @@ export const ModalAppForm = ({
   currentPhase = 1,
   viewDeploymentsUrl = "/user",
   redirectUrl,
+  onSuccess,
   ...hookOptions
 }: ModalAppFormProps) => {
   const {
@@ -66,7 +72,8 @@ export const ModalAppForm = ({
     deploymentError
   } = useModalAppForm({
     ...hookOptions,
-    redirectUrl
+    redirectUrl,
+    onDeploymentSuccess: onSuccess
   });
 
   // Determine the current step based on state
