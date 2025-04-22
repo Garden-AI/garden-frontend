@@ -14,18 +14,23 @@ import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
 import { useModalAppMetadata } from "../../../modal/api/useModalAppMetadata";
 import { OverallProgress } from "@/components/progress/OverallProgress";
-import { cn } from "@/utils/form.utils";
-import { CheckCircle2 } from "lucide-react";
 
 /**
  * Component for creating a new garden
- * Handles garden creation with a pre-deployed modal app
+ * Can be used in two contexts:
+ * 1. As a standalone garden creation without requiring a modal app upload (default)
+ * 2. With a pre-deployed modal app (modalAppId provided and hasModalApp=true)
  */
 interface CreateGardenFormProps {
   modalAppId?: string | null;
+  /** 
+   * When true, allows the user to upload a modal app file. 
+   * When false (default), the modal app upload fields are hidden.
+   */
+  hasModalApp?: boolean;
 }
 
-export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => {
+export const CreateGardenForm = ({ modalAppId, hasModalApp = false }: CreateGardenFormProps) => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
   const uuid = auth?.authorization?.user?.sub;
@@ -59,7 +64,7 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
     },
   });
 
-  // Use the modal app metadata hook to pre-populate the form
+  // Use the modal app metadata hook to pre-populate the form when modalAppId is provided
   const { modalApp } = useModalAppMetadata(modalAppId, form, "modal");
 
   const blocker = useBlocker(
@@ -130,15 +135,17 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
 
   return (
     <>
-      {/* Pass isSubmitting state to OverallProgress */}
-      <OverallProgress currentPhase={2} isSubmitting={form.formState.isSubmitting} />
+      {modalAppId && <OverallProgress currentPhase={2} isSubmitting={form.formState.isSubmitting} />}
       
       <div className="rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-bold">Create Garden</h2>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CreateGardenFormFields hideModalUpload={!!modalAppId} />
+            <CreateGardenFormFields 
+              hideModalUpload={!!modalAppId} 
+              hasModalApp={hasModalApp}
+            />
             <LoadingOverlay />
             <UnsavedChangesDialog blocker={blocker} />
           </form>

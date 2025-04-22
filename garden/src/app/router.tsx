@@ -7,6 +7,7 @@ import RootLayout from "@/components/Layout";
 import EditEntrypointPage from "@/features/entrypoints/components/EditEntrypointPage";
 import EntrypointPage from "@/features/entrypoints/components/EntrypointPage";
 import CreateGardenPage from "@/features/gardens/components/create/CreateGardenPage";
+import DeployAndCreateGardenPage from "@/features/gardens/components/create/DeployAndCreateGardenPage";
 import GardenPage from "@/features/gardens/components/GardenPage";
 import HomePage from "@/components/HomePage";
 import LoginPage from "@/features/auth/components/LoginPage";
@@ -16,7 +17,7 @@ import TeamsPage from "@/features/team/components/TeamsPage";
 import UserProfilePage from "@/features/users/components/UserProfilePage";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import ModelDeploymentPage from "@/features/users/components/model-deployments/ModelDeploymentPage";
-import ModalAppUploadPage from "@/features/modal/components/ModalAppUploadPage";
+import DeploymentPage from "@/features/modal/components/DeploymentPage";
 
 const Router: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const Router: React.FC = () => {
         <Route path="garden">
           <Route element={<PrivateRoutes />}>
             <Route path="create" element={<CreateGardenPage />} />
+            <Route path="deploy-and-create" element={<DeployAndCreateGardenPage />} />
           </Route>
           <Route path=":doi" element={<GardenPage />} />
           <Route path=":doi/modal-functions/:id" element={<ModalFunctionPage />} />
@@ -48,7 +50,7 @@ const Router: React.FC = () => {
         </Route>
 
         <Route element={<PrivateRoutes />}>
-          <Route path="modal-app/create" element={<ModalAppUploadPage />} />
+          <Route path="modal-app/create" element={<DeploymentPage />} />
         </Route>
 
         {/* Model Deployment Routes */}

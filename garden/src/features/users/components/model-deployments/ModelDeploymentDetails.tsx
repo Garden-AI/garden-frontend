@@ -46,7 +46,6 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
     const queryClient = useQueryClient();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
     // Get display name (prefer original_app_name if available)
     const displayName = entity.original_app_name || entity.app_name;
@@ -105,10 +104,6 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
 
     const handleDelete = () => {
         setShowDeleteDialog(true);
-    };
-
-    const handleUpdate = () => {
-        setShowUpdateDialog(true);
     };
 
     const handleUpdate = () => {

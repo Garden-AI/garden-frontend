@@ -31,12 +31,21 @@ export interface ModalAppFormProps extends UseModalAppFormOptions {
    * @default "/user"
    */
   viewDeploymentsUrl?: string;
+  /**
+   * URL to redirect to after successful deployment, with ':id' placeholder for app ID
+   * Examples: 
+   * - "/garden/create?modalAppId=:id" (will create a search param)
+   * - "/model-deployments/:id" (will replace :id with the actual ID)
+   * @default undefined - if not specified, will use the default behavior
+   */
+  redirectUrl?: string;
 }
 
 export const ModalAppForm = ({
   showOverallProgress = false,
   currentPhase = 1,
   viewDeploymentsUrl = "/user",
+  redirectUrl,
   ...hookOptions
 }: ModalAppFormProps) => {
   const {
@@ -55,7 +64,10 @@ export const ModalAppForm = ({
     deployedAppId,
     validationError,
     deploymentError
-  } = useModalAppForm(hookOptions);
+  } = useModalAppForm({
+    ...hookOptions,
+    redirectUrl
+  });
 
   // Determine the current step based on state
   const getCurrentStep = () => {

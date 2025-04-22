@@ -1,15 +1,33 @@
-import { CreateGardenForm } from "./CreateGardenForm";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shadcn/button";
 import { useGetGlobusGroups } from "@/features/gardens/api/useGetGlobusGroups";
+import { ModalAppForm } from "./ModalAppForm";
+
+interface DeploymentPageProps {
+  /**
+   * Optional URL to redirect to after successful deployment
+   * If not provided, will redirect to the deployment details page
+   */
+  redirectUrl?: string;
+  /**
+   * Title for the deployment page
+   */
+  title?: string;
+  /**
+   * Description for the deployment page
+   */
+  description?: string;
+}
 
 /**
- * Main garden creation page
- * Renders the garden creation form that can optionally use a modal app ID from the URL params
+ * Page for deploying Modal apps
+ * Can be configured to redirect to garden creation or to the model deployment details
  */
-const CreateGardenPage = () => {
-  const [searchParams] = useSearchParams();
-  const modalAppId = searchParams.get("modalAppId");
+const DeploymentPage = ({ 
+  redirectUrl = "/model-deployments/:id",
+  title = "Deploy Modal App",
+  description = "Upload and deploy a Modal app to make it available for use in gardens."
+}: DeploymentPageProps) => {
   const { data: groups } = useGetGlobusGroups();
 
   if (!groups?.find((group) => group.id === import.meta.env.VITE_GLOBUS_GROUP_UUID)) {
@@ -18,24 +36,29 @@ const CreateGardenPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl px-8 py-16 font-display">
-      <CreateGardenFormHeader />
-      <CreateGardenForm 
-        modalAppId={modalAppId}
-        hasModalApp={!!modalAppId}
+      <DeploymentHeader title={title} description={description} />
+      
+      <ModalAppForm 
+        showSuccessScreen={redirectUrl === "/model-deployments/:id"}
+        redirectUrl={redirectUrl}
       />
     </div>
   );
 };
 
-const CreateGardenFormHeader = () => {
+interface DeploymentHeaderProps {
+  title: string;
+  description: string;
+}
+
+const DeploymentHeader = ({ title, description }: DeploymentHeaderProps) => {
   return (
-    <>
-      <div className="mb-12 flex items-center space-x-8">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-light">Create a Garden</h1>
-        </div>
+    <div className="mb-12 flex items-center space-x-8">
+      <div className="space-y-4">
+        <h1 className="text-4xl font-light">{title}</h1>
+        <p className="text-gray-600">{description}</p>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -80,4 +103,4 @@ const GlobusGroupError = () => {
   );
 };
 
-export default CreateGardenPage;
+export default DeploymentPage; 
