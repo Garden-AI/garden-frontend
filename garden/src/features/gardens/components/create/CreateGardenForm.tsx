@@ -49,12 +49,12 @@ export const CreateGardenForm = ({
       title: "",
       description: "",
       authors: [],
-      contributors: [],
+      contributors: [auth.authorization.user.name],
       entrypoint_ids: [],
       doi: "", // Will be generated
       doi_is_draft: true,
       is_test: true,
-      year: "2024",
+      year: "2025",
       language: "en",
       tags: [],
       version: "1.0.0",
@@ -92,6 +92,8 @@ export const CreateGardenForm = ({
         publisher: "Garden-AI",
         owner_identity_id: uuid || "",
         language: values.language || "en",
+        authors: [...new Set(values.authors)],
+        contributors: [...new Set(values.contributors)],
       };
 
       if (modalAppId && modalApp) {
@@ -151,7 +153,15 @@ export const CreateGardenForm = ({
         <h2 className="mb-6 text-xl font-bold">Create Garden</h2>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form 
+            onSubmit={form.handleSubmit(onSubmit)}
+            onKeyDown={(e) => {
+              // Prevent form submission when Enter is pressed in any input field
+              if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+                e.preventDefault();
+              }
+            }}
+          >
             <CreateGardenFormFields />
             <LoadingOverlay />
             <UnsavedChangesDialog blocker={blocker} />
