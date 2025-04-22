@@ -99,7 +99,7 @@ const Navbar = () => {
                     onClick={() => setOpenCreateDropdown(false)}
                   >
                     <span className="font-medium">Create Garden</span>
-                    <span className="text-xs text-gray-500">Create a garden from existing models</span>
+                    <span className="text-xs text-gray-500">Create a garden from deployed models</span>
                   </Link>
                   <Link 
                     to="/modal-app/create" 
@@ -114,7 +114,7 @@ const Navbar = () => {
                     className="flex flex-col gap-1 p-2 hover:bg-gray-100 rounded"
                     onClick={() => setOpenCreateDropdown(false)}
                   >
-                    <span className="font-medium">Deploy Model & Create Garden</span>
+                    <span className="font-medium">Deploy & Create</span>
                     <span className="text-xs text-gray-500">Delpoy a new model, then create a garden</span>
                   </Link>
                 </div>
