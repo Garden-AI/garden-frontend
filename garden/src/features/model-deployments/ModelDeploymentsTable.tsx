@@ -2,7 +2,7 @@ import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, RowSelec
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
 import { useNavigate } from "react-router-dom";
-import { ModelDeployment } from "../../components/ModelDeployments";
+import { ModelDeployment } from "@/features/users/components/ModelDeployments";
 
 interface ModelDeploymentsTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[],
