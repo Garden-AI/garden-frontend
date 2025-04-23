@@ -1,7 +1,7 @@
 import instance from "@/lib/axios";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { useQuery } from "@tanstack/react-query";
-import { ModelDeployment } from "../components/ModelDeployments";
+import { ModelDeployment } from "../ModelDeployments";
 import { components } from "@/types/backend-schema";
 
 type ModalAppResponse = components["schemas"]["AsyncModalAppMetadataResponse"];

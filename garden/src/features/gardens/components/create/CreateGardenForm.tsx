@@ -1,3 +1,4 @@
+import React from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker, useNavigate } from "react-router-dom";
 import { useGlobusAuth } from "@globus/react-auth-context";
@@ -85,7 +86,7 @@ export const CreateGardenForm = ({
 
   const onSubmit = async (values: GardenCreateFormData) => {
     try {
-      let gardenCreateRequest: GardenCreateRequest = {
+      const gardenCreateRequest: GardenCreateRequest = {
         ...values,
         doi_is_draft: true,
         is_archived: false,

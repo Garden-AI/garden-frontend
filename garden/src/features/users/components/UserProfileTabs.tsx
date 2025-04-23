@@ -3,8 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/ta
 import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
 import SavedGardens from "./SavedGardens";
-import { ModelDeployments } from "./ModelDeployments";
-import { useGetModelDeployments } from "../api/useGetModelDeployments";
+import { ModelDeployments } from "@/features/model-deployments/ModelDeployments";
+import { useGetModelDeployments } from "@/features/model-deployments/api/useGetModelDeployments";
 
 interface UserProfileTabsProps {
   defaultTab?: "profile" | "my-gardens" | "saved-gardens" | "model-deployments";

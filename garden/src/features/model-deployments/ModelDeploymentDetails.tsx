@@ -1,3 +1,4 @@
+import React from "react";
 import { ModalAppMetadataResponse, AsyncModalAppMetadataResponse } from "@/types";
 import {
     Card,
@@ -23,12 +24,12 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import CopyButton from "@/components/CopyButton";
-import { useGardensUsingFunctions } from "@/features/users/api/useGardensUsingFunctions";
+import { useGardensUsingFunctions } from "@/features/gardens/api/useGardensUsingFunctions";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { Button } from "@/components/shadcn/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shadcn/alert-dialog";
-import  instance  from "@/lib/axios";
+import instance from "@/lib/axios";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -89,17 +90,17 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
     const statusDisplay = getStatusDisplay();
 
     const performDelete = async () => {
-       try {
-           await instance.delete(`/modal-apps/${entity.id}`);
-           queryClient.invalidateQueries({queryKey: ['modelDeployments']});
-           navigate("/user?tab=model-deployments");
-           toast(`Deployment Deleted: ${entity.original_app_name || entity.app_name}`);
-       } catch (error: any) {
-           const errorMessage = error.response?.data?.detail 
-               || error.message 
-               || 'Unknown error occurred';
-           toast.error(`Failed to delete deployment: ${errorMessage}`);
-       }
+        try {
+            await instance.delete(`/modal-apps/${entity.id}`);
+            queryClient.invalidateQueries({ queryKey: ['modelDeployments'] });
+            navigate("/user?tab=model-deployments");
+            toast(`Deployment Deleted: ${entity.original_app_name || entity.app_name}`);
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.detail
+                || error.message
+                || 'Unknown error occurred';
+            toast.error(`Failed to delete deployment: ${errorMessage}`);
+        }
     };
 
     const handleDelete = () => {

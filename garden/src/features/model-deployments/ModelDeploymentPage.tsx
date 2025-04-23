@@ -1,5 +1,5 @@
 import { useParams, Navigate } from "react-router-dom";
-import { useGetModelDeployments } from "@/features/users/api/useGetModelDeployments";
+import { useGetModelDeployments } from "@/features/model-deployments/api/useGetModelDeployments";
 import { ModelDeploymentDetails } from "./ModelDeploymentDetails";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
@@ -18,12 +18,12 @@ const ModelDeploymentPage = () => {
     }
 
     const deploymentId = parseInt(id || '', 10);
-    
+
     // Handle NaN case for invalid IDs
     if (isNaN(deploymentId)) {
         return <NotFoundPage />;
     }
-    
+
     const modelDeployment = modelDeployments?.find(deployment => deployment.originalData.id === deploymentId);
 
     if (!modelDeployment) {
