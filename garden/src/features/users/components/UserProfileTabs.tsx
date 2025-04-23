@@ -1,3 +1,4 @@
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
@@ -32,14 +33,12 @@ const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
         >
           Saved Gardens
         </TabsTrigger>
-        {/* TODO: hidden until feature is ready */}
         <TabsTrigger
           value="model-deployments"
           className="h-full w-full border-b-4 bg-gray-100 hover:border-green hover:bg-gradient-to-b hover:from-gray-100 hover:from-70% hover:to-green data-[state=active]:border-green data-[state=active]:bg-green data-[state=active]:bg-opacity-30"
         >
           Model Deployments
         </TabsTrigger>
-       {/* */}
       </TabsList>
       <div className="min-h-[60vh] flex-grow overflow-auto pt-4 sm:pt-8">
         <TabsContent value="profile">
@@ -57,13 +56,11 @@ const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
             <SavedGardens />
           </div>
         </TabsContent>
-        {/* TODO: hidden until feature is ready */}
         <TabsContent value="model-deployments">
           <div className="px-6">
             <ModelDeployments modelDeployments={modelDeployments}></ModelDeployments>
           </div>
         </TabsContent>
-       {/* */ }
       </div>
     </Tabs>
   );
