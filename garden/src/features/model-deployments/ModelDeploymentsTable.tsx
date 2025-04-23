@@ -1,8 +1,9 @@
+import React from "react";
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, RowSelectionState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/table";
 import { useNavigate } from "react-router-dom";
-import { ModelDeployment } from "../../components/ModelDeployments";
+import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 
 interface ModelDeploymentsTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[],

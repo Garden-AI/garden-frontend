@@ -1,3 +1,4 @@
+import React from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { useBlocker, useNavigate } from "react-router-dom";
 import { useGlobusAuth } from "@globus/react-auth-context";
@@ -13,19 +14,29 @@ import { GardenCreateRequest } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
 import { useModalAppMetadata } from "../../../modal/api/useModalAppMetadata";
-import { OverallProgress } from "@/components/progress/OverallProgress";
-import { cn } from "@/utils/form.utils";
-import { CheckCircle2 } from "lucide-react";
+import { useEffect } from "react";
 
 /**
  * Component for creating a new garden
- * Handles garden creation with a pre-deployed modal app
+ * Can be used in two contexts:
+ * 1. As a standalone garden creation without requiring a modal app upload (default)
+ * 2. With a pre-deployed modal app (modalAppId provided and hasModalApp=true)
  */
 interface CreateGardenFormProps {
   modalAppId?: string | null;
+  /** 
+   * When true, allows the user to upload a modal app file. 
+   * When false (default), the modal app upload fields are hidden.
+   */
+  hasModalApp?: boolean;
+  /** Callback for tracking form submission state */
+  onFormStateChange?: (isSubmitting: boolean) => void;
 }
 
-export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => {
+export const CreateGardenForm = ({ 
+  modalAppId, 
+  onFormStateChange 
+}: CreateGardenFormProps) => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
   const uuid = auth?.authorization?.user?.sub;
@@ -39,12 +50,12 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
       title: "",
       description: "",
       authors: [],
-      contributors: [],
+      contributors: [auth.authorization.user.name],
       entrypoint_ids: [],
       doi: "", // Will be generated
       doi_is_draft: true,
       is_test: true,
-      year: "2024",
+      year: "2025",
       language: "en",
       tags: [],
       version: "1.0.0",
@@ -59,7 +70,14 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
     },
   });
 
-  // Use the modal app metadata hook to pre-populate the form
+  // Notify parent component of submission state changes
+  useEffect(() => {
+    if (onFormStateChange) {
+      onFormStateChange(form.formState.isSubmitting);
+    }
+  }, [form.formState.isSubmitting, onFormStateChange]);
+
+  // Use the modal app metadata hook to pre-populate the form when modalAppId is provided
   const { modalApp } = useModalAppMetadata(modalAppId, form, "modal");
 
   const blocker = useBlocker(
@@ -68,13 +86,15 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
 
   const onSubmit = async (values: GardenCreateFormData) => {
     try {
-      let gardenCreateRequest: GardenCreateRequest = {
+      const gardenCreateRequest: GardenCreateRequest = {
         ...values,
         doi_is_draft: true,
         is_archived: false,
         publisher: "Garden-AI",
         owner_identity_id: uuid || "",
         language: values.language || "en",
+        authors: [...new Set(values.authors)],
+        contributors: [...new Set(values.contributors)],
       };
 
       if (modalAppId && modalApp) {
@@ -130,15 +150,20 @@ export const CreateGardenForm = ({ modalAppId }: CreateGardenFormProps = {}) => 
 
   return (
     <>
-      {/* Pass isSubmitting state to OverallProgress */}
-      <OverallProgress currentPhase={2} isSubmitting={form.formState.isSubmitting} />
-      
       <div className="rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-bold">Create Garden</h2>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CreateGardenFormFields hideModalUpload={!!modalAppId} />
+          <form 
+            onSubmit={form.handleSubmit(onSubmit)}
+            onKeyDown={(e) => {
+              // Prevent form submission when Enter is pressed in any input field
+              if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+                e.preventDefault();
+              }
+            }}
+          >
+            <CreateGardenFormFields />
             <LoadingOverlay />
             <UnsavedChangesDialog blocker={blocker} />
           </form>

@@ -37,6 +37,15 @@ export interface UseModalAppFormOptions {
    * @default undefined
    */
   toUpdate?: number;
+
+  /**
+   * URL to redirect to after deployment, with ':id' placeholder for app ID
+   * Examples: 
+   * - "/garden/create?modalAppId=:id" (will create a search param)
+   * - "/model-deployments/:id" (will replace :id with the actual ID)
+   * @default undefined - if not specified, will default to adding a modalAppId search param
+   */
+  redirectUrl?: string;
 }
 
 /**
@@ -47,6 +56,7 @@ export const useModalAppForm = ({
   onDeploymentSuccess,
   showSuccessScreen = false,
   toUpdate,
+  redirectUrl,
 }: UseModalAppFormOptions = {}) => {
   const auth = useGlobusAuth();
   const navigate = useNavigate();
@@ -256,24 +266,21 @@ export const useModalAppForm = ({
       }
     } catch (error) {
       // Don't create a new error object - use what's already in useModalAppUploadValidationError
-      // which should have the proper error information from the backend
       if (useModalAppUploadValidationError) {
         setValidationError(useModalAppUploadValidationError);
       } else if (error instanceof ApiError) {
-        // If it's an ApiError, it will have the specific error information from the backend
         setValidationError({
           message: error.message,
           suggestedFix: error.suggestedFix,
           isApiError: true
         });
       } else if (error instanceof Error) {
-        // For generic errors
         setValidationError({
           message: error.message,
           isApiError: false
         });
       } else {
-        // Last resort fallback
+        // Fallback for unknown error types
         setValidationError({
           message: "Unknown error occurred during validation",
           isApiError: false
@@ -331,8 +338,32 @@ export const useModalAppForm = ({
       } else if (toUpdate) {
         console.log("UPDATED!!");
       } else {
-        // Default behavior - navigate to garden creation with the modal app ID
-        setSearchParams({ modalAppId: appId.toString() });
+        // Handle redirection based on redirectUrl or default behavior
+        if (redirectUrl) {
+          // Replace :id placeholder with actual app ID
+          const finalUrl = redirectUrl.replace(':id', appId.toString());
+          
+          // Check if we're using search params or path params
+          if (finalUrl.includes('?')) {
+            // Parse the URL to extract search params
+            const [path, searchParamsString] = finalUrl.split('?');
+            const urlSearchParams = new URLSearchParams(searchParamsString);
+            
+            // Set search params and navigate to the path
+            setSearchParams(urlSearchParams);
+            
+            // If we're changing the URL path (not just search params), navigate
+            if (path !== window.location.pathname) {
+              navigate(path);
+            }
+          } else {
+            // Direct navigation to the URL with the ID inserted
+            navigate(finalUrl);
+          }
+        } else {
+          // Default behavior - update search params with modalAppId
+          setSearchParams({ modalAppId: appId.toString() });
+        }
       }
     } catch (error: any) {
       // Get the properly formatted error from useModalAppUpload

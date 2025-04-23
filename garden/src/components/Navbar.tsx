@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect, useRef, RefObject } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/shadcn/separator";
@@ -47,8 +48,8 @@ const Navbar = () => {
     await auth.authorization?.login();
   };
 
-  let Links = [
-    { name: "Search", link: "/search"},
+  const Links = [
+    { name: "Search", link: "/search" },
     { name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" },
   ];
 
@@ -65,76 +66,73 @@ const Navbar = () => {
         </div>
 
         {/* Everything under this div is on the right side of the nav bar */}
-        <div className="flex items-center justify-end">
-          <div className="flex items-center">
-            <div className="hover:text-green">
-              <TooltipProvider delayDuration={100}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link to="/garden/create">
-                      <Plus size={24} />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Create a Garden
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+        <div className="flex items-center justify-start">
+          <button
+            className="flex gap-1 p-2 hover:bg-gray-100 rounded"
+            onClick={() => { navigate('/garden/create?deploy=modal-app') }}
+          >
+            <TooltipProvider>
+              <Tooltip delayDuration={100}>
+                <TooltipTrigger>
+                  <Plus size={24} className="hover:text-green" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Deploy & Create a Garden</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </button>
 
-            {/* Auth/user section */}
-            <div
-              onClick={toggleMenuDropdown}
-              className="relative text-sm transition-all duration-500 flex items-center"
-              ref={dropdownRef}
-            >
-              {auth.isAuthenticated ? (
-                <div className="flex items-center">
-                  <button className="bg-green-500 hover:bg-green-600 px-4 py-1">
-                    <div className="flex items-center space-x-2">
-                      <User size={20} />
-                      {openMenuDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          {/* Auth/user section */}
+          <div
+            onClick={toggleMenuDropdown}
+            className="relative text-sm transition-all duration-500 flex items-center"
+            ref={dropdownRef}
+          >
+            {auth.isAuthenticated ? (
+              <div className="flex items-center">
+                <button className="bg-green-500 hover:bg-green-600 px-4 py-1">
+                  <div className="flex items-center space-x-2">
+                    <User size={20} />
+                    {openMenuDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </div>
+                </button>
+                <div
+                  className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 justify-between rounded bg-white py-3 shadow-md`}
+                >
+                  <div className="flex flex-col gap-3 p-3">
+                    <p>{user?.email} </p>
+                    <Separator />
+                    <div className="flex flex-row gap-2 hover:text-green hover:underline">
+                      <User size={18} />
+                      <Link to="/user"> Your Profile </Link>
                     </div>
-                  </button>
-                  <div
-                    className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 justify-between rounded bg-white py-3 shadow-md`}
-                  >
-                    <div className="flex flex-col gap-3 p-3">
-                      <p>{user?.email} </p>
-                      <Separator />
-                      <div className="flex flex-row gap-2 hover:text-green hover:underline">
-                        <User size={18} />
-                        <Link to="/user"> Your Profile </Link>
-                      </div>
-                      <div
-                        className="flex flex-row gap-2 hover:cursor-pointer hover:text-green hover:underline"
-                        onClick={handleLogOut}
-                      >
-                        <LogOut size={18} />
-                        <p> Log Out </p>
-                      </div>
+                    <div
+                      className="flex flex-row gap-2 hover:cursor-pointer hover:text-green hover:underline"
+                      onClick={handleLogOut}
+                    >
+                      <LogOut size={18} />
+                      <p> Log Out </p>
                     </div>
                   </div>
                 </div>
-              ) : (
-                <button
-                  className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen"
-                  onClick={handleLogin}
-                >
-                  Login
-                </button>
-              )}
-            </div>
-
-            {/* Links menu */}
-            <div className="flex items-center justify-between">
-              {Links.map((link) => (
-                  <Link to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
-                    {link.name}
-                  </Link>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <button
+                className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen"
+                onClick={handleLogin}
+              >
+                Login
+              </button>
+            )}
           </div>
+
+          {/* Links menu */}
+          {Links.map((link) => (
+            <Link key={link.name} to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
+              {link.name}
+            </Link>
+          ))}
         </div>
       </div>
     </div>
