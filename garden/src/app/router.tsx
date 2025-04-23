@@ -1,4 +1,5 @@
-import { Navigate, Outlet, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import React from 'react';
+import { Navigate, Outlet, Routes, Route, useLocation, useNavigate, BrowserRouter } from "react-router-dom";
 
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
@@ -19,8 +20,7 @@ import ModelDeploymentPage from "@/features/model-deployments/ModelDeploymentPag
 import { CreateModelDeploymentPage } from "@/features/model-deployments/CreateModelDeploymentPage";
 import ModalAppUploadPage from "@/features/modal/components/ModalAppUploadPage";
 
-const Router: React.FC = () => {
-  const navigate = useNavigate();
+const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route element={<RootLayout />}>
@@ -50,12 +50,7 @@ const Router: React.FC = () => {
         </Route>
 
         <Route element={<PrivateRoutes />}>
-          <Route path="modal-app/create" element={
-            <CreateModelDeploymentPage 
-              form={<ModalAppUploadPage onSuccess={(id: number) => {navigate(`/model-deployments/${id}`)}} />} 
-              onSuccess={(id: number) => {navigate(`/model-deployments/${id}`)}}
-            />
-          } />
+          <Route path="modal-app/create" element={<ModalAppCreateWrapper />} />
         </Route>
 
         {/* Model Deployment Routes */}
@@ -73,6 +68,16 @@ const Router: React.FC = () => {
   );
 };
 
+const ModalAppCreateWrapper: React.FC = () => {
+  const navigate = useNavigate();
+  return (
+    <CreateModelDeploymentPage
+      form={<ModalAppUploadPage onSuccess={(id: number) => { navigate(`/model-deployments/${id}`) }} />}
+      onSuccess={(id: number) => { navigate(`/model-deployments/${id}`) }}
+    />
+  );
+};
+
 const PrivateRoutes = () => {
   const { authorization } = useGlobusAuth();
   const location = useLocation();
@@ -86,6 +91,15 @@ const PrivateRoutes = () => {
   }
 
   return <Outlet />;
+};
+
+// Router component that wraps AppRoutes with BrowserRouter
+const Router: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
 };
 
 export default Router;
