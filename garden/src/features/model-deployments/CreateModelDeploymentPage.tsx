@@ -1,3 +1,8 @@
+import React from "react";
+
+import { useGetGlobusGroups } from "../gardens/api/useGetGlobusGroups";
+import { GlobusGroupError } from "../globus/components/GlobusGroupError";
+
 export interface CreateModelDeploymentPageProps {
     /**
      * The form element to render (e.g., ModalAppUploadPage)
@@ -19,6 +24,11 @@ export const CreateModelDeploymentPage = ({
     form,
     onSuccess,
 }: CreateModelDeploymentPageProps) => {
+    const { data: groups } = useGetGlobusGroups();
+
+    if (!groups?.find((group) => group.id === import.meta.env.VITE_GLOBUS_GROUP_UUID)) {
+        return <GlobusGroupError />;
+    }
     return (
         <div className="mx-auto max-w-6xl font-display">
             {/* Each specific form type should handle its own success callback */}
