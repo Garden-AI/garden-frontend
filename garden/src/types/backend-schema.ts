@@ -610,6 +610,10 @@ export interface components {
             deploy_status?: components["schemas"]["AsyncModalJobStatus"] | null;
             /** Deploy Error */
             deploy_error?: string | null;
+            /** Suggested Fix */
+            suggested_fix?: string | null;
+            /** Deployment Output */
+            deployment_output?: string | null;
             /** Modal Function Names */
             readonly modal_function_names: string[];
             /** Modal Function Ids */

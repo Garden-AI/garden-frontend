@@ -69,58 +69,64 @@ export const tagOptions: Option[] = [
 export class ApiError extends Error {
   readonly statusCode?: number;
   readonly suggestedFix?: string;
-
+  readonly deploymentOutput?: string;
   constructor(
     message: string,
     suggestedFix?: string,
+    deploymentOutput?: string,
   ) {
     super(message);
     Object.setPrototypeOf(this, ApiError.prototype);
     this.name = 'ApiError';
     this.suggestedFix = suggestedFix;
+    this.deploymentOutput = deploymentOutput;
   }
 
   static fromAxiosError(error: AxiosError): ApiError {
     interface ApiErrorInfo {
       detail: string,
       suggestedFix: string,
+      deploymentOutput: string,
     }
-    const { detail, suggestedFix } = error.response?.data as ApiErrorInfo ?? {};
+    const { detail, suggestedFix, deploymentOutput } = error.response?.data as ApiErrorInfo ?? {};
+
     return new ApiError(
       detail || 'Unknown API Error',
       suggestedFix,
+      deploymentOutput,
     );
   }
 
   toString(): string {
-    let str = `Error: ${this.message}`;
-    let suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix}` : '';
-    return str + suggestedFix;
+    const str = `Error: ${this.message}`;
+    const suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix}` : '';
+    const deploymentOutput = this.deploymentOutput ? `, deployment_output: ${this.deploymentOutput}` : '';
+    return str + suggestedFix + deploymentOutput;
   }
 }
 
 export type MaterialType = 'datasets' | 'papers' | 'repositories' | 'notebooks';
 
 export const getUniqueItemCount = (modalFunctions: ModalFunction[] | undefined, materialType: MaterialType): number => {
-    if (!modalFunctions) return 0;
-    
-    const getIdentifier = (item: any) => {
-        switch (materialType) {
-            case 'datasets':
-            case 'papers':
-                return item.doi || item.url || item.title;
-            case 'repositories':
-            case 'notebooks':
-                return item.url;
-        }
-    };
+  if (!modalFunctions) return 0;
 
-    return modalFunctions.reduce((uniqueItems, mf) => {
-        const items = mf[materialType];
-        if (!items) return uniqueItems;
-        
-        const ids = new Set(items.map(getIdentifier));
-        ids.forEach(id => uniqueItems.add(id));
-        return uniqueItems;
-    }, new Set()).size;
+  const getIdentifier = (item: any) => {
+    switch (materialType) {
+      case 'datasets':
+      case 'papers':
+        return item.doi || item.url || item.title;
+      case 'repositories':
+      case 'notebooks':
+        return item.url;
+    }
+  };
+
+  return modalFunctions.reduce((uniqueItems, mf) => {
+    const items = mf[materialType];
+    if (!items) return uniqueItems;
+
+    const ids = new Set(items.map(getIdentifier));
+    ids.forEach(id => uniqueItems.add(id));
+    return uniqueItems;
+  }, new Set()).size;
 };

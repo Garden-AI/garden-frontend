@@ -1,3 +1,4 @@
+import React from "react";
 import { Form } from "@/components/shadcn/form";
 import { useSearchParams } from "react-router-dom";
 import { useModalAppForm } from "@/features/modal/api/useModalAppForm";
@@ -14,7 +15,7 @@ import { ProgressSteps } from "@/features/modal/components/progress/ProgressStep
 
 export const UploadModalAppForm = () => {
   const [, setSearchParams] = useSearchParams();
-  
+
   const {
     form,
     file,
@@ -49,17 +50,17 @@ export const UploadModalAppForm = () => {
   return (
     <>
       {/* Overall Progress - Moved outside the card to connect with page heading */}
-      <OverallProgress 
-        currentPhase={currentPhase} 
-        isCompleted={isDeploying || isValidated} 
+      <OverallProgress
+        currentPhase={currentPhase}
+        isCompleted={isDeploying || isValidated}
       />
-      
+
       <div className="rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-bold">Upload and Deploy Modal App</h2>
-        
+
         {/* Detailed Progress Steps for current phase */}
         <ProgressSteps currentStep={currentStep} />
-        
+
         {isDeploying ? (
           <>
             {/* Centralized loading display during deployment */}
@@ -70,31 +71,31 @@ export const UploadModalAppForm = () => {
           <Form {...form}>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* File Upload Section */}
-              <FileUploadSection 
+              <FileUploadSection
                 handleFileChange={handleFileChange}
                 isValidating={isValidating}
                 isDeploying={isDeploying}
                 isValidated={isValidated}
                 file={file}
               />
-              
+
               {/* Error Displays */}
               {validationError && <ValidationErrorAlert error={validationError} />}
               {deploymentError && <DeploymentErrorAlert error={deploymentError} />}
-              
+
               {/* Modal App Details */}
               {modalMetadata && (
                 <div className="space-y-6">
                   <DetectedAppCard metadata={modalMetadata} />
-                  <FunctionMetadataEditor 
-                    form={form} 
-                    metadata={modalMetadata} 
-                    handleFunctionMetadataChange={handleFunctionMetadataChange} 
+                  <FunctionMetadataEditor
+                    form={form}
+                    metadata={modalMetadata}
+                    handleFunctionMetadataChange={handleFunctionMetadataChange}
                   />
                 </div>
               )}
-              
-              <FormActions 
+
+              <FormActions
                 file={file}
                 isValidated={isValidated}
                 isValidating={isValidating}

@@ -108,44 +108,44 @@ export const useModalAppForm = ({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
-    
+
     // Reset validation state when a new file is selected
     setIsValidated(false);
     clearErrors();
-    
+
     // Reset any form-level validation errors
     form.clearErrors();
-    
+
     // If we had previously validated a file, inform the user
     // that the new file will be validated automatically
     if (modalMetadata) {
       toast.info("New file selected. Validating...");
     }
-    
+
     // Reset modalMetadata when a new file is selected
     setModalMetadata(null);
     setIsDeploymentComplete(false);
     setDeployedAppId(null);
-    
+
     setFile(selectedFile);
     setIsValidating(true);
     setValidationError(null);
     setDeploymentError(null);
-    
+
     try {
       const fileContents = await selectedFile.text();
       form.setValue("file_contents", fileContents);
-      
+
       // Automatically validate the file after loading
       const metadata = await validateModalFile(fileContents);
-      
+
       if (metadata) {
         setIsValidated(true);
-        
+
         // Initialize the modal_functions field with the validated metadata
         const functions = metadata.modal_functions || [];
         form.setValue("modal.modal_functions", functions as any);
-        
+
         setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
       } else {
@@ -190,30 +190,30 @@ export const useModalAppForm = ({
 
   // New handler for updating function metadata
   const handleFunctionMetadataChange = (
-    functionIndex: number, 
-    field: string, 
+    functionIndex: number,
+    field: string,
     value: string,
     event?: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
     // Handle tab key in text areas to insert spaces
     if (event?.key === 'Tab') {
       event.preventDefault();
-      
+
       // Default 2-space indentation
       const indentSize = 2;
       const indent = ' '.repeat(indentSize);
       const { selectionStart, selectionEnd } = event.currentTarget;
-      
+
       // Insert indentation at cursor
       const newValue = value.substring(0, selectionStart) + indent + value.substring(selectionEnd);
-      
+
       // Update value with indentation
       const path = `modal.modal_functions.${functionIndex}.${field}` as const;
-      form.setValue(path, newValue, { 
-        shouldValidate: true, 
-        shouldDirty: true 
+      form.setValue(path, newValue, {
+        shouldValidate: true,
+        shouldDirty: true
       });
-      
+
       // Set cursor position after inserted indent
       setTimeout(() => {
         const input = event.currentTarget;
@@ -221,13 +221,13 @@ export const useModalAppForm = ({
         input.focus();
         input.setSelectionRange(newCursorPos, newCursorPos);
       }, 0);
-      
+
       return;
     }
-    
+
     // Regular field update without special handling
     const path = `modal.modal_functions.${functionIndex}.${field}` as const;
-    form.setValue(path, value, { 
+    form.setValue(path, value, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -242,17 +242,17 @@ export const useModalAppForm = ({
     try {
       const fileContents = await file.text();
       form.setValue("file_contents", fileContents);
-      
+
       // Automatically validate the file after loading
       const metadata = await validateModalFile(fileContents);
-      
+
       if (metadata) {
         setIsValidated(true);
-        
+
         // Initialize the modal_functions field with the validated metadata
         const functions = metadata.modal_functions || [];
         form.setValue("modal.modal_functions", functions as any);
-        
+
         setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
       } else {
@@ -310,29 +310,29 @@ export const useModalAppForm = ({
         ...modalMetadata,
         modal_functions: data.modal?.modal_functions || modalMetadata.modal_functions,
       };
-      
+
       let appId: number | undefined;
       if (toUpdate) {
         appId = await updateModalApp(data.file_contents, toUpdate);
       } else {
         appId = await deployModalApp(data.file_contents, updatedMetadata, uuid);
       }
-      
+
       if (appId === undefined) {
         throw new Error("Failed to deploy Modal app. App ID not returned.");
       }
-      
+
       setDeployedAppId(appId);
       toast.success(`Modal app ${toUpdate ? "updated" : "deployed"} successfully!`);
-      
+
       // Invalidate the modelDeployments query to ensure fresh data is fetched
       queryClient.invalidateQueries({ queryKey: ["modelDeployments"] });
-      
+
       if (showSuccessScreen) {
         // Show success screen in the form (don't navigate away immediately)
         setIsDeploymentComplete(true);
       }
-      
+
       if (onDeploymentSuccess && appId !== undefined) {
         onDeploymentSuccess(appId);
       } else if (toUpdate) {
@@ -342,16 +342,16 @@ export const useModalAppForm = ({
         if (redirectUrl) {
           // Replace :id placeholder with actual app ID
           const finalUrl = redirectUrl.replace(':id', appId.toString());
-          
+
           // Check if we're using search params or path params
           if (finalUrl.includes('?')) {
             // Parse the URL to extract search params
             const [path, searchParamsString] = finalUrl.split('?');
             const urlSearchParams = new URLSearchParams(searchParamsString);
-            
+
             // Set search params and navigate to the path
             setSearchParams(urlSearchParams);
-            
+
             // If we're changing the URL path (not just search params), navigate
             if (path !== window.location.pathname) {
               navigate(path);
@@ -373,6 +373,7 @@ export const useModalAppForm = ({
         setDeploymentError({
           message: error.message,
           suggestedFix: error.suggestedFix,
+          deploymentOutput: error.deploymentOutput,
           isTimeout: false,
           isApiError: true
         });

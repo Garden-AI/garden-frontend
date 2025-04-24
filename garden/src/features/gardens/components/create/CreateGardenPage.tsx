@@ -1,3 +1,4 @@
+import React from "react";
 import { CreateGardenForm } from "./CreateGardenForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetGlobusGroups } from "@/features/gardens/api/useGetGlobusGroups";
@@ -33,11 +34,11 @@ const CreateGardenPage = () => {
     return (
       <div className="mx-auto max-w-6xl px-8 py-16 font-display">
         <OverallProgress currentPhase={1} />
-        <ModalAppUploadPage 
+        <ModalAppUploadPage
           isMultiStep={true}
           onSuccess={(id: number) => {
             navigate(`/garden/create?modalAppId=${id}`);
-          }} 
+          }}
         />
       </div>
     );
@@ -47,7 +48,7 @@ const CreateGardenPage = () => {
   return (
     <div className="mx-auto max-w-6xl px-8 py-16 font-display">
       {modalAppId && <OverallProgress currentPhase={2} isSubmitting={isSubmitting} />}
-      <CreateGardenForm 
+      <CreateGardenForm
         modalAppId={modalAppId}
         hasModalApp={!!modalAppId}
         onFormStateChange={onFormStateChange}

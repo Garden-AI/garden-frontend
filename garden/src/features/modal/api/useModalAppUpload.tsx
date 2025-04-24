@@ -4,7 +4,6 @@ import { useCreateModalApp, DeployTimeoutError, createOrUpdateModalApp } from ".
 import { ModalAppPatchRequest, ModalFileMetadataResponse } from "@/types";
 import { ApiError } from "../../gardens/utils/garden.utils";
 import { AxiosError } from "axios";
-import instance from "@/lib/axios";
 
 export interface ValidationError {
   message: string;
@@ -15,6 +14,7 @@ export interface ValidationError {
 export interface DeploymentError {
   message: string;
   suggestedFix?: string;
+  deploymentOutput?: string;
   isTimeout: boolean;
   isApiError: boolean;
 }
@@ -57,16 +57,19 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
     const isTimeout = error instanceof DeployTimeoutError;
     let errorMessage = "Failed to deploy Modal app";
     let suggestedFix: string | undefined = undefined;
+    let deploymentOutput: string | undefined = undefined;
     let isApiError = false;
 
     if (error instanceof ApiError) {
       errorMessage = error.message;
       suggestedFix = error.suggestedFix;
+      deploymentOutput = error.deploymentOutput;
       isApiError = true;
     } else if (error instanceof AxiosError) {
       const apiError = ApiError.fromAxiosError(error);
       errorMessage = apiError.message;
       suggestedFix = apiError.suggestedFix;
+      deploymentOutput = apiError.deploymentOutput;
       isApiError = true;
     } else if (error instanceof Error) {
       errorMessage = error.message;
@@ -77,6 +80,7 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
     setDeploymentError({
       message: errorMessage,
       suggestedFix,
+      deploymentOutput,
       isTimeout,
       isApiError
     });
