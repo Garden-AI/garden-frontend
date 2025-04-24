@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/shadcn/button";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +13,7 @@ export const GlobusGroupError = () => {
         <div className="space-y-12">
           <h1 className="text-4xl font-bold text-center">Become a Gardener</h1>
           <p className="text-gray-700">
-            If you are a researcher, student, or enthusiast who wants to create model gardens, please submit{" "} 
+            If you are a researcher, student, or enthusiast who wants to create model gardens, please submit{" "}
             <a href="https://forms.gle/uWByDVgzaiazxVJr9" className="font-bold text-primary">
               this interest form.
             </a>{" "}
@@ -27,8 +28,8 @@ export const GlobusGroupError = () => {
           </p>
 
           <div className="flex items-center justify-center space-x-4">
-            <a 
-              href="https://forms.gle/uWByDVgzaiazxVJr9" 
+            <a
+              href="https://forms.gle/uWByDVgzaiazxVJr9"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-md text-sm font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"

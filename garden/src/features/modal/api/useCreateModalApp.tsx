@@ -48,7 +48,11 @@ export const createOrUpdateModalApp = async (
 
       const pollResponse = await axios.get(`/modal-apps/${appId}`);
       if (pollResponse.data.deploy_status === "error") {
-        throw new ApiError(pollResponse.data.deploy_error, pollResponse.data.suggested_fix);
+        throw new ApiError(
+          pollResponse.data.deploy_error,
+          pollResponse.data.suggested_fix,
+          pollResponse.data.deployment_output
+        );
       }
       if (pollResponse.data.deploy_status === "done") {
         return pollResponse;
