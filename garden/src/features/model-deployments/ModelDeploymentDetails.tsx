@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ModalAppMetadataResponse, AsyncModalAppMetadataResponse } from "@/types";
 import {
     Card,
@@ -20,7 +20,9 @@ import {
     LeafIcon,
     InfoIcon,
     Trash,
-    RotateCw
+    RotateCw,
+    ChevronDown,
+    ChevronRight
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import CopyButton from "@/components/CopyButton";
@@ -32,7 +34,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import instance from "@/lib/axios";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
 import { ModalAppForm } from "@/features/modal/components/ModalAppForm";
 
@@ -47,6 +48,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
     const queryClient = useQueryClient();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+    const [showOutput, setShowOutput] = useState(false);
 
     // Get display name (prefer original_app_name if available)
     const displayName = entity.original_app_name || entity.app_name;
@@ -55,6 +57,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
     const isAsyncEntity = 'deploy_status' in entity;
     const deployStatus = isAsyncEntity ? (entity as AsyncModalAppMetadataResponse).deploy_status : 'done';
     const deployError = isAsyncEntity ? (entity as AsyncModalAppMetadataResponse).deploy_error : null;
+    const deploymentOutput = isAsyncEntity ? (entity as AsyncModalAppMetadataResponse).deployment_output : null;
 
     // Status display helpers
     const getStatusDisplay = () => {
@@ -179,6 +182,30 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                                                 {deployError}
                                             </pre>
                                         </div>
+
+                                        {/* Deployment Output (collapsible) */}
+                                        {deploymentOutput && (
+                                            <div className="mt-4 bg-white/60 p-3 rounded border border-red-200">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    className="flex w-full items-center justify-between p-0 text-sm font-medium text-red-700"
+                                                    onClick={() => setShowOutput(!showOutput)}
+                                                >
+                                                    <span className="flex items-center">
+                                                        {showOutput ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
+                                                        Deployment Output
+                                                    </span>
+                                                </Button>
+                                                {showOutput && (
+                                                    <div className="mt-2">
+                                                        <pre className="text-xs text-red-800 whitespace-pre-wrap font-mono overflow-auto max-h-60 p-2 bg-white/80 rounded">
+                                                            {deploymentOutput}
+                                                        </pre>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -322,7 +349,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                         <DialogTitle>Update Model Deployment</DialogTitle>
                         <DialogDescription>Upload an updated Modal App file to update this model deployment.</DialogDescription>
                     </DialogHeader>
-                    <ModalAppForm toUpdate={entity.id} onDeploymentSuccess={(_) => setShowUpdateDialog(false)}></ModalAppForm>
+                    <ModalAppForm toUpdate={entity.id} onDeploymentSuccess={() => setShowUpdateDialog(false)}></ModalAppForm>
                 </DialogContent>
             </Dialog>
 
