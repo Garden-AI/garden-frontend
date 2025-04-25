@@ -1,3 +1,4 @@
+import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
 import Breadcrumb from "@/components/Breadcrumb";
@@ -60,7 +61,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">
             <div className="flex justify-between items-start mb-4">
-              <EditableTitle 
+              <EditableTitle
                 entity={garden}
                 ownsThisEntity={ownsThisGarden}
                 onUpdate={async (updateData) => {
@@ -76,26 +77,26 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
               </div>
             </div>
 
-            <GardenDescription garden={garden} ownsThisGarden={ownsThisGarden}/>
+            <GardenDescription garden={garden} ownsThisGarden={ownsThisGarden} />
 
             {/* Tabbed Section */}
             <div className="mt-4">
-              <GardenTabbedSection 
+              <GardenTabbedSection
                 garden={garden}
                 ownsThisGarden={ownsThisGarden}
               />
             </div>
 
           </div>
-            {/* Metadata Details */}
-            <GardenMetadataSidebar 
-              garden={garden}
-              ownsThisGarden={ownsThisGarden}
-            />
+          {/* Metadata Details */}
+          <GardenMetadataSidebar
+            garden={garden}
+            ownsThisGarden={ownsThisGarden}
+          />
         </div>
       </div>
-      </div>
-      );
+    </div>
+  );
 };
 
 const GardenPage = () => {
