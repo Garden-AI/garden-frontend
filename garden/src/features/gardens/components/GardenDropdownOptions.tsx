@@ -35,6 +35,8 @@ import { usePatchEntrypoint } from "@/features/entrypoints/api/usePatchEntrypoin
 import { useDeleteGarden } from "../api/useDeleteGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
 
+import { SUPER_USERS } from "@/utils/utils";
+
 const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
   const auth = useGlobusAuth();
   const navigate = useNavigate();
@@ -44,7 +46,8 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
   const [isArchiveGardenModalOpen, setIsArchiveGardenModalOpen] = React.useState(false);
   const [isMakeTestModalOpen, setIsMakeTestModalOpen] = React.useState(false);
 
-  if (!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) {
+  const isSuperUser = SUPER_USERS.includes(auth.authorization?.user?.sub);
+  if ((!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) && !isSuperUser) {
     return null;
   }
 
@@ -116,8 +119,8 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
         isOpen={isArchiveGardenModalOpen}
         setIsOpen={setIsArchiveGardenModalOpen}
       />
-      
-      <MakeTestGardenModal 
+
+      <MakeTestGardenModal
         garden={garden}
         isOpen={isMakeTestModalOpen}
         setIsOpen={setIsMakeTestModalOpen}
