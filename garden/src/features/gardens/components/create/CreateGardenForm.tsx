@@ -9,12 +9,12 @@ import { Form } from "@/components/shadcn/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import { CreateGardenFormFields } from "./CreateGardenFormFields";
-import { useCreateGardenAndDOI } from "../../api/useCreateGardenAndDOI";
 import { GardenCreateRequest } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
 import { useModalAppMetadata } from "../../../modal/api/useModalAppMetadata";
 import { useEffect } from "react";
+import { useCreateGarden } from "../../api/useCreateGarden";
 
 /**
  * Component for creating a new garden
@@ -41,7 +41,7 @@ export const CreateGardenForm = ({
   const auth = useGlobusAuth();
   const uuid = auth?.authorization?.user?.sub;
 
-  const { createGardenAndDOI } = useCreateGardenAndDOI();
+  const { mutateAsync: createGarden } = useCreateGarden();
 
   const form = useForm<GardenCreateFormData>({
     resolver: zodResolver(gardenFormSchema),
@@ -107,7 +107,7 @@ export const CreateGardenForm = ({
         gardenCreateRequest.modal_function_ids = [...new Set(gardenCreateRequest.modal_function_ids)];
       }
 
-      const { garden } = await createGardenAndDOI(gardenCreateRequest);
+      const garden = await createGarden(gardenCreateRequest);
 
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(garden.doi)}?newlyCreated=true`);
