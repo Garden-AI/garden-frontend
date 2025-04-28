@@ -54,7 +54,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
         ownsThisGarden={ownsThisGarden}
       />
 
-      {ownsThisGarden && !isPublished && <VisibilityWarning garden={garden} />}
+      {ownsThisGarden && !isPublished && <VisibilityWarning />}
 
       {/* Hero Metadata Section */}
       <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
