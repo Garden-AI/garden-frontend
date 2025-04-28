@@ -35,6 +35,7 @@ interface GardenContentProps {
 
 const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContentProps) => {
   const { mutateAsync: patchGarden } = usePatchGarden();
+  const isPublished = !garden.is_archived && !garden.doi_is_draft;
   return (
     <div className="container max-w-7xl">
       <div className="mt-2 mb-4">
@@ -53,7 +54,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
         ownsThisGarden={ownsThisGarden}
       />
 
-      {garden.is_test && ownsThisGarden && <VisibilityWarning garden={garden} updateGarden={patchGarden} />}
+      {ownsThisGarden && !isPublished && <VisibilityWarning garden={garden} />}
 
       {/* Hero Metadata Section */}
       <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
