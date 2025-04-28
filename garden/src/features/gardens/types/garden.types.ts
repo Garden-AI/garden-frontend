@@ -9,14 +9,13 @@ export const gardenFormSchema = z.object({
   description: z
     .string()
     .max(1000, { message: "Description must not exceed 1000 characters" }),
-  
+
   authors: z.array(z.string()),
   contributors: z.array(z.string()),
   tags: z.array(z.string()),
   doi: z.string(), // Will be generated
   doi_is_draft: z.boolean(),
   is_archived: z.boolean(),
-  is_test: z.boolean(),
   year: z.string().optional(),
   language: z.string().optional(),
   version: z.string().regex(/^\d+\.\d+(\.\d+)?$/, {

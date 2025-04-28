@@ -33,9 +33,9 @@ interface CreateGardenFormProps {
   onFormStateChange?: (isSubmitting: boolean) => void;
 }
 
-export const CreateGardenForm = ({ 
-  modalAppId, 
-  onFormStateChange 
+export const CreateGardenForm = ({
+  modalAppId,
+  onFormStateChange
 }: CreateGardenFormProps) => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
@@ -54,7 +54,6 @@ export const CreateGardenForm = ({
       entrypoint_ids: [],
       doi: "", // Will be generated
       doi_is_draft: true,
-      is_test: true,
       year: "2025",
       language: "en",
       tags: [],
@@ -103,7 +102,7 @@ export const CreateGardenForm = ({
           ...(modalApp.modal_function_ids || []),
           ...(values.modal_function_ids || [])
         ];
-        
+
         // Remove duplicates if any
         gardenCreateRequest.modal_function_ids = [...new Set(gardenCreateRequest.modal_function_ids)];
       }
@@ -117,7 +116,7 @@ export const CreateGardenForm = ({
         const apiError = ApiError.fromAxiosError(error);
         const errorMessage = apiError.message;
         const suggestedFix = apiError.suggestedFix;
-        
+
         if (suggestedFix) {
           toast.error(<div>
             <p>{errorMessage}</p>
@@ -129,7 +128,7 @@ export const CreateGardenForm = ({
       } else if (error instanceof ApiError) {
         const errorMessage = error.message;
         const suggestedFix = error.suggestedFix;
-        
+
         if (suggestedFix) {
           toast.error(<div>
             <p>{errorMessage}</p>
@@ -143,7 +142,7 @@ export const CreateGardenForm = ({
       } else {
         toast.error("An unknown error occurred. Please check the form and try again.");
       }
-      
+
       console.error(error);
     }
   };
@@ -152,9 +151,9 @@ export const CreateGardenForm = ({
     <>
       <div className="rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-bold">Create Garden</h2>
-        
+
         <Form {...form}>
-          <form 
+          <form
             onSubmit={form.handleSubmit(onSubmit)}
             onKeyDown={(e) => {
               // Prevent form submission when Enter is pressed in any input field

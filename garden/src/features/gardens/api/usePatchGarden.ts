@@ -2,7 +2,6 @@ import { Garden, GardenPatchRequest } from "@/types";
 import axios from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 interface PatchGardenProps {
   doi: string;
@@ -15,12 +14,11 @@ const patchGarden = async ({ doi, garden }: PatchGardenProps): Promise<Garden> =
     const response = await axios.patch(`/gardens/${doi}`, garden);
     return response.data;
   } catch (error) {
-    throw new Error("Error patching garden");
+    throw new Error(`Error patching garden: ${error}`);
   }
 };
 
 export const usePatchGarden = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation<Garden, Error, PatchGardenProps, { previousGarden: Garden | undefined }>({
     mutationFn: patchGarden,
@@ -47,7 +45,6 @@ export const usePatchGarden = () => {
           description: garden.description ?? previousGarden.description,
           year: garden.year ?? previousGarden.year,
           version: garden.version ?? previousGarden.version,
-          is_test: garden.is_test ?? previousGarden.is_test,
           is_archived: garden.is_archived ?? previousGarden.is_archived,
           doi_is_draft: garden.doi_is_draft ?? previousGarden.doi_is_draft,
           tags: garden.tags ?? previousGarden.tags ?? [],
@@ -68,12 +65,12 @@ export const usePatchGarden = () => {
     onSuccess: (data, input) => {
       // Update the cache with the new data
       queryClient.setQueryData(["garden", data.doi], data);
-      
+
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ["garden", data.doi] });
       queryClient.invalidateQueries({ queryKey: ["gardens"] });
       queryClient.invalidateQueries({ queryKey: ["search"] });
-      
+
       // Use custom success message if provided, otherwise use default
       toast.success(input.successMessage || "Garden updated successfully!");
     },
