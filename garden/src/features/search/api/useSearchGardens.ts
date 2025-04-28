@@ -47,10 +47,6 @@ export const transformSearchParamsToSearchRequest = (searchParams: URLSearchPara
 
   const defaultFilters: GardenSearchFilter[] = [
     {
-      field_name: "is_test",
-      values: ["false"],
-    },
-    {
       field_name: "is_archived",
       values: ["false"],
     },

@@ -148,7 +148,7 @@ describe("UploadModalAppForm", () => {
     describe("when deployment fails", () => {
         it("should render the deployment error message", () => {
             const errorMessage = "DEPLOYMENT_ERROR FOR TESTING";
-            
+
             vi.spyOn(useModalAppFormModule, "useModalAppForm")
                 .mockReturnValue(createDeploymentErrorResponse(errorMessage));
 
@@ -160,7 +160,7 @@ describe("UploadModalAppForm", () => {
 
             // Check for error message content
             expect(screen.getByText(errorMessage)).toBeInTheDocument();
-            
+
             // Check for deployment error alert title
             expect(screen.getByText("Deployment Error")).toBeInTheDocument();
         });
@@ -176,7 +176,7 @@ describe("UploadModalAppForm", () => {
                     <UploadModalAppForm />
                 </MemoryRouter>
             );
-            
+
             // When deployment is in progress, we should see the loading component
             expect(screen.getByText("Deploying your Modal app...")).toBeInTheDocument();
             expect(screen.getByText("Deployment in Progress")).toBeInTheDocument();
@@ -189,10 +189,10 @@ describe("UploadModalAppForm", () => {
                 e.preventDefault();
                 return Promise.resolve();
             });
-            
+
             // We need to mock the form object's handleSubmit too
             const formHandleSubmitSpy = vi.fn(() => handleSubmitSpy);
-            
+
             vi.spyOn(useModalAppFormModule, "useModalAppForm")
                 .mockReturnValue({
                     ...createValidationResponse(false, ""),
@@ -210,7 +210,7 @@ describe("UploadModalAppForm", () => {
                     <UploadModalAppForm />
                 </MemoryRouter>
             );
-            
+
             // Get the deploy button and verify it's enabled
             const deployButton = screen.getByRole('button', { name: /Deploy Modal App/i });
             expect(deployButton).toBeEnabled();

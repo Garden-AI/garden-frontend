@@ -16,7 +16,6 @@ const fakeGarden = {
     is_archived: false,
     entrypoints: [],
     modal_functions: [],
-    is_test: false
 };
 
 vi.mock("react-router-dom", async () => {
@@ -46,17 +45,17 @@ function setupTest({
     if (isNewlyCreated) {
         testParams.set("newlyCreated", "true");
     }
-    
+
     // Mock useSearchParams directly for this test
     vi.spyOn(require("react-router-dom"), "useSearchParams").mockReturnValue([
         testParams,
         vi.fn()
     ]);
-    
-    const authUser = { 
-        sub: isOwner ? "user-123" : "different-user-456" 
+
+    const authUser = {
+        sub: isOwner ? "user-123" : "different-user-456"
     };
-    
+
     // Mock the auth hook
     vi.spyOn(authHook, "useGlobusAuth").mockReturnValue(createMockAuthState({
         isAuthenticated: true,
@@ -65,7 +64,7 @@ function setupTest({
             authenticated: true
         } as any
     }));
-    
+
     // Mock the garden API
     vi.spyOn(getGardenHook, "useGetGarden").mockReturnValue({
         data: fakeGarden,
@@ -86,7 +85,7 @@ describe("GardenPage", () => {
                         authenticated: true
                     } as any
                 }));
-                
+
                 // Mock the garden API
                 vi.spyOn(getGardenHook, "useGetGarden").mockReturnValue({
                     data: fakeGarden,
@@ -117,40 +116,40 @@ describe("GardenPage", () => {
                     authenticated: true
                 } as any
             }));
-            
+
             // Mock the garden API
             vi.spyOn(getGardenHook, "useGetGarden").mockReturnValue({
                 data: fakeGarden,
                 isLoading: false,
                 isError: false
             } as any);
-            
+
             // Render the GardenPage component
             renderWithProviders(
                 <MemoryRouter>
                     <GardenPage />
                 </MemoryRouter>
             );
-            
+
             // Verify that edit buttons are visible and interactive for the owner
-            
+
             // Check that the edit title button is present and interactive
             const editTitleButton = screen.getByLabelText("Edit title");
             expect(editTitleButton).toBeInTheDocument();
             expect(editTitleButton).not.toHaveAttribute("aria-hidden", "true");
             expect(editTitleButton).not.toBeDisabled();
-            
+
             // Check for editable metadata fields that should be interactive for owners
             const editAuthorButton = screen.getByLabelText("Edit model authors");
             expect(editAuthorButton).toBeInTheDocument();
             expect(editAuthorButton).not.toHaveAttribute("aria-hidden", "true");
             expect(editAuthorButton).not.toBeDisabled();
-            
+
             const editYearButton = screen.getByLabelText("Edit year");
             expect(editYearButton).toBeInTheDocument();
             expect(editYearButton).not.toHaveAttribute("aria-hidden", "true");
             expect(editYearButton).not.toBeDisabled();
-            
+
             // Check that description can be edited (owner-only function)
             const editDescriptionButton = screen.getByLabelText("Edit description");
             expect(editDescriptionButton).toBeInTheDocument();
@@ -169,61 +168,61 @@ describe("GardenPage", () => {
                     authenticated: true
                 } as any
             }));
-            
+
             // Mock the garden API
             vi.spyOn(getGardenHook, "useGetGarden").mockReturnValue({
                 data: fakeGarden,
                 isLoading: false,
                 isError: false
             } as any);
-            
+
             // Render the GardenPage component
             const { container } = renderWithProviders(
                 <MemoryRouter>
                     <GardenPage />
                 </MemoryRouter>
             );
-            
+
             // Check that edit controls are properly secured for non-owners
-            
+
             // The page might implement security in different ways:
             // 1. Not rendering edit buttons at all for non-owners
             // 2. Rendering disabled buttons
             // 3. Removing click handlers from buttons
-            
+
             // Check if title edit functionality exists
             const editTitleButton = screen.queryByLabelText("Edit title");
-            
+
             // If the button doesn't exist at all, that's one secure approach
             if (!editTitleButton) {
                 expect(editTitleButton).toBeNull();
             } else {
                 // If it exists, it must be properly disabled
                 expect(
-                    editTitleButton.hasAttribute("disabled") || 
+                    editTitleButton.hasAttribute("disabled") ||
                     !editTitleButton.onclick // No click handler
                 ).toBeTruthy();
             }
-            
+
             // More comprehensive check: make sure no enabled edit buttons exist in the entire document
             const allButtons = container.querySelectorAll('button');
             const enabledEditButtons = Array.from(allButtons).filter(button => {
-                const isEditButton = button.textContent?.toLowerCase().includes('edit') || 
-                                    button.getAttribute('aria-label')?.toLowerCase().includes('edit');
+                const isEditButton = button.textContent?.toLowerCase().includes('edit') ||
+                    button.getAttribute('aria-label')?.toLowerCase().includes('edit');
                 const isEnabled = !button.hasAttribute('disabled');
                 return isEditButton && isEnabled;
             });
-            
+
             // There should be no enabled edit buttons for non-owners
             expect(enabledEditButtons.length).toBe(0);
-            
+
             // Check specific metadata fields - they should either not be editable or not have edit buttons
             const metadataEditControls = [
                 screen.queryByLabelText("Edit Authors"),
                 screen.queryByLabelText("Edit Year"),
                 screen.queryByLabelText("Edit description")
             ];
-            
+
             metadataEditControls.forEach(control => {
                 if (control) {
                     // If control exists, ensure it's properly disabled

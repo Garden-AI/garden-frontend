@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Archive, Edit, EllipsisVertical, Globe, Trash, TriangleAlert, FlaskConical } from "lucide-react";
+import { Archive, EllipsisVertical, Globe, Trash, TriangleAlert } from "lucide-react";
 
 import { useUpdateDOI } from "@/api/doi/useUpdateDOI";
 import { Alert, AlertDescription, AlertTitle } from "@/components/shadcn/alert";
@@ -39,12 +39,10 @@ import { SUPER_USERS } from "@/utils/utils";
 
 const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
   const auth = useGlobusAuth();
-  const navigate = useNavigate();
 
   const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
   const [isDeleteGardenModalOpen, setIsDeleteGardenModalOpen] = React.useState(false);
   const [isArchiveGardenModalOpen, setIsArchiveGardenModalOpen] = React.useState(false);
-  const [isMakeTestModalOpen, setIsMakeTestModalOpen] = React.useState(false);
 
   const isSuperUser = SUPER_USERS.includes(auth.authorization?.user?.sub);
   if ((!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) && !isSuperUser) {
@@ -69,13 +67,6 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
                 <Globe className="mr-2 h-5 w-5" />
                 <span className="">Register Garden DOI</span>
               </DropdownMenuItem>
-
-              {!garden.is_test && (
-                <DropdownMenuItem onSelect={() => setIsMakeTestModalOpen(true)}>
-                  <FlaskConical className="mr-2 h-5 w-5" />
-                  <span className="">Make Test Garden</span>
-                </DropdownMenuItem>
-              )}
 
               <DropdownMenuItem
                 onSelect={() => setIsDeleteGardenModalOpen(true)}
@@ -119,12 +110,6 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
         isOpen={isArchiveGardenModalOpen}
         setIsOpen={setIsArchiveGardenModalOpen}
       />
-
-      <MakeTestGardenModal
-        garden={garden}
-        isOpen={isMakeTestModalOpen}
-        setIsOpen={setIsMakeTestModalOpen}
-      />
     </>
   );
 };
@@ -137,7 +122,7 @@ const LoadingOverlay = () => {
   );
 };
 
-const PublishGardenModal = ({
+export const PublishGardenModal = ({
   garden,
   isOpen,
   setIsOpen,
@@ -170,7 +155,7 @@ const PublishGardenModal = ({
           toast.success("Garden DOI registered successfully!");
           updateGarden({
             doi,
-            garden: { doi_is_draft: false, is_archived: false, is_test: false },
+            garden: { doi_is_draft: false, is_archived: false },
           });
 
           for (const entrypoint of garden.entrypoints || []) {
@@ -257,78 +242,6 @@ const PublishGardenModal = ({
         </AlertDialogFooter>
       </AlertDialogContent>
 
-      {isPending && <LoadingOverlay />}
-    </AlertDialog>
-  );
-};
-
-const MakeTestGardenModal = ({
-  garden,
-  isOpen,
-  setIsOpen,
-}: {
-  garden: Garden;
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-}) => {
-  const queryClient = useQueryClient();
-  const { mutate: updateGarden, isPending } = usePatchGarden();
-  const doi = garden.doi;
-
-  const handleMakeTestGarden = () => {
-    updateGarden(
-      {
-        doi,
-        garden: {
-          is_test: true
-        },
-      },
-      {
-        onSuccess: () => {
-          setIsOpen(false);
-          queryClient.invalidateQueries({ queryKey: ["garden", doi] });
-          toast.success("Garden converted to test mode successfully!");
-        },
-        onError: () => {
-          toast.error("Error converting garden to test mode");
-        },
-      }
-    );
-  };
-
-  return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Convert to Test Garden</AlertDialogTitle>
-          <AlertDialogDescription className="pb-3">
-            Are you sure you want to convert this to a test garden?
-          </AlertDialogDescription>
-          <Alert className="rounded-lg border-yellow-200 bg-yellow-50 p-4 text-yellow-800 shadow-md">
-            <div className="mb-2 flex items-center space-x-2">
-              <FlaskConical className="mb-1 h-5 w-5 text-yellow-600" />
-              <AlertTitle className="text-lg font-semibold">What This Means</AlertTitle>
-            </div>
-            <AlertDescription className="space-y-4">
-              <ul className="list-disc space-y-1 pl-5">
-                <li>The garden will no longer appear in search results</li>
-                <li>Users can still access it directly via the URL</li>
-                <li>You can make it public again at any time</li>
-              </ul>
-            </AlertDescription>
-          </Alert>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleMakeTestGarden}
-            disabled={isPending}
-            className="bg-primary hover:bg-primary/60"
-          >
-            Make Test Garden
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
       {isPending && <LoadingOverlay />}
     </AlertDialog>
   );

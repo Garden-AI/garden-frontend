@@ -1421,11 +1421,6 @@ export interface components {
             doi: string;
             /** Doi Is Draft */
             doi_is_draft?: boolean | null;
-            /**
-             * Is Test
-             * @default false
-             */
-            is_test: boolean;
             /** Description */
             description: string | null;
             /**
@@ -1475,11 +1470,6 @@ export interface components {
             doi: string;
             /** Doi Is Draft */
             doi_is_draft?: boolean | null;
-            /**
-             * Is Test
-             * @default false
-             */
-            is_test: boolean;
             /** Description */
             description: string | null;
             /**
@@ -1556,8 +1546,6 @@ export interface components {
             } | null;
             /** Is Archived */
             is_archived?: boolean | null;
-            /** Is Test */
-            is_test?: boolean | null;
             /** Entrypoint Ids */
             entrypoint_ids?: string[] | null;
             /** Modal Function Ids */

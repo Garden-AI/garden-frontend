@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -57,7 +58,6 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
-      is_test: false,
     },
     {
       title: "Materials Property Prediction with MAST-ML",
@@ -73,7 +73,6 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
-      is_test: false,
     },
     {
       title: "Conservative to Primitive Conversion in Relativistic Hydrodynamics",
@@ -89,7 +88,6 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
-      is_test: false,
     },
     {
       title: "Generative Materials Models",
@@ -105,7 +103,6 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
-      is_test: false,
     },
   ];
 
@@ -142,7 +139,7 @@ const HomePage = () => {
               target="_blank"
               className="mr-5 hover:text-gray-200 dark:hover:text-gray-200"
             >
-              <UChicagoLogo/>
+              <UChicagoLogo />
             </a>
 
             <a
@@ -150,7 +147,7 @@ const HomePage = () => {
               target="_blank"
               className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
-              <NSFLogo/>
+              <NSFLogo />
             </a>
 
             <a
@@ -158,7 +155,7 @@ const HomePage = () => {
               target="_blank"
               className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
-              <WisconsinLogo/>
+              <WisconsinLogo />
             </a>
 
             <a
@@ -166,14 +163,14 @@ const HomePage = () => {
               target="_blank"
               className="mr-5 pb-4 hover:text-gray-200 dark:hover:text-gray-400"
             >
-              <ArgonneLogo/>
+              <ArgonneLogo />
             </a>
             <a
               href="https://www.energy.gov/"
               target="_blank"
               className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
             >
-              <DOELogo/>
+              <DOELogo />
             </a>
 
             <a
@@ -181,7 +178,7 @@ const HomePage = () => {
               target="_blank"
               className="mr-5 w-24 pb-4 pt-3 hover:text-gray-200 dark:hover:text-gray-400"
             >
-              <MITLogo/>
+              <MITLogo />
             </a>
           </div>
         </div>
@@ -195,7 +192,7 @@ const HomePage = () => {
           <h2 className="mt-2 text-lg">
             There are many great platforms for hosting chatbots.
             But you work in science, and you want the best model for predicting
-            <Link to="/garden/10.26311/ep98-br79" className="text-green hover:text-darkgreen hover:underline"> material tensile strength</Link> or the 
+            <Link to="/garden/10.26311/ep98-br79" className="text-green hover:text-darkgreen hover:underline"> material tensile strength</Link> or the
             <Link to="/garden/10.26311/hhwc-0v60" className="text-green hover:text-darkgreen hover:underline"> behavior of neutron stars</Link>.
             Garden is the best place to find, share, and run specialized AI models for science. (Scientific chatbots are welcome too.)
           </h2>
@@ -231,7 +228,7 @@ const HomePage = () => {
           <div className="mt-12 px-4 md:mt-4 md:w-5/12">
             <h1 className="text-3xl font-semibold">Reproducible Science Needs On-Demand Models</h1>
             <h2 className="mt-4 text-lg">
-              It can take days to get another lab's model running. 
+              It can take days to get another lab's model running.
               Models hosted on Garden are runnable in seconds, so you can build on others' work.
               (And you can get real users and citations for models you've developed.)
             </h2>
@@ -268,12 +265,12 @@ const HomePage = () => {
                   <>
                     <div className="rounded-md border bg-white p-6">
                       <p className="text-base text-gray-800 ">
-                        Models are paired with the GPU they need to run effectively. Garden provides researchers free monthly GPU quotas to try out models. 
+                        Models are paired with the GPU they need to run effectively. Garden provides researchers free monthly GPU quotas to try out models.
                       </p>
                       <p className="text-base text-gray-800 pt-2">
                         For large production runs, you can "bring your own compute" by applying HPC allocations or cloud credits.{" "}
                       </p>
-                      
+
                     </div>
                   </>
                 </AccordionContent>
@@ -315,11 +312,11 @@ const HomePage = () => {
                   <>
                     <div className="rounded-md border bg-white p-6">
                       <p className="text-base text-gray-800 ">
-                        If you already publish your model weights on Hugging Face, that's great! 
+                        If you already publish your model weights on Hugging Face, that's great!
                         Garden's job is on-demand inference, not file storage.
                       </p>
                       <p className="text-base text-gray-800 pt-2">
-                        We recommend users publish their model weights and code on open repositories 
+                        We recommend users publish their model weights and code on open repositories
                         like Hugging Face and use Garden to make them runnable on-demand.{" "}
                       </p>
                     </div>
@@ -331,7 +328,7 @@ const HomePage = () => {
         </div>
 
       </div>
-      
+
 
       <div className="mx-auto mt-12 max-w-5xl px-4 mb-12">
         <h2 className="text-3xl font-semibold">Get Started in Seconds</h2>
@@ -353,45 +350,45 @@ result = g.predict_piezoelectric_displacement(materials)`}
             <div className="w-full md:w-1/2">
               <h3 className="mb-4 text-2xl font-semibold">Easy To Run, Easy To Publish</h3>
               <p className="mb-6 text-lg">
-                  Garden uses{" "}
-                  <a
-                    href="https://modal.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green hover:text-darkgreen hover:underline"
-                  >
-                    Modal
-                  </a>{" "}
-                  to run models in the cloud and{" "}
-                  <a
-                    href="https://www.globus.org/compute"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green hover:text-darkgreen hover:underline"
-                  >
-                    Globus Compute
-                  </a>{" "}
-                  to run models on Research computing clusters.
-                  
-                  {" "}
-                  <a
-                    href="https://garden-ai.readthedocs.io/en/latest/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green hover:text-darkgreen hover:underline"
-                  >
-                    Read our documentation
-                  </a>{" "}
-                  to learn how to publish your models with Garden.
+                Garden uses{" "}
+                <a
+                  href="https://modal.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green hover:text-darkgreen hover:underline"
+                >
+                  Modal
+                </a>{" "}
+                to run models in the cloud and{" "}
+                <a
+                  href="https://www.globus.org/compute"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green hover:text-darkgreen hover:underline"
+                >
+                  Globus Compute
+                </a>{" "}
+                to run models on Research computing clusters.
+
+                {" "}
+                <a
+                  href="https://garden-ai.readthedocs.io/en/latest/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green hover:text-darkgreen hover:underline"
+                >
+                  Read our documentation
+                </a>{" "}
+                to learn how to publish your models with Garden.
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      
 
-      
+
+
     </div>
   );
 };
