@@ -106,9 +106,11 @@ export const CreateGardenForm = ({
         // Remove duplicates if any
         gardenCreateRequest.modal_function_ids = [...new Set(gardenCreateRequest.modal_function_ids)];
       }
-
       const garden = await createGarden(gardenCreateRequest);
-
+      // TODO: remove this once the backend route hanldes DOI creation
+      if (!garden.doi) {
+        throw new ApiError("Did not receive DOI from backend!!")
+      }
       toast.success("Garden created successfully!");
       navigate(`/garden/${encodeURIComponent(garden.doi)}?newlyCreated=true`);
     } catch (error: unknown) {

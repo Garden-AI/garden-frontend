@@ -134,21 +134,24 @@ export const PublishGardenModal = ({
   const doi = garden.doi;
 
   const handleRegisterGardenDOI = async () => {
-    await updateGarden({
-      doi: doi,
-      garden: {
-        doi_is_draft: false,
-      },
-      successMessage: "Garden DOI registered successfully!"
-    });
-    setIsOpen(false);
-    setInput("");
-    queryClient.invalidateQueries({ queryKey: ["search"] });
-    queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
-      return { ...oldData, doi_is_draft: false, is_archived: false };
-    });
-    setIsOpen(false);
-    toast.error("Error publishing garden. Please try again later.");
+    try {
+      await updateGarden({
+        doi: doi,
+        garden: {
+          doi_is_draft: false,
+        },
+        successMessage: "Garden DOI registered successfully!"
+      });
+      setIsOpen(false);
+      setInput("");
+      queryClient.invalidateQueries({ queryKey: ["search"] });
+      queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+        return { ...oldData, doi_is_draft: false, is_archived: false };
+      });
+    } catch (error) {
+      setIsOpen(false);
+      toast.error(`Error publishing garden: ${error}`);
+    }
   };
 
   return (
@@ -298,22 +301,27 @@ const ArchiveGardenModal = ({
   const doi = garden.doi;
 
   const handleArchiveGarden = () => {
-    updateGarden(
-      {
-        doi: doi,
-        garden: {
-          doi_is_draft: false,
-          is_archived: true,
+    try {
+      updateGarden(
+        {
+          doi: doi,
+          garden: {
+            doi_is_draft: false,
+            is_archived: true,
+          },
+          successMessage: "Garden archived successfully!",
         },
-        successMessage: "Garden archived successfully!",
-      },
-    );
-
-    setInput("");
-    queryClient.invalidateQueries({ queryKey: ["search"] });
-    queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
-      return { ...oldData, is_archived: true };
-    });
+      );
+      setIsOpen(false);
+      setInput("");
+      queryClient.invalidateQueries({ queryKey: ["search"] });
+      queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+        return { ...oldData, is_archived: true };
+      });
+    } catch (error) {
+      setIsOpen(false);
+      toast.error(`Failed to update Garden: ${error}`);
+    }
   };
 
   return (
