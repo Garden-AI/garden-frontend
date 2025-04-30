@@ -1,19 +1,19 @@
-import { GardenCreateResponse } from "@/types";
+import { Garden } from "@/types";
 import axios from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GardenCreateRequest } from "@/types";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 import { ApiError } from "../utils/garden.utils";
 
 const createGarden = async (
   garden: GardenCreateRequest,
-): Promise<AxiosResponse<GardenCreateResponse, any>> => {
+): Promise<Garden> => {
   try {
     const response = await axios.post(`/gardens`, garden);
-    return response;
+    return response.data;
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
-     throw ApiError.fromAxiosError(error);
+      throw ApiError.fromAxiosError(error);
     }
     throw error;
   }
@@ -21,10 +21,10 @@ const createGarden = async (
 
 export const useCreateGarden = () => {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<Garden, ApiError, GardenCreateRequest>({
     mutationFn: createGarden,
-    onSuccess: (data, variables, context) => {
-      queryClient.setQueryData(["garden", data.data.doi], data.data);
+    onSuccess: (garden) => {
+      queryClient.setQueryData(["garden", garden.doi], garden);
     },
   });
 };

@@ -4,7 +4,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Archive, EllipsisVertical, Globe, Trash, TriangleAlert } from "lucide-react";
 
-import { useUpdateDOI } from "@/api/doi/useUpdateDOI";
 import { Alert, AlertDescription, AlertTitle } from "@/components/shadcn/alert";
 import {
   AlertDialog,
@@ -17,7 +16,6 @@ import {
   AlertDialogTitle,
 } from "@/components/shadcn/alert-dialog";
 import { Button } from "@/components/shadcn/button";
-import { Checkbox } from "@/components/shadcn/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,11 +25,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/shadcn/dropdown-menu";
 import { Input } from "@/components/shadcn/input";
-import { Label } from "@/components/shadcn/label";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Garden } from "@/types";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import { usePatchEntrypoint } from "@/features/entrypoints/api/usePatchEntrypoint";
 import { useDeleteGarden } from "../api/useDeleteGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
 
@@ -132,59 +128,30 @@ export const PublishGardenModal = ({
   setIsOpen: (open: boolean) => void;
 }) => {
   const [input, setInput] = React.useState("");
-  const [updateEntrypoints, setUpdateEntrypoints] = React.useState(false);
-
   const queryClient = useQueryClient();
-  const { mutate: updateDOI, isPending } = useUpdateDOI();
-  const { mutate: updateGarden } = usePatchGarden();
-  const { mutate: updateEntrypoint } = usePatchEntrypoint();
+  const { mutate: updateGarden, isPending } = usePatchGarden();
 
   const doi = garden.doi;
 
-  const handleRegisterGardenDOI = () => {
-    updateDOI(
-      {
-        resource: garden,
-        event: "publish",
-        updateEntrypoints,
-      },
-      {
-        onSuccess: () => {
-          setIsOpen(false);
-          setInput("");
-          toast.success("Garden DOI registered successfully!");
-          updateGarden({
-            doi,
-            garden: { doi_is_draft: false, is_archived: false },
-          });
-
-          for (const entrypoint of garden.entrypoints || []) {
-            updateEntrypoint(
-              {
-                doi: entrypoint.doi,
-                entrypoint: { doi_is_draft: false, is_archived: false },
-              },
-              {
-                onSuccess: () => {
-                  queryClient.invalidateQueries({
-                    queryKey: ["entrypoint", doi],
-                  });
-                },
-              },
-            );
-          }
-
-          queryClient.invalidateQueries({ queryKey: ["search"] });
-          queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
-            return { ...oldData, doi_is_draft: false, is_archived: false };
-          });
+  const handleRegisterGardenDOI = async () => {
+    try {
+      await updateGarden({
+        doi: doi,
+        garden: {
+          doi_is_draft: false,
         },
-        onError: () => {
-          setIsOpen(false);
-          toast.error("Error publishing garden. Please try again later.");
-        },
-      },
-    );
+        successMessage: "Garden DOI registered successfully!"
+      });
+      setIsOpen(false);
+      setInput("");
+      queryClient.invalidateQueries({ queryKey: ["search"] });
+      queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+        return { ...oldData, doi_is_draft: false, is_archived: false };
+      });
+    } catch (error) {
+      setIsOpen(false);
+      toast.error(`Error publishing garden: ${error}`);
+    }
   };
 
   return (
@@ -220,14 +187,6 @@ export const PublishGardenModal = ({
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
-          </div>
-          <div className="flex items-center space-x-2 py-4">
-            <Checkbox
-              className=""
-              checked={updateEntrypoints}
-              onCheckedChange={(checked: boolean) => setUpdateEntrypoints(checked)}
-            />
-            <Label className="">Also register DOIs for all functions in this Garden</Label>
           </div>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -337,37 +296,34 @@ const ArchiveGardenModal = ({
   setIsOpen: (open: boolean) => void;
 }) => {
   const queryClient = useQueryClient();
-  const { mutate: updateDOI, isPending } = useUpdateDOI();
-  const { mutate: updateGarden } = usePatchGarden();
+  const { mutate: updateGarden, isPending } = usePatchGarden();
   const [input, setInput] = React.useState("");
   const doi = garden.doi;
 
   const handleArchiveGarden = () => {
-    updateDOI(
-      {
-        resource: garden,
-        event: "hide",
-      },
-      {
-        onSuccess: () => {
-          updateGarden({
-            doi,
-            garden: {
-              doi_is_draft: false,
-              is_archived: true,
-            },
-          });
-
-          setInput("");
-          queryClient.invalidateQueries({ queryKey: ["search"] });
-          toast.success("Garden archived successfully!");
-          queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
-            return { ...oldData, is_archived: true };
-          });
+    try {
+      updateGarden(
+        {
+          doi: doi,
+          garden: {
+            doi_is_draft: false,
+            is_archived: true,
+          },
+          successMessage: "Garden archived successfully!",
         },
-      },
-    );
+      );
+      setIsOpen(false);
+      setInput("");
+      queryClient.invalidateQueries({ queryKey: ["search"] });
+      queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+        return { ...oldData, is_archived: true };
+      });
+    } catch (error) {
+      setIsOpen(false);
+      toast.error(`Failed to update Garden: ${error}`);
+    }
   };
+
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
