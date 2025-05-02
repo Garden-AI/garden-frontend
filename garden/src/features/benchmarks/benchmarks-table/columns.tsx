@@ -1,6 +1,7 @@
 // React import is needed for JSX in header functions
 import React, { ReactNode } from "react";
 import { ColumnDef } from "@tanstack/react-table";
+import { Link } from "react-router-dom";
 import {
     TooltipProvider,
     Tooltip,
@@ -10,7 +11,9 @@ import {
 
 export type BenchmarkResult = {
     function_name: string
-    garden: ReactNode
+    function_id: string
+    garden: string
+    garden_doi: string
     rmsd?: number
     Ksrme?: number
     rsqrd?: number
@@ -42,10 +45,25 @@ export const columns: ColumnDef<BenchmarkResult>[] = [
     {
         header: () => <HeaderWithTooltip label="Function" tooltip="The name of the function or model being benchmarked" />,
         accessorKey: "function_name",
+        cell: ({ row }) => {
+            const functionId = row.original.function_id;
+            const gardenDoi = row.original.garden_doi;
+            const functionName = row.original.function_name;
+
+            return gardenDoi
+                ? <Link to={`/garden/${encodeURIComponent(gardenDoi)}/modal-functions/${functionId}`} className="text-green hover:underline">{functionName}</Link>
+                : <Link to={`/modal-functions/${functionId}`} className="text-green hover:underline">{functionName}</Link>;
+        }
     },
     {
         header: () => <HeaderWithTooltip label="Garden" tooltip="The garden containing the function" />,
         accessorKey: "garden",
+        cell: ({ row }) => {
+            const gardenDoi = row.original.garden_doi;
+            const gardenName = row.original.garden;
+
+            return <Link to={`/garden/${encodeURIComponent(gardenDoi)}`} className="text-blue-600 hover:underline">{gardenName}</Link>;
+        }
     },
     {
         header: () => <HeaderWithTooltip label="RMSD" tooltip="Root Mean Squared Displacement - Measures the average displacement between predicted and reference structures after relaxation (lower is better)" />,
