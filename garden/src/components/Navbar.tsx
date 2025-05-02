@@ -77,7 +77,7 @@ const Navbar = () => {
                   <Plus size={24} className="hover:text-green" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Deploy & Create a Garden</p>
+                  <p>Make a Garden</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

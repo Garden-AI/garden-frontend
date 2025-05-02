@@ -7,6 +7,7 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import TombstonePage from "@/components/TombstonePage";
 import SaveGardenButton from "./SaveGardenButton";
+import { PublishGardenModal } from "@/features/gardens/components/GardenDropdownOptions";
 
 import { useGetGarden } from "../api/useGetGarden";
 import { usePatchGarden } from "../api/usePatchGarden";
@@ -36,6 +37,8 @@ interface GardenContentProps {
 const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContentProps) => {
   const { mutateAsync: patchGarden } = usePatchGarden();
   const isPublished = !garden.is_archived && !garden.doi_is_draft;
+  const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
+
   return (
     <div className="container max-w-7xl">
       <div className="mt-2 mb-4">
@@ -54,7 +57,13 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
         ownsThisGarden={ownsThisGarden}
       />
 
-      {ownsThisGarden && !isPublished && <VisibilityWarning />}
+      {ownsThisGarden && !isPublished && (
+        <VisibilityWarning
+          garden={garden}
+          isPublishGardenModalOpen={isPublishGardenModalOpen}
+          setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+        />
+      )}
 
       {/* Hero Metadata Section */}
       <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
@@ -74,7 +83,10 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
               />
               <div className="flex">
                 <SaveGardenButton garden={garden} />
-                <GardenDropdownOptions garden={garden} />
+                <GardenDropdownOptions
+                  garden={garden}
+                  setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+                />
               </div>
             </div>
 
@@ -96,6 +108,12 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
           />
         </div>
       </div>
+
+      <PublishGardenModal
+        isOpen={isPublishGardenModalOpen}
+        setIsOpen={setIsPublishGardenModalOpen}
+        garden={garden}
+      />
     </div>
   );
 };
