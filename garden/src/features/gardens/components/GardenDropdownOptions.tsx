@@ -71,11 +71,6 @@ const GardenDropdownMenu = ({ garden, setIsPublishGardenModalOpen }: { garden: G
                 <span className="">Delete Garden</span>
               </DropdownMenuItem>
             </>
-          ) : garden.is_archived ? (
-            <DropdownMenuItem onSelect={() => setIsPublishGardenModalOpen(true)}>
-              <Globe className="mr-2 h-5 w-5" />
-              <span className="">Make Garden Visible</span>
-            </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               onSelect={() => setIsArchiveGardenModalOpen(true)}

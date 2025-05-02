@@ -1,5 +1,4 @@
 import { Garden } from "@/types";
-import GardenDropdownOptions from "@/features/gardens/components/GardenDropdownOptions";
 import { CircleAlert } from "lucide-react";
 
 const TombstonePage = ({ garden }: { garden: Garden }) => {
@@ -9,7 +8,6 @@ const TombstonePage = ({ garden }: { garden: Garden }) => {
         <div className="bg-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-800">Garden Archived</h1>
-            <GardenDropdownOptions garden={garden} />
           </div>
         </div>
 
