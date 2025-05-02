@@ -42,23 +42,6 @@ export const FunctionMetadataSidebar = ({
 
     return (
         <Metadata name={"Function"} entity={modalFunction} ownsThisEntity={ownsThisFunction}>
-          <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500 font-medium">DOI</p>
-              <CopyButton 
-                content={modalFunction.doi || ""} 
-                hint="Copy DOI" 
-                className="ml-2" 
-                icon={<LinkIcon className="h-4 w-4" />}
-              />
-            </div>
-            <div className="mt-0.5">
-              <p className="font-medium font-mono text-gray-800 overflow-hidden overflow-ellipsis">
-                {modalFunction.doi || "No DOI"}
-              </p>
-            </div>
-          </div>
-
           <EditableMetadataField
             label="Model Authors"
             helpText="Original authors of the models used by this function"

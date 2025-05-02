@@ -69,16 +69,6 @@ export const GardenMetadataSidebar = ({garden, ownsThisGarden}: {garden: Garden,
             />
 
             <EditableMetadataField
-                label="Version"
-                helpText="Garden version"
-                value={garden.version}
-                fieldName="version"
-                entity={garden}
-                ownsThisEntity={ownsThisGarden}
-                onUpdate={updateGarden}
-            />
-
-            <EditableMetadataField
                 label="Tags"
                 helpText="Tags help users discover this Garden"
                 value={garden.tags}

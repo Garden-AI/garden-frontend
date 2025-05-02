@@ -33,10 +33,9 @@ import { usePatchGarden } from "../api/usePatchGarden";
 
 import { SUPER_USERS } from "@/utils/utils";
 
-const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
+const GardenDropdownMenu = ({ garden, setIsPublishGardenModalOpen }: { garden: Garden, setIsPublishGardenModalOpen: (open: boolean) => void }) => {
   const auth = useGlobusAuth();
 
-  const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
   const [isDeleteGardenModalOpen, setIsDeleteGardenModalOpen] = React.useState(false);
   const [isArchiveGardenModalOpen, setIsArchiveGardenModalOpen] = React.useState(false);
 
@@ -61,7 +60,7 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
             <>
               <DropdownMenuItem onSelect={() => setIsPublishGardenModalOpen(true)}>
                 <Globe className="mr-2 h-5 w-5" />
-                <span className="">Register Garden DOI</span>
+                <span className="">Publish Garden</span>
               </DropdownMenuItem>
 
               <DropdownMenuItem
@@ -72,11 +71,6 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
                 <span className="">Delete Garden</span>
               </DropdownMenuItem>
             </>
-          ) : garden.is_archived ? (
-            <DropdownMenuItem onSelect={() => setIsPublishGardenModalOpen(true)}>
-              <Globe className="mr-2 h-5 w-5" />
-              <span className="">Make Garden Visible</span>
-            </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               onSelect={() => setIsArchiveGardenModalOpen(true)}
@@ -88,12 +82,6 @@ const GardenDropdownMenu = ({ garden }: { garden: Garden }) => {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <PublishGardenModal
-        isOpen={isPublishGardenModalOpen}
-        setIsOpen={setIsPublishGardenModalOpen}
-        garden={garden}
-      />
 
       <DeleteGardenModal
         garden={garden}
@@ -158,9 +146,9 @@ export const PublishGardenModal = ({
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Register Garden DOI</AlertDialogTitle>
+          <AlertDialogTitle>Publish Garden</AlertDialogTitle>
           <AlertDialogDescription className="pb-4">
-            Register your garden's DOI to make it citable.
+            Publish your garden to make it findable and citable.
           </AlertDialogDescription>
           <Alert className="my-4 rounded-lg border-yellow-200 bg-yellow-50 p-4 text-yellow-800 shadow-md">
             <div className="mb-2 flex items-center space-x-2">
@@ -169,21 +157,22 @@ export const PublishGardenModal = ({
             </div>
             <AlertDescription className="space-y-4">
               <ul className="list-disc space-y-1 pl-5">
-                <li>This will make your Garden's DOI findable on doi.org.</li>
-                <li>Gardens with registered DOIs can be archived (hidden) but not deleted.</li>
+                <li>Other users will be able to find your Garden in search results.</li>
+                <li>Your Garden's DOI will findable on doi.org.</li>
+                <li>Published Gardens can be archived (hidden) but not deleted.</li>
               </ul>
             </AlertDescription>
           </Alert>
 
           <p className="pt-3 text-sm">
             Please type
-            <span className="font-semibold"> register {doi} </span>to confirm:
+            <span className="font-semibold"> publish {doi} </span>to confirm:
           </p>
           <div className=" mb-4">
             <Input
               type="text"
               className="mt-2 w-full rounded border border-gray-300 p-2"
-              placeholder={`register ${doi}`}
+              placeholder={`publish ${doi}`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
@@ -193,10 +182,10 @@ export const PublishGardenModal = ({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleRegisterGardenDOI}
-            disabled={isPending || input !== `register ${doi}`}
+            disabled={isPending || input !== `publish ${doi}`}
             className="bg-primary hover:bg-primary/60"
           >
-            I understand, register DOI for this Garden
+            I understand, publish this Garden
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
