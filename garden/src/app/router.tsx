@@ -19,6 +19,7 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import ModelDeploymentPage from "@/features/model-deployments/ModelDeploymentPage";
 import { CreateModelDeploymentPage } from "@/features/model-deployments/CreateModelDeploymentPage";
 import ModalAppUploadPage from "@/features/modal/components/ModalAppUploadPage";
+import { BenchmarksPage } from "@/features/benchmarks/BenchmarksPage";
 
 const Router: React.FC = () => {
   const navigate = useNavigate();
@@ -68,6 +69,7 @@ const Router: React.FC = () => {
         <Route path="team" element={<TeamsPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="user" element={<UserProfilePage />} />
+        <Route path="benchmarks" element={<BenchmarksPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -49,6 +49,7 @@ const Navbar = () => {
   };
 
   const Links = [
+    { name: "Benchmarks", link: "/benchmarks" },
     { name: "Search", link: "/search" },
     { name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" },
   ];
@@ -82,6 +83,14 @@ const Navbar = () => {
               </Tooltip>
             </TooltipProvider>
           </button>
+
+
+          {/* Links menu */}
+          {Links.map((link) => (
+            <Link key={link.name} to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
+              {link.name}
+            </Link>
+          ))}
 
           {/* Auth/user section */}
           <div
@@ -126,13 +135,6 @@ const Navbar = () => {
               </button>
             )}
           </div>
-
-          {/* Links menu */}
-          {Links.map((link) => (
-            <Link key={link.name} to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
-              {link.name}
-            </Link>
-          ))}
         </div>
       </div>
     </div>

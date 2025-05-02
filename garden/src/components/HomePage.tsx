@@ -127,6 +127,11 @@ const HomePage = () => {
                 Start Your Garden
               </button>
             </Link>
+            <Link to="/benchmarks">
+              <button className="rounded-full border-2 border-green bg-green px-8 py-3 text-lg font-semibold text-white transition-transform hover:scale-105">
+                Benchmark Models
+              </button>
+            </Link>
           </div>
         </div>
       </div>
