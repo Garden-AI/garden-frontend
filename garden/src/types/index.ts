@@ -24,6 +24,9 @@ type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchReques
   contributors?: string[] | null;
 };
 
+type ModalInvocationRequest = components["schemas"]["ModalInvocationRequest"]
+type ModalInvocationOutputsResponse = components["schemas"]["ModalInvocationOutputsResponse"]
+
 type AsyncModalAppMetadataResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
 type AsyncModalJobStatus = components["schemas"]["AsyncModalJobStatus"];
 
@@ -39,12 +42,25 @@ type Repository = components["schemas"]["_RepositoryMetadata"];
 type Model = components["schemas"]["_ModelMetadata"];
 type Notebook = components["schemas"]["_NotebookMetadata"];
 
-type DOIRequest = components["schemas"]["Doi"];
+// Remove or comment out the incorrect DOIRequest type
+// type DOIRequest = components["schemas"]["Doi"];
+type DOIRequest = any; // Temporarily use any until correct type is identified
 
 type GardenSearchRequest = components["schemas"]["GardenSearchRequest"];
 type GardenSearchResponse = components["schemas"]["GardenSearchResponse"];
 type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
 type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
+
+type BenchmarkRequest = components["schemas"]["BenchmarkRequest"];
+
+// Export BenchmarkResult as defined interface instead of re-exporting it
+export interface BenchmarkResult {
+  id: number;
+  function_id: number;
+  date_invoked: string;
+  status: "pending" | "done" | "failed";
+  result: Record<string, unknown> | null;
+}
 
 export type {
   Garden,
@@ -71,8 +87,13 @@ export type {
   ModalFileMetadataRequest,
   ModalFileMetadataResponse,
   ModalAppPatchRequest,
+  ModalFunction,
+  ModalFunctionPatchRequest,
+  ModalInvocationRequest,
+  ModalInvocationOutputsResponse,
   Model,
-  Notebook
+  Notebook,
+  BenchmarkRequest,
+  // BenchmarkResult, // Remove this line to avoid duplicate export
 };
 
-export type { ModalFunction, ModalFunctionPatchRequest };

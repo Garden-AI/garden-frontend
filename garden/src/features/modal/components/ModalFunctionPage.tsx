@@ -1,3 +1,4 @@
+import React from "react";
 import { useParams } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
@@ -9,8 +10,9 @@ import NotFoundPage from "@/components/NotFoundPage";
 
 import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
+import { Button } from "@/components/shadcn/button";
 
-import { LinkIcon, EditIcon, SaveIcon, XIcon } from "lucide-react";
+import { LinkIcon, Play } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
@@ -39,42 +41,42 @@ const ModalFunctionPage = () => {
   if (isError || !modalFunction) return <NotFoundPage />;
 
   // Create breadcrumb items based on whether we navigated from a garden
-  const breadcrumbItems = gardenDOI && garden 
+  const breadcrumbItems = gardenDOI && garden
     ? [
-        { label: "Home", link: "/" }, 
-        { label: garden.title, link: `/garden/${encodeURIComponent(gardenDOI)}` }, 
-        { label: modalFunction.title }
-      ]
+      { label: "Home", link: "/" },
+      { label: garden.title, link: `/garden/${encodeURIComponent(gardenDOI)}` },
+      { label: modalFunction.title }
+    ]
     : [
-        { label: "Home", link: "/" }, 
-        { label: modalFunction.title }
-      ];
+      { label: "Home", link: "/" },
+      { label: modalFunction.title }
+    ];
 
   return (
     <div className="container mb-6 max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content */}
         <div className="lg:w-2/3">
-          <Breadcrumb 
-            className="mb-3" 
-            crumbs={breadcrumbItems} 
+          <Breadcrumb
+            className="mb-3"
+            crumbs={breadcrumbItems}
           />
-          <ModalFunctionHeader 
-            modalFunction={modalFunction as ModalFunctionWithOwner} 
+          <ModalFunctionHeader
+            modalFunction={modalFunction as ModalFunctionWithOwner}
             gardenDOI={gardenDOI}
             ownsThisFunction={ownsThisFunction}
           />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} gardenDOI={gardenDOI} />
-          <ModalAssociatedMaterials 
-            resource={modalFunction} 
-            ownsThisFunction={ownsThisFunction} 
+          <ModalAssociatedMaterials
+            resource={modalFunction}
+            ownsThisFunction={ownsThisFunction}
           />
         </div>
 
         {/* Sidebar */}
         <FunctionMetadataSidebar
-          modalFunction={modalFunction}    
+          modalFunction={modalFunction}
           ownsThisFunction={ownsThisFunction}
         />
       </div>
@@ -82,8 +84,8 @@ const ModalFunctionPage = () => {
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: { 
-  modalFunction: ModalFunctionWithOwner; 
+const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
+  modalFunction: ModalFunctionWithOwner;
   gardenDOI?: string;
   ownsThisFunction: boolean;
 }) => {
@@ -91,7 +93,7 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
 
   return (
     <div className="mb-3 flex items-center justify-between gap-2">
-      <EditableTitle 
+      <EditableTitle
         entity={modalFunction}
         ownsThisEntity={ownsThisFunction}
         onUpdate={async (updateData) => {
@@ -101,11 +103,11 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
           });
         }}
       />
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <CopyButton
           icon={<LinkIcon className="h-4 w-4" />}
           content={gardenDOI
-            ? `${window.location.origin}/garden/${encodeURIComponent(gardenDOI)}/modal-functions/${modalFunction.id}` 
+            ? `${window.location.origin}/garden/${encodeURIComponent(gardenDOI)}/modal-functions/${modalFunction.id}`
             : `${window.location.origin}/modal-functions/${modalFunction.id}`}
           hint="Copy Link"
           className="border-none bg-transparent"
@@ -140,7 +142,7 @@ const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction:
 
 const ModalFunctionExample = ({ modalFunction, ownsThisFunction, gardenDOI }: { modalFunction: ModalFunction; ownsThisFunction: boolean; gardenDOI?: string; }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
-  
+
   const doiExpression = gardenDOI ? `'${gardenDOI}'` : "my_garden_doi"
 
   // Create example text with fallback to default placeholder

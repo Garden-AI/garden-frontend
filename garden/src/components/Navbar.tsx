@@ -83,6 +83,14 @@ const Navbar = () => {
             </TooltipProvider>
           </button>
 
+
+          {/* Links menu */}
+          {Links.map((link) => (
+            <Link key={link.name} to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
+              {link.name}
+            </Link>
+          ))}
+
           {/* Auth/user section */}
           <div
             onClick={toggleMenuDropdown}
@@ -126,13 +134,6 @@ const Navbar = () => {
               </button>
             )}
           </div>
-
-          {/* Links menu */}
-          {Links.map((link) => (
-            <Link key={link.name} to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
-              {link.name}
-            </Link>
-          ))}
         </div>
       </div>
     </div>
