@@ -21,11 +21,12 @@ import {
     DialogTitle,
 } from "@/components/shadcn/dialog";
 import { Button } from "@/components/shadcn/button";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, Play } from "lucide-react";
 
 import { BenchmarksTable } from "./benchmarks-table/BenchmarksTable";
 import { columns } from "./benchmarks-table/columns";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
+import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
 
 // Predefined benchmark types - only Matbench for now, structure for future expansion
 const BENCHMARK_TYPES = [
@@ -48,9 +49,17 @@ const BENCHMARK_INFO = {
 export const BenchmarksPage = () => {
     const [selectedBenchmark, setSelectedBenchmark] = useState("matbench_discovery");
     const [showCreateDialog, setShowCreateDialog] = useState(false);
+    const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
     const { data, isLoading } = useGetBenchmarkResults(selectedBenchmark);
 
     const benchmarkInfo = BENCHMARK_INFO[selectedBenchmark as keyof typeof BENCHMARK_INFO];
+
+    // Mock data for available benchmarks
+    const availableBenchmarks = [
+        { id: 1, name: "Matbench Discovery" },
+        { id: 2, name: "Thermal Conductivity" },
+        { id: 3, name: "Structure Prediction" }
+    ];
 
     const handleBenchmarkSelection = (value: string) => {
         if (value === CREATE_NEW_BENCHMARK) {
@@ -66,35 +75,45 @@ export const BenchmarksPage = () => {
         <div className="flex flex-col m-4 gap-4">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Benchmarks</h1>
-                <div className="w-64">
-                    <Select
-                        value={selectedBenchmark}
-                        onValueChange={handleBenchmarkSelection}
+                <div className="flex gap-2 items-center">
+                    <Button
+                        variant="outline"
+                        className="flex items-center gap-1"
+                        onClick={() => setShowBenchmarkDialog(true)}
                     >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select benchmark" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {BENCHMARK_TYPES.map(benchmark => (
+                        <Play className="h-4 w-4" />
+                        Benchmark a Function
+                    </Button>
+                    <div className="w-64">
+                        <Select
+                            value={selectedBenchmark}
+                            onValueChange={handleBenchmarkSelection}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select benchmark" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {BENCHMARK_TYPES.map(benchmark => (
+                                    <SelectItem
+                                        key={benchmark.id}
+                                        value={benchmark.id}
+                                    >
+                                        {benchmark.label}
+                                    </SelectItem>
+                                ))}
                                 <SelectItem
-                                    key={benchmark.id}
-                                    value={benchmark.id}
+                                    key={CREATE_NEW_BENCHMARK}
+                                    value={CREATE_NEW_BENCHMARK}
+                                    className="text-green-600 font-medium"
                                 >
-                                    {benchmark.label}
+                                    <div className="flex items-center gap-1">
+                                        <Plus className="h-4 w-4" />
+                                        Create New Benchmark
+                                    </div>
                                 </SelectItem>
-                            ))}
-                            <SelectItem
-                                key={CREATE_NEW_BENCHMARK}
-                                value={CREATE_NEW_BENCHMARK}
-                                className="text-green-600 font-medium"
-                            >
-                                <div className="flex items-center gap-1">
-                                    <Plus className="h-4 w-4" />
-                                    Create New Benchmark
-                                </div>
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
             </div>
 
@@ -139,14 +158,14 @@ export const BenchmarksPage = () => {
                     <DialogHeader>
                         <DialogTitle>Create New Benchmark</DialogTitle>
                         <DialogDescription>
-                            This feature is coming soon! You'll be able to define your own custom benchmarks
+                            This feature is coming soon! You&apos;ll be able to define your own custom benchmarks
                             and run your functions against them.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-6 text-center">
                         <div className="text-3xl mb-2">🚧</div>
                         <p className="text-gray-600">
-                            We're building support for custom benchmarks that will allow you to:
+                            We&apos;re building support for custom benchmarks that will allow you to:
                         </p>
                         <ul className="text-left mt-4 space-y-2 text-gray-600 list-disc pl-6">
                             <li>Define your own benchmark datasets and metrics</li>
@@ -162,6 +181,18 @@ export const BenchmarksPage = () => {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <BenchmarkFunctionDialog
+                open={showBenchmarkDialog}
+                onOpenChange={setShowBenchmarkDialog}
+                availableBenchmarks={availableBenchmarks}
+                initialBenchmarkId={
+                    // Find the numeric ID that corresponds to the currently selected benchmark
+                    availableBenchmarks.find(b =>
+                        b.name.toLowerCase().includes(selectedBenchmark.replace("_", " "))
+                    )?.id || undefined
+                }
+            />
         </div>
     );
 }
