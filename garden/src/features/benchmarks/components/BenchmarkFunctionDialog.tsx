@@ -23,6 +23,7 @@ interface BenchmarkFunctionDialogProps {
     onOpenChange: (open: boolean) => void;
     availableBenchmarks: Array<{ id: number; name: string }>;
     initialBenchmarkId?: number;
+    initialFunctionId?: number;
 }
 
 export const BenchmarkFunctionDialog = ({
@@ -30,6 +31,7 @@ export const BenchmarkFunctionDialog = ({
     onOpenChange,
     availableBenchmarks,
     initialBenchmarkId,
+    initialFunctionId,
 }: BenchmarkFunctionDialogProps) => {
     // Mock available functions - in a real implementation these would be fetched from an API
     const availableFunctions = [
@@ -39,7 +41,9 @@ export const BenchmarkFunctionDialog = ({
         { id: 4, name: "Custom Function B" },
     ];
 
-    const [selectedFunction, setSelectedFunction] = useState<string>("");
+    const [selectedFunction, setSelectedFunction] = useState<string>(
+        initialFunctionId ? initialFunctionId.toString() : ""
+    );
     const [selectedBenchmark, setSelectedBenchmark] = useState<string>(
         initialBenchmarkId ? initialBenchmarkId.toString() : ""
     );
