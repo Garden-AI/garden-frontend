@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { BenchmarkResult } from "../benchmarks-table/columns";
+import { BenchmarkResult } from "@/types";
+import instance from "@/lib/axios";
 
-// Matbench Discovery benchmark data
+// Matbench Discovery fake benchmark data
 const matbenchDiscoveryData: BenchmarkResult[] = [
     {
         function_name: "ML-FF Model",
@@ -80,19 +81,14 @@ const matbenchDiscoveryData: BenchmarkResult[] = [
     }
 ];
 
-const getBenchmarkResults = async (benchmarkType: string): Promise<BenchmarkResult[]> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    // Currently only Matbench Discovery is supported
-    // We'll use the benchmarkType parameter in future when supporting more benchmarks
-    console.log(`Loading benchmark data for: ${benchmarkType}`);
-    return matbenchDiscoveryData;
+const getBenchmarkResults = async (benchmarkId: number): Promise<BenchmarkResult[]> => {
+    const res = await instance.get(`/benchmarks/${benchmarkId}`)
+    return res.data;
 }
 
-export const useGetBenchmarkResults = (benchmarkType: string = "matbench_discovery") => {
+export const useGetBenchmarkResults = (benchmarkId: number = 2) => {
     return useQuery({
-        queryKey: ["benchmark-results", benchmarkType],
-        queryFn: () => getBenchmarkResults(benchmarkType),
+        queryKey: ["benchmark-results", benchmarkId],
+        queryFn: () => getBenchmarkResults(benchmarkId),
     });
 }

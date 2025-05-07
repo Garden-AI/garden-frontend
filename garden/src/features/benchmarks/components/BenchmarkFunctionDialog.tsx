@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/shadcn/button";
 import { Loader2 } from "lucide-react";
 import { useBenchmarkFunction } from "../api/useBenchmarkFunction";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BenchmarkFunctionDialogProps {
     open: boolean;
@@ -35,10 +36,8 @@ export const BenchmarkFunctionDialog = ({
 }: BenchmarkFunctionDialogProps) => {
     // Mock available functions - in a real implementation these would be fetched from an API
     const availableFunctions = [
-        { id: 1, name: "MatGen-1" },
-        { id: 2, name: "Predictive ML Model" },
-        { id: 3, name: "Custom Function A" },
-        { id: 4, name: "Custom Function B" },
+        { id: 2, name: "Hello" },
+        { id: 3, name: "Goodbye" },
     ];
 
     const [selectedFunction, setSelectedFunction] = useState<string>(
@@ -49,6 +48,7 @@ export const BenchmarkFunctionDialog = ({
     );
 
     const { benchmarkFunction, isLoading, isSuccess } = useBenchmarkFunction();
+    const queryClient = useQueryClient();
 
     const handleSubmit = () => {
         if (!selectedFunction || !selectedBenchmark) return;
@@ -56,6 +56,7 @@ export const BenchmarkFunctionDialog = ({
         benchmarkFunction({
             function_id: parseInt(selectedFunction),
             benchmark_id: parseInt(selectedBenchmark),
+            task_id: 0, // TODO: implement task id logic
         });
     };
 
@@ -66,6 +67,7 @@ export const BenchmarkFunctionDialog = ({
             setSelectedBenchmark("");
         }
         onOpenChange(open);
+        queryClient.invalidateQueries({ queryKey: ["benchmark-results"] })
     };
 
     // Close dialog on successful submission

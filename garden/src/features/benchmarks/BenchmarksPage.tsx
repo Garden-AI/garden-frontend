@@ -23,13 +23,13 @@ import {
 import { Button } from "@/components/shadcn/button";
 import { Loader2, Plus, Play } from "lucide-react";
 
-import { BenchmarksTable } from "./benchmarks-table/BenchmarksTable";
-import { columns } from "./benchmarks-table/columns";
+import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
 
 // Predefined benchmark types - only Matbench for now, structure for future expansion
 const BENCHMARK_TYPES = [
+    { id: "hello_benchmarks", label: "Hello Benchmarks" },
     { id: "matbench_discovery", label: "Matbench Discovery" }
 ];
 
@@ -47,18 +47,17 @@ const BENCHMARK_INFO = {
 };
 
 export const BenchmarksPage = () => {
-    const [selectedBenchmark, setSelectedBenchmark] = useState("matbench_discovery");
+    const [selectedBenchmark, setSelectedBenchmark] = useState(4);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
-    const { data, isLoading } = useGetBenchmarkResults(selectedBenchmark);
+    const { data, isLoading } = useGetBenchmarkResults(4); // TODO: don't hardcode benchmark id
 
-    const benchmarkInfo = BENCHMARK_INFO[selectedBenchmark as keyof typeof BENCHMARK_INFO];
+    const benchmarkInfo = BENCHMARK_INFO["matbench_discovery"];
 
     // Mock data for available benchmarks
     const availableBenchmarks = [
         { id: 1, name: "Matbench Discovery" },
-        { id: 2, name: "Thermal Conductivity" },
-        { id: 3, name: "Structure Prediction" }
+        { id: 4, name: "Hello Benchmarks" },
     ];
 
     const handleBenchmarkSelection = (value: string) => {
@@ -67,9 +66,18 @@ export const BenchmarksPage = () => {
             // Keep the previous selection active in the dropdown
             return;
         }
-
-        setSelectedBenchmark(value);
+        // Parse the value to a number before using it as an index
+        const index = parseInt(value);
+        if (!isNaN(index) && availableBenchmarks[index]) {
+            setSelectedBenchmark(availableBenchmarks[index].id);
+        }
     };
+
+    // Handle undefined data safely - generate columns from the metrics in the result field
+    const columns = data && data.length > 0 && data[0].result
+        ? generateColumnsFromData([data[0].result])
+        : [];
+    console.log("Table Columns: ", columns)
 
     return (
         <div className="flex flex-col m-4 gap-4">
@@ -86,7 +94,7 @@ export const BenchmarksPage = () => {
                     </Button>
                     <div className="w-64">
                         <Select
-                            value={selectedBenchmark}
+                            value={String(selectedBenchmark)}
                             onValueChange={handleBenchmarkSelection}
                         >
                             <SelectTrigger>
@@ -150,7 +158,10 @@ export const BenchmarksPage = () => {
                     <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                 </div>
             ) : (
-                <BenchmarksTable columns={columns} data={data || []} />
+                <BenchmarksTable
+                    columns={columns}
+                    data={data?.filter(item => item.result).map(item => item.result) || []}
+                />
             )}
 
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
@@ -189,7 +200,7 @@ export const BenchmarksPage = () => {
                 initialBenchmarkId={
                     // Find the numeric ID that corresponds to the currently selected benchmark
                     availableBenchmarks.find(b =>
-                        b.name.toLowerCase().includes(selectedBenchmark.replace("_", " "))
+                        b.name.toLowerCase().includes(String(selectedBenchmark))
                     )?.id || undefined
                 }
             />

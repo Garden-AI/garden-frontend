@@ -259,6 +259,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run Benchmark */
+        post: operations["run_benchmark_benchmarks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/benchmarks/results/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Benchmark Result */
+        get: operations["get_benchmark_result_benchmarks_results__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/benchmarks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Results For Benchmarks */
+        get: operations["get_results_for_benchmarks_benchmarks__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/modal-invocations/blob-uploads": {
         parameters: {
             query?: never;
@@ -607,6 +658,8 @@ export interface components {
              * @description The unique identifier for the modal app
              */
             id: number;
+            /** Marked For Deletion */
+            marked_for_deletion: string | null;
             deploy_status?: components["schemas"]["AsyncModalJobStatus"] | null;
             /** Deploy Error */
             deploy_error?: string | null;
@@ -624,6 +677,33 @@ export interface components {
          * @enum {string}
          */
         AsyncModalJobStatus: "pending" | "done" | "error" | "timed_out";
+        /** BenchmarkRequest */
+        BenchmarkRequest: {
+            /** Benchmark Id */
+            benchmark_id: number;
+            /** Task Id */
+            task_id: number;
+            /** Function Id */
+            function_id: number;
+            /** Args Kwargs Serialized */
+            args_kwargs_serialized?: string | null;
+            /** Args Blob Id */
+            args_blob_id?: string | null;
+        };
+        /** BenchmarkResult */
+        BenchmarkResult: {
+            /** Id */
+            id: number;
+            status: components["schemas"]["AsyncModalJobStatus"];
+            /** Error */
+            error?: string | null;
+            /** Benchmark Id */
+            benchmark_id: number;
+            /** Function Id */
+            function_id: number;
+            /** Result */
+            result?: Record<string, never> | null;
+        };
         /** BucketFacetResult */
         BucketFacetResult: {
             /** Name */
@@ -1418,9 +1498,12 @@ export interface components {
             /** Contributors */
             contributors?: string[];
             /** Doi */
-            doi: string;
-            /** Doi Is Draft */
-            doi_is_draft?: boolean | null;
+            doi?: string | null;
+            /**
+             * Doi Is Draft
+             * @default true
+             */
+            doi_is_draft: boolean;
             /** Description */
             description: string | null;
             /**
@@ -1468,8 +1551,11 @@ export interface components {
             contributors?: string[];
             /** Doi */
             doi: string;
-            /** Doi Is Draft */
-            doi_is_draft?: boolean | null;
+            /**
+             * Doi Is Draft
+             * @default true
+             */
+            doi_is_draft: boolean;
             /** Description */
             description: string | null;
             /**
@@ -1513,6 +1599,9 @@ export interface components {
             entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
+            /** Marked For Deletion */
+            marked_for_deletion: string | null;
+            readonly state: components["schemas"]["GardenState"];
             /** Entrypoint Ids */
             readonly entrypoint_ids: string[];
             /** Modal Function Ids */
@@ -1615,6 +1704,11 @@ export interface components {
             /** Order */
             order: string;
         };
+        /**
+         * GardenState
+         * @enum {string}
+         */
+        GardenState: "DRAFT" | "PUBLISHED" | "ARCHIVED";
         /** GeoLocation */
         GeoLocation: {
             geoLocationPoint?: components["schemas"]["GeoLocationPoint"] | null;
@@ -1821,6 +1915,8 @@ export interface components {
              * @description The unique identifier for the modal app
              */
             id: number;
+            /** Marked For Deletion */
+            marked_for_deletion: string | null;
             /** Modal Function Names */
             readonly modal_function_names: string[];
             /** Modal Function Ids */
@@ -3211,6 +3307,101 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GardenMetadataResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    run_benchmark_benchmarks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BenchmarkRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_benchmark_result_benchmarks_results__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_results_for_benchmarks_benchmarks__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkResult"][];
                 };
             };
             /** @description Validation Error */

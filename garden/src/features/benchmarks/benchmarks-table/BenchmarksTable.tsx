@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 
 import {
@@ -20,16 +20,54 @@ import {
 } from "@/components/shadcn/table"
 
 interface BenchmarksTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
+    columns?: ColumnDef<TData, TValue>[]
     data: TData[]
+    generateColumns?: boolean
 }
 
-export const BenchmarksTable = <TData, TValue>({ columns, data }: BenchmarksTableProps<TData, TValue>) => {
+// Helper function to generate columns from data
+export const generateColumnsFromData = <TData extends Record<string, unknown>, TValue>(
+    data: TData[]
+): ColumnDef<TData, TValue>[] => {
+    if (!data.length) return [];
+
+    // Get all unique keys from all data objects
+    const allKeys = new Set<string>();
+    data.forEach(item => {
+        Object.keys(item).forEach(key => {
+            allKeys.add(key);
+        });
+    });
+
+    // Convert to array and sort alphabetically
+    const keys = Array.from(allKeys).sort();
+
+    // Create column definitions
+    return keys.map(key => ({
+        accessorKey: key,
+        header: key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1'),
+        enableSorting: true,
+    })) as ColumnDef<TData, TValue>[];
+};
+
+export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
+    columns,
+    data,
+    generateColumns = false
+}: BenchmarksTableProps<TData, TValue>) => {
     const [sorting, setSorting] = useState<SortingState>([])
+
+    // Generate columns if needed, otherwise use provided columns
+    const tableColumns = useMemo(() => {
+        if (generateColumns) {
+            return generateColumnsFromData<TData, TValue>(data);
+        }
+        return columns || [];
+    }, [columns, data, generateColumns]);
 
     const table = useReactTable({
         data,
-        columns,
+        columns: tableColumns,
         getCoreRowModel: getCoreRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
@@ -69,13 +107,21 @@ export const BenchmarksTable = <TData, TValue>({ columns, data }: BenchmarksTabl
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                            ))}
+                    {table.getRowModel().rows.length > 0 ? (
+                        table.getRowModel().rows.map((row) => (
+                            <TableRow key={row.id}>
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                ))}
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={tableColumns.length} className="h-24 text-center">
+                                No results.
+                            </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
         </div>

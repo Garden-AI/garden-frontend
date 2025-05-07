@@ -9,21 +9,6 @@ import {
     TooltipContent
 } from "@/components/shadcn/tooltip";
 
-export type BenchmarkResult = {
-    function_name: string
-    function_id: string
-    garden: string
-    garden_doi: string
-    rmsd?: number
-    Ksrme?: number
-    rsqrd?: number
-    mae?: number
-    prec?: number
-    daf?: number
-    f1?: number
-    acc?: number
-    cps?: number
-}
 
 // Custom header component with tooltip
 const HeaderWithTooltip = ({ label, tooltip }: { label: string, tooltip: string }) => {

@@ -24,6 +24,9 @@ type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchReques
   contributors?: string[] | null;
 };
 
+type ModalInvocationRequest = components["schemas"]["ModalInvocationRequest"]
+type ModalInvocationOutputsResponse = components["schemas"]["ModalInvocationOutputsResponse"]
+
 type AsyncModalAppMetadataResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
 type AsyncModalJobStatus = components["schemas"]["AsyncModalJobStatus"];
 
@@ -45,6 +48,9 @@ type GardenSearchRequest = components["schemas"]["GardenSearchRequest"];
 type GardenSearchResponse = components["schemas"]["GardenSearchResponse"];
 type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
 type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
+
+type BenchmarkRequest = components["schemas"]["BenchmarkRequest"];
+type BenchmarkResult = components["schemas"]["BenchmarkResult"]
 
 export type {
   Garden,
@@ -71,8 +77,13 @@ export type {
   ModalFileMetadataRequest,
   ModalFileMetadataResponse,
   ModalAppPatchRequest,
+  ModalFunction,
+  ModalFunctionPatchRequest,
+  ModalInvocationRequest,
+  ModalInvocationOutputsResponse,
   Model,
-  Notebook
+  Notebook,
+  BenchmarkRequest,
+  BenchmarkResult,
 };
 
-export type { ModalFunction, ModalFunctionPatchRequest };
