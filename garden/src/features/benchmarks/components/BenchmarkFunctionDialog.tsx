@@ -19,6 +19,8 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { useBenchmarkFunction } from "../api/useBenchmarkFunction";
 import { useQueryClient } from "@tanstack/react-query";
 import { Benchmark } from "./BenchmarkSelector";
+import { useGetGardens } from "@/features/gardens/api/useGetGardens";
+import { ModalFunction } from "@/types";
 
 interface BenchmarkFunctionDialogProps {
     open: boolean;
@@ -35,11 +37,33 @@ export const BenchmarkFunctionDialog = ({
     initialBenchmarkId,
     initialFunctionId,
 }: BenchmarkFunctionDialogProps) => {
-    // Mock available functions - in a real implementation these would be fetched from an API
-    const availableFunctions = [
-        { id: 2, name: "Hello" },
-        { id: 3, name: "Goodbye" },
-    ];
+    // Fetch gardens that are not in draft state
+    const { data: gardens = [], isLoading: isGardensLoading } = useGetGardens({
+        draft: false, // Only get gardens that are not drafts
+    });
+
+    // Extract functions from the gardens and deduplicate them by ID
+    const availableFunctions: { id: number; name: string }[] = React.useMemo(() => {
+        // Use a Map to deduplicate functions with the same ID
+        const functionMap = new Map<number, { id: number; name: string }>();
+
+        gardens.forEach((garden) => {
+            if (garden.modal_functions) {
+                garden.modal_functions.forEach((func: ModalFunction) => {
+                    // Only add if not already in the map
+                    if (!functionMap.has(func.id)) {
+                        functionMap.set(func.id, {
+                            id: func.id,
+                            name: func.function_name || func.title, // Use function_name or fallback to title
+                        });
+                    }
+                });
+            }
+        });
+
+        // Convert map values to array
+        return Array.from(functionMap.values());
+    }, [gardens]);
 
     const [selectedFunction, setSelectedFunction] = useState<string>(
         initialFunctionId ? initialFunctionId.toString() : ""
@@ -128,8 +152,15 @@ export const BenchmarkFunctionDialog = ({
                                 value={selectedFunction}
                                 onValueChange={setSelectedFunction}
                             >
-                                <SelectTrigger id="function">
-                                    <SelectValue placeholder="Select a function" />
+                                <SelectTrigger id="function" disabled={isGardensLoading}>
+                                    {isGardensLoading ? (
+                                        <div className="flex items-center">
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Loading functions...
+                                        </div>
+                                    ) : (
+                                        <SelectValue placeholder="Select a function" />
+                                    )}
                                 </SelectTrigger>
                                 <SelectContent>
                                     {availableFunctions.map((func) => (
@@ -196,7 +227,7 @@ export const BenchmarkFunctionDialog = ({
                     ) : (
                         <Button
                             onClick={handleSubmit}
-                            disabled={!selectedFunction || !selectedBenchmark || isSubmitting}
+                            disabled={!selectedFunction || !selectedBenchmark || isSubmitting || isGardensLoading}
                         >
                             {isSubmitting ? (
                                 <>
