@@ -701,6 +701,8 @@ export interface components {
             benchmark_id: number;
             /** Function Id */
             function_id: number;
+            /** Date Invoked */
+            date_invoked?: string | null;
             /** Result */
             result?: Record<string, never> | null;
         };

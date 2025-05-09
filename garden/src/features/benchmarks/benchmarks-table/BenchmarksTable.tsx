@@ -37,7 +37,8 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
     const allKeys = new Set<string>();
     data.forEach(item => {
         Object.keys(item).forEach(key => {
-            if (key !== "function_id") { // Exclude function_id since we'll handle it separately
+            // Exclude function_id and date_invoked since we'll handle them separately
+            if (key !== "function_id" && key !== "date_invoked") {
                 allKeys.add(key);
             }
         });
@@ -57,6 +58,26 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
         }
     } as ColumnDef<TData, TValue>;
 
+    // Define date column second
+    const dateColumn = {
+        accessorKey: "date_invoked",
+        header: "Date",
+        enableSorting: true,
+        cell: ({ row }) => {
+            const dateInvoked = row.getValue("date_invoked");
+            // If date is not available, return empty string
+            if (!dateInvoked) return "";
+
+            // Format as yyyy-mm-dd
+            try {
+                const date = new Date(dateInvoked as string);
+                return date.toISOString().split('T')[0]; // Get yyyy-mm-dd part
+            } catch (error) {
+                return String(dateInvoked);
+            }
+        }
+    } as ColumnDef<TData, TValue>;
+
     // Create column definitions for other fields
     const dynamic_columns = keys.map(key => ({
         accessorKey: key,
@@ -64,7 +85,7 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
         enableSorting: true,
     })) as ColumnDef<TData, TValue>[];
 
-    return [functionColumn, ...dynamic_columns];
+    return [functionColumn, dateColumn, ...dynamic_columns];
 };
 
 // Component to fetch and display function name

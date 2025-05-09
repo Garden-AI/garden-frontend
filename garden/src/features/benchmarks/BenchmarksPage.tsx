@@ -93,6 +93,8 @@ export const BenchmarksPage = () => {
         .map((item: BenchmarkResult) => ({
             // Add function_id to each result so we can fetch function metadata
             function_id: item.function_id,
+            // Add date_invoked field
+            date_invoked: item.date_invoked,
             // Spread the result data
             ...item.result as Record<string, unknown>
         }));

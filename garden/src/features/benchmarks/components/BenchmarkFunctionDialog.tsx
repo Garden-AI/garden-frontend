@@ -18,11 +18,12 @@ import { Button } from "@/components/shadcn/button";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useBenchmarkFunction } from "../api/useBenchmarkFunction";
 import { useQueryClient } from "@tanstack/react-query";
+import { Benchmark } from "./BenchmarkSelector";
 
 interface BenchmarkFunctionDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    availableBenchmarks: Array<{ id: number; name: string }>;
+    availableBenchmarks: Benchmark[];
     initialBenchmarkId?: number;
     initialFunctionId?: number;
 }
