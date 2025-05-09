@@ -21,11 +21,12 @@ import {
     DialogTitle,
 } from "@/components/shadcn/dialog";
 import { Button } from "@/components/shadcn/button";
-import { Loader2, Plus, Play } from "lucide-react";
+import { Loader2, Plus, Play, RefreshCw } from "lucide-react";
 
 import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
+import { BenchmarkResult } from "@/types";
 
 // Predefined benchmark types - only Matbench for now, structure for future expansion
 const BENCHMARK_TYPES = [
@@ -50,7 +51,7 @@ export const BenchmarksPage = () => {
     const [selectedBenchmark, setSelectedBenchmark] = useState(4);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
-    const { data, isLoading } = useGetBenchmarkResults(4); // TODO: don't hardcode benchmark id
+    const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmark);
 
     const benchmarkInfo = BENCHMARK_INFO["matbench_discovery"];
 
@@ -73,11 +74,30 @@ export const BenchmarksPage = () => {
         }
     };
 
-    // Handle undefined data safely - generate columns from the metrics in the result field
-    const columns = data && data.length > 0 && data[0].result
-        ? generateColumnsFromData([data[0].result])
+    // Safely access data and check for pending results
+    const benchmarkResults = Array.isArray(data) ? data : [];
+
+    // Check if any results have pending status
+    const hasPendingResults = benchmarkResults.some(
+        (result: BenchmarkResult) => result.status === "pending"
+    );
+
+    // Process results for display, filtering out results without a result field or not done
+    const processedResults = benchmarkResults
+        .filter((item: BenchmarkResult) =>
+            item.result && item.status === "done"
+        )
+        .map((item: BenchmarkResult) => ({
+            // Add function_id to each result so we can fetch function metadata
+            function_id: item.function_id,
+            // Spread the result data
+            ...item.result as Record<string, unknown>
+        }));
+
+    // Generate columns from available results
+    const columns = processedResults.length > 0
+        ? generateColumnsFromData(processedResults)
         : [];
-    console.log("Table Columns: ", columns)
 
     return (
         <div className="flex flex-col m-4 gap-4">
@@ -158,10 +178,36 @@ export const BenchmarksPage = () => {
                     <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                 </div>
             ) : (
-                <BenchmarksTable
-                    columns={columns}
-                    data={data?.filter(item => item.result).map(item => item.result) || []}
-                />
+                <div>
+                    {hasPendingResults && (
+                        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                            <div className="flex items-center gap-2">
+                                <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
+                                <span className="text-yellow-800">
+                                    Some benchmark runs are still in progress. Results will update automatically when they complete.
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
+                    {processedResults.length > 0 ? (
+                        <BenchmarksTable
+                            columns={columns}
+                            data={processedResults}
+                        />
+                    ) : (
+                        <div className="text-center py-8 border rounded-md bg-gray-50">
+                            <p className="text-gray-500">No benchmark results available.</p>
+                        </div>
+                    )}
+
+                    {isFetching && !isLoading && (
+                        <div className="flex justify-center items-center mt-4">
+                            <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
+                            <span className="text-sm text-gray-500">Updating results...</span>
+                        </div>
+                    )}
+                </div>
             )}
 
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>

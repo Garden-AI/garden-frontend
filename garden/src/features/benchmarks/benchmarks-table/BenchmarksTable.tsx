@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 
 import {
@@ -18,6 +18,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/shadcn/table"
+import { useGetModalFunction } from "@/features/modal/api/useGetModalFunction";
+import { Link } from "react-router-dom";
 
 interface BenchmarksTableProps<TData, TValue> {
     columns?: ColumnDef<TData, TValue>[]
@@ -35,39 +37,59 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
     const allKeys = new Set<string>();
     data.forEach(item => {
         Object.keys(item).forEach(key => {
-            allKeys.add(key);
+            if (key !== "function_id") { // Exclude function_id since we'll handle it separately
+                allKeys.add(key);
+            }
         });
     });
 
     // Convert to array and sort alphabetically
     const keys = Array.from(allKeys).sort();
 
-    // Create column definitions
-    return keys.map(key => ({
+    // Define function column first
+    const functionColumn = {
+        accessorKey: "function_id",
+        header: "Function",
+        enableSorting: true,
+        cell: ({ row }) => {
+            const functionId = String(row.getValue("function_id"));
+            return <FunctionNameCell functionId={functionId} />;
+        }
+    } as ColumnDef<TData, TValue>;
+
+    // Create column definitions for other fields
+    const dynamic_columns = keys.map(key => ({
         accessorKey: key,
         header: key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1'),
         enableSorting: true,
     })) as ColumnDef<TData, TValue>[];
+
+    return [functionColumn, ...dynamic_columns];
+};
+
+// Component to fetch and display function name
+const FunctionNameCell = ({ functionId }: { functionId: string }) => {
+    const { data, isLoading, error } = useGetModalFunction(functionId);
+
+    if (isLoading) return <span>Loading...</span>;
+    if (error) return <span>Error loading function</span>;
+
+    return (
+        <div className="flex flex-col">
+            <Link to={`/modal-functions/${functionId}`} className="font-medium">{data?.title || "Unknown Function"}</Link>
+        </div>
+    );
 };
 
 export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
     columns,
     data,
-    generateColumns = false
 }: BenchmarksTableProps<TData, TValue>) => {
     const [sorting, setSorting] = useState<SortingState>([])
 
-    // Generate columns if needed, otherwise use provided columns
-    const tableColumns = useMemo(() => {
-        if (generateColumns) {
-            return generateColumnsFromData<TData, TValue>(data);
-        }
-        return columns || [];
-    }, [columns, data, generateColumns]);
-
     const table = useReactTable({
         data,
-        columns: tableColumns,
+        columns: columns || [],
         getCoreRowModel: getCoreRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
@@ -75,6 +97,9 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
             sorting,
         },
     })
+
+    // Correctly determine column count for empty state
+    const columnCount = table.getAllColumns().length;
 
     return (
         <div className="rounded-md border">
@@ -117,7 +142,7 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={tableColumns.length} className="h-24 text-center">
+                            <TableCell colSpan={columnCount} className="h-24 text-center">
                                 No results.
                             </TableCell>
                         </TableRow>

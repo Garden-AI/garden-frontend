@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Dialog,
     DialogContent,
@@ -15,7 +15,7 @@ import {
     SelectValue,
 } from "@/components/shadcn/select";
 import { Button } from "@/components/shadcn/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { useBenchmarkFunction } from "../api/useBenchmarkFunction";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -46,12 +46,19 @@ export const BenchmarkFunctionDialog = ({
     const [selectedBenchmark, setSelectedBenchmark] = useState<string>(
         initialBenchmarkId ? initialBenchmarkId.toString() : ""
     );
+    // Local state to track if dialog has been submitted successfully
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+    // Local loading state that we control completely
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { benchmarkFunction, isLoading, isSuccess } = useBenchmarkFunction();
+    const { benchmarkFunction, isSuccess, error } = useBenchmarkFunction();
     const queryClient = useQueryClient();
 
     const handleSubmit = () => {
         if (!selectedFunction || !selectedBenchmark) return;
+
+        setIsSubmitting(true);
+        setHasSubmitted(true);
 
         benchmarkFunction({
             function_id: parseInt(selectedFunction),
@@ -65,17 +72,40 @@ export const BenchmarkFunctionDialog = ({
         if (!open) {
             setSelectedFunction("");
             setSelectedBenchmark("");
+            setHasSubmitted(false);
+            setIsSubmitting(false);
         }
         onOpenChange(open);
-        queryClient.invalidateQueries({ queryKey: ["benchmark-results"] })
     };
 
-    // Close dialog on successful submission
-    React.useEffect(() => {
-        if (isSuccess) {
-            setTimeout(() => onOpenChange(false), 2000);
+    // Reset submission state when dialog opens
+    useEffect(() => {
+        if (open) {
+            setHasSubmitted(false);
+            setIsSubmitting(false);
         }
-    }, [isSuccess, onOpenChange]);
+    }, [open]);
+
+    // Handle successful submission
+    useEffect(() => {
+        if (isSuccess && hasSubmitted) {
+            // Invalidate the benchmark results query when a benchmark is successfully started
+            queryClient.invalidateQueries({ queryKey: ["benchmark-results"] });
+            setIsSubmitting(false);
+
+            setTimeout(() => {
+                onOpenChange(false);
+                setHasSubmitted(false);
+            }, 2000);
+        }
+    }, [isSuccess, onOpenChange, queryClient, hasSubmitted]);
+
+    // Handle error state
+    useEffect(() => {
+        if (error) {
+            setIsSubmitting(false);
+        }
+    }, [error]);
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -138,8 +168,15 @@ export const BenchmarkFunctionDialog = ({
                     </div>
                 </div>
 
+                {error && (
+                    <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-md mt-2">
+                        <AlertCircle className="h-5 w-5" />
+                        <span>Error: {error.message || "Failed to start benchmark"}</span>
+                    </div>
+                )}
+
                 <DialogFooter>
-                    {isSuccess ? (
+                    {isSuccess && hasSubmitted ? (
                         <div className="flex items-center gap-2 text-green-600">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -158,9 +195,9 @@ export const BenchmarkFunctionDialog = ({
                     ) : (
                         <Button
                             onClick={handleSubmit}
-                            disabled={!selectedFunction || !selectedBenchmark || isLoading}
+                            disabled={!selectedFunction || !selectedBenchmark || isSubmitting}
                         >
-                            {isLoading ? (
+                            {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Starting...
