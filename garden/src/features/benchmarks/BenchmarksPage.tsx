@@ -1,11 +1,4 @@
-import React, { useState } from "react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from "@/components/shadcn/select";
+import React, { useState, useMemo } from "react";
 import {
     Card,
     CardContent,
@@ -21,25 +14,28 @@ import {
     DialogTitle,
 } from "@/components/shadcn/dialog";
 import { Button } from "@/components/shadcn/button";
-import { Loader2, Plus, Play, RefreshCw } from "lucide-react";
+import { Loader2, Play, RefreshCw } from "lucide-react";
 
 import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
 import { BenchmarkResult } from "@/types";
-
-// Predefined benchmark types - only Matbench for now, structure for future expansion
-const BENCHMARK_TYPES = [
-    { id: "hello_benchmarks", label: "Hello Benchmarks" },
-    { id: "matbench_discovery", label: "Matbench Discovery" }
-];
-
-// Create benchmark option identifier
-const CREATE_NEW_BENCHMARK = "create_new";
+import { BenchmarkSelector, Benchmark } from "./components/BenchmarkSelector";
 
 // Benchmark descriptions and additional info
-const BENCHMARK_INFO = {
-    matbench_discovery: {
+const BENCHMARK_INFO: Record<string, {
+    title: string;
+    description: string;
+    metrics: string[];
+    referenceUrl: string;
+}> = {
+    "hello_benchmarks": {
+        title: "Hello Benchmarks",
+        description: "A simple benchmark for testing the benchmarking system.",
+        metrics: ["RMSD", "Ksrme", "R²", "MAE", "Precision", "DAF", "F1", "Accuracy", "CPS"],
+        referenceUrl: "#"
+    },
+    "matbench_discovery": {
         title: "Matbench Discovery",
         description: "Matbench Discovery evaluates ML models for materials discovery tasks including structure relaxation and thermal property prediction.",
         metrics: ["RMSD", "Ksrme", "R²", "MAE", "Precision", "DAF", "F1", "Accuracy", "CPS"],
@@ -47,31 +43,38 @@ const BENCHMARK_INFO = {
     }
 };
 
+// Map from numeric IDs to string identifiers
+const BENCHMARK_ID_MAP: Record<number, string> = {
+    1: "matbench_discovery",
+    4: "hello_benchmarks"
+};
+
 export const BenchmarksPage = () => {
-    const [selectedBenchmark, setSelectedBenchmark] = useState(4);
+    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number>(4);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
-    const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmark);
+    const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmarkId);
 
-    const benchmarkInfo = BENCHMARK_INFO["matbench_discovery"];
-
-    // Mock data for available benchmarks
-    const availableBenchmarks = [
-        { id: 1, name: "Matbench Discovery" },
+    // Available benchmarks for selection
+    const availableBenchmarks: Benchmark[] = [
         { id: 4, name: "Hello Benchmarks" },
+        { id: 1, name: "Matbench Discovery" },
     ];
 
-    const handleBenchmarkSelection = (value: string) => {
-        if (value === CREATE_NEW_BENCHMARK) {
-            setShowCreateDialog(true);
-            // Keep the previous selection active in the dropdown
-            return;
+    // Get the benchmark info key based on the selected ID
+    const benchmarkInfoKey = BENCHMARK_ID_MAP[selectedBenchmarkId] || "hello_benchmarks";
+    const benchmarkInfo = BENCHMARK_INFO[benchmarkInfoKey];
+
+    // Handle benchmark selection from the selector component
+    const handleBenchmarkSelection = (benchmarkId: number | string) => {
+        if (typeof benchmarkId === 'number') {
+            setSelectedBenchmarkId(benchmarkId);
         }
-        // Parse the value to a number before using it as an index
-        const index = parseInt(value);
-        if (!isNaN(index) && availableBenchmarks[index]) {
-            setSelectedBenchmark(availableBenchmarks[index].id);
-        }
+    };
+
+    // Handle create new benchmark
+    const handleCreateNew = () => {
+        setShowCreateDialog(true);
     };
 
     // Safely access data and check for pending results
@@ -95,9 +98,11 @@ export const BenchmarksPage = () => {
         }));
 
     // Generate columns from available results
-    const columns = processedResults.length > 0
-        ? generateColumnsFromData(processedResults)
-        : [];
+    const columns = useMemo(() => {
+        return processedResults.length > 0
+            ? generateColumnsFromData(processedResults)
+            : [];
+    }, [processedResults]);
 
     return (
         <div className="flex flex-col m-4 gap-4">
@@ -112,36 +117,13 @@ export const BenchmarksPage = () => {
                         <Play className="h-4 w-4" />
                         Benchmark a Function
                     </Button>
-                    <div className="w-64">
-                        <Select
-                            value={String(selectedBenchmark)}
-                            onValueChange={handleBenchmarkSelection}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select benchmark" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {BENCHMARK_TYPES.map(benchmark => (
-                                    <SelectItem
-                                        key={benchmark.id}
-                                        value={benchmark.id}
-                                    >
-                                        {benchmark.label}
-                                    </SelectItem>
-                                ))}
-                                <SelectItem
-                                    key={CREATE_NEW_BENCHMARK}
-                                    value={CREATE_NEW_BENCHMARK}
-                                    className="text-green-600 font-medium"
-                                >
-                                    <div className="flex items-center gap-1">
-                                        <Plus className="h-4 w-4" />
-                                        Create New Benchmark
-                                    </div>
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <BenchmarkSelector
+                        benchmarks={availableBenchmarks}
+                        selectedBenchmarkId={selectedBenchmarkId}
+                        onSelectBenchmark={handleBenchmarkSelection}
+                        onCreateNew={handleCreateNew}
+                        className="w-64"
+                    />
                 </div>
             </div>
 
@@ -243,12 +225,7 @@ export const BenchmarksPage = () => {
                 open={showBenchmarkDialog}
                 onOpenChange={setShowBenchmarkDialog}
                 availableBenchmarks={availableBenchmarks}
-                initialBenchmarkId={
-                    // Find the numeric ID that corresponds to the currently selected benchmark
-                    availableBenchmarks.find(b =>
-                        b.name.toLowerCase().includes(String(selectedBenchmark))
-                    )?.id || undefined
-                }
+                initialBenchmarkId={selectedBenchmarkId}
             />
         </div>
     );
