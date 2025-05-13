@@ -17,9 +17,9 @@ const getBenchmarkResults = async (benchmarkId: number): Promise<BenchmarkResult
  * @param maxRetries - Maximum number of retries before stopping polling (default: 20)
  */
 export const useGetBenchmarkResults = (
-    benchmarkId: number = 2,
+    benchmarkId: number,
     pollingInterval: number = 200,
-    maxRetries: number = 20
+    maxRetries: number = 10,
 ) => {
     return useQuery({
         queryKey: ["benchmark-results", benchmarkId],

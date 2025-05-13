@@ -19,8 +19,9 @@ import { Loader2, Play, RefreshCw } from "lucide-react";
 import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
-import { BenchmarkResult } from "@/types";
-import { BenchmarkSelector, Benchmark } from "./components/BenchmarkSelector";
+import { BenchmarkResult, ModalFunction } from "@/types";
+import { BenchmarkSelector } from "./components/BenchmarkSelector";
+import { useGetBenchmarks } from "./api/useGetBenchmarks";
 
 // Benchmark descriptions and additional info
 const BENCHMARK_INFO: Record<string, {
@@ -54,12 +55,13 @@ export const BenchmarksPage = () => {
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
     const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmarkId);
+    const { data: benchmarkMetadata } = useGetBenchmarks();
 
     // Available benchmarks for selection
-    const availableBenchmarks: Benchmark[] = [
-        { id: 4, name: "Hello Benchmarks" },
-        { id: 1, name: "Matbench Discovery" },
-    ];
+    const availableBenchmarks = (benchmarkMetadata ?? []).map((bm: ModalFunction) => ({
+        id: bm.id,
+        name: bm.title || bm.function_name
+    }));
 
     // Get the benchmark info key based on the selected ID
     const benchmarkInfoKey = BENCHMARK_ID_MAP[selectedBenchmarkId] || "hello_benchmarks";

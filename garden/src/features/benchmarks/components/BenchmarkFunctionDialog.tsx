@@ -39,14 +39,12 @@ export const BenchmarkFunctionDialog = ({
 }: BenchmarkFunctionDialogProps) => {
     // Fetch gardens that are not in draft state
     const { data: gardens = [], isLoading: isGardensLoading } = useGetGardens({
-        draft: false, // Only get gardens that are not drafts
+        draft: false,
     });
 
     // Extract functions from the gardens and deduplicate them by ID
     const availableFunctions: { id: number; name: string }[] = React.useMemo(() => {
-        // Use a Map to deduplicate functions with the same ID
         const functionMap = new Map<number, { id: number; name: string }>();
-
         gardens.forEach((garden) => {
             if (garden.modal_functions) {
                 garden.modal_functions.forEach((func: ModalFunction) => {
@@ -61,7 +59,6 @@ export const BenchmarkFunctionDialog = ({
             }
         });
 
-        // Convert map values to array
         return Array.from(functionMap.values());
     }, [gardens]);
 
@@ -71,12 +68,10 @@ export const BenchmarkFunctionDialog = ({
     const [selectedBenchmark, setSelectedBenchmark] = useState<string>(
         initialBenchmarkId ? initialBenchmarkId.toString() : ""
     );
-    // Local state to track if dialog has been submitted successfully
     const [hasSubmitted, setHasSubmitted] = useState(false);
-    // Local loading state that we control completely
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { benchmarkFunction, isSuccess, error } = useBenchmarkFunction();
+    const { benchmarkFunction, isSuccess, error } = useBenchmarkFunction(parseInt(selectedBenchmark));
     const queryClient = useQueryClient();
 
     const handleSubmit = () => {
@@ -87,7 +82,6 @@ export const BenchmarkFunctionDialog = ({
 
         benchmarkFunction({
             function_id: parseInt(selectedFunction),
-            benchmark_id: parseInt(selectedBenchmark),
             task_id: 0, // TODO: implement task id logic
         });
     };
