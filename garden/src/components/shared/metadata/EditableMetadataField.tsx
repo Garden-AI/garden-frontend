@@ -63,21 +63,12 @@ const EditableMetadataField = ({
 
       // Handle read-only properties correctly
       if (fieldName !== 'entrypoint_ids' && fieldName !== 'modal_function_ids') {
-        // we added the owner to the contributors list to display 'Gardeners',
-        // remove before sending the patch request
-        if (fieldName === 'contributors' && 'owner' in entity) {
-          const contributors = Array.isArray(inputValue)
-            ? inputValue.filter(c => c !== (entity as Garden).owner)
-            : [];
-          updateData.contributors = contributors;
+        // Only try to update non-readonly fields
+        if (isArray) {
+          // Ensure array fields are always arrays, never null/undefined
+          updateData[fieldName] = Array.isArray(inputValue) ? inputValue : [];
         } else {
-          // Only try to update non-readonly fields
-          if (isArray) {
-            // Ensure array fields are always arrays, never null/undefined
-            updateData[fieldName] = Array.isArray(inputValue) ? inputValue : [];
-          } else {
-            updateData[fieldName] = inputValue;
-          }
+          updateData[fieldName] = inputValue;
         }
       }
 
