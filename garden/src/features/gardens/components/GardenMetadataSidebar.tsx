@@ -51,7 +51,7 @@ export const GardenMetadataSidebar = ({ garden, ownsThisGarden }: { garden: Gard
             <EditableMetadataField
                 label="Gardeners"
                 helpText="Creator and contributors to this Garden"
-                value={[garden.owner, ...(garden.contributors || [])]}
+                value={[...(garden.contributors || [])]}
                 fieldName="contributors"
                 entity={garden}
                 ownsThisEntity={ownsThisGarden}
