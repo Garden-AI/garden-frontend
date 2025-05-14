@@ -112,10 +112,6 @@ const EditableMetadataField = ({
             <MultipleSelector
               value={(Array.isArray(inputValue) ? inputValue : []).map(val => ({ value: val, label: val }))}
               onChange={(options: any) => {
-                // Always set inputValue to the mapped values from options, even if empty
-                if (fieldName === "contributors" && 'owner' in entity) {
-                  (entity as Garden).contributors = (entity as Garden).contributors?.filter(c => c !== (entity as Garden).owner)
-                }
                 // Ensure inputValue is set to an empty array when all options are cleared
                 const newValues = options.map((opt: any) => opt.value);
                 setInputValue(Array.isArray(newValues) ? newValues : []);
