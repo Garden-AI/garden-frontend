@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
     Dialog,
     DialogContent,
@@ -19,8 +19,10 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { useBenchmarkFunction } from "../api/useBenchmarkFunction";
 import { useQueryClient } from "@tanstack/react-query";
 import { Benchmark } from "./BenchmarkSelector";
+import { TaskSelector } from "./TaskSelector";
 import { useGetGardens } from "@/features/gardens/api/useGetGardens";
 import { ModalFunction } from "@/types";
+import { useGetBenchmarks } from "../api/useGetBenchmarks";
 
 interface BenchmarkFunctionDialogProps {
     open: boolean;
@@ -28,6 +30,20 @@ interface BenchmarkFunctionDialogProps {
     availableBenchmarks: Benchmark[];
     initialBenchmarkId?: number;
     initialFunctionId?: number;
+}
+
+// Define interfaces for type safety
+interface BenchmarkTask {
+    id: number;
+    function: {
+        title?: string;
+        function_name?: string;
+    };
+}
+
+interface BenchmarkMetadata {
+    id: number;
+    tasks?: BenchmarkTask[];
 }
 
 export const BenchmarkFunctionDialog = ({
@@ -41,6 +57,9 @@ export const BenchmarkFunctionDialog = ({
     const { data: gardens = [], isLoading: isGardensLoading } = useGetGardens({
         draft: false,
     });
+
+    // Fetch benchmark metadata
+    const { data: benchmarkMetadata = [] } = useGetBenchmarks();
 
     // Extract functions from the gardens and deduplicate them by ID
     const availableFunctions: { id: number; name: string }[] = React.useMemo(() => {
@@ -68,21 +87,49 @@ export const BenchmarkFunctionDialog = ({
     const [selectedBenchmark, setSelectedBenchmark] = useState<string>(
         initialBenchmarkId ? initialBenchmarkId.toString() : ""
     );
+    const [selectedTask, setSelectedTask] = useState<string>("");
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { benchmarkFunction, isSuccess, error } = useBenchmarkFunction(parseInt(selectedBenchmark));
+    // Get the selected benchmark data
+    const selectedBenchmarkData = useMemo(() =>
+        benchmarkMetadata.find((benchmark: BenchmarkMetadata) => benchmark.id === parseInt(selectedBenchmark)),
+        [benchmarkMetadata, selectedBenchmark]);
+
+    // Available tasks for the selected benchmark
+    const availableTasks = useMemo(() =>
+        selectedBenchmarkData?.tasks?.map((task: BenchmarkTask) => ({
+            id: task.id,
+            name: task.function.title || task.function.function_name
+        })) || [],
+        [selectedBenchmarkData]);
+
+    // Update selected task when benchmark changes
+    useEffect(() => {
+        if (selectedBenchmarkData?.tasks?.length > 0) {
+            setSelectedTask(selectedBenchmarkData.tasks[0].id.toString());
+        } else {
+            setSelectedTask("");
+        }
+    }, [selectedBenchmarkData]);
+
+    const selectedTaskId = parseInt(selectedTask) || 0;
+    const selectedBenchmarkId = selectedBenchmark ? parseInt(selectedBenchmark) : 0;
+
+    const { benchmarkFunction, isSuccess, error } = useBenchmarkFunction(
+        selectedBenchmarkId,
+        selectedTaskId
+    );
     const queryClient = useQueryClient();
 
     const handleSubmit = () => {
-        if (!selectedFunction || !selectedBenchmark) return;
+        if (!selectedFunction || !selectedBenchmark || !selectedTask) return;
 
         setIsSubmitting(true);
         setHasSubmitted(true);
 
         benchmarkFunction({
             function_id: parseInt(selectedFunction),
-            task_id: 0, // TODO: implement task id logic
         });
     };
 
@@ -91,6 +138,7 @@ export const BenchmarkFunctionDialog = ({
         if (!open) {
             setSelectedFunction("");
             setSelectedBenchmark("");
+            setSelectedTask("");
             setHasSubmitted(false);
             setIsSubmitting(false);
         }
@@ -102,8 +150,16 @@ export const BenchmarkFunctionDialog = ({
         if (open) {
             setHasSubmitted(false);
             setIsSubmitting(false);
+            if (initialBenchmarkId) {
+                setSelectedBenchmark(initialBenchmarkId.toString());
+                // Also set the first task for this benchmark
+                const benchmark = benchmarkMetadata.find((b: BenchmarkMetadata) => b.id === initialBenchmarkId);
+                if (benchmark?.tasks?.length > 0) {
+                    setSelectedTask(benchmark.tasks[0].id.toString());
+                }
+            }
         }
-    }, [open]);
+    }, [open, initialBenchmarkId, benchmarkMetadata]);
 
     // Handle successful submission
     useEffect(() => {
@@ -192,6 +248,22 @@ export const BenchmarkFunctionDialog = ({
                             </Select>
                         </div>
                     </div>
+
+                    {availableTasks.length > 0 && (
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <label htmlFor="task" className="text-right">
+                                Task
+                            </label>
+                            <div className="col-span-3">
+                                <TaskSelector
+                                    tasks={availableTasks}
+                                    selectedTaskId={selectedTask}
+                                    onSelectTask={(taskId) => setSelectedTask(String(taskId))}
+                                    placeholder="Select a task"
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {error && (
@@ -221,7 +293,13 @@ export const BenchmarkFunctionDialog = ({
                     ) : (
                         <Button
                             onClick={handleSubmit}
-                            disabled={!selectedFunction || !selectedBenchmark || isSubmitting || isGardensLoading}
+                            disabled={
+                                !selectedFunction ||
+                                !selectedBenchmark ||
+                                (availableTasks.length > 0 && !selectedTask) ||
+                                isSubmitting ||
+                                isGardensLoading
+                            }
                         >
                             {isSubmitting ? (
                                 <>

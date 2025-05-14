@@ -3,8 +3,7 @@ import { BenchmarkRequest, BenchmarkResult } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
-export const useBenchmarkFunction = (benchmarkId: number) => {
-    // NOTE: TODO: This is a mock implementation for now until we have the backend routes setup
+export const useBenchmarkFunction = (benchmarkId: number, taskId: number) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const benchmarkFunction = async (params: BenchmarkRequest): Promise<BenchmarkResult> => {
@@ -12,7 +11,7 @@ export const useBenchmarkFunction = (benchmarkId: number) => {
 
         try {
             const res = await instance.post(
-                `/benchmarks/${benchmarkId}`,
+                `/benchmarks/${benchmarkId}/${taskId}`,
                 params,
             )
             return await res.data;

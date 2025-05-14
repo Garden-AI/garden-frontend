@@ -5,8 +5,8 @@ import instance from "@/lib/axios";
 /**
  * Fetches benchmark results for the given benchmark id
  */
-const getBenchmarkResults = async (benchmarkId: number): Promise<BenchmarkResult[]> => {
-    const res = await instance.get(`/benchmarks/${benchmarkId}`);
+const getBenchmarkResults = async (benchmarkId: number, taskId: number): Promise<BenchmarkResult[]> => {
+    const res = await instance.get(`/benchmarks/${benchmarkId}/${taskId}`);
     return res.data;
 };
 
@@ -18,12 +18,13 @@ const getBenchmarkResults = async (benchmarkId: number): Promise<BenchmarkResult
  */
 export const useGetBenchmarkResults = (
     benchmarkId: number,
+    taskId: number,
     pollingInterval: number = 200,
     maxRetries: number = 10,
 ) => {
     return useQuery({
         queryKey: ["benchmark-results", benchmarkId],
-        queryFn: () => getBenchmarkResults(benchmarkId),
+        queryFn: () => getBenchmarkResults(benchmarkId, taskId),
         // Set a simple polling interval that checks if any results are pending
         refetchInterval: (data) => {
             let count = 0;

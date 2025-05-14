@@ -19,58 +19,56 @@ import { Loader2, Play, RefreshCw } from "lucide-react";
 import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
-import { BenchmarkResult, ModalFunction } from "@/types";
+import { BenchmarkResult } from "@/types";
 import { BenchmarkSelector } from "./components/BenchmarkSelector";
+import { TaskSelector } from "./components/TaskSelector";
 import { useGetBenchmarks } from "./api/useGetBenchmarks";
-
-// Benchmark descriptions and additional info
-const BENCHMARK_INFO: Record<string, {
-    title: string;
-    description: string;
-    metrics: string[];
-    referenceUrl: string;
-}> = {
-    "hello_benchmarks": {
-        title: "Hello Benchmarks",
-        description: "A simple benchmark for testing the benchmarking system.",
-        metrics: ["RMSD", "Ksrme", "R²", "MAE", "Precision", "DAF", "F1", "Accuracy", "CPS"],
-        referenceUrl: "#"
-    },
-    "matbench_discovery": {
-        title: "Matbench Discovery",
-        description: "Matbench Discovery evaluates ML models for materials discovery tasks including structure relaxation and thermal property prediction.",
-        metrics: ["RMSD", "Ksrme", "R²", "MAE", "Precision", "DAF", "F1", "Accuracy", "CPS"],
-        referenceUrl: "https://matbench-discovery.materialsproject.org/"
-    }
-};
-
-// Map from numeric IDs to string identifiers
-const BENCHMARK_ID_MAP: Record<number, string> = {
-    1: "matbench_discovery",
-    4: "hello_benchmarks"
-};
+import { Benchmark, BenchmarkTask } from "./types";
 
 export const BenchmarksPage = () => {
-    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number>(4);
+    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number>(0);
+    const [selectedTaskId, setSelectedTaskId] = useState<number>(0);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
-    const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmarkId);
-    const { data: benchmarkMetadata } = useGetBenchmarks();
+    const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmarkId, selectedTaskId);
+    const { data: benchmarkMetadata = [] } = useGetBenchmarks();
+
+    // Get the selected benchmark data
+    const selectedBenchmark = useMemo(() =>
+        benchmarkMetadata.find((benchmark: Benchmark) => benchmark.id === selectedBenchmarkId),
+        [benchmarkMetadata, selectedBenchmarkId]);
 
     // Available benchmarks for selection
-    const availableBenchmarks = (benchmarkMetadata ?? []).map((bm: ModalFunction) => ({
-        id: bm.id,
-        name: bm.title || bm.function_name
-    }));
+    const availableBenchmarks = useMemo(() => benchmarkMetadata.map((benchmark: Benchmark) => ({
+        id: benchmark.id,
+        name: benchmark.name
+    })), [benchmarkMetadata]);
 
-    // Get the benchmark info key based on the selected ID
-    const benchmarkInfoKey = BENCHMARK_ID_MAP[selectedBenchmarkId] || "hello_benchmarks";
-    const benchmarkInfo = BENCHMARK_INFO[benchmarkInfoKey];
+    // Available tasks for the selected benchmark
+    const availableTasks = useMemo(() =>
+        selectedBenchmark?.tasks?.map((task: BenchmarkTask) => ({
+            id: task.id,
+            name: task.function.title || task.function.function_name
+        })) || [],
+        [selectedBenchmark]);
 
     // Handle benchmark selection from the selector component
     const handleBenchmarkSelection = (benchmarkId: number | string) => {
         if (typeof benchmarkId === 'number') {
             setSelectedBenchmarkId(benchmarkId);
+
+            // Reset task selection when benchmark changes
+            const benchmark = benchmarkMetadata.find((b: Benchmark) => b.id === benchmarkId);
+            if (benchmark?.tasks?.length > 0) {
+                setSelectedTaskId(benchmark.tasks[0].id);
+            }
+        }
+    };
+
+    // Handle task selection
+    const handleTaskSelection = (taskId: number | string) => {
+        if (typeof taskId === 'number') {
+            setSelectedTaskId(taskId);
         }
     };
 
@@ -128,34 +126,28 @@ export const BenchmarksPage = () => {
                         onCreateNew={handleCreateNew}
                         className="w-64"
                     />
+                    {availableTasks.length > 0 && (
+                        <TaskSelector
+                            tasks={availableTasks}
+                            selectedTaskId={selectedTaskId}
+                            onSelectTask={handleTaskSelection}
+                            className="w-64"
+                            placeholder="Select task"
+                        />
+                    )}
                 </div>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>{benchmarkInfo.title}</CardTitle>
+                    <CardTitle>{selectedBenchmark?.name || "Benchmark"}</CardTitle>
                     <CardDescription>
-                        {benchmarkInfo.description}
+                        {selectedBenchmark?.description || "No description available"}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                        {benchmarkInfo.metrics.map(metric => (
-                            <span key={metric} className="px-2 py-1 bg-gray-100 rounded text-xs">
-                                {metric}
-                            </span>
-                        ))}
-                    </div>
-                    <div className="mt-2 text-sm">
-                        <a
-                            href={benchmarkInfo.referenceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
-                        >
-                            View reference →
-                        </a>
-                    </div>
+                    {/* We don't have metrics or reference URL from API, 
+                        so we'll leave this part empty or placeholder */}
                 </CardContent>
             </Card>
 

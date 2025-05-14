@@ -50,7 +50,13 @@ type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
 type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
 
 type BenchmarkRequest = components["schemas"]["BenchmarkRequest"];
-type BenchmarkResult = components["schemas"]["BenchmarkResult"]
+export interface BenchmarkResult {
+  id: number;
+  function_id: number;
+  date_invoked: string;
+  status: "pending" | "done" | "failed";
+  result: Record<string, unknown> | null;
+}
 
 export type {
   Garden,
