@@ -685,10 +685,6 @@ export interface components {
         BenchmarkRequest: {
             /** Function Id */
             function_id: number;
-            /** Args Kwargs Serialized */
-            args_kwargs_serialized?: string | null;
-            /** Args Blob Id */
-            args_blob_id?: string | null;
         };
         /** BenchmarkResult */
         BenchmarkResult: {

@@ -24,6 +24,8 @@ import { BenchmarkSelector } from "./components/BenchmarkSelector";
 import { TaskSelector } from "./components/TaskSelector";
 import { useGetBenchmarks } from "./api/useGetBenchmarks";
 import { Benchmark, BenchmarkTask } from "./types";
+import { useGlobusAuth } from "@globus/react-auth-context";
+import { SUPER_USERS } from "@/utils/utils";
 
 export const BenchmarksPage = () => {
     const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number>(0);
@@ -32,6 +34,10 @@ export const BenchmarksPage = () => {
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
     const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmarkId, selectedTaskId);
     const { data: benchmarkMetadata = [] } = useGetBenchmarks();
+
+    const auth = useGlobusAuth();
+
+    const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
 
     // Get the selected benchmark data
     const selectedBenchmark = useMemo(() =>
@@ -111,14 +117,18 @@ export const BenchmarksPage = () => {
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Benchmarks</h1>
                 <div className="flex gap-2 items-center">
-                    <Button
-                        variant="outline"
-                        className="flex items-center gap-1"
-                        onClick={() => setShowBenchmarkDialog(true)}
-                    >
-                        <Play className="h-4 w-4" />
-                        Benchmark a Function
-                    </Button>
+                    {isSuperUser ? (
+                        <Button
+                            variant="outline"
+                            className="flex items-center gap-1"
+                            onClick={() => setShowBenchmarkDialog(true)}
+                        >
+                            <Play className="h-4 w-4" />
+                            Benchmark a Function
+                        </Button>
+                    ) : (
+                        <></>
+                    )}
                     <BenchmarkSelector
                         benchmarks={availableBenchmarks}
                         selectedBenchmarkId={selectedBenchmarkId}
@@ -151,42 +161,44 @@ export const BenchmarksPage = () => {
                 </CardContent>
             </Card>
 
-            {isLoading ? (
-                <div className="flex justify-center items-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-                </div>
-            ) : (
-                <div>
-                    {hasPendingResults && (
-                        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-                            <div className="flex items-center gap-2">
-                                <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
-                                <span className="text-yellow-800">
-                                    Some benchmark runs are still in progress. Results will update automatically when they complete.
-                                </span>
+            {
+                isLoading ? (
+                    <div className="flex justify-center items-center py-12">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                    </div>
+                ) : (
+                    <div>
+                        {hasPendingResults && (
+                            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                                <div className="flex items-center gap-2">
+                                    <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
+                                    <span className="text-yellow-800">
+                                        Some benchmark runs are still in progress. Results will update automatically when they complete.
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {processedResults.length > 0 ? (
-                        <BenchmarksTable
-                            columns={columns}
-                            data={processedResults}
-                        />
-                    ) : (
-                        <div className="text-center py-8 border rounded-md bg-gray-50">
-                            <p className="text-gray-500">No benchmark results available.</p>
-                        </div>
-                    )}
+                        {processedResults.length > 0 ? (
+                            <BenchmarksTable
+                                columns={columns}
+                                data={processedResults}
+                            />
+                        ) : (
+                            <div className="text-center py-8 border rounded-md bg-gray-50">
+                                <p className="text-gray-500">No benchmark results available.</p>
+                            </div>
+                        )}
 
-                    {isFetching && !isLoading && (
-                        <div className="flex justify-center items-center mt-4">
-                            <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
-                            <span className="text-sm text-gray-500">Updating results...</span>
-                        </div>
-                    )}
-                </div>
-            )}
+                        {isFetching && !isLoading && (
+                            <div className="flex justify-center items-center mt-4">
+                                <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
+                                <span className="text-sm text-gray-500">Updating results...</span>
+                            </div>
+                        )}
+                    </div>
+                )
+            }
 
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogContent>
