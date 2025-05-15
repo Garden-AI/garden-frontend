@@ -49,6 +49,7 @@ const HomePage = () => {
       description:
         "This Garden contains models trained on the OC20 dataset published by FairChem and the Open Catalyst Project. The models in this Garden are full-sized and trained on the full OC20 dataset. Both S2EF and IS2RE models ...",
       doi: "10.26311/65ez-ew73",
+      doi_is_draft: false,
       publisher: "Hayden Holbrook",
       owner: "Hayden Holbrook",
       language: "English",
@@ -58,12 +59,17 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      authors: [],
+      contributors: [],
+      marked_for_deletion: null,
+      state: "PUBLISHED",
     },
     {
       title: "Materials Property Prediction with MAST-ML",
       description:
         "Random forest models of 33 materials properties to provide predictions, error bars, and domain of applicability guidance. Models are trained and executed with the Materials Simulation Toolkit for Machine Learning (MAST-ML) from the UW-Madison Computational Materials Group. This garden also includes three batch execution variants used to screen candidate perovskites.",
       doi: "10.26311/ep98-br79",
+      doi_is_draft: false,
       publisher: "Ryan Jacobs",
       owner: "Ryan Jacobs",
       language: "English",
@@ -73,12 +79,17 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      authors: [],
+      contributors: [],
+      marked_for_deletion: null,
+      state: "PUBLISHED",
     },
     {
       title: "Conservative to Primitive Conversion in Relativistic Hydrodynamics",
       description:
         "This garden hosts a suite of PyTorch models (and corresponding TensorRT engines) trained for conservative-to-primitive variable recovery in numerical relativity simulations, specifically tailored ...",
       doi: "10.26311/hhwc-0v60",
+      doi_is_draft: false,
       publisher: "Semih Kacmaz",
       owner: "Semih Kacmaz",
       language: "English",
@@ -88,12 +99,17 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      authors: [],
+      contributors: [],
+      marked_for_deletion: null,
+      state: "PUBLISHED",
     },
     {
       title: "Generative Materials Models",
       description:
         "This Garden contains models that take free text as input and produce molecular structures as output. Models include: - Chemeleon from Hyunsoo Park and Aron Walsh at University College London - AtomGPT from Kamal Choudhary at the National Institute of Standards and Technology",
       doi: "10.26311/6phn-gv02",
+      doi_is_draft: false,
       publisher: "Hyunsoo Park",
       owner: "Hyunsoo Park",
       language: "English",
@@ -103,6 +119,10 @@ const HomePage = () => {
       owner_identity_id: "100",
       id: 100,
       modal_function_ids: [],
+      authors: [],
+      contributors: [],
+      marked_for_deletion: null,
+      state: "PUBLISHED",
     },
   ];
 

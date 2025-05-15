@@ -100,13 +100,13 @@ export const BenchmarkFunctionDialog = ({
     const availableTasks = useMemo(() =>
         selectedBenchmarkData?.tasks?.map((task: BenchmarkTask) => ({
             id: task.id,
-            name: task.function.title || task.function.function_name
+            name: task.function.title || task.function.function_name || ""
         })) || [],
         [selectedBenchmarkData]);
 
     // Update selected task when benchmark changes
     useEffect(() => {
-        if (selectedBenchmarkData?.tasks?.length > 0) {
+        if (selectedBenchmarkData?.tasks && selectedBenchmarkData.tasks.length > 0) {
             setSelectedTask(selectedBenchmarkData.tasks[0].id.toString());
         } else {
             setSelectedTask("");
@@ -154,7 +154,7 @@ export const BenchmarkFunctionDialog = ({
                 setSelectedBenchmark(initialBenchmarkId.toString());
                 // Also set the first task for this benchmark
                 const benchmark = benchmarkMetadata.find((b: BenchmarkMetadata) => b.id === initialBenchmarkId);
-                if (benchmark?.tasks?.length > 0) {
+                if (benchmark?.tasks && benchmark.tasks.length > 0) {
                     setSelectedTask(benchmark.tasks[0].id.toString());
                 }
             }

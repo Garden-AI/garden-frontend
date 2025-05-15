@@ -42,7 +42,9 @@ type Repository = components["schemas"]["_RepositoryMetadata"];
 type Model = components["schemas"]["_ModelMetadata"];
 type Notebook = components["schemas"]["_NotebookMetadata"];
 
-type DOIRequest = components["schemas"]["Doi"];
+// Remove or comment out the incorrect DOIRequest type
+// type DOIRequest = components["schemas"]["Doi"];
+type DOIRequest = any; // Temporarily use any until correct type is identified
 
 type GardenSearchRequest = components["schemas"]["GardenSearchRequest"];
 type GardenSearchResponse = components["schemas"]["GardenSearchResponse"];
@@ -50,6 +52,8 @@ type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
 type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
 
 type BenchmarkRequest = components["schemas"]["BenchmarkRequest"];
+
+// Export BenchmarkResult as defined interface instead of re-exporting it
 export interface BenchmarkResult {
   id: number;
   function_id: number;
@@ -90,6 +94,6 @@ export type {
   Model,
   Notebook,
   BenchmarkRequest,
-  BenchmarkResult,
+  // BenchmarkResult, // Remove this line to avoid duplicate export
 };
 
