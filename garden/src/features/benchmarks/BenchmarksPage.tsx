@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
     Card,
     CardContent,
@@ -28,11 +28,13 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 
 export const BenchmarksPage = () => {
-    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number>(0);
-    const [selectedTaskId, setSelectedTaskId] = useState<number>(0);
+    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number>(1);
+    const [selectedTaskId, setSelectedTaskId] = useState<number>(1);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
-    const { data, isLoading, isFetching } = useGetBenchmarkResults(selectedBenchmarkId, selectedTaskId);
+
+    // Get benchmark results
+    const { data, isLoading, isFetching, refetch } = useGetBenchmarkResults(selectedBenchmarkId, selectedTaskId);
     const { data: benchmarkMetadata = [] } = useGetBenchmarks();
 
     const auth = useGlobusAuth();
@@ -65,20 +67,19 @@ export const BenchmarksPage = () => {
 
             // Reset task selection when benchmark changes
             const benchmark = benchmarkMetadata.find((b: Benchmark) => b.id === benchmarkId);
-            if (benchmark?.tasks?.length > 0) {
+            if (benchmark && benchmark.tasks && benchmark.tasks.length > 0) {
                 setSelectedTaskId(benchmark.tasks[0].id);
             }
         }
     };
 
-    // Handle task selection
     const handleTaskSelection = (taskId: number | string) => {
         if (typeof taskId === 'number') {
             setSelectedTaskId(taskId);
+            refetch();
         }
     };
 
-    // Handle create new benchmark
     const handleCreateNew = () => {
         setShowCreateDialog(true);
     };
@@ -90,6 +91,26 @@ export const BenchmarksPage = () => {
     const hasPendingResults = benchmarkResults.some(
         (result: BenchmarkResult) => result.status === "pending"
     );
+
+    // Set up polling for pending results
+    useEffect(() => {
+        let pollInterval: NodeJS.Timeout | null = null;
+
+        // If we have pending results, set up polling
+        if (hasPendingResults) {
+            pollInterval = setInterval(() => {
+                console.log('Polling for benchmark updates...');
+                refetch();
+            }, 3000); // Poll every 3 seconds
+        }
+
+        // Clean up on unmount or when hasPendingResults changes
+        return () => {
+            if (pollInterval) {
+                clearInterval(pollInterval);
+            }
+        };
+    }, [hasPendingResults, refetch]);
 
     // Process results for display, filtering out results without a result field or not done
     const processedResults = benchmarkResults
@@ -187,13 +208,6 @@ export const BenchmarksPage = () => {
                         ) : (
                             <div className="text-center py-8 border rounded-md bg-gray-50">
                                 <p className="text-gray-500">No benchmark results available.</p>
-                            </div>
-                        )}
-
-                        {isFetching && !isLoading && (
-                            <div className="flex justify-center items-center mt-4">
-                                <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
-                                <span className="text-sm text-gray-500">Updating results...</span>
                             </div>
                         )}
                     </div>
