@@ -133,7 +133,7 @@ export const BenchmarksPage = () => {
     }, [processedResults]);
 
     return (
-        <div className="flex flex-col m-4 gap-4">
+        <div className="flex flex-col m-4 gap-4 w-full lg:max-w-[80%] lg:mx-auto">
             <div className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-bold">Benchmarks</h1>
@@ -151,14 +151,14 @@ export const BenchmarksPage = () => {
 
                 <Card>
                     <CardHeader>
-                        <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
+                        <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                             <div>
                                 <CardTitle>{selectedBenchmark?.name || "Benchmark"}</CardTitle>
                                 <CardDescription className="mt-1">
                                     {selectedBenchmark?.description || "No description available"}
                                 </CardDescription>
                             </div>
-                            <div className="flex flex-wrap gap-3 items-end">
+                            <div className="flex flex-wrap gap-3 items-end mt-2 md:mt-0">
                                 <div className="flex flex-col gap-1">
                                     <span className="text-sm text-muted-foreground">Select Benchmark</span>
                                     <BenchmarkSelector
