@@ -1,6 +1,5 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
 import { usePatchModalFunction } from "../api/usePatchModalFunction";
@@ -23,7 +22,6 @@ import { FunctionMetadataSidebar } from "./FunctionMetadataSidebar";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { EditableMetadataField, EditableTitle } from "@/components/shared/metadata";
 import { SUPER_USERS } from "@/utils/utils";
-import { BenchmarkFunctionDialog } from "@/features/benchmarks/components/BenchmarkFunctionDialog";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
@@ -37,7 +35,6 @@ const ModalFunctionPage = () => {
   const auth = useGlobusAuth();
   const isSuperUser = SUPER_USERS.includes(auth.authorization?.user?.sub);
   const ownsThisFunction = auth.isAuthenticated && (modalFunction?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
-  const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
 
   if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
 
@@ -55,13 +52,6 @@ const ModalFunctionPage = () => {
       { label: modalFunction.title }
     ];
 
-  // Mock data for available benchmarks
-  const availableBenchmarks = [
-    { id: 1, name: "Matbench Discovery" },
-    { id: 2, name: "Thermal Conductivity" },
-    { id: 3, name: "Structure Prediction" }
-  ];
-
   return (
     <div className="container mb-6 max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -75,7 +65,6 @@ const ModalFunctionPage = () => {
             modalFunction={modalFunction as ModalFunctionWithOwner}
             gardenDOI={gardenDOI}
             ownsThisFunction={ownsThisFunction}
-            onBenchmarkClick={() => setShowBenchmarkDialog(true)}
           />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} gardenDOI={gardenDOI} />
@@ -91,24 +80,14 @@ const ModalFunctionPage = () => {
           ownsThisFunction={ownsThisFunction}
         />
       </div>
-
-      {/* Benchmark Function Dialog */}
-      <BenchmarkFunctionDialog
-        open={showBenchmarkDialog}
-        onOpenChange={setShowBenchmarkDialog}
-        availableBenchmarks={availableBenchmarks}
-        initialBenchmarkId={1} // Default to first benchmark
-        initialFunctionId={Number(id)} // Pass the current function ID
-      />
     </div>
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction, onBenchmarkClick }: {
+const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
   modalFunction: ModalFunctionWithOwner;
   gardenDOI?: string;
   ownsThisFunction: boolean;
-  onBenchmarkClick: () => void;
 }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
@@ -125,15 +104,6 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction, onBen
         }}
       />
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onBenchmarkClick}
-          className="flex items-center gap-1"
-        >
-          <Play className="h-4 w-4" />
-          Benchmark
-        </Button>
         <CopyButton
           icon={<LinkIcon className="h-4 w-4" />}
           content={gardenDOI
