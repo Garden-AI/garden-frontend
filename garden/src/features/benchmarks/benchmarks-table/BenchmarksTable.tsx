@@ -41,6 +41,41 @@ const DEFAULT_COLUMN_SIZE = 100;
 const FUNCTION_COLUMN_SIZE = 180;
 const DATE_COLUMN_SIZE = 120;
 
+// Helper function to generate a red-yellow-green background color based on value
+const getColorForValue = (value: number): string => {
+    // For values > 1, use a special shade of green with intensity based on magnitude
+    if (value > 1) {
+        const intensity = Math.min(0.6, 0.3 + Math.log10(value) * 0.15);
+        return `rgba(0, 180, 0, ${intensity})`;
+    }
+
+    // Ensure value is between 0 and 1 for color interpolation
+    const clampedValue = Math.max(0, Math.min(1, value));
+
+    // Red-Yellow-Green transition
+    // For values 0-0.5: red to yellow
+    // For values 0.5-1: yellow to green
+    let red, green, blue;
+
+    if (clampedValue < 0.5) {
+        // Red to Yellow (red stays at 255, green increases)
+        red = 255;
+        green = Math.round(255 * (clampedValue * 2)); // *2 to reach 255 at value=0.5
+        blue = 0;
+    } else {
+        // Yellow to Green (green stays at 255, red decreases)
+        red = Math.round(255 * (1 - (clampedValue - 0.5) * 2)); // *2 to reach 0 at value=1
+        green = 255;
+        blue = 0;
+    }
+
+    // Higher opacity for better visibility
+    const opacity = 0.3;
+
+    // Return rgba color with appropriate transparency
+    return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+};
+
 // Helper function to generate columns from data
 export const generateColumnsFromData = <TData extends Record<string, unknown>, TValue>(
     data: TData[]
@@ -108,19 +143,41 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
         size: DEFAULT_COLUMN_SIZE,
         cell: ({ row }) => {
             const value = row.getValue(key);
+            let displayValue: string | number | null = null;
 
             // Handle complex objects with parsedValue
             if (value && typeof value === 'object' && 'parsedValue' in value) {
                 const parsedValue = (value as { parsedValue: number }).parsedValue;
-                return typeof parsedValue === 'number' ? parsedValue.toFixed(3) : parsedValue;
+                if (typeof parsedValue === 'number') {
+                    displayValue = parsedValue.toFixed(3);
+                } else {
+                    displayValue = String(parsedValue);
+                }
+            }
+            // Handle number values
+            else if (typeof value === 'number') {
+                displayValue = Number(value).toFixed(3);
+            }
+            // Other values
+            else {
+                displayValue = String(value);
             }
 
-            // Format numbers to 3 decimal places
-            if (typeof value === 'number') {
-                return Number(value).toFixed(3);
+            return displayValue;
+        },
+        // Store the numeric value in the column meta for coloring in the main table render
+        meta: {
+            isMetricColumn: true,
+            getNumericValue: (value: unknown): number | null => {
+                if (typeof value === 'number') {
+                    return value;
+                }
+                if (value && typeof value === 'object' && 'parsedValue' in value) {
+                    const parsedValue = (value as { parsedValue: unknown }).parsedValue;
+                    return typeof parsedValue === 'number' ? parsedValue : null;
+                }
+                return null;
             }
-
-            return value;
         }
     })) as ColumnDef<TData, TValue>[];
 
@@ -139,6 +196,35 @@ const FunctionNameCell = ({ functionId }: { functionId: string }) => {
             <Link to={`/modal-functions/${functionId}`} className="font-medium">{data?.title || "Unknown Function"}</Link>
         </div>
     );
+};
+
+// Define column metadata type
+interface ColumnMeta {
+    isMetricColumn?: boolean;
+    getNumericValue?: (value: unknown) => number | null;
+}
+
+// Helper function to check if a value can be colored (is numeric)
+const getNumericValueForColoring = (
+    value: unknown,
+    column: { columnDef: { meta?: ColumnMeta } }
+): number | null => {
+    // Only apply coloring to metric columns (not function names or dates)
+    if (!column.columnDef.meta?.isMetricColumn) {
+        return null;
+    }
+
+    // If the column has a getNumericValue function in meta, use it
+    if (column.columnDef.meta?.getNumericValue) {
+        return column.columnDef.meta.getNumericValue(value);
+    }
+
+    // Default handling for numeric values
+    if (typeof value === 'number') {
+        return value;
+    }
+
+    return null;
 };
 
 export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
@@ -244,15 +330,30 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                         {table.getRowModel().rows.length > 0 ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id}>
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell
-                                            key={cell.id}
-                                            className="px-2"
-                                            style={{ width: cell.column.getSize() }}
-                                        >
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
+                                    {row.getVisibleCells().map((cell) => {
+                                        const value = cell.getValue();
+                                        const style: React.CSSProperties = {
+                                            width: cell.column.getSize()
+                                        };
+
+                                        // Get numeric value for coloring
+                                        const numericValue = getNumericValueForColoring(value, cell.column);
+
+                                        // Apply background color for numeric values (including those > 1)
+                                        if (numericValue !== null && numericValue >= 0) {
+                                            style.backgroundColor = getColorForValue(numericValue);
+                                        }
+
+                                        return (
+                                            <TableCell
+                                                key={cell.id}
+                                                className="px-2"
+                                                style={style}
+                                            >
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        );
+                                    })}
                                 </TableRow>
                             ))
                         ) : (
