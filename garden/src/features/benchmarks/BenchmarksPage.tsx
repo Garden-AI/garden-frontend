@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
     Card,
-    CardContent,
     CardDescription,
     CardHeader,
     CardTitle
@@ -34,7 +33,7 @@ export const BenchmarksPage = () => {
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
 
     // Get benchmark results
-    const { data, isLoading, isFetching, refetch } = useGetBenchmarkResults(selectedBenchmarkId, selectedTaskId);
+    const { data, isLoading, refetch } = useGetBenchmarkResults(selectedBenchmarkId, selectedTaskId);
     const { data: benchmarkMetadata = [] } = useGetBenchmarks();
 
     const auth = useGlobusAuth();
@@ -135,10 +134,10 @@ export const BenchmarksPage = () => {
 
     return (
         <div className="flex flex-col m-4 gap-4">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Benchmarks</h1>
-                <div className="flex gap-2 items-center">
-                    {isSuperUser ? (
+            <div className="flex flex-col gap-4">
+                <div className="flex justify-between items-center">
+                    <h1 className="text-2xl font-bold">Benchmarks</h1>
+                    {isSuperUser && (
                         <Button
                             variant="outline"
                             className="flex items-center gap-1"
@@ -147,40 +146,46 @@ export const BenchmarksPage = () => {
                             <Play className="h-4 w-4" />
                             Benchmark a Function
                         </Button>
-                    ) : (
-                        <></>
-                    )}
-                    <BenchmarkSelector
-                        benchmarks={availableBenchmarks}
-                        selectedBenchmarkId={selectedBenchmarkId}
-                        onSelectBenchmark={handleBenchmarkSelection}
-                        onCreateNew={handleCreateNew}
-                        className="w-64"
-                    />
-                    {availableTasks.length > 0 && (
-                        <TaskSelector
-                            tasks={availableTasks}
-                            selectedTaskId={selectedTaskId}
-                            onSelectTask={handleTaskSelection}
-                            className="w-64"
-                            placeholder="Select task"
-                        />
                     )}
                 </div>
-            </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>{selectedBenchmark?.name || "Benchmark"}</CardTitle>
-                    <CardDescription>
-                        {selectedBenchmark?.description || "No description available"}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {/* We don't have metrics or reference URL from API, 
-                        so we'll leave this part empty or placeholder */}
-                </CardContent>
-            </Card>
+                <Card>
+                    <CardHeader>
+                        <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
+                            <div>
+                                <CardTitle>{selectedBenchmark?.name || "Benchmark"}</CardTitle>
+                                <CardDescription className="mt-1">
+                                    {selectedBenchmark?.description || "No description available"}
+                                </CardDescription>
+                            </div>
+                            <div className="flex flex-wrap gap-3 items-end">
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-sm text-muted-foreground">Select Benchmark</span>
+                                    <BenchmarkSelector
+                                        benchmarks={availableBenchmarks}
+                                        selectedBenchmarkId={selectedBenchmarkId}
+                                        onSelectBenchmark={handleBenchmarkSelection}
+                                        onCreateNew={handleCreateNew}
+                                        className="w-56"
+                                    />
+                                </div>
+                                {availableTasks.length > 0 && (
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-sm text-muted-foreground">Select Benchmark Task</span>
+                                        <TaskSelector
+                                            tasks={availableTasks}
+                                            selectedTaskId={selectedTaskId}
+                                            onSelectTask={handleTaskSelection}
+                                            className="w-56"
+                                            placeholder="Select task"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </CardHeader>
+                </Card>
+            </div>
 
             {
                 isLoading ? (
