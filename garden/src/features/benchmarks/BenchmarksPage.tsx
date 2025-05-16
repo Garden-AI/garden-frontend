@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
     Card,
-    CardDescription,
+    CardContent,
     CardHeader,
     CardTitle
 } from "@/components/shadcn/card";
@@ -19,25 +19,75 @@ import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/Ben
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
 import { BenchmarkResult } from "@/types";
-import { BenchmarkSelector } from "./components/BenchmarkSelector";
-import { TaskSelector } from "./components/TaskSelector";
 import { useGetBenchmarks } from "./api/useGetBenchmarks";
 import { Benchmark, BenchmarkTask } from "./types";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
+import { cn } from "@/utils/form.utils";
+
+// Mock data for visualizing tables when API data isn't available
+const mockBenchmarkResults = [
+    {
+        function_id: 1,
+        date_invoked: new Date().toISOString(),
+        accuracy: 0.95,
+        f1_score: 0.92,
+        precision: 0.93,
+        recall: 0.91,
+        latency_ms: 125,
+        loss: 0.05,
+    },
+    {
+        function_id: 2,
+        date_invoked: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+        accuracy: 0.78,
+        f1_score: 0.72,
+        precision: 0.75,
+        recall: 0.68,
+        latency_ms: 98,
+        loss: 0.21,
+    },
+    {
+        function_id: 3,
+        date_invoked: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+        accuracy: 0.52,
+        f1_score: 0.48,
+        precision: 0.51,
+        recall: 0.45,
+        latency_ms: 145,
+        loss: 0.48,
+    },
+    {
+        function_id: 4,
+        date_invoked: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
+        accuracy: 0.31,
+        f1_score: 0.27,
+        precision: 0.30,
+        recall: 0.25,
+        latency_ms: 167,
+        loss: 0.67,
+    },
+    {
+        function_id: 1,
+        date_invoked: new Date(Date.now() - 345600000).toISOString(), // 4 days ago
+        accuracy: 0.09,
+        f1_score: 0.04,
+        precision: 0.06,
+        recall: 0.03,
+        latency_ms: 211,
+        loss: 0.94,
+    }
+];
 
 export const BenchmarksPage = () => {
-    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number>(1);
-    const [selectedTaskId, setSelectedTaskId] = useState<number>(1);
+    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<number | null>(null);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
+    const [showMockData, setShowMockData] = useState(false); // Toggle for mock data
 
-    // Get benchmark results
-    const { data, isLoading, refetch } = useGetBenchmarkResults(selectedBenchmarkId, selectedTaskId);
+    // Get benchmark data
     const { data: benchmarkMetadata = [] } = useGetBenchmarks();
-
     const auth = useGlobusAuth();
-
     const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
 
     // Get the selected benchmark data
@@ -45,180 +95,195 @@ export const BenchmarksPage = () => {
         benchmarkMetadata.find((benchmark: Benchmark) => benchmark.id === selectedBenchmarkId),
         [benchmarkMetadata, selectedBenchmarkId]);
 
-    // Available benchmarks for selection
-    const availableBenchmarks = useMemo(() => benchmarkMetadata.map((benchmark: Benchmark) => ({
-        id: benchmark.id,
-        name: benchmark.name
-    })), [benchmarkMetadata]);
-
-    // Available tasks for the selected benchmark
-    const availableTasks = useMemo(() =>
-        selectedBenchmark?.tasks?.map((task: BenchmarkTask) => ({
-            id: task.id,
-            name: task.function.title || task.function.function_name
-        })) || [],
-        [selectedBenchmark]);
-
-    // Handle benchmark selection from the selector component
-    const handleBenchmarkSelection = (benchmarkId: number | string) => {
-        if (typeof benchmarkId === 'number') {
-            setSelectedBenchmarkId(benchmarkId);
-
-            // Reset task selection when benchmark changes
-            const benchmark = benchmarkMetadata.find((b: Benchmark) => b.id === benchmarkId);
-            if (benchmark && benchmark.tasks && benchmark.tasks.length > 0) {
-                setSelectedTaskId(benchmark.tasks[0].id);
-            }
-        }
-    };
-
-    const handleTaskSelection = (taskId: number | string) => {
-        if (typeof taskId === 'number') {
-            setSelectedTaskId(taskId);
-            refetch();
-        }
-    };
-
-    const handleCreateNew = () => {
-        setShowCreateDialog(true);
-    };
-
-    // Safely access data and check for pending results
-    const benchmarkResults = Array.isArray(data) ? data : [];
-
-    // Check if any results have pending status
-    const hasPendingResults = benchmarkResults.some(
-        (result: BenchmarkResult) => result.status === "pending"
-    );
-
-    // Set up polling for pending results
+    // Use the first benchmark by default if none is selected
     useEffect(() => {
-        let pollInterval: NodeJS.Timeout | null = null;
-
-        // If we have pending results, set up polling
-        if (hasPendingResults) {
-            pollInterval = setInterval(() => {
-                console.log('Polling for benchmark updates...');
-                refetch();
-            }, 3000); // Poll every 3 seconds
+        if (!selectedBenchmarkId && benchmarkMetadata.length > 0) {
+            setSelectedBenchmarkId(benchmarkMetadata[0].id);
         }
+    }, [benchmarkMetadata, selectedBenchmarkId]);
 
-        // Clean up on unmount or when hasPendingResults changes
-        return () => {
-            if (pollInterval) {
-                clearInterval(pollInterval);
+    const handleBenchmarkSelection = (benchmarkId: number) => {
+        setSelectedBenchmarkId(benchmarkId);
+    };
+
+    // Function to render benchmark results for a specific task
+    const TaskResultPanel = ({ task }: { task: BenchmarkTask }) => {
+        const { data, isLoading, refetch } = useGetBenchmarkResults(selectedBenchmarkId!, task.id);
+
+        const benchmarkResults = Array.isArray(data) ? data : [];
+        const hasPendingResults = benchmarkResults.some(
+            (result: BenchmarkResult) => result.status === "pending"
+        );
+
+        // Set up polling for pending results
+        useEffect(() => {
+            let pollInterval: NodeJS.Timeout | null = null;
+
+            if (hasPendingResults) {
+                pollInterval = setInterval(() => {
+                    console.log(`Polling for benchmark updates for task ${task.id}...`);
+                    refetch();
+                }, 3000); // Poll every 3 seconds
             }
-        };
-    }, [hasPendingResults, refetch]);
 
-    // Process results for display, filtering out results without a result field or not done
-    const processedResults = benchmarkResults
-        .filter((item: BenchmarkResult) =>
-            item.result && item.status === "done"
-        )
-        .map((item: BenchmarkResult) => ({
-            // Add function_id to each result so we can fetch function metadata
-            function_id: item.function_id,
-            // Add date_invoked field
-            date_invoked: item.date_invoked,
-            // Spread the result data
-            ...item.result as Record<string, unknown>
-        }));
+            return () => {
+                if (pollInterval) {
+                    clearInterval(pollInterval);
+                }
+            };
+        }, [hasPendingResults, refetch]);
 
-    // Generate columns from available results
-    const columns = useMemo(() => {
-        return processedResults.length > 0
-            ? generateColumnsFromData(processedResults)
-            : [];
-    }, [processedResults]);
+        // Process results for display
+        const processedResults = benchmarkResults
+            .filter((item: BenchmarkResult) =>
+                item.result && item.status === "done"
+            )
+            .map((item: BenchmarkResult) => ({
+                function_id: item.function_id,
+                date_invoked: item.date_invoked,
+                ...item.result as Record<string, unknown>
+            }));
+
+        // Add mock data if no real data available and showMockData is enabled
+        const displayResults = showMockData && processedResults.length === 0
+            ? mockBenchmarkResults
+            : processedResults;
+
+        // Generate columns from available results
+        const columns = useMemo(() => {
+            return displayResults.length > 0
+                ? generateColumnsFromData(displayResults)
+                : [];
+        }, [displayResults]);
+
+        return (
+            <Card className="mb-6">
+                <CardHeader>
+                    <CardTitle className="text-lg">
+                        {task.function.title || task.function.function_name}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {isLoading ? (
+                        <div className="flex justify-center items-center py-8">
+                            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                        </div>
+                    ) : (
+                        <div>
+                            {hasPendingResults && (
+                                <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                                    <div className="flex items-center gap-2">
+                                        <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
+                                        <span className="text-yellow-800 text-sm">
+                                            Results are being processed and will update automatically.
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {displayResults.length > 0 ? (
+                                <BenchmarksTable
+                                    columns={columns}
+                                    data={displayResults}
+                                />
+                            ) : (
+                                <div className="text-center py-6 border rounded-md bg-gray-50">
+                                    <p className="text-gray-500">No results available for this task.</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        );
+    };
 
     return (
-        <div className="flex flex-col m-4 gap-4 w-full lg:max-w-[80%] lg:mx-auto">
-            <div className="flex flex-col gap-4">
-                <div className="flex justify-between items-center">
-                    <h1 className="text-2xl font-bold">Benchmarks</h1>
-                    {isSuperUser && (
-                        <Button
-                            variant="outline"
-                            className="flex items-center gap-1"
-                            onClick={() => setShowBenchmarkDialog(true)}
-                        >
-                            <Play className="h-4 w-4" />
-                            Benchmark a Function
-                        </Button>
-                    )}
+        <div className="flex h-full">
+            {/* Benchmarks Sidebar */}
+            <div className="w-64 border-r h-full p-4 flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="font-semibold text-lg">Benchmarks</h2>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                            <div>
-                                <CardTitle>{selectedBenchmark?.name || "Benchmark"}</CardTitle>
-                                <CardDescription className="mt-1">
-                                    {selectedBenchmark?.description || "No description available"}
-                                </CardDescription>
-                            </div>
-                            <div className="flex flex-wrap gap-3 items-end mt-2 md:mt-0">
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-sm text-muted-foreground">Select Benchmark</span>
-                                    <BenchmarkSelector
-                                        benchmarks={availableBenchmarks}
-                                        selectedBenchmarkId={selectedBenchmarkId}
-                                        onSelectBenchmark={handleBenchmarkSelection}
-                                        onCreateNew={handleCreateNew}
-                                        className="w-56"
-                                    />
+                <div className="overflow-y-auto flex-1">
+                    {benchmarkMetadata.map((benchmark: Benchmark) => (
+                        <div
+                            key={benchmark.id}
+                            className={cn(
+                                "p-2 rounded-md cursor-pointer mb-1 transition-colors",
+                                selectedBenchmarkId === benchmark.id
+                                    ? "bg-primary text-primary-foreground"
+                                    : "hover:bg-muted"
+                            )}
+                            onClick={() => handleBenchmarkSelection(benchmark.id)}
+                        >
+                            <div className="font-medium truncate">{benchmark.name}</div>
+                            {selectedBenchmarkId === benchmark.id && (
+                                <div className="text-xs mt-1 text-primary-foreground/80 truncate">
+                                    {benchmark.tasks?.length || 0} tasks
                                 </div>
-                                {availableTasks.length > 0 && (
-                                    <div className="flex flex-col gap-1">
-                                        <span className="text-sm text-muted-foreground">Select Benchmark Task</span>
-                                        <TaskSelector
-                                            tasks={availableTasks}
-                                            selectedTaskId={selectedTaskId}
-                                            onSelectTask={handleTaskSelection}
-                                            className="w-56"
-                                            placeholder="Select task"
-                                        />
-                                    </div>
-                                )}
-                            </div>
+                            )}
                         </div>
-                    </CardHeader>
-                </Card>
+                    ))}
+                </div>
+
+                {isSuperUser && (
+                    <div className="mt-4 pt-4 border-t space-y-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full flex items-center gap-1"
+                            onClick={() => setShowBenchmarkDialog(true)}
+                        >
+                            <Play className="h-3 w-3" />
+                            Run Benchmark
+                        </Button>
+
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full text-xs"
+                            onClick={() => setShowMockData(!showMockData)}
+                        >
+                            {showMockData ? "Hide" : "Show"} Mock Data
+                        </Button>
+                    </div>
+                )}
             </div>
 
-            {
-                isLoading ? (
-                    <div className="flex justify-center items-center py-12">
-                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-                    </div>
-                ) : (
-                    <div>
-                        {hasPendingResults && (
-                            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-                                <div className="flex items-center gap-2">
-                                    <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
-                                    <span className="text-yellow-800">
-                                        Some benchmark runs are still in progress. Results will update automatically when they complete.
-                                    </span>
-                                </div>
-                            </div>
-                        )}
+            {/* Main Content Area */}
+            <div className="flex-1 p-6 overflow-y-auto">
+                {selectedBenchmark ? (
+                    <>
+                        <div className="mb-6">
+                            <h1 className="text-2xl font-bold">{selectedBenchmark.name}</h1>
+                            <p className="text-muted-foreground mt-1">{selectedBenchmark.description || "No description available"}</p>
+                        </div>
 
-                        {processedResults.length > 0 ? (
-                            <BenchmarksTable
-                                columns={columns}
-                                data={processedResults}
-                            />
+                        {selectedBenchmark.tasks && selectedBenchmark.tasks.length > 0 ? (
+                            <div>
+                                {selectedBenchmark.tasks.map((task) => (
+                                    <TaskResultPanel key={task.id} task={task} />
+                                ))}
+                            </div>
                         ) : (
-                            <div className="text-center py-8 border rounded-md bg-gray-50">
-                                <p className="text-gray-500">No benchmark results available.</p>
+                            <div className="text-center py-12 border rounded-md bg-gray-50">
+                                <p className="text-gray-500">No benchmark tasks available for this benchmark.</p>
                             </div>
                         )}
+                    </>
+                ) : (
+                    <div className="flex items-center justify-center h-full">
+                        <div className="text-center">
+                            <h2 className="text-xl font-medium text-gray-500 mb-2">Select a benchmark</h2>
+                            <p className="text-muted-foreground">Choose a benchmark from the sidebar to view its results</p>
+                        </div>
                     </div>
-                )
-            }
+                )}
+            </div>
 
+            {/* Dialogs */}
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogContent>
                     <DialogHeader>
@@ -251,8 +316,11 @@ export const BenchmarksPage = () => {
             <BenchmarkFunctionDialog
                 open={showBenchmarkDialog}
                 onOpenChange={setShowBenchmarkDialog}
-                availableBenchmarks={availableBenchmarks}
-                initialBenchmarkId={selectedBenchmarkId}
+                availableBenchmarks={benchmarkMetadata.map((benchmark: Benchmark) => ({
+                    id: benchmark.id,
+                    name: benchmark.name
+                }))}
+                initialBenchmarkId={selectedBenchmarkId || undefined}
             />
         </div>
     );
