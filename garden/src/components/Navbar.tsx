@@ -49,7 +49,6 @@ const Navbar = () => {
   };
 
   const Links = [
-    { name: "Benchmarks", link: "/benchmarks" },
     { name: "Search", link: "/search" },
     { name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" },
   ];

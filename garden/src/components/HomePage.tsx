@@ -147,11 +147,6 @@ const HomePage = () => {
                 Start Your Garden
               </button>
             </Link>
-            <Link to="/benchmarks">
-              <button className="rounded-full border-2 border-green bg-green px-8 py-3 text-lg font-semibold text-white transition-transform hover:scale-105">
-                Benchmark Models
-              </button>
-            </Link>
           </div>
         </div>
       </div>
@@ -162,7 +157,7 @@ const HomePage = () => {
             <a
               href="https://www.uchicago.edu/en"
               target="_blank"
-              className="mr-5 hover:text-gray-200 dark:hover:text-gray-200"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-200" rel="noreferrer"
             >
               <UChicagoLogo />
             </a>
@@ -170,7 +165,7 @@ const HomePage = () => {
             <a
               href="https://www.nsf.gov/"
               target="_blank"
-              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400" rel="noreferrer"
             >
               <NSFLogo />
             </a>
@@ -178,7 +173,7 @@ const HomePage = () => {
             <a
               href="https://www.wisc.edu/"
               target="_blank"
-              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400" rel="noreferrer"
             >
               <WisconsinLogo />
             </a>
@@ -186,14 +181,14 @@ const HomePage = () => {
             <a
               href="https://www.anl.gov/"
               target="_blank"
-              className="mr-5 pb-4 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 pb-4 hover:text-gray-200 dark:hover:text-gray-400" rel="noreferrer"
             >
               <ArgonneLogo />
             </a>
             <a
               href="https://www.energy.gov/"
               target="_blank"
-              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 hover:text-gray-200 dark:hover:text-gray-400" rel="noreferrer"
             >
               <DOELogo />
             </a>
@@ -201,7 +196,7 @@ const HomePage = () => {
             <a
               href="https://www.mit.edu/"
               target="_blank"
-              className="mr-5 w-24 pb-4 pt-3 hover:text-gray-200 dark:hover:text-gray-400"
+              className="mr-5 w-24 pb-4 pt-3 hover:text-gray-200 dark:hover:text-gray-400" rel="noreferrer"
             >
               <MITLogo />
             </a>
