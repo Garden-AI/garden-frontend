@@ -145,9 +145,7 @@ export const BenchmarksPage = () => {
             }));
 
         // Add mock data if no real data available and showMockData is enabled
-        const displayResults = showMockData && processedResults.length === 0
-            ? mockBenchmarkResults
-            : processedResults;
+        const displayResults = showMockData ? mockBenchmarkResults : processedResults;
 
         // Generate columns from available results
         const columns = useMemo(() => {
