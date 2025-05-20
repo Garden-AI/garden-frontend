@@ -22,7 +22,7 @@ return result
 
 const getExampleUsagePreview = (functionName: string = "function_name", userValue?: string) => {
   const defaultExample = getExampleUsagePlaceholder(functionName);
-  
+
   return `
 from garden_ai import GardenClient
 client = GardenClient()
@@ -36,17 +36,17 @@ interface FunctionMetadataEditorProps {
   form: UseFormReturn<ModalAppFormValues>;
   metadata: ModalFileMetadataResponse;
   handleFunctionMetadataChange: (
-    functionIndex: number, 
-    field: string, 
+    functionIndex: number,
+    field: string,
     value: string,
     event?: React.KeyboardEvent<HTMLTextAreaElement>
   ) => void;
 }
 
-export const FunctionMetadataEditor = ({ 
-  form, 
-  metadata, 
-  handleFunctionMetadataChange 
+export const FunctionMetadataEditor = ({
+  form,
+  metadata,
+  handleFunctionMetadataChange
 }: FunctionMetadataEditorProps) => (
   <div className="rounded-lg border">
     <div className="border-b bg-gray-50 p-4">
@@ -83,7 +83,7 @@ export const FunctionMetadataEditor = ({
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name={`modal.modal_functions.${i}.description`}
@@ -91,9 +91,9 @@ export const FunctionMetadataEditor = ({
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        {...field} 
-                        placeholder="Describe what this function does..." 
+                      <Textarea
+                        {...field}
+                        placeholder="Describe what this function does..."
                         className="min-h-[100px]"
                       />
                     </FormControl>
@@ -104,7 +104,7 @@ export const FunctionMetadataEditor = ({
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name={`modal.modal_functions.${i}.example_usage`}
@@ -112,8 +112,8 @@ export const FunctionMetadataEditor = ({
                   <FormItem>
                     <FormLabel>Example Usage</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        {...field} 
+                      <Textarea
+                        {...field}
                         placeholder={getExampleUsagePlaceholder(func.function_name)}
                         className="min-h-[150px] font-mono"
                         onChange={(e) => {
@@ -148,7 +148,7 @@ export const FunctionMetadataEditor = ({
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name={`modal.modal_functions.${i}.function_text`}

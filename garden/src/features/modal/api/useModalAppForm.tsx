@@ -144,7 +144,7 @@ export const useModalAppForm = ({
 
         // Initialize the modal_functions field with the validated metadata
         const functions = metadata.modal_functions || [];
-        form.setValue("modal.modal_functions", functions as any);
+        form.setValue("modal.modal_functions", functions);
 
         setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
@@ -154,6 +154,13 @@ export const useModalAppForm = ({
         if (useModalAppUploadValidationError) {
           // Use the actual backend error with its specific message and suggested fix
           setValidationError(useModalAppUploadValidationError);
+          toast.error("Validation failed");
+        } else {
+          // If for some reason we don't have a validation error, create a generic one
+          setValidationError({
+            message: "File validation failed. Please check your file and try again.",
+            isApiError: false
+          });
           toast.error("Validation failed");
         }
       }
@@ -251,7 +258,7 @@ export const useModalAppForm = ({
 
         // Initialize the modal_functions field with the validated metadata
         const functions = metadata.modal_functions || [];
-        form.setValue("modal.modal_functions", functions as any);
+        form.setValue("modal.modal_functions", functions);
 
         setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
@@ -261,6 +268,13 @@ export const useModalAppForm = ({
         if (useModalAppUploadValidationError) {
           // Use the actual backend error with its specific message and suggested fix
           setValidationError(useModalAppUploadValidationError);
+          toast.error("Validation failed");
+        } else {
+          // If for some reason we don't have a validation error, create a generic one
+          setValidationError({
+            message: "File validation failed. Please check your file and try again.",
+            isApiError: false
+          });
           toast.error("Validation failed");
         }
       }
@@ -365,7 +379,7 @@ export const useModalAppForm = ({
           setSearchParams({ modalAppId: appId.toString() });
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Get the properly formatted error from useModalAppUpload
       if (useModalAppUploadDeploymentError) {
         setDeploymentError(useModalAppUploadDeploymentError);

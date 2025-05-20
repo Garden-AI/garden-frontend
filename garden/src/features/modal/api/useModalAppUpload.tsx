@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useValidateModalFile } from "../../gardens/api/useValidateModalFile";
 import { useCreateModalApp, DeployTimeoutError, createOrUpdateModalApp } from "../../modal/api/useCreateModalApp";
 import { ModalAppPatchRequest, ModalFileMetadataResponse } from "@/types";
@@ -45,15 +45,43 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
   const [validationError, setValidationError] = useState<ValidationError | null>(null);
   const [deploymentError, setDeploymentError] = useState<DeploymentError | null>(null);
 
-  const { mutateAsync: validateFile, isPending: isValidating } = useValidateModalFile();
+  const { mutateAsync: validateFile, isPending: isValidating, error: validationQueryError } = useValidateModalFile();
   const { mutateAsync: createOrUpdateApp, isPending: isDeploying } = useCreateModalApp();
+
+  // Sync validation errors from the query with our local state
+  useEffect(() => {
+    if (validationQueryError) {
+      let errorMessage = "Unknown validation error";
+      let suggestedFix: string | undefined = undefined;
+      let isApiError = false;
+
+      if (validationQueryError instanceof ApiError) {
+        errorMessage = validationQueryError.message;
+        suggestedFix = validationQueryError.suggestedFix;
+        isApiError = true;
+      } else if (validationQueryError instanceof AxiosError) {
+        const apiError = ApiError.fromAxiosError(validationQueryError);
+        errorMessage = apiError.message;
+        suggestedFix = apiError.suggestedFix;
+        isApiError = true;
+      } else if (validationQueryError instanceof Error) {
+        errorMessage = validationQueryError.message;
+      }
+
+      setValidationError({
+        message: errorMessage,
+        suggestedFix,
+        isApiError
+      });
+    }
+  }, [validationQueryError]);
 
   const clearErrors = () => {
     setValidationError(null);
     setDeploymentError(null);
   };
 
-  const handleDeploymentError = async (error: any): Promise<never> => {
+  const handleDeploymentError = async (error: unknown): Promise<never> => {
     const isTimeout = error instanceof DeployTimeoutError;
     let errorMessage = "Failed to deploy Modal app";
     let suggestedFix: string | undefined = undefined;
@@ -74,7 +102,7 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
     } else if (error instanceof Error) {
       errorMessage = error.message;
     } else if (error && typeof error === 'object' && 'message' in error) {
-      errorMessage = String(error.message);
+      errorMessage = String((error as { message: unknown }).message);
     }
 
     setDeploymentError({
@@ -103,6 +131,12 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
       if (error instanceof ApiError) {
         errorMessage = error.message;
         suggestedFix = error.suggestedFix;
+        isApiError = true;
+      } else if (error instanceof AxiosError) {
+        // Handle AxiosError directly if it wasn't converted to ApiError
+        const apiError = ApiError.fromAxiosError(error);
+        errorMessage = apiError.message;
+        suggestedFix = apiError.suggestedFix;
         isApiError = true;
       } else if (error instanceof Error) {
         errorMessage = error.message;

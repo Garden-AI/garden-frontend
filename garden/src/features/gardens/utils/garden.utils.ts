@@ -84,17 +84,39 @@ export class ApiError extends Error {
 
   static fromAxiosError(error: AxiosError): ApiError {
     interface ApiErrorInfo {
-      detail: string,
-      suggestedFix: string,
-      deploymentOutput: string,
+      detail: string | Array<{ loc: Array<string | number>, msg: string, type: string }>,
+      suggestedFix?: string,
+      deploymentOutput?: string,
     }
-    const { detail, suggestedFix, deploymentOutput } = error.response?.data as ApiErrorInfo ?? {};
 
-    return new ApiError(
-      detail || 'Unknown API Error',
-      suggestedFix,
-      deploymentOutput,
-    );
+    const responseData = error.response?.data as ApiErrorInfo;
+    if (!responseData) {
+      return new ApiError(error.message || 'Unknown API Error');
+    }
+
+    let message = 'Unknown API Error';
+    let suggestedFix = responseData.suggestedFix;
+    const deploymentOutput = responseData.deploymentOutput;
+
+    // Handle different error formats from the backend
+    if (responseData.detail) {
+      if (Array.isArray(responseData.detail)) {
+        // Get the first validation error message from FastAPI
+        const firstError = responseData.detail[0];
+        if (firstError && firstError.msg) {
+          message = firstError.msg;
+
+          // Add helpful message for module import errors
+          if (message.includes('module level import') || message.includes('module-level import')) {
+            suggestedFix = suggestedFix || "Modal doesn't support module-level imports. Move your imports inside functions.";
+          }
+        }
+      } else if (typeof responseData.detail === 'string') {
+        message = responseData.detail;
+      }
+    }
+
+    return new ApiError(message, suggestedFix, deploymentOutput);
   }
 
   toString(): string {
@@ -107,10 +129,17 @@ export class ApiError extends Error {
 
 export type MaterialType = 'datasets' | 'papers' | 'repositories' | 'notebooks';
 
+interface MaterialItem {
+  doi?: string;
+  url?: string;
+  title?: string;
+  [key: string]: unknown;
+}
+
 export const getUniqueItemCount = (modalFunctions: ModalFunction[] | undefined, materialType: MaterialType): number => {
   if (!modalFunctions) return 0;
 
-  const getIdentifier = (item: any) => {
+  const getIdentifier = (item: MaterialItem) => {
     switch (materialType) {
       case 'datasets':
       case 'papers':
