@@ -130,9 +130,9 @@ export class ApiError extends Error {
 export type MaterialType = 'datasets' | 'papers' | 'repositories' | 'notebooks';
 
 interface MaterialItem {
-  doi?: string;
-  url?: string;
-  title?: string;
+  doi?: string | null;
+  url?: string | null;
+  title?: string | null;
   [key: string]: unknown;
 }
 
@@ -143,10 +143,10 @@ export const getUniqueItemCount = (modalFunctions: ModalFunction[] | undefined, 
     switch (materialType) {
       case 'datasets':
       case 'papers':
-        return item.doi || item.url || item.title;
+        return item.doi || item.url || item.title || '';
       case 'repositories':
       case 'notebooks':
-        return item.url;
+        return item.url || '';
     }
   };
 
