@@ -105,86 +105,52 @@ export const useModalAppForm = ({
     form.reset();
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (!selectedFile) return;
-
-    // Reset validation state when a new file is selected
-    setIsValidated(false);
-    clearErrors();
-
-    // Reset any form-level validation errors
-    form.clearErrors();
-
-    // If we had previously validated a file, inform the user
-    // that the new file will be validated automatically
-    if (modalMetadata) {
-      toast.info("New file selected. Validating...");
-    }
-
-    // Reset modalMetadata when a new file is selected
-    setModalMetadata(null);
-    setIsDeploymentComplete(false);
-    setDeployedAppId(null);
-
-    setFile(selectedFile);
+  // Helper to validate file contents and update state
+  const validateAndSetMetadata = async (fileContents: string) => {
     setIsValidating(true);
     setValidationError(null);
     setDeploymentError(null);
 
     try {
-      const fileContents = await selectedFile.text();
       form.setValue("file_contents", fileContents);
-
       // Automatically validate the file after loading
       const metadata = await validateModalFile(fileContents);
 
       if (metadata) {
         setIsValidated(true);
-
         // Initialize the modal_functions field with the validated metadata
         const functions = metadata.modal_functions || [];
         form.setValue("modal.modal_functions", functions);
-
         setModalMetadata(metadata);
         toast.success("Modal file validated successfully");
       } else {
         // If validateModalFile returns null but didn't throw an error,
         // check if useModalAppUpload has a validation error
         if (useModalAppUploadValidationError) {
-          // Use the actual backend error with its specific message and suggested fix
           setValidationError(useModalAppUploadValidationError);
-          toast.error("File validation failed");
         } else {
-          // If for some reason we don't have a validation error, create a generic one
           setValidationError({
-            message: "File validation failed",
-            suggestedFix: "Please check your file and try again.",
+            message: "File validation failed. Please check your file and try again.",
             isApiError: false
           });
-          toast.error("File validation failed");
         }
+        toast.error("File validation failed");
       }
     } catch (error) {
       if (useModalAppUploadValidationError) {
         setValidationError(useModalAppUploadValidationError);
-        toast.error("File validation failed.");
-      }
-      if (error instanceof ApiError) {
-        // If it's an ApiError, it will have the specific error information from the backend
+      } else if (error instanceof ApiError) {
         setValidationError({
           message: error.message,
           suggestedFix: error.suggestedFix,
           isApiError: true
         });
       } else if (error instanceof Error) {
-        // For generic errors
         setValidationError({
           message: error.message,
           isApiError: false
         });
       } else {
-        // Last resort fallback
         setValidationError({
           message: "Unknown error occurred during validation",
           isApiError: false
@@ -194,6 +160,27 @@ export const useModalAppForm = ({
     } finally {
       setIsValidating(false);
     }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    // Reset validation state when a new file is selected
+    setIsValidated(false);
+    clearErrors();
+    form.clearErrors();
+    if (modalMetadata) {
+      toast.info("New file selected. Validating...");
+    }
+    setModalMetadata(null);
+    setIsDeploymentComplete(false);
+    setDeployedAppId(null);
+    setFile(selectedFile);
+
+    // Validate the new file
+    const fileContents = await selectedFile.text();
+    await validateAndSetMetadata(fileContents);
   };
 
   // New handler for updating function metadata
@@ -243,68 +230,8 @@ export const useModalAppForm = ({
 
   const handleValidate = async () => {
     if (!file) return;
-
-    setIsValidating(true);
-    setValidationError(null);
-
-    try {
-      const fileContents = await file.text();
-      form.setValue("file_contents", fileContents);
-
-      // Automatically validate the file after loading
-      const metadata = await validateModalFile(fileContents);
-
-      if (metadata) {
-        setIsValidated(true);
-
-        // Initialize the modal_functions field with the validated metadata
-        const functions = metadata.modal_functions || [];
-        form.setValue("modal.modal_functions", functions);
-
-        setModalMetadata(metadata);
-        toast.success("Modal file validated successfully");
-      } else {
-        // If validateModalFile returns null but didn't throw an error,
-        // check if useModalAppUpload has a validation error
-        if (useModalAppUploadValidationError) {
-          // Use the actual backend error with its specific message and suggested fix
-          setValidationError(useModalAppUploadValidationError);
-          toast.error("Validation failed");
-        } else {
-          // If for some reason we don't have a validation error, create a generic one
-          setValidationError({
-            message: "File validation failed. Please check your file and try again.",
-            isApiError: false
-          });
-          toast.error("Validation failed");
-        }
-      }
-    } catch (error) {
-      // Don't create a new error object - use what's already in useModalAppUploadValidationError
-      if (useModalAppUploadValidationError) {
-        setValidationError(useModalAppUploadValidationError);
-      } else if (error instanceof ApiError) {
-        setValidationError({
-          message: error.message,
-          suggestedFix: error.suggestedFix,
-          isApiError: true
-        });
-      } else if (error instanceof Error) {
-        setValidationError({
-          message: error.message,
-          isApiError: false
-        });
-      } else {
-        // Fallback for unknown error types
-        setValidationError({
-          message: "Unknown error occurred during validation",
-          isApiError: false
-        });
-      }
-      toast.error("Validation failed");
-    } finally {
-      setIsValidating(false);
-    }
+    const fileContents = await file.text();
+    await validateAndSetMetadata(fileContents);
   };
 
   const handleSubmit = async (data: ModalAppFormValues) => {
