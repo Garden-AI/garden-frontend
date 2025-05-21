@@ -89,12 +89,17 @@ export class ApiError extends Error {
       deploymentOutput?: string,
     }
 
-    const responseData = error.response?.data as ApiErrorInfo;
+    const raw_data: unknown = error.response?.data;
+    const responseData = {
+      detail: raw_data.detail,
+      suggestedFix: raw_data.suggested_fix,
+      deploymentOutput: raw_data.deployment_output,
+    } as ApiErrorInfo;
+    let message = 'Unknown API Error';
     if (!responseData) {
-      return new ApiError(error.message || 'Unknown API Error');
+      return new ApiError(error.message || message);
     }
 
-    let message = 'Unknown API Error';
     let suggestedFix = responseData.suggestedFix;
     const deploymentOutput = responseData.deploymentOutput;
 
@@ -113,6 +118,7 @@ export class ApiError extends Error {
         }
       } else if (typeof responseData.detail === 'string') {
         message = responseData.detail;
+        suggestedFix = responseData.suggestedFix || ""
       }
     }
 
@@ -120,9 +126,9 @@ export class ApiError extends Error {
   }
 
   toString(): string {
-    const str = `Error: ${this.message}`;
-    const suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix}` : '';
-    const deploymentOutput = this.deploymentOutput ? `, deployment_output: ${this.deploymentOutput}` : '';
+    const str = `Error: ${this.message} `;
+    const suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix} ` : '';
+    const deploymentOutput = this.deploymentOutput ? `, deployment_output: ${this.deploymentOutput} ` : '';
     return str + suggestedFix + deploymentOutput;
   }
 }

@@ -154,22 +154,23 @@ export const useModalAppForm = ({
         if (useModalAppUploadValidationError) {
           // Use the actual backend error with its specific message and suggested fix
           setValidationError(useModalAppUploadValidationError);
-          toast.error("Validation failed");
+          toast.error("File validation failed");
         } else {
           // If for some reason we don't have a validation error, create a generic one
           setValidationError({
-            message: "File validation failed. Please check your file and try again.",
+            message: "File validation failed",
+            suggestedFix: "Please check your file and try again.",
             isApiError: false
           });
-          toast.error("Validation failed");
+          toast.error("File validation failed");
         }
       }
     } catch (error) {
-      // Don't create a new error object - use what's already in useModalAppUploadValidationError
-      // which should have the proper error information from the backend
       if (useModalAppUploadValidationError) {
         setValidationError(useModalAppUploadValidationError);
-      } else if (error instanceof ApiError) {
+        toast.error("File validation failed.");
+      }
+      if (error instanceof ApiError) {
         // If it's an ApiError, it will have the specific error information from the backend
         setValidationError({
           message: error.message,
@@ -189,7 +190,7 @@ export const useModalAppForm = ({
           isApiError: false
         });
       }
-      toast.error("Validation failed");
+      toast.error("File validation failed");
     } finally {
       setIsValidating(false);
     }
