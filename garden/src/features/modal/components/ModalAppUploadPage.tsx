@@ -1,19 +1,14 @@
+import React from "react";
 import { ModalAppForm } from "./ModalAppForm";
 
 interface ModalAppUploadPageProps {
   onSuccess?: (id: number) => void;
-  /** Optional prop to indicate if this is part of a multi-step process */
-  isMultiStep?: boolean;
 }
 
-const ModalAppUploadPage = ({ onSuccess, isMultiStep = false }: ModalAppUploadPageProps) => {
+const ModalAppUploadPage = ({ onSuccess }: ModalAppUploadPageProps) => {
   return (
     <>
-      <div className="mb-12 flex items-center space-x-8">
-        <div className="space-y-4">
-        </div>
-      </div>
-      <ModalAppForm 
+      <ModalAppForm
         showOverallProgress={false}
         showSuccessScreen={true}
         viewDeploymentsUrl="/user?tab=model-deployments"

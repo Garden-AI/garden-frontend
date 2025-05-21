@@ -1,3 +1,4 @@
+import React from "react";
 import { FileCode, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/shadcn/badge";
 import { cn } from "@/utils/form.utils";
@@ -10,10 +11,10 @@ interface FileUploadSectionProps {
   file: File | null;
 }
 
-export const FileUploadSection = ({ 
-  handleFileChange, 
-  isValidating, 
-  isDeploying, 
+export const FileUploadSection = ({
+  handleFileChange,
+  isValidating,
+  isDeploying,
   isValidated,
   file
 }: FileUploadSectionProps) => (
@@ -39,26 +40,26 @@ export const FileUploadSection = ({
                 </div>
               )}
             </div>
-            
+
             {/* Change file button */}
             <div className="flex items-center justify-between border-t bg-white px-3 py-2">
               <span className="text-sm text-gray-500">
-                {isValidating ? "Validating file..." : 
+                {isValidating ? "Validating file..." :
                   isDeploying ? "Deploying..." : "File uploaded"}
               </span>
-              <label 
+              <label
                 className={cn(
                   "cursor-pointer rounded-md border px-3 py-1 text-sm font-medium transition-colors",
-                  isValidating || isDeploying 
-                    ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400" 
+                  isValidating || isDeploying
+                    ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400"
                     : "border-primary bg-white text-primary hover:bg-primary/5"
                 )}
               >
                 Change File
-                <input 
-                  type="file" 
-                  accept=".py" 
-                  onChange={handleFileChange} 
+                <input
+                  type="file"
+                  accept=".py"
+                  onChange={handleFileChange}
                   disabled={isValidating || isDeploying}
                   className="hidden"
                 />
@@ -74,19 +75,19 @@ export const FileUploadSection = ({
             <p className="mb-4 text-xs text-gray-500">
               Upload a Python file containing your Modal app
             </p>
-            <label 
+            <label
               className={cn(
                 "cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-colors",
-                isValidating || isDeploying 
-                  ? "cursor-not-allowed bg-gray-100 text-gray-400" 
+                isValidating || isDeploying
+                  ? "cursor-not-allowed bg-gray-100 text-gray-400"
                   : "bg-primary text-primary-foreground hover:bg-primary/90"
               )}
             >
               Browse Files
-              <input 
-                type="file" 
-                accept=".py" 
-                onChange={handleFileChange} 
+              <input
+                type="file"
+                accept=".py"
+                onChange={handleFileChange}
                 disabled={isValidating || isDeploying}
                 className="hidden"
               />

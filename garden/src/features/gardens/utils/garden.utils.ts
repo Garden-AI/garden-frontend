@@ -84,40 +84,81 @@ export class ApiError extends Error {
 
   static fromAxiosError(error: AxiosError): ApiError {
     interface ApiErrorInfo {
-      detail: string,
-      suggestedFix: string,
-      deploymentOutput: string,
+      detail: string | Array<{ loc: Array<string | number>, msg: string, type: string }>,
+      suggestedFix?: string,
+      deploymentOutput?: string,
     }
-    const { detail, suggestedFix, deploymentOutput } = error.response?.data as ApiErrorInfo ?? {};
 
-    return new ApiError(
-      detail || 'Unknown API Error',
-      suggestedFix,
-      deploymentOutput,
-    );
+    interface ModalException {
+      detail: string | Array<{ loc: Array<string | number>, msg: string, type: string }>,
+      suggested_fix?: string,
+      deployment_output?: string,
+    }
+
+    const raw_data: ModalException = error.response?.data as ModalException;
+    const responseData = {
+      detail: raw_data.detail,
+      suggestedFix: raw_data.suggested_fix,
+      deploymentOutput: raw_data.deployment_output,
+    } as ApiErrorInfo;
+    let message = 'Unknown API Error';
+    if (!responseData) {
+      return new ApiError(error.message || message);
+    }
+
+    let suggestedFix = responseData.suggestedFix;
+    const deploymentOutput = responseData.deploymentOutput;
+
+    // Handle different error formats from the backend
+    if (responseData.detail) {
+      if (Array.isArray(responseData.detail)) {
+        // Get the first validation error message from FastAPI
+        const firstError = responseData.detail[0];
+        if (firstError && firstError.msg) {
+          message = firstError.msg;
+
+          // Add helpful message for module import errors
+          if (message.includes('module level import') || message.includes('module-level import')) {
+            suggestedFix = suggestedFix || "Modal doesn't support module-level imports. Move your imports inside functions.";
+          }
+        }
+      } else if (typeof responseData.detail === 'string') {
+        message = responseData.detail;
+        suggestedFix = responseData.suggestedFix || ""
+      }
+    }
+
+    return new ApiError(message, suggestedFix, deploymentOutput);
   }
 
   toString(): string {
-    const str = `Error: ${this.message}`;
-    const suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix}` : '';
-    const deploymentOutput = this.deploymentOutput ? `, deployment_output: ${this.deploymentOutput}` : '';
+    const str = `Error: ${this.message} `;
+    const suggestedFix = this.suggestedFix ? `, suggested_fix: ${this.suggestedFix} ` : '';
+    const deploymentOutput = this.deploymentOutput ? `, deployment_output: ${this.deploymentOutput} ` : '';
     return str + suggestedFix + deploymentOutput;
   }
 }
 
 export type MaterialType = 'datasets' | 'papers' | 'repositories' | 'notebooks';
 
+interface MaterialItem {
+  doi?: string | null;
+  url?: string | null;
+  title?: string | null;
+  [key: string]: unknown;
+}
+
 export const getUniqueItemCount = (modalFunctions: ModalFunction[] | undefined, materialType: MaterialType): number => {
   if (!modalFunctions) return 0;
 
-  const getIdentifier = (item: any) => {
+  const getIdentifier = (item: MaterialItem) => {
     switch (materialType) {
       case 'datasets':
       case 'papers':
-        return item.doi || item.url || item.title;
+        return item.doi || item.url || item.title || '';
       case 'repositories':
       case 'notebooks':
-        return item.url;
+        return item.url || '';
     }
   };
 

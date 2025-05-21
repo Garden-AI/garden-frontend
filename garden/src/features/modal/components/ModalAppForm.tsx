@@ -1,3 +1,4 @@
+import React from "react";
 import { Form } from "@/components/shadcn/form";
 import { useModalAppForm, UseModalAppFormOptions } from "@/features/modal/api/useModalAppForm";
 import { FileUploadSection } from "@/features/modal/components/FileUploadSection";
@@ -91,18 +92,18 @@ export const ModalAppForm = ({
   return (
     <>
       {showOverallProgress && (
-        <OverallProgress 
-          currentPhase={currentPhase} 
-          isCompleted={isDeploymentComplete || isDeploying || isValidated} 
+        <OverallProgress
+          currentPhase={currentPhase}
+          isCompleted={isDeploymentComplete || isDeploying || isValidated}
         />
       )}
-      
+
       <div className="rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-bold">Upload and Deploy Modal App</h2>
-        
+
         {/* Detailed Progress Steps */}
         <ProgressSteps currentStep={currentStep} />
-        
+
         {isDeploymentComplete ? (
           <div className="py-12">
             <Alert className="mb-6 bg-green-50 border-green-200">
@@ -136,31 +137,31 @@ export const ModalAppForm = ({
           <Form {...form}>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* File Upload Section */}
-              <FileUploadSection 
+              <FileUploadSection
                 handleFileChange={handleFileChange}
                 isValidating={isValidating}
                 isDeploying={isDeploying}
                 isValidated={isValidated}
                 file={file}
               />
-              
+
               {/* Error Displays */}
               {validationError && <ValidationErrorAlert error={validationError} />}
               {deploymentError && <DeploymentErrorAlert error={deploymentError} />}
-              
+
               {/* Modal App Details */}
               {modalMetadata && (
                 <div className="space-y-6">
                   <DetectedAppCard metadata={modalMetadata} />
-                  <FunctionMetadataEditor 
-                    form={form} 
-                    metadata={modalMetadata} 
-                    handleFunctionMetadataChange={handleFunctionMetadataChange} 
+                  <FunctionMetadataEditor
+                    form={form}
+                    metadata={modalMetadata}
+                    handleFunctionMetadataChange={handleFunctionMetadataChange}
                   />
                 </div>
               )}
-              
-              <FormActions 
+
+              <FormActions
                 file={file}
                 isValidated={isValidated}
                 isValidating={isValidating}

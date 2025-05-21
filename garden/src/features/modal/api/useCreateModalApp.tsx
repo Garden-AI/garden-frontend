@@ -1,4 +1,4 @@
-import axios from "@/lib/axios";
+import instance from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosResponse, AxiosError } from "axios";
 import { ModalAppCreateRequest, ModalAppMetadataResponse, ModalAppPatchRequest } from "@/types";
@@ -28,8 +28,8 @@ export const createOrUpdateModalApp = async (
   try {
     // Make the initial request
     const response = update ?
-      await axios.patch(`/modal-apps/async/${update}`, req) :
-      await axios.post(`/modal-apps/async`, req);
+      await instance.patch(`/modal-apps/async/${update}`, req) :
+      await instance.post(`/modal-apps/async`, req);
 
     // Extract the job id from the response
     const appId = response.data.id
@@ -46,7 +46,7 @@ export const createOrUpdateModalApp = async (
         throw new DeployTimeoutError();
       }
 
-      const pollResponse = await axios.get(`/modal-apps/${appId}`);
+      const pollResponse = await instance.get(`/modal-apps/${appId}`);
       if (pollResponse.data.deploy_status === "error") {
         throw new ApiError(
           pollResponse.data.deploy_error,
@@ -63,7 +63,9 @@ export const createOrUpdateModalApp = async (
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       throw ApiError.fromAxiosError(error);
+    } else {
+      console.error(`Error not from Axios: ${error}`)
+      throw error;
     }
-    throw error;
   }
 };

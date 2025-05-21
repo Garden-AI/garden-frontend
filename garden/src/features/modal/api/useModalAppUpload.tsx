@@ -19,6 +19,14 @@ export interface DeploymentError {
   isApiError: boolean;
 }
 
+// Helper interface for the processed error
+interface ProcessedError {
+  message: string;
+  suggestedFix?: string;
+  deploymentOutput?: string;
+  isApiError: boolean;
+}
+
 // Extended type that includes id field returned from the API
 interface ExtendedModalFileMetadata extends ModalFileMetadataResponse {
   id?: number;
@@ -48,41 +56,43 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
   const { mutateAsync: validateFile, isPending: isValidating } = useValidateModalFile();
   const { mutateAsync: createOrUpdateApp, isPending: isDeploying } = useCreateModalApp();
 
-  const clearErrors = () => {
-    setValidationError(null);
-    setDeploymentError(null);
-  };
-
-  const handleDeploymentError = async (error: any): Promise<never> => {
-    const isTimeout = error instanceof DeployTimeoutError;
-    let errorMessage = "Failed to deploy Modal app";
+  // Helper function to process errors
+  const processError = (error: unknown): ProcessedError => {
+    let message = "Unknown error";
     let suggestedFix: string | undefined = undefined;
     let deploymentOutput: string | undefined = undefined;
     let isApiError = false;
 
     if (error instanceof ApiError) {
-      errorMessage = error.message;
+      message = error.message;
       suggestedFix = error.suggestedFix;
       deploymentOutput = error.deploymentOutput;
       isApiError = true;
     } else if (error instanceof AxiosError) {
       const apiError = ApiError.fromAxiosError(error);
-      errorMessage = apiError.message;
+      message = apiError.message;
       suggestedFix = apiError.suggestedFix;
       deploymentOutput = apiError.deploymentOutput;
       isApiError = true;
     } else if (error instanceof Error) {
-      errorMessage = error.message;
+      message = error.message;
     } else if (error && typeof error === 'object' && 'message' in error) {
-      errorMessage = String(error.message);
+      message = String((error as { message: unknown }).message);
     }
 
+    return { message, suggestedFix, deploymentOutput, isApiError };
+  };
+
+  const clearErrors = () => {
+    setValidationError(null);
+    setDeploymentError(null);
+  };
+
+  const handleDeploymentError = async (error: unknown): Promise<never> => {
+    const isTimeout = error instanceof DeployTimeoutError;
     setDeploymentError({
-      message: errorMessage,
-      suggestedFix,
-      deploymentOutput,
+      ...processError(error),
       isTimeout,
-      isApiError
     });
 
     throw error;
@@ -96,24 +106,9 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
       setModalMetadata(metadata);
       return metadata;
     } catch (error) {
-      let errorMessage = "Unknown validation error";
-      let suggestedFix: string | undefined = undefined;
-      let isApiError = false;
-
-      if (error instanceof ApiError) {
-        errorMessage = error.message;
-        suggestedFix = error.suggestedFix;
-        isApiError = true;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
       setValidationError({
-        message: errorMessage,
-        suggestedFix,
-        isApiError
+        ...processError(error),
       });
-
       return null;
     }
   };

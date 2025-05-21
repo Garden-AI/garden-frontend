@@ -35,7 +35,6 @@ const CreateGardenPage = () => {
       <div className="mx-auto max-w-6xl px-8 py-16 font-display">
         <OverallProgress currentPhase={1} />
         <ModalAppUploadPage
-          isMultiStep={true}
           onSuccess={(id: number) => {
             navigate(`/garden/create?modalAppId=${id}`);
           }}
