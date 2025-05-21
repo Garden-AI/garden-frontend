@@ -89,7 +89,13 @@ export class ApiError extends Error {
       deploymentOutput?: string,
     }
 
-    const raw_data: unknown = error.response?.data;
+    interface ModalException {
+      detail: string | Array<{ loc: Array<string | number>, msg: string, type: string }>,
+      suggested_fix?: string,
+      deployment_output?: string,
+    }
+
+    const raw_data: ModalException = error.response?.data as ModalException;
     const responseData = {
       detail: raw_data.detail,
       suggestedFix: raw_data.suggested_fix,
