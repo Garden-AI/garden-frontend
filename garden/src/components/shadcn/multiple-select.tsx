@@ -286,27 +286,27 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       (event: React.ClipboardEvent<HTMLInputElement>) => {
         event.preventDefault();
         const pastedText = event.clipboardData.getData("text");
-        
+
         // Parse the pasted content into individual items
         const parsedItems = pastedText
           .split(/,|\n/)
           .map(item => item.trim())
           .filter(Boolean);
-        
+
         if (parsedItems.length === 0) {
           inputProps?.onPaste?.(event);
           return;
         }
-        
+
         const existingValues = new Set(selected.map(opt => opt.value));
-        
+
         const availableOptionsMap = new Map(
           // Flatten all available options from different sources
           [...Object.values(options).flat(), ...arrayDefaultOptions, ...(arrayOptions || [])]
             .filter(opt => !opt.disable)
             .map(opt => [opt.value, opt])
         );
-        
+
         // Process the parsed items
         const newOptions = parsedItems
           // Skip if already selected
@@ -326,21 +326,21 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           })
           // Filter out nulls (items that couldn't be resolved)
           .filter(Boolean) as Option[];
-        
+
         // Respect the maxSelected limit
         const itemsToAdd = newOptions.slice(0, Math.max(0, maxSelected - selected.length));
-        
+
         // Notify if we hit the max limit
         if (selected.length + newOptions.length > maxSelected) {
           onMaxSelected?.(maxSelected);
         }
-        
+
         if (itemsToAdd.length > 0) {
           const nextSelected = [...selected, ...itemsToAdd];
           setSelected(nextSelected);
           onChange?.(nextSelected);
         }
-        
+
         setInputValue("");
         inputProps?.onPaste?.(event);
       },
@@ -385,7 +385,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             onChange?.(newOptions);
           }}
         >
-           {`Create "${inputValue}"`}
+          {`Create "${inputValue}"`}
         </CommandItem>
       );
 
@@ -534,13 +534,17 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             />
             <button
               type="button"
-              onClick={() => setSelected(selected.filter((s) => s.fixed))}
+              onClick={() => {
+                const filteredSelection = selected.filter((s) => s.fixed);
+                setSelected(filteredSelection);
+                onChange?.(filteredSelection);
+              }}
               className={cn(
                 (hideClearAllButton ||
                   disabled ||
                   selected.length < 1 ||
                   selected.filter((s) => s.fixed).length === selected.length) &&
-                  "hidden",
+                "hidden",
               )}
             >
               <X />

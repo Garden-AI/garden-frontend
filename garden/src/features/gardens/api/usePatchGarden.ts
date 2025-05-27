@@ -56,11 +56,13 @@ export const usePatchGarden = () => {
       return { previousGarden };
     },
     onError: (err, { doi }, context) => {
-      // If the mutation fails, use the context to roll back
-      if (context?.previousGarden) {
-        queryClient.setQueryData(["garden", doi], context.previousGarden);
+      console.error(err.message)
+      if (err.message.includes("409")) {
+        toast.error(`Failed to update garden: Garden must have at least one Model Author or one Gardener`);
+      } else {
+        toast.error("Updating garden metadata failed! Try again, and if it fails contact the Garden team.")
       }
-      toast.error("Failed to update garden");
+      queryClient.setQueryData(["garden", doi], context?.previousGarden);
     },
     onSuccess: (data, input) => {
       // Update the cache with the new data

@@ -1,3 +1,4 @@
+import React from "react";
 import CopyButton from "@/components/CopyButton";
 import { ClipboardIcon, } from "lucide-react";
 import { Garden } from "@/types";
@@ -5,7 +6,7 @@ import { usePatchGarden } from "../api/usePatchGarden";
 import { Metadata, EditableMetadataField } from "@/components/shared/metadata";
 import { CitationBlock } from "./garden-page";
 
-export const GardenMetadataSidebar = ({garden, ownsThisGarden}: {garden: Garden, ownsThisGarden: boolean}) => {
+export const GardenMetadataSidebar = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
     const { mutate: patchGarden } = usePatchGarden();
     const updateGarden = async (updateData: Partial<Garden>) => {
         await patchGarden({
@@ -50,7 +51,7 @@ export const GardenMetadataSidebar = ({garden, ownsThisGarden}: {garden: Garden,
             <EditableMetadataField
                 label="Gardeners"
                 helpText="Creator and contributors to this Garden"
-                value={[garden.owner, ...(garden.contributors || [])]}
+                value={[...(garden.contributors || [])]}
                 fieldName="contributors"
                 entity={garden}
                 ownsThisEntity={ownsThisGarden}

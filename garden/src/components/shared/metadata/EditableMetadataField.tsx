@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { EditIcon, SaveIcon, XIcon, InfoIcon } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
@@ -48,8 +49,9 @@ const EditableMetadataField = ({
 
   // Update inputValue when value prop changes
   useEffect(() => {
-    setInputValue(value || (isArray ? [] : ""));
-  }, [value, isArray]);
+    const newValue = value || (isArray ? [] : "");
+    setInputValue(newValue);
+  }, [value, isArray, fieldName]);
 
 
   const handleSave = async () => {
@@ -61,15 +63,11 @@ const EditableMetadataField = ({
 
       // Handle read-only properties correctly
       if (fieldName !== 'entrypoint_ids' && fieldName !== 'modal_function_ids') {
-        // we added the owner to the contributors list to display 'Gardeners',
-        // remove before sending the patch request
-        if (fieldName === 'contributors' && 'owner' in entity) {
-          const contributors = Array.isArray(inputValue) 
-            ? inputValue.filter(c => c !== (entity as Garden).owner)
-            : [];
-          updateData.contributors = contributors;
+        // Only try to update non-readonly fields
+        if (isArray) {
+          // Ensure array fields are always arrays, never null/undefined
+          updateData[fieldName] = Array.isArray(inputValue) ? inputValue : [];
         } else {
-          // Only try to update non-readonly fields
           updateData[fieldName] = inputValue;
         }
       }
@@ -114,10 +112,9 @@ const EditableMetadataField = ({
             <MultipleSelector
               value={(Array.isArray(inputValue) ? inputValue : []).map(val => ({ value: val, label: val }))}
               onChange={(options: any) => {
-                if(fieldName === "contributors" && 'owner' in entity) {
-                  (entity as Garden).contributors = (entity as Garden).contributors?.filter(c => c !== (entity as Garden).owner)
-                }
-                setInputValue(options.map((opt: any) => opt.value))
+                // Ensure inputValue is set to an empty array when all options are cleared
+                const newValues = options.map((opt: any) => opt.value);
+                setInputValue(Array.isArray(newValues) ? newValues : []);
               }}
               placeholder={`Add ${fieldName}`}
               creatable
