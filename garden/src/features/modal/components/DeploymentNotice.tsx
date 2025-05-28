@@ -12,7 +12,6 @@ export const DeploymentNotice = ({ isVisible }: DeploymentNoticeProps) => {
       <h4 className="font-medium">Deployment in Progress</h4>
       <p className="mt-2 text-sm">
         Your Modal app is being deployed. This may take a few minutes if your app has large dependencies.
-        Please do not close this page while deployment is in progress.
       </p>
       <div className="mt-3 flex items-center gap-2 rounded-md bg-blue-100 p-2 text-xs">
         <InfoIcon className="h-4 w-4" />
