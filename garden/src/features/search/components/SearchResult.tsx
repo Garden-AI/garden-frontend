@@ -34,19 +34,25 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
   return (
     <Card className={`relative transition-colors hover:shadow-lg ${garden.is_archived ? "bg-gray-100" : "hover:bg-gray-50"}`}>
       <CardHeader>
-        {garden.is_archived && (
-          <div style={{backgroundColor: "#DBE9FF", color: "#28487B"}}
+         {(
+          <div style={{backgroundColor: "#C2E6CA", color: "#11451F"}}
+            className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
+              Published Garden
+            </div>
+         )}
+        <div className="flex items-start justify-between space-x-3">
+          {garden.is_archived && (
+          <div style={{backgroundColor: "#D2D1F7", color: "#3C2F67"}}
             className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
               Archived Garden
           </div>
          )}
          {garden.doi_is_draft && (
-          <div style={{backgroundColor: "#C2E6CA", color: "#11451F"}}
+          <div style={{backgroundColor: "#DBE9FF", color: "#28487B"}}
             className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
               Draft Garden
             </div>
          )}
-        <div className="flex items-start justify-between space-x-3">
           <CardTitle className="line-clamp-2 text-xl font-bold transition-colors duration-300 hover:text-primary">
             <Link to={`/garden/${encodeURIComponent(garden.doi)}`}>{garden.title}</Link>
           </CardTitle>
