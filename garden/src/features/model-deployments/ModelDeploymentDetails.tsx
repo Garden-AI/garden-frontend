@@ -274,8 +274,10 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                     {entity.modal_function_names.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                             {entity.modal_function_names.map((name) => (
-                                <div key={name} className="p-2 border rounded-md bg-gray-50">
-                                    <span className="font-medium">{name}</span>
+                                <div key={name} className="p-2 border rounded-md bg-gray-50 overflow-x-auto">
+                                    <span className="font-medium break-words whitespace-pre-wrap text-sm block">
+                                        {name}
+                                    </span>
                                 </div>
                             ))}
                         </div>
