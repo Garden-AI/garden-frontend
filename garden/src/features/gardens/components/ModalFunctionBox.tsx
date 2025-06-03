@@ -1,3 +1,4 @@
+import React from "react";
 import { ModalFunction } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "@/components/shadcn/card";
@@ -31,12 +32,12 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
           </CardTitle>
         </div>
       </CardHeader>
-      
-      <MarkdownCardContent 
+
+      <MarkdownCardContent
         className="text-sm text-gray-700 max-h-[120px] overflow-hidden"
         content={modalFunction.description || "No description available"}
       />
-      
+
       {(modalFunction.tags && modalFunction.tags.length > 0 || modalFunction.hardware_spec?.gpus) && (
         <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex flex-row items-center">
           {/* Tags Section */}
@@ -57,15 +58,15 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
                 />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
               </svg>
-              <span>{modalFunction.tags.join(", ")}</span>
+              <span>{modalFunction.tags.slice(0, 4).join(", ")}</span>
             </div>
           )}
           {/* Hardware Spec Section */}
           {modalFunction.hardware_spec?.gpus && (
-             <div className="flex gap-2 text-gray-600 text-xs items-center ml-auto">
-               <Cpu className="h-4 w-4 flex-shrink-0"/>
-               <span>GPU: {modalFunction.hardware_spec.gpus}</span>
-             </div>
+            <div className="flex gap-2 text-gray-600 text-xs items-center ml-auto">
+              <Cpu className="h-4 w-4 flex-shrink-0" />
+              <span>GPU: {modalFunction.hardware_spec.gpus}</span>
+            </div>
           )}
         </CardFooter>
       )}
