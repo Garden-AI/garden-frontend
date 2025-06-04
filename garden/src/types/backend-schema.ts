@@ -1710,6 +1710,8 @@ export interface components {
             owner_identity_id: string;
             /** Hardware Spec */
             hardware_spec: Record<string, never>;
+            /** Num Invocations */
+            num_invocations: number;
         };
         /** ModalFunctionPatchRequest */
         ModalFunctionPatchRequest: {
