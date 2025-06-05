@@ -2,25 +2,34 @@ import { useQuery } from "@tanstack/react-query";
 import { useGetGardens } from "@/features/gardens/api/useGetGardens";
 
 export interface MetricsData {
-  totalGardens: number;
+  allGardens: number;
+  publishedGardens: number;
+  draftGardens: number;
+  archivedGardens: number;
   totalFunctions: number;
   totalInvocations: number;
 }
 
 /**
  * Hook to fetch and aggregate platform metrics
- * Only includes published gardens (not draft and not archived) and their associated functions
+ * Includes all garden states and functions from published gardens only
  */
 export const useGetMetrics = () => {
-  // Fetch all gardens to filter for published ones
+  // Fetch all gardens to calculate various metrics
   const { data: allGardens = [], isLoading: isLoadingGardens } = useGetGardens({});
 
   return useQuery<MetricsData>({
     queryKey: ["metrics", allGardens?.length],
     queryFn: async () => {
-      // Filter for published gardens (not draft and not archived)
+      // Filter gardens by state
       const publishedGardens = allGardens.filter(garden => 
         !garden.doi_is_draft && !garden.is_archived
+      );
+      const draftGardens = allGardens.filter(garden => 
+        garden.doi_is_draft && !garden.is_archived
+      );
+      const archivedGardens = allGardens.filter(garden => 
+        garden.is_archived
       );
 
       // Collect all functions from published gardens and deduplicate by function ID
@@ -41,7 +50,10 @@ export const useGetMetrics = () => {
       }, 0);
 
       return {
-        totalGardens: publishedGardens.length,
+        allGardens: allGardens.length,
+        publishedGardens: publishedGardens.length,
+        draftGardens: draftGardens.length,
+        archivedGardens: archivedGardens.length,
         totalFunctions: uniqueFunctions.length,
         totalInvocations,
       };

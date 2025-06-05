@@ -4,6 +4,7 @@ import { Navigate, Outlet, Routes, Route, useLocation, useNavigate } from "react
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import RootLayout from "@/components/Layout";
+import SuperuserRoute from "@/components/SuperuserRoute";
 
 import EditEntrypointPage from "@/features/entrypoints/components/EditEntrypointPage";
 import EntrypointPage from "@/features/entrypoints/components/EntrypointPage";
@@ -20,6 +21,7 @@ import ModelDeploymentPage from "@/features/model-deployments/ModelDeploymentPag
 import { CreateModelDeploymentPage } from "@/features/model-deployments/CreateModelDeploymentPage";
 import ModalAppUploadPage from "@/features/modal/components/ModalAppUploadPage";
 import { BenchmarksPage } from "@/features/benchmarks/BenchmarksPage";
+import MetricsDashboard from "@/features/metrics/components/MetricsDashboard";
 
 const Router: React.FC = () => {
   const navigate = useNavigate();
@@ -63,6 +65,11 @@ const Router: React.FC = () => {
         {/* Model Deployment Routes */}
         <Route element={<PrivateRoutes />}>
           <Route path="model-deployments/:id" element={<ModelDeploymentPage />} />
+        </Route>
+
+        {/* Superuser Routes */}
+        <Route element={<SuperuserRoute />}>
+          <Route path="metrics" element={<MetricsDashboard />} />
         </Route>
 
         {/* Misc Routes */}
