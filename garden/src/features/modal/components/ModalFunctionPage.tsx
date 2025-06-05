@@ -10,15 +10,14 @@ import NotFoundPage from "@/components/NotFoundPage";
 
 import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
-import { Button } from "@/components/shadcn/button";
 
-import { LinkIcon, Play } from "lucide-react";
+import { LinkIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 import CopyButton from "@/components/CopyButton";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
-import { FunctionMetadataSidebar } from "./FunctionMetadataSidebar";
+import { FunctionSidebar } from "./FunctionMetadataSidebar";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { EditableMetadataField, EditableTitle } from "@/components/shared/metadata";
 import { SUPER_USERS } from "@/utils/utils";
@@ -75,7 +74,7 @@ const ModalFunctionPage = () => {
         </div>
 
         {/* Sidebar */}
-        <FunctionMetadataSidebar
+        <FunctionSidebar
           modalFunction={modalFunction}
           ownsThisFunction={ownsThisFunction}
         />
