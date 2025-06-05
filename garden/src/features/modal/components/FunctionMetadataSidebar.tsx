@@ -3,6 +3,7 @@ import { usePatchModalFunction } from "../api/usePatchModalFunction";
 import { ModalFunction } from "@/types";
 import { FunctionMetadata } from './FunctionMetadata';
 import { FunctionMetrics } from './FunctionMetrics';
+import { Metadata } from '@/components/shared/metadata';
 
 interface FunctionSidebarProps {
   modalFunction: ModalFunction,
@@ -41,7 +42,7 @@ export const FunctionSidebar = ({
   };
 
   return (
-    <div className="space-y-6">
+    <Metadata name={"Function"} entity={modalFunction} ownsThisEntity={ownsThisFunction}>
       <FunctionMetadata
         modalFunction={modalFunction}
         ownsThisFunction={ownsThisFunction}
@@ -50,8 +51,7 @@ export const FunctionSidebar = ({
       />
       <FunctionMetrics
         modalFunction={modalFunction}
-        updateFunction={updateFunction}
       />
-    </div>
+    </Metadata>
   );
 }

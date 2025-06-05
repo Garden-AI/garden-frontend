@@ -45,7 +45,6 @@ export const FunctionSidebar = ({
             name={"Function"}
             entity={modalFunction}
             ownsThisEntity={ownsThisFunction}
-            className="bg-gray-300"
         >
             <FunctionMetadata
                 modalFunction={modalFunction}
