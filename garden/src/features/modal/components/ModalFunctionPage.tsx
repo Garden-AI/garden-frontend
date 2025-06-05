@@ -17,7 +17,7 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 import CopyButton from "@/components/CopyButton";
 import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
-import { FunctionSidebar } from "./FunctionMetadataSidebar";
+import { FunctionSidebar } from "./FunctionSidebar";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { EditableMetadataField, EditableTitle } from "@/components/shared/metadata";
 import { SUPER_USERS } from "@/utils/utils";
