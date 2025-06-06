@@ -37,7 +37,7 @@ export const SearchResultsList = ({
         </div>
       )}
       {gardens.map((garden: any, index: number) => (
-        <SearchResult key={index} garden={garden} verbose={verboseSearchResults} />
+        <SearchResult key={index} garden={garden} verbose={verboseSearchResults} showPublishedBanner={false}/>
       ))}
     </div>
   );

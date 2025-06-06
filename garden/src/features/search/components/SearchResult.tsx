@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
 import { Garden } from "@/types";
-
 import { Badge } from "@/components/shadcn/badge";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/shadcn/avatar";
@@ -24,33 +22,34 @@ import { PersonIcon } from "@radix-ui/react-icons";
 import SaveGardenButton from "../../gardens/components/SaveGardenButton";
 import { Button } from "@/components/shadcn/button";
 
-export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boolean }) => {
-  const functions = [...(garden.entrypoints ?? []), ...(garden.modal_functions ?? [])];
-  const [showMore, setShowMore] = useState(false);
+export const SearchResult = ({ garden, verbose, showPublishedBanner = true, 
+  }: { garden: Garden; verbose: boolean; showPublishedBanner?:boolean; }) => {
+    const functions = [...(garden.entrypoints ?? []), ...(garden.modal_functions ?? [])];
+    const [showMore, setShowMore] = useState(false);
 
   const handleShowMore = () => {
     setShowMore(!showMore);
   }
   return (
     <Card className={`relative transition-colors hover:shadow-lg ${garden.is_archived ? "bg-gray-100" : "hover:bg-gray-50"}`}>
-      <CardHeader>
-         {(
+      <CardHeader className={`${(showPublishedBanner || garden.is_archived || garden.doi_is_draft) ? "pt-8" : ""}`}>
+         {showPublishedBanner && (
           <div style={{backgroundColor: "#C2E6CA", color: "#11451F"}}
             className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
-              Published Garden
+              Published
             </div>
          )}
         <div className="flex items-start justify-between space-x-3">
           {garden.is_archived && (
           <div style={{backgroundColor: "#D2D1F7", color: "#3C2F67"}}
             className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
-              Archived Garden
+              Archived
           </div>
          )}
          {garden.doi_is_draft && (
           <div style={{backgroundColor: "#DBE9FF", color: "#28487B"}}
             className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
-              Draft Garden
+              Draft
             </div>
          )}
           <CardTitle className="line-clamp-2 text-xl font-bold transition-colors duration-300 hover:text-primary">
@@ -66,7 +65,7 @@ export const SearchResult = ({ garden, verbose }: { garden: Garden; verbose: boo
           to={`/garden/${encodeURIComponent(garden.doi)}`}
         >
           DOI: {garden.doi}
-          {garden.marked_for_deletion && (
+          {garden.marked_for_deletion && garden.doi_is_draft &&(
             <div style={{backgroundColor: "#F0C2BD", color: "#411528"}}
               className="ml-2 inline-block rounded px-2 py-0.5 text-xs font-medium">
                 Marked for Deletion
