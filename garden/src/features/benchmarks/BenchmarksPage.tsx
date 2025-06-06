@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
     Card,
     CardContent,
@@ -15,9 +15,10 @@ import {
 import { Button } from "@/components/shadcn/button";
 import { Loader2, Play, RefreshCw } from "lucide-react";
 
-import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/BenchmarksTable";
+import { BenchmarksTable } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
+import { BenchmarkInfo } from "./components/BenchmarkInfo";
 import { BenchmarkResult } from "@/types";
 import { useGetBenchmarks } from "./api/useGetBenchmarks";
 import { Benchmark, BenchmarkTask } from "./types";
@@ -25,57 +26,67 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import { cn } from "@/utils/form.utils";
 
-// Mock data for visualizing tables when API data isn't available
+// Mock data for visualizing tables when API data isn't available (MatBench-style)
 const mockBenchmarkResults = [
     {
         function_id: 1,
         date_invoked: new Date().toISOString(),
-        accuracy: 0.95,
-        f1_score: 0.92,
-        precision: 0.93,
-        recall: 0.91,
+        f1_score: 0.925,
+        daf: 6.12,
+        accuracy: 0.94,
+        precision: 0.91,
+        recall: 0.93,
+        rmsd: 0.045,
         latency_ms: 125,
-        loss: 0.05,
+        thermal_conductivity_mae: 0.021,
     },
     {
         function_id: 2,
         date_invoked: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-        accuracy: 0.78,
-        f1_score: 0.72,
-        precision: 0.75,
-        recall: 0.68,
+        f1_score: 0.857,
+        daf: 4.85,
+        accuracy: 0.88,
+        precision: 0.82,
+        recall: 0.89,
+        rmsd: 0.067,
         latency_ms: 98,
-        loss: 0.21,
+        thermal_conductivity_mae: 0.034,
     },
     {
         function_id: 3,
         date_invoked: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-        accuracy: 0.52,
-        f1_score: 0.48,
-        precision: 0.51,
-        recall: 0.45,
+        f1_score: 0.742,
+        daf: 3.21,
+        accuracy: 0.76,
+        precision: 0.69,
+        recall: 0.80,
+        rmsd: 0.089,
         latency_ms: 145,
-        loss: 0.48,
+        thermal_conductivity_mae: 0.052,
     },
     {
         function_id: 4,
         date_invoked: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
-        accuracy: 0.31,
-        f1_score: 0.27,
-        precision: 0.30,
-        recall: 0.25,
+        f1_score: 0.623,
+        daf: 2.14,
+        accuracy: 0.65,
+        precision: 0.58,
+        recall: 0.69,
+        rmsd: 0.112,
         latency_ms: 167,
-        loss: 0.67,
+        thermal_conductivity_mae: 0.078,
     },
     {
-        function_id: 1,
+        function_id: 5,
         date_invoked: new Date(Date.now() - 345600000).toISOString(), // 4 days ago
-        accuracy: 0.09,
-        f1_score: 0.04,
-        precision: 0.06,
-        recall: 0.03,
+        f1_score: 0.485,
+        daf: 1.23,
+        accuracy: 0.51,
+        precision: 0.42,
+        recall: 0.56,
+        rmsd: 0.156,
         latency_ms: 211,
-        loss: 0.94,
+        thermal_conductivity_mae: 0.105,
     }
 ];
 
@@ -129,13 +140,6 @@ export const BenchmarksPage = () => {
         // Add mock data if no real data available and showMockData is enabled
         const displayResults = showMockData ? mockBenchmarkResults : processedResults;
 
-        // Generate columns from available results
-        const columns = useMemo(() => {
-            return displayResults.length > 0
-                ? generateColumnsFromData(displayResults)
-                : [];
-        }, [displayResults]);
-
         return (
             <Card className="mb-6">
                 <CardHeader>
@@ -163,8 +167,8 @@ export const BenchmarksPage = () => {
 
                             {displayResults.length > 0 ? (
                                 <BenchmarksTable
-                                    columns={columns}
                                     data={displayResults}
+                                    benchmarkName={selectedBenchmark?.name}
                                 />
                             ) : (
                                 <div className="text-center py-6 border rounded-md bg-gray-50">
@@ -236,9 +240,12 @@ export const BenchmarksPage = () => {
             <div className="flex-1 p-6 overflow-y-auto">
                 {selectedBenchmark ? (
                     <>
-                        <div className="mb-6">
-                            <h1 className="text-2xl font-bold">{selectedBenchmark.name}</h1>
-                            <p className="text-muted-foreground mt-1">{selectedBenchmark.description || "No description available"}</p>
+                        <div className="mb-8">
+                            <BenchmarkInfo
+                                benchmarkName={selectedBenchmark.name}
+                                description={selectedBenchmark.description}
+                                taskCount={selectedBenchmark.tasks?.length}
+                            />
                         </div>
 
                         {selectedBenchmark.tasks && selectedBenchmark.tasks.length > 0 ? (
