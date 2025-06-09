@@ -45,6 +45,7 @@ interface BenchmarksTableProps<TData, TValue> {
     data: TData[]
     generateColumns?: boolean
     benchmarkName?: string
+    compact?: boolean
 }
 
 // Default column sizes
@@ -264,12 +265,19 @@ const getNumericValue = (value: unknown): number | null => {
 const FunctionNameCell = ({ functionId }: { functionId: string }) => {
     const { data, isLoading, error } = useGetModalFunction(functionId);
 
-    if (isLoading) return <span>Loading...</span>;
-    if (error) return <span>Error loading function</span>;
+    if (isLoading) return <span className="text-muted-foreground text-sm">Loading...</span>;
+    if (error) return <span className="text-destructive text-sm">Error loading function</span>;
 
     return (
         <div className="flex flex-col">
-            <Link to={`/modal-functions/${functionId}`} className="font-medium">{data?.title || "Unknown Function"}</Link>
+            <Link 
+                to={`/modal-functions/${functionId}`} 
+                className="font-semibold text-primary hover:text-primary/80 transition-colors truncate"
+                title={data?.title || "Unknown Function"}
+            >
+                {data?.title || "Unknown Function"}
+            </Link>
+            <span className="text-xs text-muted-foreground">ID: {functionId}</span>
         </div>
     );
 };
@@ -317,6 +325,7 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
     columns,
     data,
     benchmarkName,
+    compact = false,
 }: BenchmarksTableProps<TData, TValue>) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -360,18 +369,18 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
     const columnCount = table.getAllColumns().length;
 
     return (
-        <div className="space-y-2">
-            <div className="flex justify-end">
+        <div className={`${compact ? 'flex flex-col h-full text-sm' : 'space-y-2'}`}>
+            <div className={`flex justify-end ${compact ? 'flex-shrink-0' : ''}`}>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="outline"
                             size="sm"
-                            className="ml-auto flex items-center gap-1"
+                            className={`ml-auto flex items-center gap-1 ${compact ? 'h-7 px-2 text-xs' : ''}`}
                         >
-                            <EyeOff className="h-4 w-4" />
-                            <span>Columns</span>
-                            <ChevronDown className="h-4 w-4" />
+                            <EyeOff className={compact ? "h-3 w-3" : "h-4 w-4"} />
+                            <span className={compact ? "hidden" : ""}>Columns</span>
+                            <ChevronDown className={compact ? "h-3 w-3" : "h-4 w-4"} />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -421,7 +430,8 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="rounded-md border overflow-x-auto">
+            <div className={`rounded-lg border border-border/50 overflow-hidden shadow-sm ${compact ? 'flex-1 min-h-0' : 'w-full'}`}>
+                <div className="overflow-x-auto">
                 <Table className="w-full" style={{ width: table.getCenterTotalSize() }}>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -429,7 +439,7 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                                 {headerGroup.headers.map((header) => (
                                     <TableHead
                                         key={header.id}
-                                        className="whitespace-nowrap px-2 relative"
+                                        className={`whitespace-nowrap relative font-semibold ${compact ? 'px-3 py-2 text-xs' : 'px-4 py-3'}`}
                                         style={{ width: header.getSize() }}
                                     >
                                         {header.column.getCanSort() ? (
@@ -453,7 +463,7 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                                             <div
                                                 onMouseDown={header.getResizeHandler()}
                                                 onTouchStart={header.getResizeHandler()}
-                                                className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none hover:bg-gray-400 ${header.column.getIsResizing() ? 'bg-blue-500' : 'bg-gray-200'
+                                                className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none hover:bg-primary/60 transition-colors ${header.column.getIsResizing() ? 'bg-primary' : 'bg-border'
                                                     }`}
                                             />
                                         )}
@@ -464,8 +474,11 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                     </TableHeader>
                     <TableBody>
                         {table.getRowModel().rows.length > 0 ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id}>
+                            table.getRowModel().rows.map((row, rowIndex) => (
+                                <TableRow 
+                                    key={row.id}
+                                    className={`hover:bg-muted/30 transition-colors ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/20'}`}
+                                >
                                     {row.getVisibleCells().map((cell) => {
                                         const value = cell.getValue();
                                         const style: React.CSSProperties = {
@@ -475,18 +488,22 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                                         // Get numeric value and direction for coloring
                                         const coloringInfo = getNumericValueForColoring(value, cell.column, isMatBench);
 
-                                        // Apply background color for numeric values
+                                        // Apply background color for numeric values with better opacity
                                         if (coloringInfo !== null && coloringInfo.value >= 0) {
-                                            style.backgroundColor = getColorForValue(coloringInfo.value, coloringInfo.betterIs);
+                                            const baseColor = getColorForValue(coloringInfo.value, coloringInfo.betterIs);
+                                            // Reduce opacity for better readability
+                                            style.backgroundColor = baseColor.replace('0.3)', '0.15)');
                                         }
 
                                         return (
                                             <TableCell
                                                 key={cell.id}
-                                                className="px-2"
+                                                className={`font-medium transition-colors ${compact ? 'px-3 py-2.5 text-xs' : 'px-4 py-3'}`}
                                                 style={style}
                                             >
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                <div className="flex items-center">
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </div>
                                             </TableCell>
                                         );
                                     })}
@@ -494,13 +511,14 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columnCount} className="h-24 text-center">
-                                    No results.
+                                <TableCell colSpan={columnCount} className={`h-24 text-center text-muted-foreground ${compact ? 'text-xs' : ''}`}>
+                                    No results available.
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
+                </div>
             </div>
         </div>
     );
