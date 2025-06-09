@@ -32,12 +32,8 @@ export const BenchmarkInfo: React.FC<BenchmarkInfoProps> = ({
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">{displayName}</h1>
-            {isMatBench && (
-              <Badge variant="default" className="text-xs">
-                Materials Science
-              </Badge>
-            )}
+            <BookOpen className="h-5 w-5 text-muted-foreground" />
+            <h2 className="text-xl font-semibold">About This Benchmark</h2>
           </div>
           
           {purpose && (

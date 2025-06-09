@@ -19,6 +19,7 @@ import { BenchmarksTable } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
 import { BenchmarkInfo } from "./components/BenchmarkInfo";
+import { TaskDescription } from "./components/TaskDescription";
 import { BenchmarkResult } from "@/types";
 import { useGetBenchmarks } from "./api/useGetBenchmarks";
 import { Benchmark, BenchmarkTask } from "./types";
@@ -141,13 +142,24 @@ export const BenchmarksPage = () => {
         const displayResults = showMockData ? mockBenchmarkResults : processedResults;
 
         return (
-            <Card className="mb-6">
-                <CardHeader>
-                    <CardTitle className="text-lg">
+            <Card>
+                <CardHeader className="pb-4">
+                    <CardTitle className="text-xl font-semibold">
                         {task.function.title || task.function.function_name}
                     </CardTitle>
+                    {displayResults.length > 0 && (
+                        <div className="text-sm text-muted-foreground">
+                            {displayResults.length} model{displayResults.length !== 1 ? 's' : ''} evaluated
+                        </div>
+                    )}
                 </CardHeader>
                 <CardContent>
+                    {/* Task Description */}
+                    <TaskDescription 
+                        taskName={task.function.function_name}
+                        functionName={task.function.title || task.function.function_name}
+                    />
+                    
                     {isLoading ? (
                         <div className="flex justify-center items-center py-8">
                             <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
@@ -240,16 +252,19 @@ export const BenchmarksPage = () => {
             <div className="flex-1 p-6 overflow-y-auto">
                 {selectedBenchmark ? (
                     <>
-                        <div className="mb-8">
-                            <BenchmarkInfo
-                                benchmarkName={selectedBenchmark.name}
-                                description={selectedBenchmark.description}
-                                taskCount={selectedBenchmark.tasks?.length}
-                            />
+                        {/* Clean Header Section */}
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <h1 className="text-2xl font-bold">{selectedBenchmark.name}</h1>
+                                <div className="text-sm text-muted-foreground">
+                                    {selectedBenchmark.tasks?.length} evaluation task{selectedBenchmark.tasks?.length !== 1 ? 's' : ''}
+                                </div>
+                            </div>
                         </div>
 
+                        {/* Main Data Tables */}
                         {selectedBenchmark.tasks && selectedBenchmark.tasks.length > 0 ? (
-                            <div>
+                            <div className="space-y-6">
                                 {selectedBenchmark.tasks.map((task) => (
                                     <TaskResultPanel key={task.id} task={task} />
                                 ))}
@@ -259,6 +274,15 @@ export const BenchmarksPage = () => {
                                 <p className="text-gray-500">No benchmark tasks available for this benchmark.</p>
                             </div>
                         )}
+
+                        {/* Benchmark Information - Moved to Bottom */}
+                        <div className="mt-12 pt-8 border-t">
+                            <BenchmarkInfo
+                                benchmarkName={selectedBenchmark.name}
+                                description={selectedBenchmark.description}
+                                taskCount={selectedBenchmark.tasks?.length}
+                            />
+                        </div>
                     </>
                 ) : (
                     <div className="flex items-center justify-center h-full">
