@@ -24,6 +24,9 @@ export const useCreateGarden = () => {
   return useMutation<Garden, ApiError, GardenCreateRequest>({
     mutationFn: createGarden,
     onSuccess: (garden) => {
+      queryClient.invalidateQueries({ queryKey: ["garden"] });
+      queryClient.invalidateQueries({ queryKey: ["gardens"] });
+      // Set the specific garden data in cache
       queryClient.setQueryData(["garden", garden.doi], garden);
     },
   });
