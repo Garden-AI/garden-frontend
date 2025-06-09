@@ -129,10 +129,9 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
     
     // Create radar data structure
     return selectedMetrics.map(metric => {
-      const metricInfo = MATBENCH_METRICS[metric];
       const radarPoint: any = {
-        metric: metricInfo?.name || metric,
-        fullName: metricInfo?.name || metric,
+        metric: metric,
+        fullName: metric,
       };
       
       // Add data for each function (limited by maxFunctions)
@@ -218,7 +217,6 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
           </label>
           <div className="flex flex-wrap gap-1">
             {availableMetrics.map(metric => {
-              const metricInfo = MATBENCH_METRICS[metric];
               const isSelected = selectedMetrics.includes(metric);
               
               return (
@@ -228,7 +226,7 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
                   className={`cursor-pointer transition-all hover:scale-105 ${compact ? 'text-xs py-0.5 px-1.5' : ''}`}
                   onClick={() => handleMetricToggle(metric)}
                 >
-                  {metricInfo?.name || metric}
+                  {metric}
                 </Badge>
               );
             })}

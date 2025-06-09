@@ -160,7 +160,7 @@ export const MetricHeader: React.FC<MetricHeaderProps> = ({
   const content = (
     <div className="flex items-center gap-1">
       <span className={metric.isPrimaryMetric ? 'font-semibold' : ''}>
-        {metric.name}
+        {metricKey}
       </span>
       <TrendIcon className={`h-3 w-3 ${trendColor}`} />
       {metric.isPrimaryMetric && (

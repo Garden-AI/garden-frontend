@@ -13,7 +13,7 @@ import {
     DialogTitle,
 } from "@/components/shadcn/dialog";
 import { Button } from "@/components/shadcn/button";
-import { Loader2, Play, RefreshCw, Menu, X } from "lucide-react";
+import { Loader2, Play, RefreshCw, Menu, X, ChevronDown, Info, ExternalLink } from "lucide-react";
 
 import { BenchmarksTable } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
@@ -27,6 +27,7 @@ import { Benchmark, BenchmarkTask } from "./types";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import { cn } from "@/utils/form.utils";
+import { MATBENCH_BENCHMARKS, MATBENCH_METRICS, isMatBenchDiscovery, hasMatBenchMetrics } from "./utils/matbench";
 
 // Mock data for visualizing tables when API data isn't available (MatBench-style)
 const mockBenchmarkResults = [
@@ -108,6 +109,34 @@ export const BenchmarksPage = () => {
     const selectedBenchmark = useMemo(() =>
         benchmarkMetadata.find((benchmark: Benchmark) => benchmark.id === selectedBenchmarkId),
         [benchmarkMetadata, selectedBenchmarkId]);
+
+    // Collect metrics from all tasks for the selected benchmark
+    const allBenchmarkMetrics = useMemo(() => {
+        if (!selectedBenchmark?.tasks) return new Set<string>();
+        
+        const metrics = new Set<string>();
+        
+        // Always show common MatBench metrics that we have definitions for
+        if (isMatBenchDiscovery(selectedBenchmark.name) || showMockData) {
+            // Add common MatBench metrics (prefer uppercase versions for display)
+            ['F1', 'DAF', 'Accuracy', 'Precision', 'Recall', 'MAE', 'RMSE'].forEach(metric => {
+                if (MATBENCH_METRICS[metric]) {
+                    metrics.add(metric);
+                }
+            });
+        }
+        
+        // If showing mock data, add all mock metrics
+        if (showMockData) {
+            Object.keys(mockBenchmarkResults[0]).forEach(key => {
+                if (key !== 'function_id' && key !== 'date_invoked') {
+                    metrics.add(key);
+                }
+            });
+        }
+        
+        return metrics;
+    }, [selectedBenchmark, showMockData]);
 
     // Use the first benchmark by default if none is selected
     useEffect(() => {
@@ -283,13 +312,91 @@ export const BenchmarksPage = () => {
             <div className="flex-1 p-6 overflow-y-auto lg:pl-6 pl-16">
                 {selectedBenchmark ? (
                     <>
-                        {/* Clean Header Section */}
-                        <div className="mb-6">
-                            <div className="flex items-center justify-between mb-2">
+                        {/* Enhanced Header Section */}
+                        <div className="mb-6 space-y-4">
+                            {/* Title and Task Count */}
+                            <div className="flex items-center justify-between">
                                 <h1 className="text-2xl font-bold">{selectedBenchmark.name}</h1>
                                 <div className="text-sm text-muted-foreground">
                                     {selectedBenchmark.tasks?.length} evaluation task{selectedBenchmark.tasks?.length !== 1 ? 's' : ''}
                                 </div>
+                            </div>
+
+                            {/* MatBench Links and Info Bar */}
+                            {isMatBenchDiscovery(selectedBenchmark.name) && (
+                                <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-between items-start">
+                                        <div className="flex items-start gap-3">
+                                            <div className="bg-blue-100 rounded-full p-1 mt-0.5">
+                                                <Info className="h-4 w-4 text-blue-600" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-medium text-blue-900 mb-1">
+                                                    MatBench Discovery Benchmark
+                                                </h3>
+                                                <p className="text-sm text-blue-800">
+                                                    Evaluating AI models for accelerated materials discovery and crystal structure prediction
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                asChild
+                                                className="bg-white/50 hover:bg-white/80"
+                                            >
+                                                <a
+                                                    href="https://matbench-discovery.materialsproject.org/"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1"
+                                                >
+                                                    Website
+                                                    <ExternalLink className="h-3 w-3" />
+                                                </a>
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                asChild
+                                                className="bg-white/50 hover:bg-white/80"
+                                            >
+                                                <a
+                                                    href="https://doi.org/10.1038/s41467-023-43490-1"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1"
+                                                >
+                                                    Paper
+                                                    <ExternalLink className="h-3 w-3" />
+                                                </a>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Navigation Hints */}
+                            <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <ChevronDown className="h-4 w-4 animate-bounce" />
+                                    <span>Scroll down for benchmark details and metric explanations</span>
+                                </div>
+                                
+                                {/* Quick Metrics Guide */}
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                        const metricsSection = document.getElementById('metrics-info');
+                                        metricsSection?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                    className="flex items-center gap-1 text-xs"
+                                >
+                                    <Info className="h-3 w-3" />
+                                    What do these metrics mean?
+                                </Button>
                             </div>
                         </div>
 
@@ -303,6 +410,71 @@ export const BenchmarksPage = () => {
                         ) : (
                             <div className="text-center py-12 border rounded-md bg-gray-50">
                                 <p className="text-gray-500">No benchmark tasks available for this benchmark.</p>
+                            </div>
+                        )}
+
+                        {/* Metrics Information Panel */}
+                        {selectedBenchmark.tasks && selectedBenchmark.tasks.length > 0 && (
+                            <div className="mt-12 pt-8 border-t" id="metrics-info">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Info className="h-5 w-5 text-muted-foreground" />
+                                        <h2 className="text-xl font-semibold">Understanding the Metrics</h2>
+                                    </div>
+                                    
+                                    {(() => {
+                                        const metricsArray = Array.from(allBenchmarkMetrics)
+                                            .map(key => ({ key, info: MATBENCH_METRICS[key] }))
+                                            .filter(({ info }) => info)
+                                            .sort((a, b) => {
+                                                // Sort primary metrics first
+                                                if (a.info?.isPrimaryMetric && !b.info?.isPrimaryMetric) return -1;
+                                                if (!a.info?.isPrimaryMetric && b.info?.isPrimaryMetric) return 1;
+                                                return a.info?.name.localeCompare(b.info?.name) || 0;
+                                            });
+                                        
+                                        return metricsArray.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {metricsArray.map(({ key, info }) => (
+                                                    <Card key={key} className={cn(
+                                                        "p-4",
+                                                        info.isPrimaryMetric && "border-primary/50 bg-primary/5"
+                                                    )}>
+                                                        <div className="space-y-2">
+                                                            <div className="flex items-center justify-between">
+                                                                <h4 className="font-medium flex items-center gap-2">
+                                                                    <span className="font-bold text-primary">{key}</span>
+                                                                    <span className="text-muted-foreground">-</span>
+                                                                    <span>{info.name}</span>
+                                                                    {info.isPrimaryMetric && (
+                                                                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                                                                            Key Metric
+                                                                        </span>
+                                                                    )}
+                                                                </h4>
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    {info.betterIs === 'higher' ? '↗️ Higher is better' : '↘️ Lower is better'}
+                                                                </div>
+                                                            </div>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {info.description}
+                                                            </p>
+                                                            {info.unit && (
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    Unit: {info.unit}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-6 border rounded-md bg-gray-50">
+                                                <p className="text-gray-500">No metric information available.</p>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
                             </div>
                         )}
 

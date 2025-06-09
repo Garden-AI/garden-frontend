@@ -129,10 +129,10 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
   // Chart configuration
   const chartConfig: ChartConfig = {
     x: {
-      label: MATBENCH_METRICS[xMetric]?.name || xMetric,
+      label: xMetric,
     },
     y: {
-      label: MATBENCH_METRICS[yMetric]?.name || yMetric,
+      label: yMetric,
     },
   };
   
@@ -159,7 +159,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
             <SelectContent>
               {availableMetrics.map(metric => (
                 <SelectItem key={metric} value={metric}>
-                  {MATBENCH_METRICS[metric]?.name || metric}
+                  {metric}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -177,7 +177,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
             <SelectContent>
               {availableMetrics.map(metric => (
                 <SelectItem key={metric} value={metric}>
-                  {MATBENCH_METRICS[metric]?.name || metric}
+                  {metric}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -213,11 +213,11 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
                   </div>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">{chartConfig.x.label}:</span>
+                      <span className="text-muted-foreground">{xMetric}:</span>
                       <span className="font-mono">{formatMetricValue(data.x, xMetric)}</span>
                     </div>
                     <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">{chartConfig.y.label}:</span>
+                      <span className="text-muted-foreground">{yMetric}:</span>
                       <span className="font-mono">{formatMetricValue(data.y, yMetric)}</span>
                     </div>
                     {isMatBench && (
