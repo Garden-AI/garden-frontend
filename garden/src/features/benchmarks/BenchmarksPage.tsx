@@ -108,30 +108,12 @@ export const BenchmarksPage = () => {
 
     // Function to render benchmark results for a specific task
     const TaskResultPanel = ({ task }: { task: BenchmarkTask }) => {
-        const { data, isLoading, refetch } = useGetBenchmarkResults(selectedBenchmarkId!, task.id);
+        const { data, isLoading } = useGetBenchmarkResults(selectedBenchmarkId!, task.id);
 
         const benchmarkResults = Array.isArray(data) ? data : [];
         const hasPendingResults = benchmarkResults.some(
             (result: BenchmarkResult) => result.status === "pending"
         );
-
-        // // Set up polling for pending results
-        // useEffect(() => {
-        //     let pollInterval: NodeJS.Timeout | null = null;
-
-        //     if (hasPendingResults) {
-        //         pollInterval = setInterval(() => {
-        //             console.log(`Polling for benchmark updates for task ${task.id}...`);
-        //             refetch();
-        //         }, 3000); // Poll every 3 seconds
-        //     }
-
-        //     return () => {
-        //         if (pollInterval) {
-        //             clearInterval(pollInterval);
-        //         }
-        //     };
-        // }, [hasPendingResults, refetch]);
 
         // Process results for display
         const processedResults = benchmarkResults

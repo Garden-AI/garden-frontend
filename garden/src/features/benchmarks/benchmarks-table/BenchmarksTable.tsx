@@ -23,11 +23,13 @@ import {
 import { useGetModalFunction } from "@/features/modal/api/useGetModalFunction";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/shadcn/button";
+import { Checkbox } from "@/components/shadcn/checkbox";
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuTrigger,
+    DropdownMenuSeparator,
+    DropdownMenuItem,
 } from "@/components/shadcn/dropdown-menu";
 
 interface BenchmarksTableProps<TData, TValue> {
@@ -249,6 +251,23 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
         },
     });
 
+    // Get hideable columns for select all/deselect all functionality
+    const hideableColumns = table.getAllColumns().filter(column => column.getCanHide());
+    const allHideableVisible = hideableColumns.every(column => column.getIsVisible());
+    const allHideableHidden = hideableColumns.every(column => !column.getIsVisible());
+
+    const handleSelectAll = () => {
+        hideableColumns.forEach(column => {
+            column.toggleVisibility(true);
+        });
+    };
+
+    const handleDeselectAll = () => {
+        hideableColumns.forEach(column => {
+            column.toggleVisibility(false);
+        });
+    };
+
     // Correctly determine column count for empty state
     const columnCount = table.getAllColumns().length;
 
@@ -268,20 +287,49 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        {table.getAllColumns()
-                            .filter(column => column.getCanHide())
-                            .map(column => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
+                        <DropdownMenuItem
+                            onSelect={(e) => {
+                                e.preventDefault();
+                                handleSelectAll();
+                            }}
+                            disabled={allHideableVisible}
+                            className="flex items-center gap-2"
+                        >
+                            <Checkbox checked={allHideableVisible} disabled />
+                            <span>Select All</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={(e) => {
+                                e.preventDefault();
+                                handleDeselectAll();
+                            }}
+                            disabled={allHideableHidden}
+                            className="flex items-center gap-2"
+                        >
+                            <Checkbox checked={!allHideableHidden} disabled />
+                            <span>Deselect All</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        {hideableColumns.map(column => {
+                            return (
+                                <DropdownMenuItem
+                                    key={column.id}
+                                    onSelect={(e) => {
+                                        e.preventDefault();
+                                        column.toggleVisibility();
+                                    }}
+                                    className="flex items-center gap-2 capitalize"
+                                >
+                                    <Checkbox
                                         checked={column.getIsVisible()}
-                                        onCheckedChange={value => column.toggleVisibility(!!value)}
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
-                            })}
+                                        onCheckedChange={(checked) => {
+                                            column.toggleVisibility(!!checked);
+                                        }}
+                                    />
+                                    <span>{column.id}</span>
+                                </DropdownMenuItem>
+                            )
+                        })}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
