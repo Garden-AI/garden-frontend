@@ -31,6 +31,7 @@ import {
   hasMatBenchMetrics
 } from '../utils/matbench';
 import { useGetModalFunction } from '@/features/modal/api/useGetModalFunction';
+import { useNavigate } from 'react-router-dom';
 
 interface RadarChartProps {
   data: Record<string, unknown>[];
@@ -106,6 +107,7 @@ const FunctionName: React.FC<{ functionId: string | number }> = ({ functionId })
 };
 
 export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmarkName, compact = false }) => {
+  const navigate = useNavigate();
   const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
   const availableMetrics = getAvailableMetrics(data);
   
@@ -173,6 +175,7 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
         : [...prev, metric]
     );
   };
+
   
   if (availableMetrics.length < 3) {
     return (
@@ -301,13 +304,45 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
               }}
             />
             
-            <Legend content={<ChartLegendContent />} />
+            <Legend 
+              content={(props) => (
+                <div className="flex flex-wrap justify-center gap-4 mt-4">
+                  {props.payload?.map((entry, index) => {
+                    const functionId = entry.dataKey?.replace('function_', '');
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+                        onClick={() => {
+                          if (functionId) {
+                            navigate(`/modal-functions/${functionId}`);
+                          }
+                        }}
+                      >
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span className="text-sm text-foreground hover:text-primary">
+                          {entry.value}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            />
           </RadarChart>
         </ChartContainer>
       )}
       
-      <div className="text-xs text-muted-foreground text-center">
-        Values are normalized to 0-100 scale for comparison. Higher values indicate better performance.
+      <div className="space-y-1">
+        <div className="text-xs text-muted-foreground text-center">
+          Values are normalized to 0-100 scale for comparison. Higher values indicate better performance.
+        </div>
+        <div className="text-xs text-muted-foreground text-center">
+          💡 Click any function name in the legend to view function details
+        </div>
       </div>
     </div>
   );

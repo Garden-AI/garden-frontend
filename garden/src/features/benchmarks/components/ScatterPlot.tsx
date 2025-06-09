@@ -29,6 +29,7 @@ import {
   hasMatBenchMetrics
 } from '../utils/matbench';
 import { useGetModalFunction } from '@/features/modal/api/useGetModalFunction';
+import { useNavigate } from 'react-router-dom';
 
 interface ScatterPlotProps {
   data: Record<string, unknown>[];
@@ -93,6 +94,7 @@ const FunctionName: React.FC<{ functionId: string | number }> = ({ functionId })
 };
 
 export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, compact = false }) => {
+  const navigate = useNavigate();
   const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
   const availableMetrics = getAvailableMetrics(data);
   
@@ -106,6 +108,13 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
   
   const [xMetric, setXMetric] = React.useState(defaultXMetric || '');
   const [yMetric, setYMetric] = React.useState(defaultYMetric || '');
+
+  // Handle point click to navigate to function details
+  const handlePointClick = (data: any) => {
+    if (data && data.functionId) {
+      navigate(`/modal-functions/${data.functionId}`);
+    }
+  };
   
   // Process data for the scatter plot
   const scatterData = useMemo(() => {
@@ -235,7 +244,12 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
               );
             }}
           />
-          <Scatter dataKey="y" fill="hsl(var(--primary))">
+          <Scatter 
+            dataKey="y" 
+            fill="hsl(var(--primary))"
+            onClick={handlePointClick}
+            cursor="pointer"
+          >
             {scatterData.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
@@ -246,15 +260,20 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
         </ScatterChart>
       </ChartContainer>
       
-      {isMatBench && (
+      <div className="space-y-1">
+        {isMatBench && (
+          <div className="text-xs text-muted-foreground text-center">
+            Colors indicate performance tiers: 
+            <span className="inline-block w-2 h-2 bg-green-600 rounded-full ml-2 mr-1"></span>Excellent
+            <span className="inline-block w-2 h-2 bg-blue-600 rounded-full ml-2 mr-1"></span>Good
+            <span className="inline-block w-2 h-2 bg-yellow-600 rounded-full ml-2 mr-1"></span>Fair
+            <span className="inline-block w-2 h-2 bg-red-600 rounded-full ml-2 mr-1"></span>Poor
+          </div>
+        )}
         <div className="text-xs text-muted-foreground text-center">
-          Colors indicate performance tiers: 
-          <span className="inline-block w-2 h-2 bg-green-600 rounded-full ml-2 mr-1"></span>Excellent
-          <span className="inline-block w-2 h-2 bg-blue-600 rounded-full ml-2 mr-1"></span>Good
-          <span className="inline-block w-2 h-2 bg-yellow-600 rounded-full ml-2 mr-1"></span>Fair
-          <span className="inline-block w-2 h-2 bg-red-600 rounded-full ml-2 mr-1"></span>Poor
+          💡 Click any point to view function details
         </div>
-      )}
+      </div>
     </div>
   );
 };
