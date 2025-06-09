@@ -308,7 +308,7 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
               content={(props) => (
                 <div className="flex flex-wrap justify-center gap-4 mt-4">
                   {props.payload?.map((entry, index) => {
-                    const functionId = entry.dataKey?.replace('function_', '');
+                    const functionId = typeof entry.dataKey === 'string' ? entry.dataKey.replace('function_', '') : entry.dataKey?.toString();
                     return (
                       <div
                         key={index}
