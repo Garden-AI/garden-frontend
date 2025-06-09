@@ -13,13 +13,14 @@ import {
     DialogTitle,
 } from "@/components/shadcn/dialog";
 import { Button } from "@/components/shadcn/button";
-import { Loader2, Play, RefreshCw } from "lucide-react";
+import { Loader2, Play, RefreshCw, Menu, X } from "lucide-react";
 
 import { BenchmarksTable } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
 import { BenchmarkInfo } from "./components/BenchmarkInfo";
 import { TaskDescription } from "./components/TaskDescription";
+import { TaskVisualization } from "./components/TaskVisualization";
 import { BenchmarkResult } from "@/types";
 import { useGetBenchmarks } from "./api/useGetBenchmarks";
 import { Benchmark, BenchmarkTask } from "./types";
@@ -96,6 +97,7 @@ export const BenchmarksPage = () => {
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
     const [showMockData, setShowMockData] = useState(false); // Toggle for mock data
+    const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar state
 
     // Get benchmark data
     const { data: benchmarkMetadata = [] } = useGetBenchmarks();
@@ -154,20 +156,14 @@ export const BenchmarksPage = () => {
                     )}
                 </CardHeader>
                 <CardContent>
-                    {/* Task Description */}
-                    <TaskDescription 
-                        taskName={task.function.function_name}
-                        functionName={task.function.title || task.function.function_name}
-                    />
-                    
                     {isLoading ? (
                         <div className="flex justify-center items-center py-8">
                             <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                         </div>
                     ) : (
-                        <div>
+                        <div className="space-y-6">
                             {hasPendingResults && (
-                                <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
                                     <div className="flex items-center gap-2">
                                         <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
                                         <span className="text-yellow-800 text-sm">
@@ -177,8 +173,9 @@ export const BenchmarksPage = () => {
                                 </div>
                             )}
 
+                            {/* Visualizations First - Main Attraction */}
                             {displayResults.length > 0 ? (
-                                <BenchmarksTable
+                                <TaskVisualization
                                     data={displayResults}
                                     benchmarkName={selectedBenchmark?.name}
                                 />
@@ -186,6 +183,14 @@ export const BenchmarksPage = () => {
                                 <div className="text-center py-6 border rounded-md bg-gray-50">
                                     <p className="text-gray-500">No results available for this task.</p>
                                 </div>
+                            )}
+
+                            {/* Task Description - Context After Engagement */}
+                            {displayResults.length > 0 && (
+                                <TaskDescription 
+                                    taskName={task.function.function_name}
+                                    functionName={task.function.title || task.function.function_name}
+                                />
                             )}
                         </div>
                     )}
@@ -195,9 +200,32 @@ export const BenchmarksPage = () => {
     };
 
     return (
-        <div className="flex h-full">
+        <div className="flex h-full relative">
+            {/* Mobile Menu Button */}
+            <Button
+                variant="outline"
+                size="sm"
+                className="lg:hidden fixed top-4 left-4 z-50 bg-background shadow-md"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+                {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
+
+            {/* Mobile Overlay */}
+            {sidebarOpen && (
+                <div
+                    className="lg:hidden fixed inset-0 bg-black/50 z-40"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
             {/* Benchmarks Sidebar */}
-            <div className="w-64 border-r h-full p-4 flex flex-col">
+            <div className={cn(
+                "w-64 border-r h-full p-4 flex flex-col bg-background z-40",
+                "lg:relative lg:translate-x-0 lg:block",
+                "fixed inset-y-0 left-0 transform transition-transform",
+                sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            )}>
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-semibold text-lg">Benchmarks</h2>
                 </div>
@@ -212,7 +240,10 @@ export const BenchmarksPage = () => {
                                     ? "bg-primary text-primary-foreground"
                                     : "hover:bg-muted"
                             )}
-                            onClick={() => handleBenchmarkSelection(benchmark.id)}
+                            onClick={() => {
+                                handleBenchmarkSelection(benchmark.id);
+                                setSidebarOpen(false); // Close sidebar on mobile after selection
+                            }}
                         >
                             <div className="font-medium truncate">{benchmark.name}</div>
                             {selectedBenchmarkId === benchmark.id && (
@@ -249,7 +280,7 @@ export const BenchmarksPage = () => {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-6 overflow-y-auto lg:pl-6 pl-16">
                 {selectedBenchmark ? (
                     <>
                         {/* Clean Header Section */}
