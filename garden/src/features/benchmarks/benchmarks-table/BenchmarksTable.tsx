@@ -31,11 +31,21 @@ import {
     DropdownMenuSeparator,
     DropdownMenuItem,
 } from "@/components/shadcn/dropdown-menu";
+import { MetricDisplay, MetricHeader } from "../components/MetricDisplay";
+import { 
+    MATBENCH_METRICS, 
+    formatMetricValue, 
+    getPerformanceTier,
+    isMatBenchDiscovery,
+    hasMatBenchMetrics 
+} from "../utils/matbench";
 
 interface BenchmarksTableProps<TData, TValue> {
     columns?: ColumnDef<TData, TValue>[]
     data: TData[]
     generateColumns?: boolean
+    benchmarkName?: string
+    compact?: boolean
 }
 
 // Default column sizes
@@ -43,16 +53,36 @@ const DEFAULT_COLUMN_SIZE = 100;
 const FUNCTION_COLUMN_SIZE = 180;
 const DATE_COLUMN_SIZE = 120;
 
-// Helper function to generate a red-yellow-green background color based on value
-const getColorForValue = (value: number): string => {
-    // For values > 1, use a special shade of green with intensity based on magnitude
-    if (value > 1) {
-        const intensity = Math.min(0.6, 0.3 + Math.log10(value) * 0.15);
-        return `rgba(0, 180, 0, ${intensity})`;
+// Helper function to generate a red-yellow-green background color based on value and metric direction
+const getColorForValue = (value: number, betterIs: 'higher' | 'lower' = 'higher'): string => {
+    let normalizedValue = value;
+    
+    // For "lower is better" metrics, we need to invert the color logic
+    if (betterIs === 'lower') {
+        // For lower-is-better metrics, smaller values should be green
+        // We'll map the value to a 0-1 scale where 0 = green (best) and 1 = red (worst)
+        if (value <= 0) {
+            // Perfect score for lower-is-better (0 or negative) = bright green
+            return `rgba(0, 180, 0, 0.4)`;
+        } else if (value >= 1) {
+            // Very bad score for lower-is-better (1 or higher) = use log scale
+            const intensity = Math.min(0.6, 0.3 + Math.log10(value) * 0.15);
+            return `rgba(255, 0, 0, ${intensity})`;
+        } else {
+            // Invert the value so that 0 = 1 (green) and 1 = 0 (red)
+            normalizedValue = 1 - value;
+        }
+    } else {
+        // For "higher is better" metrics (original logic)
+        if (value > 1) {
+            const intensity = Math.min(0.6, 0.3 + Math.log10(value) * 0.15);
+            return `rgba(0, 180, 0, ${intensity})`;
+        }
+        normalizedValue = value;
     }
 
     // Ensure value is between 0 and 1 for color interpolation
-    const clampedValue = Math.max(0, Math.min(1, value));
+    const clampedValue = Math.max(0, Math.min(1, normalizedValue));
 
     // Red-Yellow-Green transition
     // For values 0-0.5: red to yellow
@@ -80,9 +110,12 @@ const getColorForValue = (value: number): string => {
 
 // Helper function to generate columns from data
 export const generateColumnsFromData = <TData extends Record<string, unknown>, TValue>(
-    data: TData[]
+    data: TData[],
+    benchmarkName?: string
 ): ColumnDef<TData, TValue>[] => {
     if (!data.length) return [];
+
+    const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
 
     // Get all unique keys from all data objects
     const allKeys = new Set<string>();
@@ -95,8 +128,15 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
         });
     });
 
-    // Convert to array and sort alphabetically
-    const keys = Array.from(allKeys).sort();
+    // Convert to array and sort - prioritize primary metrics for MatBench
+    let keys = Array.from(allKeys);
+    if (isMatBench) {
+        const primaryMetrics = ['F1', 'DAF', 'Accuracy', 'f1_score', 'daf', 'accuracy'];
+        const otherKeys = keys.filter(k => !primaryMetrics.includes(k)).sort();
+        keys = [...primaryMetrics.filter(k => keys.includes(k)), ...otherKeys];
+    } else {
+        keys = keys.sort();
+    }
 
     // Define function column first
     const functionColumn = {
@@ -138,13 +178,43 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
     // Create column definitions for other fields
     const dynamic_columns = keys.map(key => ({
         accessorKey: key,
-        header: key, // Use the exact key name as the header
+        header: ({ column }) => {
+            if (isMatBench && MATBENCH_METRICS[key]) {
+                return (
+                    <MetricHeader
+                        metricKey={key}
+                        sortable={true}
+                        onSort={() => column.toggleSorting()}
+                        sortDirection={column.getIsSorted() || null}
+                    />
+                );
+            }
+            return key; // Use the exact key name as the header for non-MatBench
+        },
         enableSorting: true,
         enableHiding: true,
         enableResizing: true,
         size: DEFAULT_COLUMN_SIZE,
         cell: ({ row }) => {
             const value = row.getValue(key);
+            
+            if (isMatBench && MATBENCH_METRICS[key]) {
+                // Get F1 score and DAF for performance tier calculation (try both cases)
+                const f1Score = getNumericValue(row.getValue('F1')) || getNumericValue(row.getValue('f1_score'));
+                const daf = getNumericValue(row.getValue('DAF')) || getNumericValue(row.getValue('daf'));
+                
+                return (
+                    <MetricDisplay
+                        metricKey={key}
+                        value={value}
+                        f1Score={f1Score || undefined}
+                        daf={daf || undefined}
+                        compact={true}
+                    />
+                );
+            }
+
+            // Default formatting for non-MatBench metrics
             let displayValue: string | number | null = null;
 
             // Handle complex objects with parsedValue
@@ -171,14 +241,7 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
         meta: {
             isMetricColumn: true,
             getNumericValue: (value: unknown): number | null => {
-                if (typeof value === 'number') {
-                    return value;
-                }
-                if (value && typeof value === 'object' && 'parsedValue' in value) {
-                    const parsedValue = (value as { parsedValue: unknown }).parsedValue;
-                    return typeof parsedValue === 'number' ? parsedValue : null;
-                }
-                return null;
+                return getNumericValue(value);
             }
         }
     })) as ColumnDef<TData, TValue>[];
@@ -186,16 +249,35 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
     return [functionColumn, dateColumn, ...dynamic_columns];
 };
 
+// Helper function to extract numeric values
+const getNumericValue = (value: unknown): number | null => {
+    if (typeof value === 'number') {
+        return value;
+    }
+    if (value && typeof value === 'object' && 'parsedValue' in value) {
+        const parsedValue = (value as { parsedValue: unknown }).parsedValue;
+        return typeof parsedValue === 'number' ? parsedValue : null;
+    }
+    return null;
+};
+
 // Component to fetch and display function name
 const FunctionNameCell = ({ functionId }: { functionId: string }) => {
     const { data, isLoading, error } = useGetModalFunction(functionId);
 
-    if (isLoading) return <span>Loading...</span>;
-    if (error) return <span>Error loading function</span>;
+    if (isLoading) return <span className="text-muted-foreground text-sm">Loading...</span>;
+    if (error) return <span className="text-destructive text-sm">Error loading function</span>;
 
     return (
         <div className="flex flex-col">
-            <Link to={`/modal-functions/${functionId}`} className="font-medium">{data?.title || "Unknown Function"}</Link>
+            <Link 
+                to={`/modal-functions/${functionId}`} 
+                className="font-semibold text-primary hover:text-primary/80 transition-colors truncate"
+                title={data?.title || "Unknown Function"}
+            >
+                {data?.title || "Unknown Function"}
+            </Link>
+            <span className="text-xs text-muted-foreground">ID: {functionId}</span>
         </div>
     );
 };
@@ -206,40 +288,55 @@ interface ColumnMeta {
     getNumericValue?: (value: unknown) => number | null;
 }
 
-// Helper function to check if a value can be colored (is numeric)
+// Helper function to check if a value can be colored (is numeric) and get color direction
 const getNumericValueForColoring = (
     value: unknown,
-    column: { columnDef: { meta?: ColumnMeta } }
-): number | null => {
+    column: { columnDef: { meta?: ColumnMeta }; id: string },
+    isMatBench: boolean
+): { value: number; betterIs: 'higher' | 'lower' } | null => {
     // Only apply coloring to metric columns (not function names or dates)
     if (!column.columnDef.meta?.isMetricColumn) {
         return null;
     }
 
-    // If the column has a getNumericValue function in meta, use it
+    // Get the numeric value
+    let numericValue: number | null = null;
     if (column.columnDef.meta?.getNumericValue) {
-        return column.columnDef.meta.getNumericValue(value);
+        numericValue = column.columnDef.meta.getNumericValue(value);
+    } else if (typeof value === 'number') {
+        numericValue = value;
     }
 
-    // Default handling for numeric values
-    if (typeof value === 'number') {
-        return value;
+    if (numericValue === null) {
+        return null;
     }
 
-    return null;
+    // Determine direction based on metric type
+    let betterIs: 'higher' | 'lower' = 'higher'; // default
+    
+    if (isMatBench && MATBENCH_METRICS[column.id]) {
+        betterIs = MATBENCH_METRICS[column.id].betterIs;
+    }
+
+    return { value: numericValue, betterIs };
 };
 
 export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
     columns,
     data,
+    benchmarkName,
+    compact = false,
 }: BenchmarksTableProps<TData, TValue>) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const columnResizeMode: ColumnResizeMode = 'onChange';
+    
+    // Determine if this is MatBench data for coloring purposes
+    const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
 
     const table = useReactTable({
         data,
-        columns: columns || [],
+        columns: columns || generateColumnsFromData(data, benchmarkName),
         getCoreRowModel: getCoreRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
@@ -272,18 +369,18 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
     const columnCount = table.getAllColumns().length;
 
     return (
-        <div className="space-y-2">
-            <div className="flex justify-end">
+        <div className={`${compact ? 'flex flex-col h-full text-sm' : 'space-y-2'}`}>
+            <div className={`flex justify-end ${compact ? 'flex-shrink-0' : ''}`}>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="outline"
                             size="sm"
-                            className="ml-auto flex items-center gap-1"
+                            className={`ml-auto flex items-center gap-1 ${compact ? 'h-7 px-2 text-xs' : ''}`}
                         >
-                            <EyeOff className="h-4 w-4" />
-                            <span>Columns</span>
-                            <ChevronDown className="h-4 w-4" />
+                            <EyeOff className={compact ? "h-3 w-3" : "h-4 w-4"} />
+                            <span className={compact ? "hidden" : ""}>Columns</span>
+                            <ChevronDown className={compact ? "h-3 w-3" : "h-4 w-4"} />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -333,7 +430,8 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="rounded-md border overflow-x-auto">
+            <div className={`rounded-lg border border-border/50 overflow-hidden shadow-sm ${compact ? 'flex-1 min-h-0' : 'w-full'}`}>
+                <div className="overflow-x-auto">
                 <Table className="w-full" style={{ width: table.getCenterTotalSize() }}>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -341,7 +439,7 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                                 {headerGroup.headers.map((header) => (
                                     <TableHead
                                         key={header.id}
-                                        className="whitespace-nowrap px-2 relative"
+                                        className={`whitespace-nowrap relative font-semibold ${compact ? 'px-3 py-2 text-xs' : 'px-4 py-3'}`}
                                         style={{ width: header.getSize() }}
                                     >
                                         {header.column.getCanSort() ? (
@@ -365,7 +463,7 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                                             <div
                                                 onMouseDown={header.getResizeHandler()}
                                                 onTouchStart={header.getResizeHandler()}
-                                                className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none hover:bg-gray-400 ${header.column.getIsResizing() ? 'bg-blue-500' : 'bg-gray-200'
+                                                className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none hover:bg-primary/60 transition-colors ${header.column.getIsResizing() ? 'bg-primary' : 'bg-border'
                                                     }`}
                                             />
                                         )}
@@ -376,29 +474,36 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                     </TableHeader>
                     <TableBody>
                         {table.getRowModel().rows.length > 0 ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id}>
+                            table.getRowModel().rows.map((row, rowIndex) => (
+                                <TableRow 
+                                    key={row.id}
+                                    className={`hover:bg-muted/30 transition-colors ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/20'}`}
+                                >
                                     {row.getVisibleCells().map((cell) => {
                                         const value = cell.getValue();
                                         const style: React.CSSProperties = {
                                             width: cell.column.getSize()
                                         };
 
-                                        // Get numeric value for coloring
-                                        const numericValue = getNumericValueForColoring(value, cell.column);
+                                        // Get numeric value and direction for coloring
+                                        const coloringInfo = getNumericValueForColoring(value, cell.column, isMatBench);
 
-                                        // Apply background color for numeric values (including those > 1)
-                                        if (numericValue !== null && numericValue >= 0) {
-                                            style.backgroundColor = getColorForValue(numericValue);
+                                        // Apply background color for numeric values with better opacity
+                                        if (coloringInfo !== null && coloringInfo.value >= 0) {
+                                            const baseColor = getColorForValue(coloringInfo.value, coloringInfo.betterIs);
+                                            // Reduce opacity for better readability
+                                            style.backgroundColor = baseColor.replace('0.3)', '0.15)');
                                         }
 
                                         return (
                                             <TableCell
                                                 key={cell.id}
-                                                className="px-2"
+                                                className={`font-medium transition-colors ${compact ? 'px-3 py-2.5 text-xs' : 'px-4 py-3'}`}
                                                 style={style}
                                             >
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                <div className="flex items-center">
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </div>
                                             </TableCell>
                                         );
                                     })}
@@ -406,13 +511,14 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columnCount} className="h-24 text-center">
-                                    No results.
+                                <TableCell colSpan={columnCount} className={`h-24 text-center text-muted-foreground ${compact ? 'text-xs' : ''}`}>
+                                    No results available.
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
+                </div>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
     Card,
     CardContent,
@@ -13,69 +13,83 @@ import {
     DialogTitle,
 } from "@/components/shadcn/dialog";
 import { Button } from "@/components/shadcn/button";
-import { Loader2, Play, RefreshCw } from "lucide-react";
+import { Loader2, Play, RefreshCw, Menu, X, ChevronDown, Info, ExternalLink } from "lucide-react";
 
-import { BenchmarksTable, generateColumnsFromData } from "./benchmarks-table/BenchmarksTable";
+import { BenchmarksTable } from "./benchmarks-table/BenchmarksTable";
 import { useGetBenchmarkResults } from "./api/useGetBenchmarkResults";
 import { BenchmarkFunctionDialog } from "./components/BenchmarkFunctionDialog";
+import { BenchmarkInfo } from "./components/BenchmarkInfo";
+import { TaskDescription } from "./components/TaskDescription";
+import { TaskVisualization } from "./components/TaskVisualization";
 import { BenchmarkResult } from "@/types";
 import { useGetBenchmarks } from "./api/useGetBenchmarks";
 import { Benchmark, BenchmarkTask } from "./types";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import { cn } from "@/utils/form.utils";
+import { MATBENCH_BENCHMARKS, MATBENCH_METRICS, isMatBenchDiscovery, hasMatBenchMetrics } from "./utils/matbench";
 
-// Mock data for visualizing tables when API data isn't available
+// Mock data for visualizing tables when API data isn't available (MatBench-style)
 const mockBenchmarkResults = [
     {
         function_id: 1,
         date_invoked: new Date().toISOString(),
-        accuracy: 0.95,
-        f1_score: 0.92,
-        precision: 0.93,
-        recall: 0.91,
+        f1_score: 0.925,
+        daf: 6.12,
+        accuracy: 0.94,
+        precision: 0.91,
+        recall: 0.93,
+        rmsd: 0.045,
         latency_ms: 125,
-        loss: 0.05,
+        thermal_conductivity_mae: 0.021,
     },
     {
         function_id: 2,
         date_invoked: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-        accuracy: 0.78,
-        f1_score: 0.72,
-        precision: 0.75,
-        recall: 0.68,
+        f1_score: 0.857,
+        daf: 4.85,
+        accuracy: 0.88,
+        precision: 0.82,
+        recall: 0.89,
+        rmsd: 0.067,
         latency_ms: 98,
-        loss: 0.21,
+        thermal_conductivity_mae: 0.034,
     },
     {
         function_id: 3,
         date_invoked: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-        accuracy: 0.52,
-        f1_score: 0.48,
-        precision: 0.51,
-        recall: 0.45,
+        f1_score: 0.742,
+        daf: 3.21,
+        accuracy: 0.76,
+        precision: 0.69,
+        recall: 0.80,
+        rmsd: 0.089,
         latency_ms: 145,
-        loss: 0.48,
+        thermal_conductivity_mae: 0.052,
     },
     {
         function_id: 4,
         date_invoked: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
-        accuracy: 0.31,
-        f1_score: 0.27,
-        precision: 0.30,
-        recall: 0.25,
+        f1_score: 0.623,
+        daf: 2.14,
+        accuracy: 0.65,
+        precision: 0.58,
+        recall: 0.69,
+        rmsd: 0.112,
         latency_ms: 167,
-        loss: 0.67,
+        thermal_conductivity_mae: 0.078,
     },
     {
-        function_id: 1,
+        function_id: 5,
         date_invoked: new Date(Date.now() - 345600000).toISOString(), // 4 days ago
-        accuracy: 0.09,
-        f1_score: 0.04,
-        precision: 0.06,
-        recall: 0.03,
+        f1_score: 0.485,
+        daf: 1.23,
+        accuracy: 0.51,
+        precision: 0.42,
+        recall: 0.56,
+        rmsd: 0.156,
         latency_ms: 211,
-        loss: 0.94,
+        thermal_conductivity_mae: 0.105,
     }
 ];
 
@@ -84,6 +98,7 @@ export const BenchmarksPage = () => {
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showBenchmarkDialog, setShowBenchmarkDialog] = useState(false);
     const [showMockData, setShowMockData] = useState(false); // Toggle for mock data
+    const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar state
 
     // Get benchmark data
     const { data: benchmarkMetadata = [] } = useGetBenchmarks();
@@ -94,6 +109,34 @@ export const BenchmarksPage = () => {
     const selectedBenchmark = useMemo(() =>
         benchmarkMetadata.find((benchmark: Benchmark) => benchmark.id === selectedBenchmarkId),
         [benchmarkMetadata, selectedBenchmarkId]);
+
+    // Collect metrics from all tasks for the selected benchmark
+    const allBenchmarkMetrics = useMemo(() => {
+        if (!selectedBenchmark?.tasks) return new Set<string>();
+        
+        const metrics = new Set<string>();
+        
+        // Always show common MatBench metrics that we have definitions for
+        if (isMatBenchDiscovery(selectedBenchmark.name) || showMockData) {
+            // Add common MatBench metrics (prefer uppercase versions for display)
+            ['F1', 'DAF', 'Accuracy', 'Precision', 'Recall', 'MAE', 'RMSE'].forEach(metric => {
+                if (MATBENCH_METRICS[metric]) {
+                    metrics.add(metric);
+                }
+            });
+        }
+        
+        // If showing mock data, add all mock metrics
+        if (showMockData) {
+            Object.keys(mockBenchmarkResults[0]).forEach(key => {
+                if (key !== 'function_id' && key !== 'date_invoked') {
+                    metrics.add(key);
+                }
+            });
+        }
+        
+        return metrics;
+    }, [selectedBenchmark, showMockData]);
 
     // Use the first benchmark by default if none is selected
     useEffect(() => {
@@ -129,19 +172,17 @@ export const BenchmarksPage = () => {
         // Add mock data if no real data available and showMockData is enabled
         const displayResults = showMockData ? mockBenchmarkResults : processedResults;
 
-        // Generate columns from available results
-        const columns = useMemo(() => {
-            return displayResults.length > 0
-                ? generateColumnsFromData(displayResults)
-                : [];
-        }, [displayResults]);
-
         return (
-            <Card className="mb-6">
-                <CardHeader>
-                    <CardTitle className="text-lg">
+            <Card>
+                <CardHeader className="pb-4">
+                    <CardTitle className="text-xl font-semibold">
                         {task.function.title || task.function.function_name}
                     </CardTitle>
+                    {displayResults.length > 0 && (
+                        <div className="text-sm text-muted-foreground">
+                            {displayResults.length} model{displayResults.length !== 1 ? 's' : ''} evaluated
+                        </div>
+                    )}
                 </CardHeader>
                 <CardContent>
                     {isLoading ? (
@@ -149,9 +190,9 @@ export const BenchmarksPage = () => {
                             <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                         </div>
                     ) : (
-                        <div>
+                        <div className="space-y-6">
                             {hasPendingResults && (
-                                <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
                                     <div className="flex items-center gap-2">
                                         <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
                                         <span className="text-yellow-800 text-sm">
@@ -161,15 +202,24 @@ export const BenchmarksPage = () => {
                                 </div>
                             )}
 
+                            {/* Visualizations First - Main Attraction */}
                             {displayResults.length > 0 ? (
-                                <BenchmarksTable
-                                    columns={columns}
+                                <TaskVisualization
                                     data={displayResults}
+                                    benchmarkName={selectedBenchmark?.name}
                                 />
                             ) : (
                                 <div className="text-center py-6 border rounded-md bg-gray-50">
                                     <p className="text-gray-500">No results available for this task.</p>
                                 </div>
+                            )}
+
+                            {/* Task Description - Context After Engagement */}
+                            {displayResults.length > 0 && (
+                                <TaskDescription 
+                                    taskName={task.function.function_name}
+                                    functionName={task.function.title || task.function.function_name}
+                                />
                             )}
                         </div>
                     )}
@@ -179,9 +229,32 @@ export const BenchmarksPage = () => {
     };
 
     return (
-        <div className="flex h-full">
+        <div className="flex h-full relative">
+            {/* Mobile Menu Button */}
+            <Button
+                variant="outline"
+                size="sm"
+                className="lg:hidden fixed top-4 left-4 z-50 bg-background shadow-md"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+                {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
+
+            {/* Mobile Overlay */}
+            {sidebarOpen && (
+                <div
+                    className="lg:hidden fixed inset-0 bg-black/50 z-40"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
             {/* Benchmarks Sidebar */}
-            <div className="w-64 border-r h-full p-4 flex flex-col">
+            <div className={cn(
+                "w-64 border-r h-full p-4 flex flex-col bg-background z-40",
+                "lg:relative lg:translate-x-0 lg:block",
+                "fixed inset-y-0 left-0 transform transition-transform",
+                sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            )}>
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-semibold text-lg">Benchmarks</h2>
                 </div>
@@ -196,7 +269,10 @@ export const BenchmarksPage = () => {
                                     ? "bg-primary text-primary-foreground"
                                     : "hover:bg-muted"
                             )}
-                            onClick={() => handleBenchmarkSelection(benchmark.id)}
+                            onClick={() => {
+                                handleBenchmarkSelection(benchmark.id);
+                                setSidebarOpen(false); // Close sidebar on mobile after selection
+                            }}
                         >
                             <div className="font-medium truncate">{benchmark.name}</div>
                             {selectedBenchmarkId === benchmark.id && (
@@ -233,16 +309,100 @@ export const BenchmarksPage = () => {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-6 overflow-y-auto lg:pl-6 pl-16">
                 {selectedBenchmark ? (
                     <>
-                        <div className="mb-6">
-                            <h1 className="text-2xl font-bold">{selectedBenchmark.name}</h1>
-                            <p className="text-muted-foreground mt-1">{selectedBenchmark.description || "No description available"}</p>
+                        {/* Enhanced Header Section */}
+                        <div className="mb-6 space-y-4">
+                            {/* Title and Task Count */}
+                            <div className="flex items-center justify-between">
+                                <h1 className="text-2xl font-bold">{selectedBenchmark.name}</h1>
+                                <div className="text-sm text-muted-foreground">
+                                    {selectedBenchmark.tasks?.length} evaluation task{selectedBenchmark.tasks?.length !== 1 ? 's' : ''}
+                                </div>
+                            </div>
+
+                            {/* MatBench Links and Info Bar */}
+                            {isMatBenchDiscovery(selectedBenchmark.name) && (
+                                <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-between items-start">
+                                        <div className="flex items-start gap-3">
+                                            <div className="bg-blue-100 rounded-full p-1 mt-0.5">
+                                                <Info className="h-4 w-4 text-blue-600" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-medium text-blue-900 mb-1">
+                                                    MatBench Discovery Benchmark
+                                                </h3>
+                                                <p className="text-sm text-blue-800">
+                                                    Evaluating AI models for accelerated materials discovery and crystal structure prediction
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                asChild
+                                                className="bg-white/50 hover:bg-white/80"
+                                            >
+                                                <a
+                                                    href="https://matbench-discovery.materialsproject.org/"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1"
+                                                >
+                                                    Website
+                                                    <ExternalLink className="h-3 w-3" />
+                                                </a>
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                asChild
+                                                className="bg-white/50 hover:bg-white/80"
+                                            >
+                                                <a
+                                                    href="https://doi.org/10.1038/s41467-023-43490-1"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1"
+                                                >
+                                                    Paper
+                                                    <ExternalLink className="h-3 w-3" />
+                                                </a>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Navigation Hints */}
+                            <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <ChevronDown className="h-4 w-4 animate-bounce" />
+                                    <span>Scroll down for benchmark details and metric explanations</span>
+                                </div>
+                                
+                                {/* Quick Metrics Guide */}
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                        const metricsSection = document.getElementById('metrics-info');
+                                        metricsSection?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                    className="flex items-center gap-1 text-xs"
+                                >
+                                    <Info className="h-3 w-3" />
+                                    What do these metrics mean?
+                                </Button>
+                            </div>
                         </div>
 
+                        {/* Main Data Tables */}
                         {selectedBenchmark.tasks && selectedBenchmark.tasks.length > 0 ? (
-                            <div>
+                            <div className="space-y-6">
                                 {selectedBenchmark.tasks.map((task) => (
                                     <TaskResultPanel key={task.id} task={task} />
                                 ))}
@@ -252,6 +412,80 @@ export const BenchmarksPage = () => {
                                 <p className="text-gray-500">No benchmark tasks available for this benchmark.</p>
                             </div>
                         )}
+
+                        {/* Metrics Information Panel */}
+                        {selectedBenchmark.tasks && selectedBenchmark.tasks.length > 0 && (
+                            <div className="mt-12 pt-8 border-t" id="metrics-info">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Info className="h-5 w-5 text-muted-foreground" />
+                                        <h2 className="text-xl font-semibold">Understanding the Metrics</h2>
+                                    </div>
+                                    
+                                    {(() => {
+                                        const metricsArray = Array.from(allBenchmarkMetrics)
+                                            .map(key => ({ key, info: MATBENCH_METRICS[key] }))
+                                            .filter(({ info }) => info)
+                                            .sort((a, b) => {
+                                                // Sort primary metrics first
+                                                if (a.info?.isPrimaryMetric && !b.info?.isPrimaryMetric) return -1;
+                                                if (!a.info?.isPrimaryMetric && b.info?.isPrimaryMetric) return 1;
+                                                return a.info?.name.localeCompare(b.info?.name) || 0;
+                                            });
+                                        
+                                        return metricsArray.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {metricsArray.map(({ key, info }) => (
+                                                    <Card key={key} className={cn(
+                                                        "p-4",
+                                                        info.isPrimaryMetric && "border-primary/50 bg-primary/5"
+                                                    )}>
+                                                        <div className="space-y-2">
+                                                            <div className="flex items-center justify-between">
+                                                                <h4 className="font-medium flex items-center gap-2">
+                                                                    <span className="font-bold text-primary">{key}</span>
+                                                                    <span className="text-muted-foreground">-</span>
+                                                                    <span>{info.name}</span>
+                                                                    {info.isPrimaryMetric && (
+                                                                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                                                                            Key Metric
+                                                                        </span>
+                                                                    )}
+                                                                </h4>
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    {info.betterIs === 'higher' ? '↗️ Higher is better' : '↘️ Lower is better'}
+                                                                </div>
+                                                            </div>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {info.description}
+                                                            </p>
+                                                            {info.unit && (
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    Unit: {info.unit}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-6 border rounded-md bg-gray-50">
+                                                <p className="text-gray-500">No metric information available.</p>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Benchmark Information - Moved to Bottom */}
+                        <div className="mt-12 pt-8 border-t">
+                            <BenchmarkInfo
+                                benchmarkName={selectedBenchmark.name}
+                                description={selectedBenchmark.description}
+                                taskCount={selectedBenchmark.tasks?.length}
+                            />
+                        </div>
                     </>
                 ) : (
                     <div className="flex items-center justify-center h-full">
