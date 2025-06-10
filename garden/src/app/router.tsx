@@ -5,8 +5,7 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import RootLayout from "@/components/Layout";
 
-import EditEntrypointPage from "@/features/entrypoints/components/EditEntrypointPage";
-import EntrypointPage from "@/features/entrypoints/components/EntrypointPage";
+import EntrypointTombstonePage from "@/components/EntrypointTombstonePage";
 import CreateGardenPage from "@/features/gardens/components/create/CreateGardenPage";
 import GardenPage from "@/features/gardens/components/GardenPage";
 import HomePage from "@/components/HomePage";
@@ -38,13 +37,8 @@ const Router: React.FC = () => {
           <Route path=":doi/modal-functions/:id" element={<ModalFunctionPage />} />
         </Route>
 
-        {/* Entrypoint Routes */}
-        <Route path="entrypoint">
-          <Route path=":doi" element={<EntrypointPage />} />
-          <Route element={<PrivateRoutes />}>
-            <Route path=":doi/edit" element={<EditEntrypointPage />} />
-          </Route>
-        </Route>
+        {/* Entrypoint Routes - All archived */}
+        <Route path="entrypoint/*" element={<EntrypointTombstonePage />} />
 
         {/* Modal Routes */}
         <Route path="modal-functions">
