@@ -3,10 +3,11 @@ import { useState, useEffect, useRef, RefObject } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/shadcn/separator";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import { ChevronDown, ChevronUp, LogOut, Plus, User } from "lucide-react";
+import { ChevronDown, ChevronUp, LogOut, Plus, User, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./shadcn/tooltip";
+import { SUPER_USERS } from "@/utils/utils";
 
 const Navbar = () => {
   const auth = useGlobusAuth();
@@ -15,6 +16,7 @@ const Navbar = () => {
   const [openMenuDropdown, setOpenMenuDropdown] = useState(false);
   const dropdownRef: RefObject<HTMLDivElement> = useRef(null);
   const queryClient = useQueryClient();
+  const isSuperUser = SUPER_USERS.includes(auth.authorization?.user?.sub || "");
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -115,6 +117,12 @@ const Navbar = () => {
                       <User size={18} />
                       <Link to="/user"> Your Profile </Link>
                     </div>
+                    {isSuperUser && (
+                      <div className="flex flex-row gap-2 hover:text-green hover:underline">
+                        <BarChart3 size={18} />
+                        <Link to="/metrics"> Metrics Dashboard </Link>
+                      </div>
+                    )}
                     <div
                       className="flex flex-row gap-2 hover:cursor-pointer hover:text-green hover:underline"
                       onClick={handleLogOut}
