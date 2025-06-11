@@ -18,7 +18,6 @@ type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 interface ModalFunction extends BaseModalFunction {
   already_has_material?: boolean;
   contributors?: string[];
-  num_invocations?: number;
 }
 
 type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchRequest"] & {
