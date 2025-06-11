@@ -38,7 +38,7 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
         content={modalFunction.description || "No description available"}
       />
 
-      {(modalFunction.tags && modalFunction.tags.length > 0 || modalFunction.hardware_spec?.gpus || modalFunction.num_invocations > 0) && (
+      {(modalFunction.tags && modalFunction.tags.length > 0 || modalFunction.hardware_spec?.gpus || (modalFunction.num_invocations || 0) > 0) && (
         <CardFooter className="px-5 py-3 border-t border-gray-100 bg-gray-50/80 flex flex-row items-center text-xs text-gray-600">
           <div className="flex justify-between items-center w-full gap-3">
             {/* Left Section: Tags */}
@@ -64,7 +64,7 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
                 </div>
               )}
               {/* Invocations */}
-              {modalFunction.num_invocations > 0 && (
+              {(modalFunction.num_invocations || 0) > 0 && (
                 <div className="flex items-center gap-1">
                   <Repeat className="h-3 w-3" />
                   <span>{modalFunction.num_invocations} runs</span>

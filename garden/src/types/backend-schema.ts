@@ -664,7 +664,9 @@ export interface components {
             /** Date Invoked */
             date_invoked?: string | null;
             /** Result */
-            result?: Record<string, never> | null;
+            result?: {
+                [key: string]: unknown;
+            } | null;
         };
         /** BenchmarkTaskMetadata */
         BenchmarkTaskMetadata: {
@@ -1451,7 +1453,9 @@ export interface components {
              */
             "@version": unknown | null;
             /** Entries */
-            entries?: Record<string, never>[] | null;
+            entries?: {
+                [key: string]: unknown;
+            }[] | null;
             accelerate_metadata?: components["schemas"]["AccelerateDatasetMetadata"] | null;
         };
         /** MDFSearchResponse */
@@ -1701,7 +1705,10 @@ export interface components {
             id: number;
             /** Modal App Id */
             modal_app_id: number;
-            /** Owner */
+            /**
+             * Owner
+             * @default
+             */
             owner: string;
             /**
              * Owner Identity Id
@@ -2700,7 +2707,9 @@ export interface operations {
     };
     get_results_for_benchmark_task_benchmarks__benchmark_id___task_id__get: {
         parameters: {
-            query?: never;
+            query?: {
+                include_failed?: boolean;
+            };
             header?: never;
             path: {
                 benchmark_id: number;
