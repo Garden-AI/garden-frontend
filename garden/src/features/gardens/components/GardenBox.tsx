@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "../../../components/shadcn/card";
+import React from "react";
+import { Card, CardHeader, CardTitle, CardFooter, MarkdownCardContent } from "../../../components/shadcn/card";
 import { useNavigate } from "react-router-dom";
 import { TagIcon } from "lucide-react";
 import { Garden } from "@/types";
@@ -9,10 +10,15 @@ const GardenBox = ({ garden, allowEdits }: { garden: Garden, allowEdits: boolean
   const navigate = useNavigate();
 
   const { data: currUserInfo } = useGetUserInfo();
-  const { data: userGardens } = useGetGardens({ owner_uuid: currUserInfo?.identity_id });
+
+  let userGardens;
+  if (allowEdits) {
+    const { data: gardens } = useGetGardens({ owner_uuid: currUserInfo?.identity_id });
+    userGardens = gardens;
+  }
 
   const canEditGarden =
-    !!garden && !!userGardens && userGardens.some((userGarden) => userGarden.doi === garden.doi);
+    !!garden && !!userGardens && userGardens.some((userGarden: Garden) => userGarden.doi === garden.doi);
 
   const { title, description, doi, tags } = garden;
 
@@ -34,7 +40,7 @@ const GardenBox = ({ garden, allowEdits }: { garden: Garden, allowEdits: boolean
         <CardHeader className="">
           <CardTitle className="text-ellipsis text-xl">{title}</CardTitle>
         </CardHeader>
-        <MarkdownCardContent 
+        <MarkdownCardContent
           className="flex-grow overflow-hidden"
           content={description || ""}
         />
