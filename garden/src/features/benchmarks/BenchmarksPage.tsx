@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useMemo, useEffect } from "react";
 import {
     Card,
@@ -113,9 +114,9 @@ export const BenchmarksPage = () => {
     // Collect metrics from all tasks for the selected benchmark
     const allBenchmarkMetrics = useMemo(() => {
         if (!selectedBenchmark?.tasks) return new Set<string>();
-        
+
         const metrics = new Set<string>();
-        
+
         // Always show common MatBench metrics that we have definitions for
         if (isMatBenchDiscovery(selectedBenchmark.name) || showMockData) {
             // Add common MatBench metrics (prefer uppercase versions for display)
@@ -125,7 +126,7 @@ export const BenchmarksPage = () => {
                 }
             });
         }
-        
+
         // If showing mock data, add all mock metrics
         if (showMockData) {
             Object.keys(mockBenchmarkResults[0]).forEach(key => {
@@ -134,7 +135,7 @@ export const BenchmarksPage = () => {
                 }
             });
         }
-        
+
         return metrics;
     }, [selectedBenchmark, showMockData]);
 
@@ -216,7 +217,7 @@ export const BenchmarksPage = () => {
 
                             {/* Task Description - Context After Engagement */}
                             {displayResults.length > 0 && (
-                                <TaskDescription 
+                                <TaskDescription
                                     taskName={task.function.function_name}
                                     functionName={task.function.title || task.function.function_name}
                                 />
@@ -383,7 +384,7 @@ export const BenchmarksPage = () => {
                                     <ChevronDown className="h-4 w-4 animate-bounce" />
                                     <span>Scroll down for benchmark details and metric explanations</span>
                                 </div>
-                                
+
                                 {/* Quick Metrics Guide */}
                                 <Button
                                     variant="ghost"
@@ -421,7 +422,7 @@ export const BenchmarksPage = () => {
                                         <Info className="h-5 w-5 text-muted-foreground" />
                                         <h2 className="text-xl font-semibold">Understanding the Metrics</h2>
                                     </div>
-                                    
+
                                     {(() => {
                                         const metricsArray = Array.from(allBenchmarkMetrics)
                                             .map(key => ({ key, info: MATBENCH_METRICS[key] }))
@@ -432,7 +433,7 @@ export const BenchmarksPage = () => {
                                                 if (!a.info?.isPrimaryMetric && b.info?.isPrimaryMetric) return 1;
                                                 return a.info?.name.localeCompare(b.info?.name) || 0;
                                             });
-                                        
+
                                         return metricsArray.length > 0 ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {metricsArray.map(({ key, info }) => (
@@ -539,3 +540,5 @@ export const BenchmarksPage = () => {
         </div>
     );
 }
+
+export default BenchmarksPage;

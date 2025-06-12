@@ -36,3 +36,5 @@ export const CreateModelDeploymentPage = ({
         </div>
     );
 };
+
+export default CreateModelDeploymentPage;
