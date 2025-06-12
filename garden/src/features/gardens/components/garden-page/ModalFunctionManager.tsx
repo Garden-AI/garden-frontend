@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { useGetUserModalFunctions } from '@/features/modal/api/useGetUserModalFunctions';
 import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, X } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface ModalFunctionManagerProps {
@@ -33,7 +33,9 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   
   // State for selected function IDs
   const [selectedFunctionIds, setSelectedFunctionIds] = useState<number[]>(currentFunctionIds);
+  const [showFullDescriptionIds, setShowFullDescriptionIds] = useState<number[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   
   // Get user's modal functions
   const {
@@ -90,6 +92,12 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   
   // Don't render if there are no functions available
   if ((functions?.length || 0) === 0 && !isLoading && !isFetching) return null;
+
+  const filteredFunctions = functions?.filter((func) => {
+  const queryWords = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+  const haystack = `${func.title ?? ''} ${func.function_name ?? ''} ${func.description ?? ''}`.toLowerCase();
+  return queryWords.every((word) => haystack.includes(word));
+});
   
   return (
     <>
@@ -113,6 +121,47 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
               Select functions to include in this garden:
             </p>
           </div>
+
+            {selectedFunctionIds.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-1">
+                {selectedFunctionIds.map((id) => {
+                  const func= functions?.find(f => f.id == id);
+                  if (!func) return null;
+
+                  return (
+                    <div
+                      key={id}
+                      className="flex items-center rounded-full bg-[#e0f3e7] text-sm px-3 py-1 border border-[#b3dbc3]"
+                    >
+                      {func.title || func.function_name}
+                      <button
+                        onClick={() => handleFunctionToggle(id)}
+                        className="ml-2 text-[#2f5d41] hover:text-red-500"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {selectedFunctionIds.length > 0 && (
+              <div className="mt-2 mb-4">
+                <button onClick={() => setSelectedFunctionIds([])} 
+                className="text-sm text-[#2f5d41] bg-white hover:bg-[#f0f5f3] border border-[#b3dbc3] px-3 py-1 rounded-md shadow-sm transition flex items-center gap-1">
+                  Clear all selected
+                </button>
+              </div>
+            )}
+          
+          <input
+            type="text"
+            placeholder="Search functions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full sm:w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5cae4f]"
+          />
           
           <div className="relative mb-4 rounded-md border bg-white">
             <div className="max-h-[420px] overflow-y-auto">
@@ -140,21 +189,54 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
                         No modal functions available
                       </TableCell>
                     </TableRow>
-                  ) : (
-                    functions?.map((func) => (
-                      <TableRow key={func.id}>
+                  ) : filteredFunctions?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center text-gray-500">
+                          No functions match your search.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      (filteredFunctions ?? []).map((func) => (
+                        <TableRow
+                          key={func.id}
+                          onClick={() => handleFunctionToggle(func.id)}
+                          className={`
+                            group cursor-pointer transition-all duration-200 ease-in-out rounded-md
+                            ${selectedFunctionIds.includes(func.id)
+                              ? "bg-[#e0f3e7] border-y border-[#5cae4f] shadow-sm"
+                              : "hover:bg-[#eef5f1]"}  
+                          `}
+                        >
                         <TableCell className="w-1/12 text-center">
                           <Checkbox
                             checked={selectedFunctionIds.includes(func.id)}
                             onCheckedChange={() => handleFunctionToggle(func.id)}
+                            onClick={(e) => e.stopPropagation()}
                             value={func.id}
                           />
                         </TableCell>
                         <TableCell className="w-1/4 truncate whitespace-normal break-words">
                           {func.title || func.function_name}
                         </TableCell>
-                        <TableCell className="w-1/2 truncate whitespace-normal break-words">
-                          {func.description || "No description available"}
+                        <TableCell className="w-1/2 whitespace-normal break-words text-sm text-gray-700">
+                          <div>
+                            <p className={showFullDescriptionIds.includes(func.id) ? '' : 'line-clamp-2'}>
+                              {func.description || "No description available"}
+                            </p>
+                            {func.description && func.description.length > 120 && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setShowFullDescriptionIds((prev) =>
+                                    prev.includes(func.id) ? prev.filter((id) => id !== func.id) : [...prev, func.id]
+                                  );
+                                }}
+                                className="mt-1 text-xs text-green hover:underline"
+                              >
+                                {showFullDescriptionIds.includes(func.id) ? "Show less" : "Show more"}
+                              </button>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="w-1/6 text-center">
                           <Link
@@ -168,9 +250,9 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
                             </Button>
                           </Link>
                         </TableCell>
-                      </TableRow>
-                    ))
-                  )}
+                        </TableRow>
+                      ))
+                    )}
                 </TableBody>
               </Table>
             </div>
