@@ -7,6 +7,7 @@ import NotFoundPage from "@/components/NotFoundPage";
 import RootLayout from "@/components/Layout";
 
 import { useGlobusAuth } from "@globus/react-auth-context";
+import SuperuserRoute from "@/components/SuperuserRoute";
 
 const EntrypointTombstonePage = lazy(() => import("@/components/EntrypointTombstonePage"));
 const CreateGardenPage = lazy(() => import("@/features/gardens/components/create/CreateGardenPage"));
@@ -21,6 +22,7 @@ const ModelDeploymentPage = lazy(() => import("@/features/model-deployments/Mode
 const CreateModelDeploymentPage = lazy(() => import("@/features/model-deployments/CreateModelDeploymentPage"));
 const ModalAppUploadPage = lazy(() => import("@/features/modal/components/ModalAppUploadPage"));
 const BenchmarksPage = lazy(() => import("@/features/benchmarks/BenchmarksPage"));
+const MetricsDashboard = lazy(() => import("@/features/metrics/components/MetricsDashboard"));
 
 const WrappedLazyComponent = ({ child }: { child: React.ReactNode }) => {
   return (
@@ -76,6 +78,9 @@ const Router: React.FC = () => {
         <Route path="login" element={<WrappedLazyComponent child={<LoginPage />} />} />
         <Route path="user" element={<WrappedLazyComponent child={<UserProfilePage />} />} />
         <Route path="benchmarks" element={<WrappedLazyComponent child={<BenchmarksPage />} />} />
+        <Route element={<SuperuserRoute />}>
+          <Route path="metrics" element={<WrappedLazyComponent child={<MetricsDashboard />} />}></Route>
+        </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes >
