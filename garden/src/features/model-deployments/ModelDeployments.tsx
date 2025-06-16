@@ -1,3 +1,4 @@
+import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { StatusHeader } from "@/features/model-deployments/StatusHeader";
 import { ModelDeploymentsTable } from "@/features/model-deployments/ModelDeploymentsTable";
@@ -5,6 +6,8 @@ import { Button } from "@/components/shadcn/button";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import { useGetModelDeployments } from "./api/useGetModelDeployments";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 export interface ModelDeployment {
     name: string,
@@ -18,7 +21,6 @@ const statusColors = {
     undeployed: 'bg-gray-200 text-black',
     error: 'bg-red-100 text-red-800',
 };
-
 
 export const columns: ColumnDef<ModelDeployment>[] = [
     {
@@ -48,16 +50,17 @@ export const columns: ColumnDef<ModelDeployment>[] = [
     },
 ];
 
-interface ModelDeploymentsProps {
-    modelDeployments: ModelDeployment[],
-}
-
-export const ModelDeployments = ({ modelDeployments }: ModelDeploymentsProps) => {
+export const ModelDeployments = () => {
     const navigate = useNavigate();
+    const { data: modelDeployments, isLoading } = useGetModelDeployments();
 
     const handleCreateDeployment = () => {
         navigate("/modal-app/create");
     };
+
+    if (isLoading) {
+        return <LoadingOverlay />;
+    }
 
     return (
         <div>
@@ -75,7 +78,7 @@ export const ModelDeployments = ({ modelDeployments }: ModelDeploymentsProps) =>
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            <ModelDeploymentsTable columns={columns} data={modelDeployments} />
+            <ModelDeploymentsTable columns={columns} data={modelDeployments || []} />
         </div>
     )
 }

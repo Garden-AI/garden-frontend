@@ -4,14 +4,12 @@ import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
 import SavedGardens from "./SavedGardens";
 import { ModelDeployments } from "@/features/model-deployments/ModelDeployments";
-import { useGetModelDeployments } from "@/features/model-deployments/api/useGetModelDeployments";
 
 interface UserProfileTabsProps {
   defaultTab?: "profile" | "my-gardens" | "saved-gardens" | "model-deployments";
 }
 
 const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
-  const modelDeployments = useGetModelDeployments().data || [];
   return (
     <Tabs defaultValue={defaultTab} className="w-full font-display">
       <TabsList className="h-12 w-full bg-transparent">
@@ -58,7 +56,7 @@ const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
         </TabsContent>
         <TabsContent value="model-deployments">
           <div className="px-6">
-            <ModelDeployments modelDeployments={modelDeployments}></ModelDeployments>
+            <ModelDeployments />
           </div>
         </TabsContent>
       </div>
