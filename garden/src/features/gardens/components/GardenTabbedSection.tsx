@@ -1,4 +1,4 @@
-import React, { lazy, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { DatabaseIcon, BookIcon, CodeIcon, FunctionSquare, ScrollTextIcon, LucideIcon } from "lucide-react";
@@ -8,7 +8,7 @@ import ModalFunctionBox from "./ModalFunctionBox";
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
 import { getUniqueItemCount } from "../utils/garden.utils";
 
-const ModalFunctionManager = lazy(() => import("./garden-page/ModalFunctionManager"));
+import ModalFunctionManager from "./garden-page/ModalFunctionManager";
 
 import {
     AddMaterialWithFunctionSelect,
