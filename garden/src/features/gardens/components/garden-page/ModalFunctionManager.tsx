@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
 import { Garden } from '@/types';
@@ -36,6 +36,14 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   const [showFullDescriptionIds, setShowFullDescriptionIds] = useState<number[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
+
+  // Sync selected functions
+  useEffect(() => {
+    if (isDialogOpen) {
+      setSelectedFunctionIds(garden.modal_functions?.map(f => f.id) || []);
+    }
+  }, [isDialogOpen, garden.modal_functions]);
   
   // Get user's modal functions
   const {
@@ -148,7 +156,7 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
 
             {selectedFunctionIds.length > 0 && (
               <div className="mt-2 mb-4">
-                <button onClick={() => setSelectedFunctionIds([])} 
+                <button onClick={() => setIsConfirmClearOpen(true)} 
                 className="text-sm text-[#2f5d41] bg-white hover:bg-[#f0f5f3] border border-[#b3dbc3] px-3 py-1 rounded-md shadow-sm transition flex items-center gap-1">
                   Clear all selected
                 </button>
@@ -266,6 +274,29 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
               Update Garden
             </Button>
           </div>
+
+          <Dialog open={isConfirmClearOpen} onOpenChange={setIsConfirmClearOpen}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Remove all selected functions?</DialogTitle>
+              </DialogHeader>
+              <div className="text-sm text-gray-600">
+                Your current selections will be cleared. This won't affect the garden until changes are confirmed.
+              </div>
+              <div className="flex justify-end gap-2 mt-4">
+                <Button variant="outline" onClick={() => setIsConfirmClearOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="destructive" onClick={() => {
+                  setSelectedFunctionIds([]);
+                  setIsConfirmClearOpen(false);
+                }}>
+                  Clear All
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
         </DialogContent>
       </Dialog>
     </>
