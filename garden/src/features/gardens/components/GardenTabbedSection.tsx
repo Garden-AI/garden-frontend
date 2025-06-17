@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React, { lazy, useCallback } from "react";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { DatabaseIcon, BookIcon, CodeIcon, FunctionSquare, ScrollTextIcon, LucideIcon } from "lucide-react";
@@ -7,9 +7,8 @@ import EntrypointBox from "./EntrypointBox";
 import ModalFunctionBox from "./ModalFunctionBox";
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
 import { getUniqueItemCount } from "../utils/garden.utils";
-import {
-    ModalFunctionManager,
-} from "./garden-page";
+
+const ModalFunctionManager = lazy(() => import("./garden-page/ModalFunctionManager"));
 
 import {
     AddMaterialWithFunctionSelect,
@@ -25,7 +24,7 @@ const TabTrigger = ({ icon: Icon, name, count, value }: { icon: LucideIcon, name
             <div className="flex items-center justify-between">
                 <Icon className="h-4 w-4" />
                 <span className="hidden lg:block ml-1.5">{name}</span>
-                {count> 0 && (
+                {count > 0 && (
                     <span className="hidden sm:inline ml-1">
                         ({count})
                     </span>
@@ -62,7 +61,7 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
     const handleMaterialRemoved = useCallback(async () => {
         await handleMaterialsChange();
     }, [handleMaterialsChange]);
-    
+
     return (
         <Tabs
             defaultValue={
@@ -84,7 +83,7 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
                 <TabTrigger
                     icon={DatabaseIcon}
                     count={getUniqueItemCount(garden.modal_functions, 'datasets')}
-                    name="Datasets" 
+                    name="Datasets"
                     value="datasets"
                 />
                 <TabTrigger

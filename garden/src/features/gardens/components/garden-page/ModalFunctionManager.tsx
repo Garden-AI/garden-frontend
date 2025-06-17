@@ -35,13 +35,13 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   const [selectedFunctionIds, setSelectedFunctionIds] = useState<number[]>(currentFunctionIds);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  // Get user's modal functions
+  // Get user's modal functions - only fetch when dialog is opened
   const {
     data: functions,
     refetch,
     isFetching,
     isLoading
-  } = useGetUserModalFunctions();
+  } = useGetUserModalFunctions({ enabled: isDialogOpen });
   
   const { mutateAsync: patchGarden } = usePatchGarden();
   
@@ -88,8 +88,6 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
     }
   };
   
-  // Don't render if there are no functions available
-  if ((functions?.length || 0) === 0 && !isLoading && !isFetching) return null;
   
   return (
     <>
