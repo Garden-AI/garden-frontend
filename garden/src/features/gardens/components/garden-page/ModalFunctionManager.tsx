@@ -30,7 +30,7 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
 }) => {
   // Get current function IDs to exclude from the selection
   const currentFunctionIds = garden.modal_functions?.map(f => f.id) || [];
-  
+
   // State for selected function IDs
   const [selectedFunctionIds, setSelectedFunctionIds] = useState<number[]>(currentFunctionIds);
   const [showFullDescriptionIds, setShowFullDescriptionIds] = useState<number[]>([]);
@@ -44,32 +44,32 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
       setSelectedFunctionIds(garden.modal_functions?.map(f => f.id) || []);
     }
   }, [isDialogOpen, garden.modal_functions]);
-  
-  // Get user's modal functions
+
+  // Get user's modal functions - only fetch when dialog is opened
   const {
     data: functions,
     refetch,
     isFetching,
     isLoading
-  } = useGetUserModalFunctions();
-  
+  } = useGetUserModalFunctions({ enabled: isDialogOpen });
+
   const { mutateAsync: patchGarden } = usePatchGarden();
-  
+
   // Handle checkbox change
   const handleFunctionToggle = (functionId: number) => {
-    setSelectedFunctionIds(prev => 
+    setSelectedFunctionIds(prev =>
       prev.includes(functionId)
         ? prev.filter(id => id !== functionId)
         : [...prev, functionId]
     );
   };
-  
+
   // Handle saving functions to the garden
   const handleSave = async () => {
     try {
       const addedCount = selectedFunctionIds.filter(id => !currentFunctionIds.includes(id)).length;
       const removedCount = currentFunctionIds.filter(id => !selectedFunctionIds.includes(id)).length;
-      
+
       let successMessage = "Garden functions updated successfully";
       if (addedCount > 0 && removedCount > 0) {
         successMessage = `Added ${addedCount} and removed ${removedCount} functions`;
@@ -78,7 +78,7 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
       } else if (removedCount > 0) {
         successMessage = `Removed ${removedCount} function${removedCount > 1 ? 's' : ''}`;
       }
-      
+
       // Update the garden with the new set of functions
       await patchGarden({
         doi: garden.doi,
@@ -87,9 +87,9 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
         },
         successMessage
       });
-      
+
       setIsDialogOpen(false);
-      
+
       // Call onSuccess callback if provided
       if (onSuccess) onSuccess();
     } catch (error) {
@@ -97,72 +97,69 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
       console.error('Error updating garden functions:', error);
     }
   };
-  
-  // Don't render if there are no functions available
-  if ((functions?.length || 0) === 0 && !isLoading && !isFetching) return null;
 
   const filteredFunctions = functions?.filter((func) => {
-  const queryWords = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
-  const haystack = `${func.title ?? ''} ${func.function_name ?? ''} ${func.description ?? ''}`.toLowerCase();
-  return queryWords.every((word) => haystack.includes(word));
-});
-  
+    const queryWords = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+    const haystack = `${func.title ?? ''} ${func.function_name ?? ''} ${func.description ?? ''}`.toLowerCase();
+    return queryWords.every((word) => haystack.includes(word));
+  });
+
   return (
     <>
-      <Button 
-        type="button" 
+      <Button
+        type="button"
         variant="outline"
         onClick={() => setIsDialogOpen(true)}
       >
         <PlusCircle className="mr-2 h-4 w-4" />
         Add/Remove functions
       </Button>
-      
+
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>Manage Garden Functions</DialogTitle>
           </DialogHeader>
-          
+
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm text-gray-500">
               Select functions to include in this garden:
             </p>
           </div>
 
-            {selectedFunctionIds.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-1">
-                {selectedFunctionIds.map((id) => {
-                  const func= functions?.find(f => f.id == id);
-                  if (!func) return null;
+          {selectedFunctionIds.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-1">
+              {selectedFunctionIds.map((id) => {
+                const func = functions?.find(f => f.id == id);
+                if (!func) return null;
 
-                  return (
-                    <div
-                      key={id}
-                      className="flex items-center rounded-full bg-[#e0f3e7] text-sm px-3 py-1 border border-[#b3dbc3]"
+                return (
+                  <div
+                    key={id}
+                    className="flex items-center rounded-full bg-[#e0f3e7] text-sm px-3 py-1 border border-[#b3dbc3]"
+                  >
+                    {func.title || func.function_name}
+                    <button
+                      onClick={() => handleFunctionToggle(id)}
+                      className="ml-2 text-[#2f5d41] hover:text-red-500"
                     >
-                      {func.title || func.function_name}
-                      <button
-                        onClick={() => handleFunctionToggle(id)}
-                        className="ml-2 text-[#2f5d41] hover:text-red-500"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
-            {selectedFunctionIds.length > 0 && (
-              <div className="mt-2 mb-4">
-                <button onClick={() => setIsConfirmClearOpen(true)} 
+          {selectedFunctionIds.length > 0 && (
+            <div className="mt-2 mb-4">
+              <button onClick={() => setIsConfirmClearOpen(true)}
                 className="text-sm text-[#2f5d41] bg-white hover:bg-[#f0f5f3] border border-[#b3dbc3] px-3 py-1 rounded-md shadow-sm transition flex items-center gap-1">
-                  Clear all selected
-                </button>
-              </div>
-            )}
-          
+                Clear all selected
+              </button>
+            </div>
+          )}
+
           <input
             type="text"
             placeholder="Search functions..."
@@ -170,7 +167,7 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5cae4f]"
           />
-          
+
           <div className="relative mb-4 rounded-md border bg-white">
             <div className="max-h-[420px] overflow-y-auto">
               <Table>
@@ -198,23 +195,23 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
                       </TableCell>
                     </TableRow>
                   ) : filteredFunctions?.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center text-gray-500">
-                          No functions match your search.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      (filteredFunctions ?? []).map((func) => (
-                        <TableRow
-                          key={func.id}
-                          onClick={() => handleFunctionToggle(func.id)}
-                          className={`
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center text-gray-500">
+                        No functions match your search.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    (filteredFunctions ?? []).map((func) => (
+                      <TableRow
+                        key={func.id}
+                        onClick={() => handleFunctionToggle(func.id)}
+                        className={`
                             group cursor-pointer transition-all duration-200 ease-in-out rounded-md
                             ${selectedFunctionIds.includes(func.id)
-                              ? "bg-[#e0f3e7] border-y border-[#5cae4f] shadow-sm"
-                              : "hover:bg-[#eef5f1]"}  
+                            ? "bg-[#e0f3e7] border-y border-[#5cae4f] shadow-sm"
+                            : "hover:bg-[#eef5f1]"}  
                           `}
-                        >
+                      >
                         <TableCell className="w-1/12 text-center">
                           <Checkbox
                             checked={selectedFunctionIds.includes(func.id)}
@@ -258,14 +255,14 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
                             </Button>
                           </Link>
                         </TableCell>
-                        </TableRow>
-                      ))
-                    )}
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </div>
           </div>
-          
+
           <div className="flex justify-end space-x-2 mt-4">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel

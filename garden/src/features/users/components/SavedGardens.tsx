@@ -1,10 +1,11 @@
+import React from "react";
 import { useMemo } from "react";
 import { Garden } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import NotFoundPage from "@/components/NotFoundPage";
 import { SearchResult } from "@/features/search/components/SearchResult";
 import { useGetUserInfo } from "../api/useGetUserInfo";
-import { useGetGardens } from "@/features/gardens/api/useGetGardens";
+import { useSearchGardens } from "@/features/search/api/useSearchGardens";
 
 const SavedGardens = () => {
   const {
@@ -12,30 +13,35 @@ const SavedGardens = () => {
     isLoading: getUserInfoLoading,
     isError: getUserInfoError,
   } = useGetUserInfo();
-  const { data: allGardens, isLoading: getAllGardensIsLoading } = useGetGardens({});
 
-  const filteredSavedGardens = useMemo(() => {
-    return (
-      allGardens?.filter((garden) => {
-        return currUserInfo?.saved_garden_dois?.includes(garden.doi);
-      }) ?? []
-    );
-  }, [allGardens, currUserInfo]);
+  const searchRequest = useMemo(() => ({
+    q: "",
+    limit: 100, // Set a reasonable limit for saved gardens
+    offset: 0,
+    filters: currUserInfo?.saved_garden_dois ? [{
+      field_name: "doi",
+      values: currUserInfo.saved_garden_dois
+    }] : []
+  }), [currUserInfo?.saved_garden_dois]);
 
-  if (getUserInfoLoading || getAllGardensIsLoading) {
+  const { data: searchResult, isLoading: searchLoading } = useSearchGardens(searchRequest);
+
+  if (getUserInfoLoading || searchLoading) {
     return <LoadingSpinner />;
   }
   if (getUserInfoError) {
     return <NotFoundPage />;
   }
 
+  const savedGardens = searchResult?.garden_meta || [];
+
   return (
     <div className="">
       <div className="mb-6">
-        {filteredSavedGardens && filteredSavedGardens.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6  lg:grid-cols-2">
-            {filteredSavedGardens.map((individualgarden: Garden, index: number) => (
-              <SearchResult verbose={false} garden={individualgarden} key={index} />
+        {savedGardens.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {savedGardens.map((garden: Garden, index: number) => (
+              <SearchResult verbose={false} garden={garden} key={index} />
             ))}
           </div>
         ) : (
