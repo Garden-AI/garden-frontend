@@ -1,6 +1,6 @@
 import { Garden } from "@/types";
 import axios from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const getGarden = async (doi: string): Promise<Garden> => {
   try {
@@ -12,8 +12,15 @@ const getGarden = async (doi: string): Promise<Garden> => {
 };
 
 export const useGetGarden = (doi: string) => {
+  const queryClient = useQueryClient();
   return useQuery<Garden, Error>({
     queryKey: ["gardens", doi],
     queryFn: () => getGarden(doi),
+    select: (garden) => {
+      garden.modal_functions?.forEach((fn) => {
+        queryClient.setQueryData(["modalFunctions", fn.id], fn);
+      });
+      return garden;
+    },
   });
 };

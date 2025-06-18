@@ -29,6 +29,11 @@ export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
       searchResults.garden_meta.forEach((garden) => {
         queryClient.setQueryData(["gardens", garden.doi], garden);
       });
+      searchResults.garden_meta.forEach((garden) => {
+        garden.modal_functions?.forEach((fn) => {
+          queryClient.setQueryData(["modalFunctions", fn.id], fn);
+        });
+      });
       return searchResults;
     },
   });

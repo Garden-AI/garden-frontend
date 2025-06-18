@@ -31,6 +31,14 @@ export const useGetGardens = (params: GetGardensParams) => {
       gardens.forEach((garden) => {
         queryClient.setQueryData(["gardens", garden.doi], garden);
       });
+      // gardens currently contain their associated function metadata,
+      // cache them so we can avoid sending requests for functions
+      // we have already seen.
+      gardens.forEach((garden) => {
+        garden.modal_functions?.forEach((fn) => {
+          queryClient.setQueryData(["modalFunctions", fn.id], fn);
+        });
+      });
       return gardens;
     },
   });
