@@ -13,7 +13,7 @@ const getGarden = async (doi: string): Promise<Garden> => {
 
 export const useGetGarden = (doi: string) => {
   return useQuery<Garden, Error>({
-    queryKey: ["garden", doi],
+    queryKey: ["gardens", doi],
     queryFn: () => getGarden(doi),
   });
 };

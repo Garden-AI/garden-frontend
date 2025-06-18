@@ -24,10 +24,10 @@ export const usePatchGarden = () => {
     mutationFn: patchGarden,
     onMutate: async ({ doi, garden }) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ["garden", doi] });
+      await queryClient.cancelQueries({ queryKey: ["gardens", doi] });
 
       // Snapshot the previous value
-      const previousGarden = queryClient.getQueryData<Garden>(["garden", doi]);
+      const previousGarden = queryClient.getQueryData<Garden>(["gardens", doi]);
 
       // Optimistically update to the new value
       if (previousGarden) {
@@ -50,29 +50,27 @@ export const usePatchGarden = () => {
           tags: garden.tags ?? previousGarden.tags ?? [],
         };
 
-        queryClient.setQueryData<Garden>(["garden", doi], updatedGarden);
+        queryClient.setQueryData<Garden>(["gardens", doi], updatedGarden);
       }
 
       return { previousGarden };
     },
     onError: (err, { doi }, context) => {
-      console.error(err.message)
+      console.error(err.message);
       if (err.message.includes("409")) {
-        toast.error(`Failed to update garden: Garden must have at least one Model Author or one Gardener`);
+        toast.error(
+          `Failed to update garden: Garden must have at least one Model Author or one Gardener`,
+        );
       } else {
-        toast.error("Updating garden metadata failed! Try again, and if it fails contact the Garden team.")
+        toast.error(
+          "Updating garden metadata failed! Try again, and if it fails contact the Garden team.",
+        );
       }
-      queryClient.setQueryData(["garden", doi], context?.previousGarden);
+      queryClient.setQueryData(["gardens", doi], context?.previousGarden);
     },
     onSuccess: (data, input) => {
       // Update the cache with the new data
-      queryClient.setQueryData(["garden", data.doi], data);
-
-      // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: ["garden", data.doi] });
-      queryClient.invalidateQueries({ queryKey: ["gardens"] });
-      queryClient.invalidateQueries({ queryKey: ["search"] });
-
+      queryClient.setQueryData(["gardens", data.doi], data);
       // Use custom success message if provided, otherwise use default
       toast.success(input.successMessage || "Garden updated successfully!");
     },

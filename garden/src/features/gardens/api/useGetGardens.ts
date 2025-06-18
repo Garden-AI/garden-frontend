@@ -1,6 +1,6 @@
 import { Garden } from "@/types";
 import axios from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface GetGardensParams {
   doi?: string;
@@ -23,8 +23,15 @@ const getGardens = async (params: GetGardensParams): Promise<Garden[]> => {
 };
 
 export const useGetGardens = (params: GetGardensParams) => {
+  const queryClient = useQueryClient();
   return useQuery<Garden[], Error>({
     queryKey: ["gardens", params],
     queryFn: () => getGardens(params),
+    select: (gardens) => {
+      gardens.forEach((garden) => {
+        queryClient.setQueryData(["gardens", garden.doi], garden);
+      });
+      return gardens;
+    },
   });
 };

@@ -5,9 +5,7 @@ import { GardenCreateRequest } from "@/types";
 import { AxiosError } from "axios";
 import { ApiError } from "../utils/garden.utils";
 
-const createGarden = async (
-  garden: GardenCreateRequest,
-): Promise<Garden> => {
+const createGarden = async (garden: GardenCreateRequest): Promise<Garden> => {
   try {
     const response = await axios.post(`/gardens`, garden);
     return response.data;
@@ -24,10 +22,7 @@ export const useCreateGarden = () => {
   return useMutation<Garden, ApiError, GardenCreateRequest>({
     mutationFn: createGarden,
     onSuccess: (garden) => {
-      queryClient.invalidateQueries({ queryKey: ["garden"] });
-      queryClient.invalidateQueries({ queryKey: ["gardens"] });
-      // Set the specific garden data in cache
-      queryClient.setQueryData(["garden", garden.doi], garden);
+      queryClient.setQueryData(["gardens", garden.doi], garden);
     },
   });
 };
