@@ -1,6 +1,6 @@
-import { useMemo, useCallback } from 'react';
-import { QueryClient } from '@tanstack/react-query';
-import { Dataset, Paper, Repository, Notebook, ModalFunction, Garden } from '@/types';
+import { useMemo, useCallback } from "react";
+import { QueryClient } from "@tanstack/react-query";
+import { Dataset, Paper, Repository, Notebook, ModalFunction, Garden } from "@/types";
 
 export interface MaterialsManager {
   allMaterials: {
@@ -52,75 +52,89 @@ export const useMaterialsManager = ({
   const allMaterials = useMemo(() => {
     return {
       datasets: deduplicateByDOI([
-        ...(garden.modal_functions?.map(func => func.datasets || []).flat() || [])
+        ...(garden.modal_functions?.map((func) => func.datasets || []).flat() || []),
       ]),
       papers: deduplicateByDOI([
-        ...(garden.modal_functions?.map(func => func.papers || []).flat() || [])
+        ...(garden.modal_functions?.map((func) => func.papers || []).flat() || []),
       ]),
       repositories: deduplicateRepositoriesByURL([
-        ...(garden.modal_functions?.map(func => func.repositories || []).flat() || [])
+        ...(garden.modal_functions?.map((func) => func.repositories || []).flat() || []),
       ]),
       notebooks: deduplicateNotebooksByURL([
-        ...(garden.modal_functions?.map(func => func.notebooks || []).flat() || [])
-      ])
+        ...(garden.modal_functions?.map((func) => func.notebooks || []).flat() || []),
+      ]),
     };
   }, [garden]);
 
   // Find functions that use a specific material
-  const findFunctionsWithMaterial = useCallback((doi: string): ModalFunction[] => {
-    if (!garden.doi) return [];
-    
-    // Get the freshest data directly from the query cache
-    const latestGardenData = queryClient.getQueryData(["garden", garden.doi]) as Garden;
-    const currentFunctions = [...(latestGardenData?.modal_functions || [])];
-    
-    if (!currentFunctions.length) {
-      console.warn('No functions found in the latest garden data');
-      return [];
-    }
-    
-    // Deep check to make sure each function's materials are properly examined
-    const functionsWithMaterial = currentFunctions.filter(func => {
-      if (!func) return false;
-      
-      const hasMaterialInDataset = Array.isArray(func.datasets) && 
-        func.datasets.some(dataset => dataset && dataset.doi === doi);
-      
-      const hasMaterialInPaper = Array.isArray(func.papers) && 
-        func.papers.some(paper => paper && paper.doi === doi);
-      
-      const hasMaterialInRepo = Array.isArray(func.repositories) && 
-        func.repositories.some(repo => repo && (repo.doi === doi || repo.url === doi));
-      
-      const hasMaterialInNotebook = Array.isArray(func.notebooks) && 
-        func.notebooks.some(notebook => notebook && notebook.url === doi);
-      
-      return hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo || hasMaterialInNotebook;
-    }).map(func => ({
-      ...func,
-      already_has_material: true
-    }));
-    
-    return functionsWithMaterial;
-  }, [garden.doi, queryClient]);
+  const findFunctionsWithMaterial = useCallback(
+    (doi: string): ModalFunction[] => {
+      if (!garden.doi) return [];
+
+      // Get the freshest data directly from the query cache
+      const latestGardenData = queryClient.getQueryData(["gardens", garden.doi]) as Garden;
+      const currentFunctions = [...(latestGardenData?.modal_functions || [])];
+
+      if (!currentFunctions.length) {
+        console.warn("No functions found in the latest garden data");
+        return [];
+      }
+
+      // Deep check to make sure each function's materials are properly examined
+      const functionsWithMaterial = currentFunctions
+        .filter((func) => {
+          if (!func) return false;
+
+          const hasMaterialInDataset =
+            Array.isArray(func.datasets) &&
+            func.datasets.some((dataset) => dataset && dataset.doi === doi);
+
+          const hasMaterialInPaper =
+            Array.isArray(func.papers) && func.papers.some((paper) => paper && paper.doi === doi);
+
+          const hasMaterialInRepo =
+            Array.isArray(func.repositories) &&
+            func.repositories.some((repo) => repo && (repo.doi === doi || repo.url === doi));
+
+          const hasMaterialInNotebook =
+            Array.isArray(func.notebooks) &&
+            func.notebooks.some((notebook) => notebook && notebook.url === doi);
+
+          return (
+            hasMaterialInDataset || hasMaterialInPaper || hasMaterialInRepo || hasMaterialInNotebook
+          );
+        })
+        .map((func) => ({
+          ...func,
+          already_has_material: true,
+        }));
+
+      return functionsWithMaterial;
+    },
+    [garden.doi, queryClient],
+  );
 
   // Refresh all materials and related data
   const refreshMaterials = useCallback(async () => {
     // Invalidate function caches
     if (garden.modal_functions) {
-      await Promise.all(garden.modal_functions.map(async func => {
-        if (func.id) {
-          await queryClient.invalidateQueries({ queryKey: ["modalFunction", func.id.toString()] });
-        }
-      }));
+      await Promise.all(
+        garden.modal_functions.map(async (func) => {
+          if (func.id) {
+            await queryClient.invalidateQueries({
+              queryKey: ["modalFunctions", func.id],
+            });
+          }
+        }),
+      );
     }
-    
+
     // Invalidate garden cache and wait for it to complete
-    await queryClient.invalidateQueries({ queryKey: ["garden", garden.doi] });
-    
+    await queryClient.invalidateQueries({ queryKey: ["gardens", garden.doi] });
+
     // Refetch garden data and wait for completion
     await refetchGarden();
-    
+
     // Ensure the query client settles all pending operations
     await queryClient.resumePausedMutations();
   }, [garden, queryClient, refetchGarden]);
@@ -130,4 +144,4 @@ export const useMaterialsManager = ({
     findFunctionsWithMaterial,
     refreshMaterials,
   };
-}; 
+};
