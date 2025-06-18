@@ -33,14 +33,23 @@ import { usePatchGarden } from "../api/usePatchGarden";
 
 import { SUPER_USERS } from "@/utils/utils";
 
-const GardenDropdownMenu = ({ garden, setIsPublishGardenModalOpen }: { garden: Garden, setIsPublishGardenModalOpen: (open: boolean) => void }) => {
+const GardenDropdownMenu = ({
+  garden,
+  setIsPublishGardenModalOpen,
+}: {
+  garden: Garden;
+  setIsPublishGardenModalOpen: (open: boolean) => void;
+}) => {
   const auth = useGlobusAuth();
 
   const [isDeleteGardenModalOpen, setIsDeleteGardenModalOpen] = React.useState(false);
   const [isArchiveGardenModalOpen, setIsArchiveGardenModalOpen] = React.useState(false);
 
   const isSuperUser = SUPER_USERS.includes(auth.authorization?.user?.sub);
-  if ((!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) && !isSuperUser) {
+  if (
+    (!auth.isAuthenticated || garden.owner_identity_id !== auth.authorization?.user?.sub) &&
+    !isSuperUser
+  ) {
     return null;
   }
 
@@ -128,12 +137,12 @@ export const PublishGardenModal = ({
         garden: {
           doi_is_draft: false,
         },
-        successMessage: "Garden DOI registered successfully!"
+        successMessage: "Garden DOI registered successfully!",
       });
       setIsOpen(false);
       setInput("");
-      queryClient.invalidateQueries({ queryKey: ["search"] });
-      queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+      queryClient.invalidateQueries({ queryKey: ["gardens"] });
+      queryClient.setQueryData(["gardens", doi], (oldData: Garden) => {
         return { ...oldData, doi_is_draft: false, is_archived: false };
       });
     } catch (error) {
@@ -218,8 +227,8 @@ const DeleteGardenModal = ({
         setInput("");
         navigate("/");
         toast.success("Garden deleted successfully!");
-        queryClient.invalidateQueries({ queryKey: ["search"] });
-        queryClient.removeQueries({ queryKey: ["garden", doi] });
+        queryClient.invalidateQueries({ queryKey: ["gardens", "search"] });
+        queryClient.removeQueries({ queryKey: ["gardens", doi] });
       },
     });
   };
@@ -291,20 +300,18 @@ const ArchiveGardenModal = ({
 
   const handleArchiveGarden = () => {
     try {
-      updateGarden(
-        {
-          doi: doi,
-          garden: {
-            doi_is_draft: false,
-            is_archived: true,
-          },
-          successMessage: "Garden archived successfully!",
+      updateGarden({
+        doi: doi,
+        garden: {
+          doi_is_draft: false,
+          is_archived: true,
         },
-      );
+        successMessage: "Garden archived successfully!",
+      });
       setIsOpen(false);
       setInput("");
-      queryClient.invalidateQueries({ queryKey: ["search"] });
-      queryClient.setQueryData(["garden", doi], (oldData: Garden) => {
+      queryClient.invalidateQueries({ queryKey: ["gardens", "search"] });
+      queryClient.setQueryData(["gardens", doi], (oldData: Garden) => {
         return { ...oldData, is_archived: true };
       });
     } catch (error) {

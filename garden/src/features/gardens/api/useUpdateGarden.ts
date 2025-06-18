@@ -14,7 +14,7 @@ const updateGarden = async (variables: any): Promise<Garden> => {
 
 export const useUpdateGarden = (doi: string) => {
   return useMutation<Garden, Error>({
-    mutationKey: ["garden", doi],
+    mutationKey: ["gardens", doi],
     onMutate: updateGarden,
     onError: (error, variables, context) => {
       console.log("onError", error, variables, context);

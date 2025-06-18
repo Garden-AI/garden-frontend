@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
 import { ModalFunction } from "@/types";
 import { useGlobusAuth } from "@globus/react-auth-context";
@@ -17,28 +17,32 @@ export const useGetUserModalFunctions = (options: UseGetUserModalFunctionsOption
   const { enabled = true, excludeFunctionIds = [] } = options;
   const auth = useGlobusAuth();
   const userUuid = auth?.authorization?.user?.sub;
-
+  const queryClient = useQueryClient();
   // Fetch the user's modal apps and their functions
   return useQuery<ModalFunction[]>({
     queryKey: ["userModalFunctions", userUuid, excludeFunctionIds],
     queryFn: async () => {
       // Get all modal functions for the user
       const response = await axios.get(`/modal-functions`, {
-        params: { owner_uuid: userUuid }
+        params: { owner_uuid: userUuid },
       });
-      
+
       const allFunctions = response.data || [];
-      
+
       // Filter out excluded function IDs if any
       if (excludeFunctionIds.length > 0) {
-        return allFunctions.filter((func: ModalFunction) => 
-          !excludeFunctionIds.includes(func.id)
-        );
+        return allFunctions.filter((func: ModalFunction) => !excludeFunctionIds.includes(func.id));
       }
-      
+
+      return allFunctions;
+    },
+    select: (allFunctions) => {
+      allFunctions.forEach((fn) => {
+        queryClient.setQueryData(["modalFunctions", fn.id], fn);
+      });
       return allFunctions;
     },
     enabled: enabled && !!userUuid,
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
-}; 
+};

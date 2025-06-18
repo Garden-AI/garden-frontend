@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Garden, GardenSearchFilter, GardenSearchRequest, GardenSearchResponse } from "@/types";
 import axios from "@/lib/axios";
 
@@ -12,8 +12,10 @@ const searchGardens = async (searchOptions: GardenSearchRequest): Promise<Garden
 };
 
 export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
+  const queryClient = useQueryClient();
   return useQuery<GardenSearchResponse, Error>({
     queryKey: [
+      "gardens",
       "search",
       searchOptions.q,
       searchOptions.limit,
@@ -23,6 +25,17 @@ export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
     ],
     queryFn: async () => searchGardens(searchOptions),
     placeholderData: keepPreviousData,
+    select: (searchResults) => {
+      searchResults.garden_meta.forEach((garden) => {
+        queryClient.setQueryData(["gardens", garden.doi], garden);
+      });
+      searchResults.garden_meta.forEach((garden) => {
+        garden.modal_functions?.forEach((fn) => {
+          queryClient.setQueryData(["modalFunctions", fn.id], fn);
+        });
+      });
+      return searchResults;
+    },
   });
 };
 

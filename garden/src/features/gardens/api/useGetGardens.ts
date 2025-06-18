@@ -1,6 +1,6 @@
 import { Garden } from "@/types";
 import axios from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface GetGardensParams {
   doi?: string;
@@ -23,8 +23,23 @@ const getGardens = async (params: GetGardensParams): Promise<Garden[]> => {
 };
 
 export const useGetGardens = (params: GetGardensParams) => {
+  const queryClient = useQueryClient();
   return useQuery<Garden[], Error>({
     queryKey: ["gardens", params],
     queryFn: () => getGardens(params),
+    select: (gardens) => {
+      gardens.forEach((garden) => {
+        queryClient.setQueryData(["gardens", garden.doi], garden);
+      });
+      // gardens currently contain their associated function metadata,
+      // cache them so we can avoid sending requests for functions
+      // we have already seen.
+      gardens.forEach((garden) => {
+        garden.modal_functions?.forEach((fn) => {
+          queryClient.setQueryData(["modalFunctions", fn.id], fn);
+        });
+      });
+      return gardens;
+    },
   });
 };

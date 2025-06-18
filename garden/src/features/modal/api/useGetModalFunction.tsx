@@ -13,7 +13,7 @@ const getModalFunction = async (id: string): Promise<ModalFunction> => {
 
 export const useGetModalFunction = (id: string) => {
   return useQuery({
-    queryKey: ["modalFunction", id],
+    queryKey: ["modalFunctions", Number(id)],
     queryFn: async () => {
       const response = await axios.get(`/modal-functions/${id}`);
       const modalFunction = response.data as ModalFunction;
@@ -22,7 +22,7 @@ export const useGetModalFunction = (id: string) => {
       const modalAppResponse = await axios.get(`/modal-apps/${modalFunction.modal_app_id}`);
       return {
         ...modalFunction,
-        owner_identity_id: modalAppResponse.data.owner_identity_id
+        owner_identity_id: modalAppResponse.data.owner_identity_id,
       };
     },
   });

@@ -26,7 +26,7 @@ export const useUnsaveGarden = (doi: string) => {
   const uuid = auth?.authorization?.user?.sub;
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["garden", "unsave", doi],
+    mutationKey: ["gardens", "unsave", doi],
     mutationFn: () => unsaveGarden({ doi, uuid }),
     onSuccess: () => {
       queryClient.setQueryData(["user", "me"], (oldData: any) => {
