@@ -140,8 +140,12 @@ const GardenPage = () => {
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub)
   const ownsThisGarden = auth?.isAuthenticated && (garden.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
 
+  const memoizedRefetch = React.useCallback(async () => {
+    await refetch();
+  }, [refetch]);
+
   return (
-    <MaterialsProvider garden={garden} refetchGarden={async () => { await refetch(); }}>
+    <MaterialsProvider garden={garden} refetchGarden={memoizedRefetch}>
       <GardenContent
         garden={garden}
         ownsThisGarden={ownsThisGarden}
