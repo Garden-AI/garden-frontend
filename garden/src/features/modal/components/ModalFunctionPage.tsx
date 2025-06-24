@@ -90,7 +90,7 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
 }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
-  const handleUpdate = useCallback(async (updateData) => {
+  const handleUpdate = useCallback(async (updateData: ModalFunction) => {
     await patchModalFunction({
       id: modalFunction.id,
       modalFunction: updateData
@@ -121,7 +121,7 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
 const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
-  const handleUpdate = useCallback(async (updateData) => {
+  const handleUpdate = useCallback(async (updateData: ModalFunction) => {
     await patchModalFunction({
       id: modalFunction.id,
       modalFunction: updateData,
