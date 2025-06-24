@@ -21,8 +21,8 @@ export const usePatchModalFunction = () => {
 
       // Snapshot the previous value
       const previousModalFunction = queryClient.getQueryData<ModalFunction>([
-        "modalFunction",
-        id.toString(),
+        "modalFunctions",
+        id,
       ]);
 
       // Optimistically update to the new value
@@ -43,10 +43,10 @@ export const usePatchModalFunction = () => {
         queryClient.setQueryData(["modalFunctions", id], context.previousModalFunction);
       }
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["modalFunctions", data.id] });
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ["modalFunctions", data.id] });
       // Invalidate all garden queries since we don't know which gardens contain this function
-      queryClient.invalidateQueries({ queryKey: ["gardens"] });
+      await queryClient.invalidateQueries({ queryKey: ["gardens"] });
     },
   });
 };
