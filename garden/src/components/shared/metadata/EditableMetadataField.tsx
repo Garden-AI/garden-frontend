@@ -51,7 +51,7 @@ const EditableMetadataField = ({
   useEffect(() => {
     const newValue = value || (isArray ? [] : "");
     setInputValue(newValue);
-  }, [value, isArray, fieldName]);
+  }, [value, isArray]);
 
 
   const handleSave = async () => {

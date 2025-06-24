@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useRef, useState } from 'react';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
@@ -5,7 +6,7 @@ import { python } from '@codemirror/lang-python';
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { Button } from './shadcn/button';
-import { XIcon, CheckIcon, PencilIcon, Loader2Icon, EditIcon } from 'lucide-react';
+import { XIcon, CheckIcon, Loader2Icon, EditIcon } from 'lucide-react';
 import CopyButton from './CopyButton';
 import SyntaxHighlighter from './SyntaxHighlighter';
 
@@ -62,7 +63,7 @@ export const EditableCodeField = ({
   useEffect(() => {
     if (isEditing && editorRef.current && !editorViewRef.current) {
       const startState = EditorState.create({
-        doc: editValue,
+        doc: value || '',
         extensions: [
           python(),
           ...basicSetup,
@@ -88,12 +89,14 @@ export const EditableCodeField = ({
         editorViewRef.current = undefined;
       };
     }
-  }, [isEditing]);
+  }, [isEditing, value]);
 
-  // Reset edit value when value prop changes
+  // Initialize edit value when editing starts
   useEffect(() => {
-    setEditValue(value || '');
-  }, [value]);
+    if (isEditing) {
+      setEditValue(value || '');
+    }
+  }, [isEditing, value]);
 
   const handleSave = async () => {
     try {

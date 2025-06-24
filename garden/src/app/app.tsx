@@ -15,6 +15,9 @@ const App = () => {
             element: <Router />,
           },
         ])}
+        future={{
+         v7_startTransition: true,
+        }}
       />
       <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
     </>
