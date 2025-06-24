@@ -1,8 +1,9 @@
+import React from "react";
 import { ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { Card, CardContent, CardHeader, CardTitle, MarkdownCardContent } from "@/components/shadcn/card";
 import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle, LucideIcon, FunctionSquare } from "lucide-react";
-import { useModalFunctionMaterials } from "../hooks/useModalFunctionMaterials";
+import { useModalFunctionMaterials } from "@/features/materials";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import CopyButton from "@/components/CopyButton";
 import { Button } from "@/components/shadcn/button";
