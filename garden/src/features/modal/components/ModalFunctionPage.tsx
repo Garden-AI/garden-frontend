@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { useGetModalFunction } from "../api/useGetModalFunction";
@@ -90,17 +90,19 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
 }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
+  const handleUpdate = useCallback(async (updateData) => {
+    await patchModalFunction({
+      id: modalFunction.id,
+      modalFunction: updateData
+    });
+  }, [patchModalFunction, modalFunction.id]);
+
   return (
     <div className="mb-3 flex items-center justify-between gap-2">
       <EditableTitle
         entity={modalFunction}
         ownsThisEntity={ownsThisFunction}
-        onUpdate={async (updateData) => {
-          await patchModalFunction({
-            id: modalFunction.id,
-            modalFunction: updateData
-          });
-        }}
+        onUpdate={handleUpdate}
       />
       <div className="flex items-center gap-2">
         <CopyButton
@@ -117,7 +119,14 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
 };
 
 const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
-  const { mutate: patchModalFunction } = usePatchModalFunction();
+  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
+
+  const handleUpdate = useCallback(async (updateData) => {
+    await patchModalFunction({
+      id: modalFunction.id,
+      modalFunction: updateData,
+    });
+  }, [patchModalFunction, modalFunction.id]);
 
   return (
     <div className="space-y-3 py-2">
@@ -127,12 +136,7 @@ const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction:
         fieldName="description"
         entity={modalFunction}
         ownsThisEntity={ownsThisFunction}
-        onUpdate={async (updateData) => {
-          await patchModalFunction({
-            id: modalFunction.id,
-            modalFunction: updateData
-          });
-        }}
+        onUpdate={handleUpdate}
       />
       <Separator className="my-3" />
     </div>
@@ -152,14 +156,14 @@ my_garden = client.get_garden(${doiExpression})
 input = ['Data Here']
 return my_garden.${modalFunction.function_name}(input)`;
 
-  const handleSave = async (newValue: string) => {
+  const handleSave = useCallback(async (newValue: string) => {
     await patchModalFunction({
       id: modalFunction.id,
       modalFunction: {
         example_usage: newValue
       }
     });
-  };
+  }, [patchModalFunction, modalFunction.id]);
 
   return (
     <EditableCodeField
