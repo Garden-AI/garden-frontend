@@ -69,21 +69,21 @@ const Navbar = () => {
 
         {/* Everything under this div is on the right side of the nav bar */}
         <div className="flex items-center justify-start">
-          <button
-            className="flex gap-1 p-2 hover:bg-gray-100 rounded"
-            onClick={() => { navigate('/garden/create?deploy=modal-app') }}
-          >
-            <TooltipProvider>
-              <Tooltip delayDuration={100}>
-                <TooltipTrigger>
+          <TooltipProvider>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <button
+                  className="flex gap-1 p-2 hover:bg-gray-100 rounded"
+                  onClick={() => { navigate('/garden/create?deploy=modal-app') }}
+                >
                   <Plus size={24} className="hover:text-green" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Make a Garden</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </button>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Make a Garden</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
 
           {/* Links menu */}
