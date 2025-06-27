@@ -15,7 +15,7 @@ import {
 import { toast } from 'sonner';
 import { useGetUserModalFunctions } from '@/features/modal/api/useGetUserModalFunctions';
 import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ExternalLink, X } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
@@ -28,6 +28,9 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   garden,
   onSuccess
 }) => {
+  const navigate = useNavigate();
+  const modalAppId = garden.modal_functions?.[0]?.modal_app_id;
+
   // Get current function IDs to exclude from the selection
   const currentFunctionIds = garden.modal_functions?.map(f => f.id) || [];
 
@@ -106,6 +109,8 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
 
   return (
     <>
+    {isDialogOpen !== undefined && (
+    <div className="flex gap-2 mt-2">
       <Button
         type="button"
         variant="outline"
@@ -114,6 +119,16 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
         <PlusCircle className="mr-2 h-4 w-4" />
         Add/Remove functions
       </Button>
+
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => navigate(`/model-deployments/${modalAppId}`)}
+      >
+        Manage Deployment
+      </Button>
+    </div>
+    )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-3xl">
