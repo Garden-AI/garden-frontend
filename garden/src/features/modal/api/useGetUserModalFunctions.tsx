@@ -1,3 +1,4 @@
+import React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
 import { ModalFunction } from "@/types";
@@ -18,8 +19,9 @@ export const useGetUserModalFunctions = (options: UseGetUserModalFunctionsOption
   const auth = useGlobusAuth();
   const userUuid = auth?.authorization?.user?.sub;
   const queryClient = useQueryClient();
+
   // Fetch the user's modal apps and their functions
-  return useQuery<ModalFunction[]>({
+  const query = useQuery<ModalFunction[]>({
     queryKey: ["userModalFunctions", userUuid, excludeFunctionIds],
     queryFn: async () => {
       // Get all modal functions for the user
@@ -36,13 +38,18 @@ export const useGetUserModalFunctions = (options: UseGetUserModalFunctionsOption
 
       return allFunctions;
     },
-    select: (allFunctions) => {
-      allFunctions.forEach((fn) => {
-        queryClient.setQueryData(["modalFunctions", fn.id], fn);
-      });
-      return allFunctions;
-    },
     enabled: enabled && !!userUuid,
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
+
+  // Cache modal functions when user functions are successfully fetched
+  React.useEffect(() => {
+    if (query.data) {
+      query.data.forEach((fn) => {
+        queryClient.setQueryData(["modalFunctions", fn.id], fn);
+      });
+    }
+  }, [query.data, queryClient]);
+
+  return query;
 };
