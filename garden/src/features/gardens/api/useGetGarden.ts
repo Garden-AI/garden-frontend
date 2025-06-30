@@ -1,3 +1,4 @@
+import React from "react";
 import { Garden } from "@/types";
 import axios from "@/lib/axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -6,21 +7,26 @@ const getGarden = async (doi: string): Promise<Garden> => {
   try {
     const response = await axios.get(`/gardens/${doi}`);
     return response.data;
-  } catch (error) {
+  } catch {
     throw new Error("Error fetching garden by DOI");
   }
 };
 
 export const useGetGarden = (doi: string) => {
   const queryClient = useQueryClient();
-  return useQuery<Garden, Error>({
+  const query = useQuery<Garden, Error>({
     queryKey: ["gardens", doi],
     queryFn: () => getGarden(doi),
-    select: (garden) => {
-      garden.modal_functions?.forEach((fn) => {
+  });
+
+  // Cache modal functions when garden data is successfully fetched
+  React.useEffect(() => {
+    if (query.data?.modal_functions) {
+      query.data.modal_functions.forEach((fn) => {
         queryClient.setQueryData(["modalFunctions", fn.id], fn);
       });
-      return garden;
-    },
-  });
+    }
+  }, [query.data, queryClient]);
+
+  return query;
 };
