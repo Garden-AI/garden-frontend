@@ -1,3 +1,4 @@
+import React from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Garden, GardenSearchFilter, GardenSearchRequest, GardenSearchResponse } from "@/types";
 import axios from "@/lib/axios";
@@ -13,7 +14,7 @@ const searchGardens = async (searchOptions: GardenSearchRequest): Promise<Garden
 
 export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
   const queryClient = useQueryClient();
-  return useQuery<GardenSearchResponse, Error>({
+  const query = useQuery<GardenSearchResponse, Error>({
     queryKey: [
       "gardens",
       "search",
@@ -25,18 +26,21 @@ export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
     ],
     queryFn: async () => searchGardens(searchOptions),
     placeholderData: keepPreviousData,
-    select: (searchResults) => {
-      searchResults.garden_meta.forEach((garden) => {
+  });
+
+  // Cache gardens and modal functions when search results are successfully fetched
+  React.useEffect(() => {
+    if (query.data?.garden_meta) {
+      query.data.garden_meta.forEach((garden) => {
         queryClient.setQueryData(["gardens", garden.doi], garden);
-      });
-      searchResults.garden_meta.forEach((garden) => {
         garden.modal_functions?.forEach((fn) => {
           queryClient.setQueryData(["modalFunctions", fn.id], fn);
         });
       });
-      return searchResults;
-    },
-  });
+    }
+  }, [query.data, queryClient]);
+
+  return query;
 };
 
 export const transformSearchResultToGardens = (searchResult?: GardenSearchResponse): Garden[] => {
