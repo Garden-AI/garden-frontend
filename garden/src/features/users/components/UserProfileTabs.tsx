@@ -1,17 +1,30 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
 import SavedGardens from "./SavedGardens";
 import { ModelDeployments } from "@/features/model-deployments/ModelDeployments";
 
-interface UserProfileTabsProps {
-  defaultTab?: "profile" | "my-gardens" | "saved-gardens" | "model-deployments";
-}
+const TABS = ["profile", "my-gardens", "saved-gardens", "model-deployments"] as const;
+type TabKey = (typeof TABS)[number];
 
-const UserProfileTabs = ({ defaultTab = "profile" }: UserProfileTabsProps) => {
+const UserProfileTabs = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const params = new URLSearchParams(location.search);
+  const queryTab = params.get("tab");
+
+  const activeTab: TabKey = TABS.includes(queryTab as TabKey) ? (queryTab as TabKey) : "profile";
+
+  const handleTabChange = (newTab: string) => {
+    params.set("tab", newTab);
+    navigate({ search: params.toString() }, { replace: true });
+  };
+
   return (
-    <Tabs defaultValue={defaultTab} className="w-full font-display">
+    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full font-display">
       <TabsList className="h-12 w-full bg-transparent">
         <TabsTrigger
           value="profile"
