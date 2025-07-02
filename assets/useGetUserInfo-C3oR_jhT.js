@@ -1,0 +1,1 @@
+import{i as e}from"./card-a3WHDW-r.js";import{u as s}from"./useQuery-CQ2ZQGLY.js";import{u as t}from"./index-K82M4ngM.js";const o=async()=>{try{return(await e.get("/users")).data}catch{throw new Error("Error fetching user info")}},c=()=>{const r=t();return s({queryKey:["user","me"],queryFn:()=>o(),enabled:r.isAuthenticated})};export{c as u};

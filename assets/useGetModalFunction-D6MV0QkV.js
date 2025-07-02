@@ -1,1 +1,0 @@
-import{i as t}from"./card-BX_hZ076.js";import{u as a}from"./useQuery-B03T0mgv.js";const u=n=>a({queryKey:["modalFunctions",Number(n)],queryFn:async()=>{const o=(await t.get(`/modal-functions/${n}`)).data,e=await t.get(`/modal-apps/${o.modal_app_id}`);return{...o,owner_identity_id:e.data.owner_identity_id}}});export{u};
