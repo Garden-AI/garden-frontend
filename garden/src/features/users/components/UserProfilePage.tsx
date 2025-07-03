@@ -26,7 +26,7 @@ const UserProfilePage = () => {
   return (
     <div className="mt-16 flex h-full min-h-[80vh] w-full flex-row justify-center gap-10 p-10">
       <UserProfileCard />
-      <UserProfileTabs defaultTab={tab || undefined} />
+      <UserProfileTabs defaultTab="profile" />
     </div>
   );
 };

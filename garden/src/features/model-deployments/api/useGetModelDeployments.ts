@@ -11,6 +11,7 @@ const getModelDeployments = async (): Promise<ModelDeployment[]> => {
     // TODO get GCMU deployments once they exist, combine them with modal apps
     return modalAppsResponse.data.map((ma: ModalAppResponse) => {
         return {
+            id: ma.id ?? -1,
             name: ma.original_app_name || ma.app_name,
             status: ma.deploy_status === "done" ? "deployed" :
                 ma.deploy_status === "error" ? "error" :
