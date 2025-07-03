@@ -155,7 +155,7 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   )}
 
       <Dialog open={isDeploymentDialogOpen} onOpenChange={setIsDeploymentDialogOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Deployments in This Garden</DialogTitle>
           </DialogHeader>

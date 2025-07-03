@@ -9,22 +9,40 @@ import { ModelDeployments } from "@/features/model-deployments/ModelDeployments"
 const TABS = ["profile", "my-gardens", "saved-gardens", "model-deployments"] as const;
 type TabKey = (typeof TABS)[number];
 
-const UserProfileTabs = () => {
+type UserProfileTabsProps = {
+  defaultTab?: TabKey;
+};
+
+const UserProfileTabs = ({ defaultTab }: UserProfileTabsProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const params = new URLSearchParams(location.search);
   const queryTab = params.get("tab");
 
-  const activeTab: TabKey = TABS.includes(queryTab as TabKey) ? (queryTab as TabKey) : "profile";
+  const resolveTab = (): TabKey => {
+    if (queryTab && TABS.includes(queryTab as TabKey)) return queryTab as TabKey;
+    if (defaultTab && TABS.includes(defaultTab)) return defaultTab;
+    return "profile";
+  };
+
+  const [currentTab, setCurrentTab] = React.useState<TabKey>(resolveTab)
+
+  React.useEffect(() => {
+    const urlTab = params.get("tab");
+    if (urlTab && TABS.includes(urlTab as TabKey) && urlTab !== currentTab) {
+      setCurrentTab(urlTab as TabKey);
+    }
+  }, [location.search]);
 
   const handleTabChange = (newTab: string) => {
-    params.set("tab", newTab);
+    const newTabKey = newTab as TabKey;
+    setCurrentTab(newTabKey);
+    params.set("tab", newTabKey);
     navigate({ search: params.toString() }, { replace: true });
   };
 
   return (
-    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full font-display">
+    <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full font-display">
       <TabsList className="h-12 w-full bg-transparent">
         <TabsTrigger
           value="profile"
@@ -51,6 +69,7 @@ const UserProfileTabs = () => {
           Model Deployments
         </TabsTrigger>
       </TabsList>
+
       <div className="min-h-[60vh] flex-grow overflow-auto pt-4 sm:pt-8">
         <TabsContent value="profile">
           <div className="flex w-full justify-center">
