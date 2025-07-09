@@ -126,6 +126,10 @@ const GardenPage = () => {
   const auth = useGlobusAuth();
   const { data: garden, isLoading, isError, refetch } = useGetGarden(doi || '');
 
+  const memoizedRefetch = React.useCallback(async () => {
+    await refetch();
+  }, [refetch]);
+
   if (isLoading) {
     return <LoadingOverlay />;
   }
@@ -139,10 +143,6 @@ const GardenPage = () => {
 
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub)
   const ownsThisGarden = auth?.isAuthenticated && (garden.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
-
-  const memoizedRefetch = React.useCallback(async () => {
-    await refetch();
-  }, [refetch]);
 
   return (
     <MaterialsProvider garden={garden} refetchGarden={memoizedRefetch}>
