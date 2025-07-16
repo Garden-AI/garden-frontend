@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { UseFormReturn, useFormContext } from "react-hook-form";
 
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -21,10 +21,12 @@ import {
   CollapsibleTrigger
 } from "@/components/shadcn/collapsible";
 
-import { SelectModalFunctionsTable } from "../SelectModalFunctionsTable";
 import { GardenCreateFormData } from "../../types/garden.types";
 import { tagOptions } from "../../utils/garden.utils";
-import { useState } from "react";
+import FunctionSelectionTable from "@/features/modal/components/FunctionSelectionTable";
+import { useGetAllModalFunctions } from "@/features/modal/api/useGetAllModalFunctions";
+import { Controller } from "react-hook-form";
+import { toast } from "sonner";
 
 export const CreateGardenFormFields = () => {
   const form = useFormContext() as UseFormReturn<GardenCreateFormData>;
@@ -41,6 +43,20 @@ export const CreateGardenFormFields = () => {
   const isPublished = form.watch("doi_is_draft") === false && form.watch("is_archived") === false;
 
   const [funcitonTableExpanded, setFunctiontableExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchChange = useCallback(
+    (value:string) => setSearchQuery(value),
+    []
+  );
+  
+  const { data: modalFunctions, isLoading, isFetching } = useGetAllModalFunctions();
+
+  const filteredFunctions= useMemo(() => {
+    if (!modalFunctions || !Array.isArray(modalFunctions)) return [];
+    if (!modalAppFunctionIds || modalAppFunctionIds.length === 0) return modalFunctions;
+    return modalFunctions.filter((f) => !modalAppFunctionIds.includes(f.id));
+  }, [modalFunctions, modalAppFunctionIds]);
 
   return (
     <div className="space-y-12">
@@ -158,7 +174,7 @@ export const CreateGardenFormFields = () => {
       <div className="space-y-8">
         <Collapsible className="w-full space-y-4">
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" className="p-1 w-full h-16" onClick={() => { setFunctiontableExpanded(!funcitonTableExpanded) }}>
+            <Button variant="ghost" className="p-1 w-full h-16" onClick={() => setFunctiontableExpanded((prev) => !prev)}>
               <div className="flex items-center justify-between w-full">
                 <div className="m-4">
                   <div className="flex flex-col items-start">
@@ -174,10 +190,54 @@ export const CreateGardenFormFields = () => {
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-4">
-            <SelectModalFunctionsTable
-              currentFunctionIds={modalAppFunctionIds}
-              published={isPublished}
-            />
+          <Controller
+            control={form.control}
+            name="modal_function_ids"
+            render={({ field }) => (
+              <FunctionSelectionTable
+                functions={filteredFunctions}
+                selectedFunctionIds={field.value ?? []}
+                onSelectionChange={field.onChange}
+                isLoading={isLoading}
+                isFetching={isFetching}
+                searchQuery={searchQuery}
+                onSearchChange={handleSearchChange}
+                showSelectedChips={true}
+                showClearAllButton={true}
+                showSearch={true}
+                maxHeight="420px"
+                className="mt-2"
+                onFunctionAdded={(functionId, authorIds) => {
+                  if (!authorIds || authorIds.length === 0) {
+                    toast.warning("This function has no authors defined");
+                    return;
+                  }
+
+                  const current = form.getValues("authors") || [];
+                  const updated = Array.from(new Set([...current, ...authorIds]));
+                  form.setValue("authors", updated);
+                }}
+                onFunctionRemoved={(functionId) => {
+                  const currentAuthors = form.getValues("authors") || [];
+
+                  const removedFunc = filteredFunctions.find(f => f.id === functionId);
+                  const removedAuthorIds = removedFunc?.authors ?? [];
+
+                  const stillSelectedFunctions = filteredFunctions.filter(f =>
+                    f.id !== functionId && field.value.includes(f.id)
+                  );
+
+                  const remainingAuthorIds = new Set<string>();
+                  stillSelectedFunctions.forEach(f => {
+                    (f.authors ?? []).forEach(id => remainingAuthorIds.add(id));
+                  });
+
+                  const updatedAuthors = currentAuthors.filter(id => remainingAuthorIds.has(id));
+                  form.setValue("authors", updatedAuthors);
+                }}
+              />
+            )}
+          />
           </CollapsibleContent>
         </Collapsible>
       </div>
