@@ -23,6 +23,7 @@ export const useCreateGarden = () => {
     mutationFn: createGarden,
     onSuccess: (garden) => {
       queryClient.setQueryData(["gardens", garden.doi], garden);
+      queryClient.invalidateQueries({ queryKey: ["gardens"] });
     },
   });
 };
