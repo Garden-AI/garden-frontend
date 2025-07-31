@@ -225,10 +225,10 @@ const DeleteGardenModal = ({
       onSuccess: () => {
         setIsOpen(false);
         setInput("");
-        navigate("/");
-        toast.success("Garden deleted successfully!");
-        queryClient.invalidateQueries({ queryKey: ["gardens", "search"] });
+        queryClient.invalidateQueries({ queryKey: ["gardens"] });
         queryClient.removeQueries({ queryKey: ["gardens", doi] });
+        toast.success("Garden deleted successfully!");
+        navigate("/");
       },
     });
   };

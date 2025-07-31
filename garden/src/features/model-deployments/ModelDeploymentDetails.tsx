@@ -96,6 +96,9 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
         try {
             await instance.delete(`/modal-apps/${entity.id}`);
             queryClient.invalidateQueries({ queryKey: ['modelDeployments'] });
+            entity.modal_function_ids.forEach((id) => {
+                queryClient.invalidateQueries({ queryKey: ["modalFunctions", id] });
+            });
             navigate("/user?tab=model-deployments");
             toast(`Deployment Deleted: ${entity.original_app_name || entity.app_name}`);
         } catch (error: any) {
