@@ -23,6 +23,7 @@ const CreateModelDeploymentPage = lazy(() => import("@/features/model-deployment
 const ModalAppUploadPage = lazy(() => import("@/features/modal/components/ModalAppUploadPage"));
 const BenchmarksPage = lazy(() => import("@/features/benchmarks/BenchmarksPage"));
 const MetricsDashboard = lazy(() => import("@/features/metrics/components/MetricsDashboard"));
+const MLIPPage = lazy(() => import("@/features/mlip-page/MLIPPage"));
 
 const WrappedLazyComponent = ({ child }: { child: React.ReactNode }) => {
   return (
@@ -78,6 +79,7 @@ const Router: React.FC = () => {
         <Route path="login" element={<WrappedLazyComponent child={<LoginPage />} />} />
         <Route path="user" element={<WrappedLazyComponent child={<UserProfilePage />} />} />
         <Route path="benchmarks" element={<WrappedLazyComponent child={<BenchmarksPage />} />} />
+        <Route path="use-cases/mlips" element={<WrappedLazyComponent child={<MLIPPage />} />} /> 
         <Route element={<SuperuserRoute />}>
           <Route path="metrics" element={<WrappedLazyComponent child={<MetricsDashboard />} />}></Route>
         </Route>
