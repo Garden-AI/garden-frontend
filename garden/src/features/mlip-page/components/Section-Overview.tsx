@@ -1,3 +1,6 @@
+import MLIPCodeSnippet from "./code-snippet/MLIPCodeSnippet";
+import { Link } from "react-router-dom";
+
 export const SectionOverview = () => {
   return (
     <section className="relative min-h-[50vh] flex flex-col md:flex-row items-center justify-between bg-gradient-to-br from-blue-50 via-white to-indigo-50 text-slate-800 overflow-hidden px-6 md:px-12 py-20 md:py-28">
@@ -32,31 +35,29 @@ export const SectionOverview = () => {
           </span>
         </h1>
         <p className="text-lg text-black font-light leading-relaxed mb-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Use Garden to run MLIP-driven atomistic simulation tasks like relaxation and structure prediction. We have the libraries and GPUs pre-configured; you just need an .xyz file and a few lines of Python.
         </p>
         <p className="text-sm text-slate-500 leading-relaxed mb-6 max-w-md">
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          Run workloads on the cloud or on participating research computing facilities like Argonne Leadership Computing Facility (ALCF) or Purdue's Rosen Center for Advanced Computing.
         </p>
-        <a
-          // href=""
-          className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
-        >
-          CTA Button
-        </a>
+        <div className="flex flex-wrap gap-4">
+          <Link
+            to="/garden/10.26311%2Fcexg-2349"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
+          >
+            Run on the cloud
+          </Link>
+          <Link
+            to="/garden/mlip-garden"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
+          >
+            Run on HPC
+          </Link>
+        </div>
       </div>
 
       <div className="relative z-10 w-full md:w-1/2 mt-12 md:mt-0 flex justify-center">
-        <div className="bg-white/80 backdrop-blur-md rounded-xl border border-slate-200 p-6 shadow-xl max-w-sm w-full">
-          <h2 className="text-lg md:text-xl font-semibold text-slate-800 mb-3">
-            Why MLIPs for Relaxation?
-          </h2>
-          <ul className="text-sm text-slate-700 space-y-2 list-disc list-inside leading-relaxed">
-            <li>Duis aute irure dolor in reprehenderit in voluptate</li>
-            <li>Velit esse cillum dolore eu fugiat nulla pariatur</li>
-            <li>Excepteur sint occaecat cupidatat non proident</li>
-            <li>Sunt in culpa qui officia deserunt mollit anim</li>
-          </ul>
-        </div>
+        <MLIPCodeSnippet />
       </div>
     </section>
   );
