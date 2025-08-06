@@ -35,7 +35,7 @@ export const SectionOverview = () => {
           </span>
         </h1>
         <p className="text-lg text-black font-light leading-relaxed mb-4">
-          Use Garden to run pre-configured MLIPs on atomistic simulation tasks like relaxation, structure prediction, and more.
+          Use Garden to run MLIP-driven atomistic simulation tasks like relaxation and structure prediction. We have the libraries and GPUs pre-configured; you just need an .xyz file and a few lines of Python.
         </p>
         <p className="text-sm text-slate-500 leading-relaxed mb-6 max-w-md">
           Run workloads on the cloud or on participating research computing facilities like Argonne Leadership Computing Facility (ALCF) or Purdue's Rosen Center for Advanced Computing.

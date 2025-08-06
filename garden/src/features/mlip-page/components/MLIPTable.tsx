@@ -17,7 +17,7 @@ export const MLIPTable = ({ data }: Props) => {
       tooltip: "Trained weights identifier. Links to the Matbench discovery page for this checkpoint.",
     },
     {
-      label: "Stability Performance (CPS)",
+      label: "Stability Prediction Performance (CPS)",
       tooltip:
         "Combined Performance Score (CPS) for the stability-prediction task on Matbench. Higher is better. Click the model name for detailed metrics.",
     },
@@ -37,7 +37,7 @@ export const MLIPTable = ({ data }: Props) => {
         <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-slate-100/40 via-white/20 to-transparent pointer-events-none" />
 
         <table className="relative z-10 min-w-full text-sm">
-          <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wide text-xs">
+          <thead className="bg-slate-100/80 text-slate-700 font-semibold tracking-wide text-xs">
             <tr>
               {headerCols.map((col) => (
                 <th key={col.label} className="px-6 py-3 text-left whitespace-normal break-words max-w-[10rem]">
