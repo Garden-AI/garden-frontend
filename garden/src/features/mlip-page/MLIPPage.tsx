@@ -8,8 +8,8 @@ export default function MLIPPage() {
     <div className="min-h-screen bg-white">
       <main>
         <SectionOverview />
-        <SectionMLIPTasks />
         <SectionAvailableMLIPs />
+        <SectionMLIPTasks />
         <SectionBenchmark />
       </main>
     </div>
