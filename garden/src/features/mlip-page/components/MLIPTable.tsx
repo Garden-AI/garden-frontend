@@ -12,12 +12,12 @@ export const MLIPTable = ({ data }: Props) => {
       <table className="relative z-10 min-w-full text-sm">
         <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wide text-xs">
           <tr>
-            <th className="px-6 py-4 text-left">Model</th>
-            <th className="px-6 py-4 text-left">Checkpoint</th>
-            <th className="px-6 py-4 text-left">FPP</th>
-            <th className="px-6 py-4 text-left">CPS</th>
-            <th className="px-6 py-4 text-left">Cost ($/1k)</th>
-            <th className="px-6 py-4 text-left">F1 Score</th>
+            <th className="px-6 py-3 text-left">Model</th>
+            <th className="px-6 py-3 text-left">Checkpoint</th>
+            <th className="px-6 py-3 text-left">FPP</th>
+            <th className="px-6 py-3 text-left">CPS</th>
+            <th className="px-6 py-3 text-left">Cost ($/1k)</th>
+            <th className="px-6 py-3 text-left">F1 Score</th>
           </tr>
         </thead>
 
@@ -29,23 +29,23 @@ export const MLIPTable = ({ data }: Props) => {
                 index % 2 === 0 ? "bg-white/60" : "bg-white/40"
               } hover:bg-indigo-50/30`}
             >
-              <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+              <td className="px-6 py-2.5 font-medium text-slate-800 whitespace-nowrap">
                 {row.architecture}
               </td>
 
-              <td className="px-6 py-4 text-slate-700">{row.checkpoint}</td>
+              <td className="px-6 py-2.5 text-slate-700">{row.checkpoint}</td>
 
-              <td className="px-6 py-4 text-slate-700">{row.fpp}</td>
+              <td className="px-6 py-2.5 text-slate-700">{row.fpp}</td>
 
-              <td className="px-6 py-4 font-semibold text-slate-800">
+              <td className="px-6 py-2.5 font-semibold text-slate-800">
                 {row.matbench.toFixed(3)}
               </td>
 
-              <td className="px-6 py-4 text-slate-700">
+              <td className="px-6 py-2.5 text-slate-700">
                 ${row.cost.toFixed(2)}
               </td>
 
-              <td className="px-6 py-4 font-semibold text-slate-800">
+              <td className="px-6 py-2.5 font-semibold text-slate-800">
                 {row.score.toFixed(4)}
               </td>
             </tr>
