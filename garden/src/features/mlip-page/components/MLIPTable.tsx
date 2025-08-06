@@ -22,11 +22,11 @@ export const MLIPTable = ({ data }: Props) => {
         "Combined Performance Score (CPS) for the Matbench Discovery stability prediction task: When performing relaxation with this MLIP, did it correctly classify the material as stable vs unstable? Combination of F1 and accuracy metrics.",
     },
     {
-      label: "Cloud cost per 1k materials relaxed",
+      label: "Cloud cost per 1k materials relaxed (using T4 GPUs)",
       tooltip: "Estimated cloud cost to relax 1,000 materials using this MLIP (USD).",
     },
     {
-      label: "HPC node hours per 1k materials relaxed",
+      label: "HPC node hours per 1k materials relaxed (using A100 GPUs)",
       tooltip: "Node-hours required to relax 1,000 materials on participating HPC clusters.",
     },
   ];
