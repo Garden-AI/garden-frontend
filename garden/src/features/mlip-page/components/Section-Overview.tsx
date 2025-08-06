@@ -1,4 +1,5 @@
 import MLIPCodeSnippet from "./code-snippet/MLIPCodeSnippet";
+import { Link } from "react-router-dom";
 
 export const SectionOverview = () => {
   return (
@@ -37,20 +38,22 @@ export const SectionOverview = () => {
           Use Garden to run pre-configured MLIPs on atomistic simulation tasks like relaxation, structure prediction, and more.
         </p>
         <p className="text-sm text-slate-500 leading-relaxed mb-6 max-w-md">
-          Run workloads on the cloud or on participating research computing clusters like Argonne Leadership Computing Facility (ALCF) or Purdue's Rosen Cenrer for Advanced Computing.
+          Run workloads on the cloud or on participating research computing facilities like Argonne Leadership Computing Facility (ALCF) or Purdue's Rosen Center for Advanced Computing.
         </p>
-        <a
-          // href=""
-          className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
-        >
-          Run on the cloud
-        </a>
-        <a
-          // href=""
-          className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
-        >
-          Run on HPC
-        </a>
+        <div className="flex flex-wrap gap-4">
+          <Link
+            to="/garden/10.26311%2Fcexg-2349"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
+          >
+            Run on the cloud
+          </Link>
+          <Link
+            to="/garden/mlip-garden"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
+          >
+            Run on HPC
+          </Link>
+        </div>
       </div>
 
       <div className="relative z-10 w-full md:w-1/2 mt-12 md:mt-0 flex justify-center">
