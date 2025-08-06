@@ -5,7 +5,7 @@ export const SectionAvailableMLIPs = () => {
   return (
     <section
       id="available-mlips"
-      className="relative px-6 py-14 md:py-16 bg-gradient-to-br from-white via-slate-50/30 to-blue-50/50 text-slate-800 overflow-hidden"
+      className="relative px-6 py-14 md:py-16 bg-gradient-to-br from-white via-slate-50/30 to-blue-50/50 text-slate-800 overflow-visible"
     >
       {/* Background visual */}
       <div className="absolute inset-0 z-0">
