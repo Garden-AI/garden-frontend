@@ -14,27 +14,36 @@ import "./MLIPCodeSnippet.css";
 
 const cloudCode = `from garden_ai import GardenClient
 
-# Connect to the Garden
-client = GardenClient()
+gc = GardenClient()
+mlip_garden = gc.get_garden("mlip-garden")
 
-# Get the MLIP by its DOI
-auth_mlip = client.get_garden("10.23677/mlip-example")
-
-# Relax a crystal structure on Garden Cloud
-result = auth_mlip.relax("my.cif")
-print(result)`;
+# Kick off an on-demand relaxation job on cloud GPUs.
+mlip_garden.relax(
+  xyz_file_path="candidate_structures.xyz", 
+  model="mace",
+  output_path="relaxed_structures.xyz",
+)
+`;
 
 const hpcCode = `from garden_ai import GardenClient
 
-# Connect to the Garden
-client = GardenClient()
+gc = GardenClient()
+mlip_garden = gc.get_garden("mlip-garden")
 
-# Get the MLIP by its DOI
-auth_mlip = client.get_garden("10.23677/mlip-example")
+# If you have an allocation on ALCF EDTB (aka Edith), 
+# Garden can kick off a relaxation job for you.
+edith_ep_id = "a01b9350-e57d-4c8e-ad95-b4cb3c4cd1bb"
+job_id = mlip_garden.batch_relax(
+  xyz_file_path="candidate_structures.xyz", 
+  model="mace-mpa-0",
+  cluster_id=edith_ep_id
+)
 
-# Submit a batch relaxation job to ALCF
-job = auth_mlip.submit_hpc_job("structures.zip", cluster="ThetaGPU")
-print(job.status())`;
+# poll for the status of the batch job
+status = mlip_garden.get_job_status(job_id)
+
+# retrieve the results when status is "completed"
+results = mlip_garden.get_results(job_id)`;
 
 const MLIPCodeSnippet = () => {
   const [mode, setMode] = useState<"cloud" | "hpc">("cloud");

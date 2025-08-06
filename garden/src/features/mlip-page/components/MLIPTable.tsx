@@ -14,12 +14,12 @@ export const MLIPTable = ({ data }: Props) => {
     },
     {
       label: "Checkpoint",
-      tooltip: "Trained weights identifier. Links to the Matbench discovery page for this checkpoint.",
+      tooltip: "Trained weights identifier. Links to the MatBench Discovery page for this checkpoint.",
     },
     {
-      label: "Stability Prediction Performance (CPS)",
+      label: "Task Performance",
       tooltip:
-        "Combined Performance Score (CPS) for the stability-prediction task on Matbench. Higher is better. Click the model name for detailed metrics.",
+        "Combined Performance Score (CPS) for the Matbench Discovery stability prediction task: When performing relaxation with this MLIP, did it correctly classify the material as stable vs unstable? Combination of F1 and accuracy metrics.",
     },
     {
       label: "Cloud cost per 1k materials relaxed",

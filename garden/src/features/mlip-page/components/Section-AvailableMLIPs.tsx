@@ -38,7 +38,14 @@ export const SectionAvailableMLIPs = () => {
           <div className="hidden md:block w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mb-4 rounded-full ml-auto" />
 
           <p className="text-lg md:text-xl text-slate-600 font-light max-w-lg md:max-w-xs md:ml-auto mb-6 leading-relaxed">
-            The models below are pre-trained and production-ready—each benchmarked for accuracy, speed, and compatibility across simulation platforms.
+            These models have been configured for high throughput batch relaxation with{" "}
+            <a
+              href="https://radical-ai.github.io/torch-sim/"
+              className="text-blue-600 hover:text-blue-700"
+            >
+              TorchSim
+            </a>
+            .
           </p>
         </aside>
       </div>
