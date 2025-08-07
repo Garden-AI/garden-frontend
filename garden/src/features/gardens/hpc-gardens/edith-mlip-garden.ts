@@ -7,7 +7,7 @@ Params:
 - xyz_file: str | Path
 - model: str
 - cluster_id: str
-- options: dict,
+- relaxation_options: dict,
 
 Returns:
 - job_id: str
@@ -22,6 +22,11 @@ input_file = "./my_atoms.xyz"
 cluster_id = "my-cluster-id"
 
 job_id = mlip_garden.batch_relax(input_file, model="mace-mp-0", cluster_id=cluster_id)
+
+# or with custom relaxation parameters
+relax_opts = {"fmax": 0.1, "max_steps": 250}
+
+job_id = mlip_garden.batch_relax(input_file, model="mattersim", cluster_id=cluster_id, relaxation_options=relax_opts)
 `;
 
 const batchRelax: ModalFunction = {
@@ -47,7 +52,7 @@ Params:
 - job_id: str
 
 Returns:
-- job status
+- JobStatus dataclass
 `;
 
 const getJobStatusExampleUsage = `
@@ -78,11 +83,14 @@ const getJobStatus: ModalFunction = {
 const getResultsDescription = `
 Retrieve results from a batch relaxation job.
 
+This fetches the output xyz file from the remote endpoint and saves it locally.
+
 Params:
-- job_id: str
+- job_id: str globus-compute task-id for the remote job
+- output_path: Path | str local path to save the output xyz file to
 
 Returns:
-- xyz_file: Path
+- output_path
 `;
 
 const getResultsExampleUsage = `
@@ -90,7 +98,7 @@ import garden_ai
 
 mlip_garden = garden_ai.get_garden("mlip-garden")
 job_id = mlip_garden.batch_relax(...)
-results_file = mlip_garden.get_results(job_id);
+results_file_path = mlip_garden.get_results(job_id);
 `;
 
 const getResults: ModalFunction = {
@@ -146,6 +154,43 @@ status = mlip_garden.get_job_status(job_id)
 # retrieve the results
 results = mlip_garden.get_results(job_id)
 \`\`\`
+
+### Optional Parameters
+The \`batch_relax\` function also takes an optional relaxation parameters dictionary that can be passed as a keyword argument like \`relaxaxtion_options=my_params\`. For any optional parameter you do not include in relaxaxtion_options, the functions will use a reasonable default as specified below.
+
+- General parameters
+    - fmax
+        - Description: The maximum force tolerance for convergence, in eV/Å. When a material is relaxed past this point, the optimizer can stop.
+        - Type: float
+        - Default: 0.05
+    - max_steps
+        - Description: The maximum number of optimization steps that will be applied to each material. If the material is not relaxed past its maximum force tolerance in max_steps steps, the partly relaxed material will still be included in the output.
+        - Type: int
+        - Default: 500
+    - optimizer_type
+        - Description: Specifies which structural degrees of freedom to relax.
+            Use 'fire' to relax only atomic positions within a fixed lattice cell. This finds the lowest energy structure at a constant volume.
+            Use 'frechet_cell_fire' to relax both atomic positions and the lattice cell (shape and volume). This is required to find the true ground-state structure of a periodic material.
+        - Type: str enum. (Only ‘fire’ and ‘frechet_cell_fire’ are supported)
+        - Default: “frechet_cell_fire” for MACE and SevenNet. “fire” for Mattersim. (Mattersim does not support frechet_cell_fire)
+    - md_flavor
+        - Description: Specifies the variant of the FIRE (Fast Inertial Relaxation Engine) algorithm. 'vv_fire' uses a velocity-Verlet based update scheme, while 'ase_fire' uses an implementation that mimics the popular ASE (Atomic Simulation Environment) library.
+        - Type: str
+        - Default: 'ase_fire'
+
+- Frechet cell fire optimization parameters - only applicable when optimizer_type == “frechet_cell_fire”
+    - hydrostatic_strain
+        - Description: Constrains cell relaxation to be purely isotropic, meaning the cell changes volume but not shape (e.g., a cubic cell remains cubic). This is useful for finding the equilibrium volume of a crystal. This parameter should not be used simultaneously with constant_volume.
+        - Type: bool
+        - Default: False
+    - constant_volume
+        - Description: Allows the cell shape and angles to change during relaxation while keeping the total cell volume constant. This is useful for studying shear deformations or structural transformations at a specific volume.
+        - Type: bool
+        - Default: False
+    - scalar_pressure
+        - Description: An external isotropic pressure applied to the system in GPa. The optimizer will find a structure that is stable under this applied pressure. A positive value corresponds to compression.
+        - Type: float
+        - Default: 0.0
 `
 
 export const MLIPGarden: Garden = {
