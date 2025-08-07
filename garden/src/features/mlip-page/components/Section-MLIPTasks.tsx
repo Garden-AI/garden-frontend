@@ -14,21 +14,16 @@ export const SectionMLIPTasks = () => {
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
         <div className="w-full md:w-1/2">
           <h2 className="text-4xl font-serif font-bold tracking-tight mb-4 text-slate-800">
-            Structure Relaxation
+            Molecular Structure Relaxation
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mb-6 rounded-full"></div>
           <p className="text-lg md:text-xl text-slate-600 font-light mb-4 leading-relaxed">
-            Relaxation is the process of finding the most stable atomic configuration of a material.
+            Finding a material's lowest-energy state (relaxation) is essential for stability screening.
           </p>
-          <p className="text-md text-slate-500 leading-relaxed mb-6 max-w-md">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          <p className="text-md text-slate-500 leading-relaxed mb-6">
+            Machine-learned interatomic potentials (MLIPs) act as fast surrogates for expensive DFT calculations, predicting the forces on every atom.
+            Garden uses <a href="https://radical-ai.github.io/torch-sim/" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">TorchSim</a> as a simulation wrapper to take advantage of GPU parallelization and find the lowest-energy state of many materials at once.
           </p>
-          <a
-            // href=""
-            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition"
-          >
-            See Available MLIPs
-          </a>
         </div>
 
         <div className="w-full md:w-1/2 flex justify-center">
