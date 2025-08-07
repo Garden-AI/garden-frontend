@@ -11,7 +11,7 @@ export const MLIPTaskCard = ({ title, description, imageSrc, theme }: Props) => 
       <img
         src={imageSrc}
         alt={title}
-        className="w-70 h-60 object-contain mx-auto mb-8 rounded-xl shadow-md"
+        className="w-80 h-60 object-contain mx-auto mb-8 rounded-xl shadow-md"
       />
       <h3 className="text-2xl font-bold text-slate-800 mb-4 font-serif text-center">
         {title}
@@ -20,7 +20,7 @@ export const MLIPTaskCard = ({ title, description, imageSrc, theme }: Props) => 
         {description}
       </p>
       <div className="flex gap-3 justify-center">
-        <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow hover:scale-105 transition">
+        <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-lg transition">
           On-demand
         </button>
         <button className="px-6 py-3 bg-white text-slate-700 border border-slate-200 rounded-full hover:bg-slate-50 transition">

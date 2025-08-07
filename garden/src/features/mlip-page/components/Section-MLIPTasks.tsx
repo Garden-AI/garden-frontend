@@ -4,7 +4,7 @@ export const SectionMLIPTasks = () => {
   return (
     <section
       id="mlip-tasks"
-      className="relative overflow-hidden bg-gradient-to-br from-white via-slate-50/30 to-blue-50/50 text-slate-800 py-20 px-6"
+      className="relative overflow-hidden bg-gradient-to-br from-white via-slate-50/30 to-blue-50/50 text-slate-800 py-16 md:py-20 px-6"
     >
       <div className="absolute inset-0 z-0">
         <div className="absolute w-[40vw] h-[40vw] top-[-10%] left-[-5%] rounded-full bg-indigo-100 opacity-20 blur-3xl" />
@@ -16,13 +16,13 @@ export const SectionMLIPTasks = () => {
           <h2 className="text-4xl font-serif font-bold tracking-tight mb-4 text-slate-800">
             Molecular Structure Relaxation
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mb-6 rounded-full"></div>
+          <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mb-8 rounded-full"></div>
           <p className="text-lg md:text-xl text-slate-600 font-light mb-4 leading-relaxed">
             Finding a material's lowest-energy state (relaxation) is essential for stability screening.
           </p>
           <p className="text-md text-slate-500 leading-relaxed mb-6">
             Machine-learned interatomic potentials (MLIPs) act as fast surrogates for expensive DFT calculations, predicting the forces on every atom.
-            Garden uses <a href="https://radical-ai.github.io/torch-sim/" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">TorchSim</a> as a simulation wrapper to take advantage of GPU parallelization and find the lowest-energy state of many materials at once.
+            Garden uses <a href="https://radical-ai.github.io/torch-sim/" className="text-indigo-600 underline underline-offset-4 hover:text-indigo-700" target="_blank" rel="noopener noreferrer">TorchSim</a> as a simulation wrapper to take advantage of GPU parallelization and find the lowest-energy state of many materials at once.
           </p>
         </div>
 
