@@ -64,6 +64,7 @@ export const SectionOverview = () => {
           <CodeBlockMLIP />
         </div>
       </div>
+    </div>
     </section>
   );
 };
