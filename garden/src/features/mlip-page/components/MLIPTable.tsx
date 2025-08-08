@@ -22,12 +22,12 @@ export const MLIPTable = ({ data }: Props) => {
         "Combined Performance Score (CPS) for the Matbench Discovery stability prediction task: When performing relaxation with this MLIP, did it correctly classify the material as stable vs unstable? Combination of F1 and accuracy metrics.",
     },
     {
-      label: "Cloud cost per 1k materials relaxed (using T4 GPUs)",
-      tooltip: "Estimated cloud cost to relax 1,000 materials using this MLIP (USD).",
+      label: "Cloud cost per 10k materials relaxed (using T4 GPUs)",
+      tooltip: "Estimated cloud cost to relax 10,000 materials using this MLIP (USD).",
     },
     {
-      label: "HPC node hours per 1k materials relaxed (using A100 GPUs)",
-      tooltip: "Node-hours required to relax 1,000 materials on participating HPC clusters.",
+      label: "HPC node hours per 10k materials relaxed (using A100 GPUs)",
+      tooltip: "Node-hours required to relax 10,000 materials on participating HPC clusters.",
     },
   ];
 
@@ -103,12 +103,12 @@ export const MLIPTable = ({ data }: Props) => {
 
                 {/* Cloud cost */}
                 <td className="px-6 py-2.5 text-slate-700">
-                  {row.cloudCostPerK !== null ? `$${row.cloudCostPerK.toFixed(2)}` : "—"}
+                  {row.cloudCostPer10K !== null ? `$${row.cloudCostPer10K.toFixed(2)}` : "—"}
                 </td>
 
                 {/* HPC node hours */}
                 <td className="px-6 py-2.5 text-slate-700">
-                  {row.hpcNodeHoursPerK !== null ? row.hpcNodeHoursPerK.toFixed(2) : "—"}
+                  {row.hpcNodeHoursPer10K !== null ? row.hpcNodeHoursPer10K.toFixed(2) : "—"}
                 </td>
               </tr>
             ))}

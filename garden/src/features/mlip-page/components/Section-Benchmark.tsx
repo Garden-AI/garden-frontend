@@ -25,7 +25,7 @@ export const SectionBenchmark = () => {
         That way, you get both an accuracy metric and a realistic cost baseline for planning production budgets, whether you’re using an HPC allocation or cloud credits.
         </p>
         <p className="text-md text-slate-500 leading-relaxed mb-6">
-        We test each MLIP on <a href="https://matbench-discovery.materialsproject.org/data#--links-to-wbm-files" className="text-indigo-600 underline underline-offset-4 hover:text-indigo-700" target="_blank" rel="noopener noreferrer">the WBM dataset</a> (median 22 atoms per structure) and report cost per 1,000 relaxations. 
+        We test each MLIP on <a href="https://matbench-discovery.materialsproject.org/data#--links-to-wbm-files" className="text-indigo-600 underline underline-offset-4 hover:text-indigo-700" target="_blank" rel="noopener noreferrer">the WBM dataset</a> (median 22 atoms per structure) and report cost per 10,000 relaxations. 
         If your workloads involve larger systems, expect lower throughput and higher costs.
         </p>
       </div>
