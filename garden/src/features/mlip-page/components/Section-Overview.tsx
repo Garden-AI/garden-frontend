@@ -1,5 +1,5 @@
-import MLIPCodeSnippet from "./code-snippet/MLIPCodeSnippet";
 import { Link } from "react-router-dom";
+import { CodeBlockMLIP } from "./MLIPCodeBlock";
 
 export const SectionOverview = () => {
   return (
@@ -59,8 +59,9 @@ export const SectionOverview = () => {
           </div>
         </div>
 
-        <div className="w-full md:w-1/2 mt-8 md:mt-0 flex justify-center">
-          <MLIPCodeSnippet />
+      <div className="relative z-10 w-full md:w-[55%] mt-12 md:mt-0 flex justify-center px-4">
+        <div className="mt-8 lg:mt-0">
+          <CodeBlockMLIP />
         </div>
       </div>
     </section>
