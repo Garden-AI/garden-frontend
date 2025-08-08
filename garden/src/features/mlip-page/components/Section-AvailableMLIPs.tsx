@@ -5,7 +5,7 @@ export const SectionAvailableMLIPs = () => {
   return (
     <section
       id="available-mlips"
-      className="relative px-6 py-14 md:py-16 bg-gradient-to-br from-white via-slate-50/30 to-blue-50/50 text-slate-800 overflow-visible"
+      className="relative px-6 py-16 md:py-20 bg-gradient-to-br from-white via-slate-50/30 to-blue-50/50 text-slate-800 overflow-visible"
     >
       {/* Background visual */}
       <div className="absolute inset-0 z-0">
@@ -24,7 +24,7 @@ export const SectionAvailableMLIPs = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto md:grid md:grid-cols-[1fr_auto] md:gap-10 items-start">
+      <div className="relative z-10 max-w-7xl mx-auto md:grid md:grid-cols-[1fr_auto] md:gap-10 items-start">
         {/* Table on the left (orders first) */}
         <div className="md:order-1">
           <MLIPTable data={mockMLIPs} />
@@ -35,13 +35,13 @@ export const SectionAvailableMLIPs = () => {
           <h2 className="mb-4 text-4xl font-serif font-bold tracking-tight text-slate-800">
             Available MLIPs
           </h2>
-          <div className="hidden md:block w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mb-4 rounded-full ml-auto" />
+          <div className="hidden md:block w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mb-8 rounded-full ml-auto" />
 
           <p className="text-lg md:text-xl text-slate-600 font-light max-w-lg md:max-w-xs md:ml-auto mb-6 leading-relaxed">
             These models have been configured for high throughput batch relaxation with{" "}
             <a
               href="https://radical-ai.github.io/torch-sim/"
-              className="text-blue-600 hover:text-blue-700"
+              className="text-indigo-600 underline underline-offset-4 hover:text-indigo-700"
             >
               TorchSim
             </a>
