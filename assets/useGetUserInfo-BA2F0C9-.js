@@ -1,1 +1,0 @@
-import{i as e}from"./axios-m_-IxfSB.js";import{u as s}from"./useQuery-7MdSSCCp.js";import{b as t}from"./index-2NiM7tRl.js";const o=async()=>{try{return(await e.get("/users")).data}catch{throw new Error("Error fetching user info")}},c=()=>{const r=t();return s({queryKey:["user","me"],queryFn:()=>o(),enabled:r.isAuthenticated})};export{c as u};
