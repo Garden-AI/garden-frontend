@@ -5,6 +5,7 @@ import UserProfileInfo from "./UserProfileInfo";
 import MyGardens from "./MyGardens";
 import SavedGardens from "./SavedGardens";
 import { ModelDeployments } from "@/features/model-deployments/ModelDeployments";
+import { useGetUserInfo } from "../api/useGetUserInfo";
 
 const TABS = ["profile", "my-gardens", "saved-gardens", "model-deployments"] as const;
 type TabKey = (typeof TABS)[number];
@@ -18,6 +19,8 @@ const UserProfileTabs = ({ defaultTab }: UserProfileTabsProps) => {
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const queryTab = params.get("tab");
+  
+  const { data: currUserInfo } = useGetUserInfo();
 
   const resolveTab = (): TabKey => {
     if (queryTab && TABS.includes(queryTab as TabKey)) return queryTab as TabKey;
@@ -83,7 +86,7 @@ const UserProfileTabs = ({ defaultTab }: UserProfileTabsProps) => {
         </TabsContent>
         <TabsContent value="saved-gardens">
           <div className="px-6">
-            <SavedGardens />
+            <SavedGardens savedGardenDois={currUserInfo?.saved_garden_dois || []} />
           </div>
         </TabsContent>
         <TabsContent value="model-deployments">
