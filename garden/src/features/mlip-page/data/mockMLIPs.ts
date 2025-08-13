@@ -6,7 +6,7 @@ export const mockMLIPs: MLIPTableRow[] = [
     checkpoint: "SevenNet-MF-ompa",
     cps: 0.845,
     cloudCostPer10K: 2.21,
-    hpcNodeHoursPer10K: 1.23,
+    hpcNodeHoursPer10K: 1.54,
     modelLink: "/garden/10.26311%2Fcexg-2349/modal-functions/578",
     checkpointLink: "https://matbench-discovery.materialsproject.org/models/sevennet-mf-ompa",
   },
