@@ -1007,7 +1007,7 @@ export interface components {
              * Operation
              * @default AND
              */
-            operation: "AND" | "OR";
+            operation: ("AND" | "OR") | null;
         };
         /** GardenSearchRequest */
         GardenSearchRequest: {
