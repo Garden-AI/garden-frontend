@@ -57,10 +57,10 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
             {/* Right Section: GPU and Invocations */}
             <div className="flex items-center gap-3 flex-shrink-0">
               {/* Hardware Spec Section */}
-              {modalFunction.hardware_spec?.gpus && (
+              {modalFunction.hardware_spec?.gpus != null && (
                 <div className="flex items-center gap-1">
                   <Cpu className="h-3 w-3" />
-                  <span>{modalFunction.hardware_spec.gpus} GPU</span>
+                  <span>{String(modalFunction.hardware_spec.gpus)} GPU</span>
                 </div>
               )}
               {/* Invocations */}

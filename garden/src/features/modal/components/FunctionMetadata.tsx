@@ -63,7 +63,7 @@ export const FunctionMetadata = ({
             <EditableMetadataField
                 label="Hardware Specifications"
                 helpText="Compute resources allocated for the function"
-                value={formatHardwareSpec(modalFunction.hardware_spec)}
+                value={formatHardwareSpec(modalFunction.hardware_spec as { [key: string]: string } | undefined | null)}
                 fieldName="hardware_spec"
                 entity={modalFunction}
                 ownsThisEntity={false} // Read-only
