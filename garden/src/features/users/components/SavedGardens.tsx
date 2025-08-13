@@ -1,6 +1,6 @@
 import React from "react";
 import { useMemo } from "react";
-import { Garden } from "@/types";
+import { Garden, User } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import NotFoundPage from "@/components/NotFoundPage";
 import { SearchResult } from "@/features/search/components/SearchResult";
@@ -20,11 +20,16 @@ const SavedGardens = () => {
     offset: 0,
     filters: currUserInfo?.saved_garden_dois ? [{
       field_name: "doi",
-      values: currUserInfo.saved_garden_dois
+      values: currUserInfo.saved_garden_dois,
+      operation: "OR" as const,
     }] : []
   }), [currUserInfo?.saved_garden_dois]);
 
-  const { data: searchResult, isLoading: searchLoading } = useSearchGardens(searchRequest);
+  // Don't send the search request if there are no saved gardens
+  const shouldSearch = (currUserInfo?.saved_garden_dois ?? []).length > 0;
+  const { data: searchResult, isLoading: searchLoading } = useSearchGardens(searchRequest, {
+    enabled: shouldSearch
+  });
 
   if (getUserInfoLoading || searchLoading) {
     return <LoadingSpinner />;

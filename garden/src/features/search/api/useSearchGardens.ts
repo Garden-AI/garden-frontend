@@ -12,7 +12,7 @@ const searchGardens = async (searchOptions: GardenSearchRequest): Promise<Garden
   }
 };
 
-export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
+export const useSearchGardens = (searchOptions: GardenSearchRequest, options?: { enabled?: boolean }) => {
   const queryClient = useQueryClient();
   const query = useQuery<GardenSearchResponse, Error>({
     queryKey: [
@@ -26,6 +26,7 @@ export const useSearchGardens = (searchOptions: GardenSearchRequest) => {
     ],
     queryFn: async () => searchGardens(searchOptions),
     placeholderData: keepPreviousData,
+    enabled: options?.enabled,
   });
 
   // Cache gardens and modal functions when search results are successfully fetched
