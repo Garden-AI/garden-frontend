@@ -3,6 +3,7 @@ import { Clipboard } from "lucide-react";
 import { toast } from "sonner";
 import { Garden } from "@/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import { Button } from "@/components/shadcn/button";
 
 export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
 
@@ -14,9 +15,9 @@ export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
         <TooltipProvider>
             <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
-                    <div className="h-5 w-5 flex items-center justify-center hover:bg-green-400">
-                        <Clipboard className="hover:text-green" onClick={handleClick} />
-                    </div>
+                    <Button variant="ghost" size={"icon"} className="hover:text-green" onClick={handleClick}>
+                        <Clipboard />
+                    </Button>
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Copy Garden URL</p>

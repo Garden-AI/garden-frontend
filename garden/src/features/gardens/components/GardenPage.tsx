@@ -84,9 +84,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
               />
               <div className="flex items-center">
                 <SaveGardenButton garden={garden} />
-                <div className="m-2">
-                  <ShareGardenButton garden={garden} />
-                </div>
+                <ShareGardenButton garden={garden} />
                 <GardenDropdownOptions
                   garden={garden}
                   setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
