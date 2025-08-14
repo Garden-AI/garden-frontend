@@ -8,9 +8,9 @@ import { Button } from "@/components/shadcn/button";
 export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
 
     const useDoi = !garden.doi_is_draft;
-    const copyText = (useDoi) ? garden.doi
-        : `${window.location.origin}/#/garden/${encodeURIComponent(garden.doi)}`;
-    const toastText = (useDoi) ? "DOI" : "URL";
+    const copyText = (useDoi) ? `https://doi.org/${garden.doi}`
+        : `${window.location.origin}/#/garden / ${encodeURIComponent(garden.doi)} `;
+    const toastText = (useDoi) ? "doi.org URL" : "URL";
 
     const handleClick = () => {
         navigator.clipboard.writeText(copyText)
