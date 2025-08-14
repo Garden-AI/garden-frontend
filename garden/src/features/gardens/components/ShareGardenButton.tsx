@@ -7,9 +7,14 @@ import { Button } from "@/components/shadcn/button";
 
 export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
 
+    const useDoi = !garden.doi_is_draft;
+    const copyText = (useDoi) ? `https://doi.org/${garden.doi}`
+        : `${window.location.origin}/#/garden / ${encodeURIComponent(garden.doi)} `;
+    const toastText = (useDoi) ? "doi.org URL" : "URL";
+
     const handleClick = () => {
-        navigator.clipboard.writeText(`${window.location.origin}/#/garden/${encodeURIComponent(garden.doi)}`)
-        toast.info("Garden URL copied to clipboard!")
+        navigator.clipboard.writeText(copyText)
+        toast.info(`Garden ${toastText} copied to clipboard!`)
     }
     return (
         <TooltipProvider>
@@ -20,7 +25,7 @@ export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Copy Garden URL</p>
+                    <p>Copy Garden {toastText}</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
