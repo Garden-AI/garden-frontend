@@ -127,7 +127,7 @@ export interface paths {
          *     If function_ids is provided, only search for gardens using those functions.
          *     Otherwise, perform a general search using the other parameters.
          */
-        get: operations["search_gardens_gardens_get"];
+        get: operations["search_gardens"];
         put?: never;
         /** Add Garden */
         post: operations["add_garden_gardens_post"];
@@ -511,31 +511,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/mdf/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Search Datasets
-         * @description Accepts Globus GSearchRequest in request body.
-         *     Acts as an intermediary for querying MDF's globus search index and then augments the query results with
-         *     any accelerate metadata stored in the garden backend (connected_entrypoints, owner_identity_id, etc..)
-         *
-         *     Does not require user auth since MDF search index also does not require auth.
-         *     Does not support globus search scroll queries.
-         */
-        post: operations["search_datasets_mdf_search_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/": {
         parameters: {
             query?: never;
@@ -577,18 +552,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** AccelerateDatasetMetadata */
-        AccelerateDatasetMetadata: {
-            /**
-             * Owner Identity Id
-             * Format: uuid
-             */
-            owner_identity_id: string;
-            /** Connected Entrypoints */
-            connected_entrypoints?: string[];
-            /** Previous Versions */
-            previous_versions?: string[] | null;
-        };
         /** AsyncModalAppMetadataResponse */
         AsyncModalAppMetadataResponse: {
             /** App Name */
@@ -674,66 +637,6 @@ export interface components {
             id: number;
             function: components["schemas"]["ModalFunctionMetadataResponse"];
         };
-        /** BucketFacetResult */
-        BucketFacetResult: {
-            /** Name */
-            name?: string | null;
-            /** Buckets */
-            buckets?: components["schemas"]["GBucket"][] | null;
-        };
-        /** Coordinate */
-        Coordinate: {
-            /** Lat */
-            lat: number;
-            /** Lon */
-            lon: number;
-        };
-        /**
-         * Coordinate1
-         * @description A linear ring is a closed series of line segments with three or more positions.
-         *     The first and last positions must be equivalent.
-         *
-         *     Rings are represented as lists of '[lon,lat]' pairs.
-         *
-         *     A ring is a simple polygon without holes.
-         *
-         */
-        Coordinate1: unknown[];
-        /** DateHistogramFacet */
-        DateHistogramFacet: {
-            /**
-             * Field Name
-             * @description The field to which the facet refers.
-             *     Any dots (`.`) must be escaped with a preceding backslash (`\`) character.
-             */
-            field_name: string;
-            /**
-             * Name
-             * @description A name for this facet which is referenced in the results.
-             *
-             *     If `name` is omitted, it will default to the value of the `field_name` property. If more than one facet in a single search request references the same field, a name *must* be provided.
-             */
-            name?: string | null;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "date_histogram";
-            histogram_range?: components["schemas"]["DateHistogramRange"] | null;
-            date_interval: components["schemas"]["DateInterval"];
-        };
-        /** DateHistogramRange */
-        DateHistogramRange: {
-            /** Low */
-            low?: unknown | null;
-            /** High */
-            high?: unknown | null;
-        };
-        /**
-         * DateInterval
-         * @enum {string}
-         */
-        DateInterval: "year" | "quarter" | "month" | "week" | "day" | "hour" | "minute" | "second";
         /** ECRPushCredentials */
         ECRPushCredentials: {
             /** Accesskeyid */
@@ -924,271 +827,6 @@ export interface components {
             /** Short Name */
             short_name?: string | null;
         };
-        /**
-         * FilterPrincipalSet
-         * @description The name of a 'principal_set' for use in principal set filtering.
-         */
-        FilterPrincipalSet: string;
-        /** GBoost */
-        GBoost: {
-            /** Field Name */
-            field_name: string;
-            /** Factor */
-            factor: number;
-        };
-        /** GBucket */
-        GBucket: {
-            /** Value */
-            value?: unknown | null;
-            /** Count */
-            count?: number | null;
-        };
-        /** GFacet */
-        GFacet: components["schemas"]["TermsFacet"] | components["schemas"]["MetricFacet"] | components["schemas"]["DateHistogramFacet"] | components["schemas"]["NumericHistogramFacet"];
-        /** GFacetResult */
-        GFacetResult: components["schemas"]["MetricFacetResult"] | components["schemas"]["BucketFacetResult"];
-        /** GFilter */
-        GFilter: components["schemas"]["GFilterMatchAll"] | components["schemas"]["GFilterMatchAny"] | components["schemas"]["GFilterRange"] | components["schemas"]["GFilterBoundingBox"] | components["schemas"]["GFilterGeoShape"] | components["schemas"]["GFilterExists"] | components["schemas"]["GFilterNot"];
-        /** GFilterBoundingBox */
-        GFilterBoundingBox: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "geo_bounding_box";
-            /**
-             * Post Filter
-             * @description Control whether or not this filter should be applied before or after facets are
-             *     calculated. If True, the filter will not impact facet results, but will filter the
-             *     query results.
-             *
-             *     Defaults to True for all filters except `match_all`, where it defaults to False.
-             *
-             *     When set on nested filters (e.g. under a `not`), only the top-level filter's setting
-             *     is applied.
-             *
-             * @default true
-             */
-            post_filter: boolean | null;
-            /** Field Name */
-            field_name: string;
-            /** @description A coordinate pair is a geographical point, expressed as an object with two keys, `lat`
-             *     and `lon`, for latitude and longitude. The values must be floats, positive or negative,
-             *     within the range of acceptable coordinate values: [-90.0, 90.0] for latitude, and
-             *     [-180.0, 180.0] for longitude.
-             *      */
-            top_left: components["schemas"]["Coordinate"];
-            /** @description A coordinate pair is a geographical point, expressed as an object with two keys, `lat`
-             *     and `lon`, for latitude and longitude. The values must be floats, positive or negative,
-             *     within the range of acceptable coordinate values: [-90.0, 90.0] for latitude, and
-             *     [-180.0, 180.0] for longitude.
-             *      */
-            bottom_right: components["schemas"]["Coordinate"];
-        };
-        /** GFilterExists */
-        GFilterExists: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "exists";
-            /**
-             * Post Filter
-             * @description Control whether or not this filter should be applied before or after facets are
-             *     calculated. If True, the filter will not impact facet results, but will filter the
-             *     query results.
-             *
-             *     Defaults to True for all filters except `match_all`, where it defaults to False.
-             *
-             *     When set on nested filters (e.g. under a `not`), only the top-level filter's setting
-             *     is applied.
-             *
-             * @default true
-             */
-            post_filter: boolean | null;
-            /** Field Name */
-            field_name: string;
-        };
-        /** GFilterGeoShape */
-        GFilterGeoShape: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "geo_shape";
-            /**
-             * Post Filter
-             * @description Control whether or not this filter should be applied before or after facets are
-             *     calculated. If True, the filter will not impact facet results, but will filter the
-             *     query results.
-             *
-             *     Defaults to True for all filters except `match_all`, where it defaults to False.
-             *
-             *     When set on nested filters (e.g. under a `not`), only the top-level filter's setting
-             *     is applied.
-             *
-             * @default true
-             */
-            post_filter: boolean | null;
-            /** Field Name */
-            field_name: string;
-            shape: components["schemas"]["GeoShape"];
-            /**
-             * @description The relationship between the provided shape and the queried field.
-             *
-             *     'intersects': (default) Return documents whose shape intersects the query shape.
-             *     'within': Return documents whose shape is fully within the query shape.
-             *
-             * @default intersects
-             */
-            relation: components["schemas"]["Relation"] | null;
-        };
-        /** GFilterMatchAll */
-        GFilterMatchAll: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "match_all";
-            /**
-             * Post Filter
-             * @description Control whether or not this filter should be applied before or after facets are
-             *     calculated. If True, the filter will not impact facet results, but will filter the
-             *     query results.
-             *
-             *     Defaults to True for all filters except `match_all`, where it defaults to False.
-             *
-             *     When set on nested filters (e.g. under a `not`), only the top-level filter's setting
-             *     is applied.
-             *
-             * @default false
-             */
-            post_filter: boolean | null;
-            /** Field Name */
-            field_name: string;
-            /** Values */
-            values: unknown[];
-        };
-        /** GFilterMatchAny */
-        GFilterMatchAny: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "match_any";
-            /**
-             * Post Filter
-             * @description Control whether or not this filter should be applied before or after facets are
-             *     calculated. If True, the filter will not impact facet results, but will filter the
-             *     query results.
-             *
-             *     Defaults to True for all filters except `match_all`, where it defaults to False.
-             *
-             *     When set on nested filters (e.g. under a `not`), only the top-level filter's setting
-             *     is applied.
-             *
-             * @default true
-             */
-            post_filter: boolean | null;
-            /** Field Name */
-            field_name: string;
-            /** Values */
-            values: unknown[];
-        };
-        /** GFilterNot */
-        GFilterNot: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "not";
-            /**
-             * Post Filter
-             * @description Control whether or not this filter should be applied before or after facets are
-             *     calculated. If True, the filter will not impact facet results, but will filter the
-             *     query results.
-             *
-             *     Defaults to True for all filters except `match_all`, where it defaults to False.
-             *
-             *     When set on nested filters (e.g. under a `not`), only the top-level filter's setting
-             *     is applied.
-             *
-             * @default true
-             */
-            post_filter: boolean | null;
-            filter: components["schemas"]["GFilter"];
-        };
-        /** GFilterRange */
-        GFilterRange: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "range";
-            /**
-             * Post Filter
-             * @description Control whether or not this filter should be applied before or after facets are
-             *     calculated. If True, the filter will not impact facet results, but will filter the
-             *     query results.
-             *
-             *     Defaults to True for all filters except `match_all`, where it defaults to False.
-             *
-             *     When set on nested filters (e.g. under a `not`), only the top-level filter's setting
-             *     is applied.
-             *
-             * @default true
-             */
-            post_filter: boolean | null;
-            /** Field Name */
-            field_name: string;
-            /** Values */
-            values: components["schemas"]["RangeFilterValue"][];
-        };
-        /** GSearchRequestBody */
-        GSearchRequestBody: {
-            /** Q */
-            q?: string | null;
-            /**
-             * Limit
-             * @default 10
-             */
-            limit: number | null;
-            /**
-             * Advanced
-             * @default false
-             */
-            advanced: boolean | null;
-            /**
-             * Bypass Visible To
-             * @description Set to true to allow this operation to return data with visibility which does not include the current user. Only allowed for index admins and owners.
-             * @default false
-             */
-            bypass_visible_to: boolean | null;
-            /** Filter Principal Sets */
-            filter_principal_sets?: components["schemas"]["FilterPrincipalSet"][] | null;
-            /** Offset */
-            offset?: number | null;
-            /**
-             * @description Used to request results in the legacy (2017-09-01) format
-             * @default 2019-08-27
-             */
-            result_format_version: components["schemas"]["ResultFormatVersion"] | null;
-            /** Facets */
-            facets?: components["schemas"]["GFacet"][] | null;
-            /** Filters */
-            filters?: components["schemas"]["GFilter"][] | null;
-            /** Boosts */
-            boosts?: components["schemas"]["GBoost"][] | null;
-            /** Sort */
-            sort?: components["schemas"]["GSort"][] | null;
-        };
-        /** GSort */
-        GSort: {
-            /** Field Name */
-            field_name: string;
-            /** @default desc */
-            order: components["schemas"]["Order"] | null;
-        };
         /** GardenCreateRequest */
         GardenCreateRequest: {
             /** Title */
@@ -1365,6 +1003,11 @@ export interface components {
             field_name: string;
             /** Values */
             values: string[];
+            /**
+             * Operation
+             * @default AND
+             */
+            operation: ("AND" | "OR") | null;
         };
         /** GardenSearchRequest */
         GardenSearchRequest: {
@@ -1409,105 +1052,10 @@ export interface components {
          * @enum {string}
          */
         GardenState: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-        /** GeoPolygon */
-        GeoPolygon: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "Polygon";
-            /** Coordinates */
-            coordinates: components["schemas"]["Coordinate1"][];
-        };
-        /** GeoShape */
-        GeoShape: components["schemas"]["GeoPolygon"];
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
-        };
-        /** MDFGMetaResult */
-        MDFGMetaResult: components["schemas"]["MDFLegacyResult"] | components["schemas"]["MDFModernResult"];
-        /** MDFLegacyResult */
-        MDFLegacyResult: {
-            /** Subject */
-            subject?: string | null;
-            /**
-             * @Version
-             * @default 2017-09-01
-             */
-            "@version": unknown | null;
-            /** Content */
-            content?: unknown | null;
-            /** Entry Ids */
-            entry_ids?: unknown | null;
-            accelerate_metadata?: components["schemas"]["AccelerateDatasetMetadata"] | null;
-        };
-        /** MDFModernResult */
-        MDFModernResult: {
-            /** Subject */
-            subject?: string | null;
-            /**
-             * @Version
-             * @default 2019-08-27
-             */
-            "@version": unknown | null;
-            /** Entries */
-            entries?: {
-                [key: string]: unknown;
-            }[] | null;
-            accelerate_metadata?: components["schemas"]["AccelerateDatasetMetadata"] | null;
-        };
-        /** MDFSearchResponse */
-        MDFSearchResponse: {
-            /** Total */
-            total?: number | null;
-            /**
-             * Count
-             * @description The length of the 'gmeta' array.
-             */
-            count?: number | null;
-            /** Gmeta */
-            gmeta?: components["schemas"]["MDFGMetaResult"][] | null;
-            /**
-             * Has Next Page
-             * @description True if another page of results is available with pagination.
-             */
-            has_next_page?: boolean | null;
-            /** Offset */
-            offset?: number | null;
-            /** Facet Results */
-            facet_results?: components["schemas"]["GFacetResult"][] | null;
-        };
-        /** MetricFacet */
-        MetricFacet: {
-            /**
-             * Field Name
-             * @description The field to which the facet refers.
-             *     Any dots (`.`) must be escaped with a preceding backslash (`\`) character.
-             */
-            field_name: string;
-            /**
-             * Name
-             * @description A name for this facet which is referenced in the results.
-             *
-             *     If `name` is omitted, it will default to the value of the `field_name` property. If more than one facet in a single search request references the same field, a name *must* be provided.
-             */
-            name?: string | null;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "avg" | "sum";
-            /** Missing */
-            missing?: number | null;
-        };
-        /** MetricFacetResult */
-        MetricFacetResult: {
-            /** Name */
-            name?: string | null;
-            /** Value */
-            value?: number | null;
         };
         /** ModalAppCreateRequest */
         ModalAppCreateRequest: {
@@ -1716,9 +1264,14 @@ export interface components {
              */
             owner_identity_id: string;
             /** Hardware Spec */
-            hardware_spec: Record<string, never>;
-            /** Num Invocations */
-            num_invocations: number;
+            hardware_spec: {
+                [key: string]: unknown;
+            };
+            /**
+             * Num Invocations
+             * @description The number of times this function has been invoked
+             */
+            num_invocations?: number;
         };
         /** ModalFunctionPatchRequest */
         ModalFunctionPatchRequest: {
@@ -1774,82 +1327,6 @@ export interface components {
             args_kwargs_serialized?: string | null;
             /** Args Blob Id */
             args_blob_id?: string | null;
-        };
-        /** NumericHistogramFacet */
-        NumericHistogramFacet: {
-            /**
-             * Field Name
-             * @description The field to which the facet refers.
-             *     Any dots (`.`) must be escaped with a preceding backslash (`\`) character.
-             */
-            field_name: string;
-            /**
-             * Name
-             * @description A name for this facet which is referenced in the results.
-             *
-             *     If `name` is omitted, it will default to the value of the `field_name` property. If more than one facet in a single search request references the same field, a name *must* be provided.
-             */
-            name?: string | null;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "numeric_histogram";
-            /** Size */
-            size: number;
-            histogram_range: components["schemas"]["NumericHistogramRange"];
-        };
-        /** NumericHistogramRange */
-        NumericHistogramRange: {
-            /** Low */
-            low: number;
-            /** High */
-            high: number;
-        };
-        /**
-         * Order
-         * @enum {string}
-         */
-        Order: "asc" | "desc";
-        /** RangeFilterValue */
-        RangeFilterValue: {
-            /** From */
-            from: unknown;
-            /** To */
-            to: unknown;
-        };
-        /**
-         * Relation
-         * @enum {string}
-         */
-        Relation: "intersects" | "within";
-        /**
-         * ResultFormatVersion
-         * @enum {string}
-         */
-        ResultFormatVersion: "2017-09-01" | "2019-08-27";
-        /** TermsFacet */
-        TermsFacet: {
-            /**
-             * Field Name
-             * @description The field to which the facet refers.
-             *     Any dots (`.`) must be escaped with a preceding backslash (`\`) character.
-             */
-            field_name: string;
-            /**
-             * Name
-             * @description A name for this facet which is referenced in the results.
-             *
-             *     If `name` is omitted, it will default to the value of the `field_name` property. If more than one facet in a single search request references the same field, a name *must* be provided.
-             */
-            name?: string | null;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "terms";
-            /** Size */
-            size?: number | null;
         };
         /** UploadNotebookRequest */
         UploadNotebookRequest: {
@@ -2335,7 +1812,7 @@ export interface operations {
             };
         };
     };
-    search_gardens_gardens_get: {
+    search_gardens: {
         parameters: {
             query?: {
                 doi?: string[] | null;
@@ -3210,39 +2687,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModalFileMetadataResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    search_datasets_mdf_search_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GSearchRequestBody"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MDFSearchResponse"];
                 };
             };
             /** @description Validation Error */

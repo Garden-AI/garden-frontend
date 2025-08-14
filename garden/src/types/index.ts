@@ -49,7 +49,9 @@ type DOIRequest = any; // Temporarily use any until correct type is identified
 type GardenSearchRequest = components["schemas"]["GardenSearchRequest"];
 type GardenSearchResponse = components["schemas"]["GardenSearchResponse"];
 type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
-type GardenSearchFilter = components["schemas"]["GardenSearchFilter"];
+type GardenSearchFilter = Omit<components["schemas"]["GardenSearchFilter"], 'operation'> & {
+  operation?: components["schemas"]["GardenSearchFilter"]['operation'];
+};
 
 type BenchmarkRequest = components["schemas"]["BenchmarkRequest"];
 

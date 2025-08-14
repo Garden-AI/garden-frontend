@@ -1,36 +1,17 @@
-import React from "react";
-import { useMemo } from "react";
 import { Garden } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import NotFoundPage from "@/components/NotFoundPage";
 import { SearchResult } from "@/features/search/components/SearchResult";
-import { useGetUserInfo } from "../api/useGetUserInfo";
-import { useSearchGardens } from "@/features/search/api/useSearchGardens";
+import { useSavedGardens } from "../api/useSavedGardens";
 
-const SavedGardens = () => {
-  const {
-    data: currUserInfo,
-    isLoading: getUserInfoLoading,
-    isError: getUserInfoError,
-  } = useGetUserInfo();
+type SavedGardensProps = {
+  savedGardenDois: string[];
+};
 
-  const searchRequest = useMemo(() => ({
-    q: "",
-    limit: 100, // Set a reasonable limit for saved gardens
-    offset: 0,
-    filters: currUserInfo?.saved_garden_dois ? [{
-      field_name: "doi",
-      values: currUserInfo.saved_garden_dois
-    }] : []
-  }), [currUserInfo?.saved_garden_dois]);
+const SavedGardens = ({ savedGardenDois }: SavedGardensProps) => {
+  const { data: searchResult, isLoading: searchLoading } = useSavedGardens(savedGardenDois);
 
-  const { data: searchResult, isLoading: searchLoading } = useSearchGardens(searchRequest);
-
-  if (getUserInfoLoading || searchLoading) {
+  if (searchLoading) {
     return <LoadingSpinner />;
-  }
-  if (getUserInfoError) {
-    return <NotFoundPage />;
   }
 
   const savedGardens = searchResult?.garden_meta || [];
