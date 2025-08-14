@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Loader2, Bookmark } from "lucide-react";
 import { Garden } from "@/types";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/shadcn/tooltip";
+import { Button } from "@/components/shadcn/button";
 import { cn } from "@/utils/form.utils";
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useSaveGarden } from "../api/useSaveGarden";
@@ -42,10 +43,11 @@ const SaveGardenButton = ({ garden }: { garden: Garden }) => {
           onMouseLeave={() => setHover(false)}
           className="px-1"
         >
-          <div
+          <Button
             onClick={handleClick}
+            size={"icon"}
+            variant={"ghost"}
             className={cn(
-              "relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition-colors duration-200 ease-in-out",
               hover ? (isSaved ? "bg-red-100" : "bg-primary/40") : "bg-transparent",
             )}
           >
@@ -57,7 +59,7 @@ const SaveGardenButton = ({ garden }: { garden: Garden }) => {
                 fill={isSaved ? "currentColor" : "none"}
               />
             )}
-          </div>
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
           {user?.saved_garden_dois?.includes(garden.doi)

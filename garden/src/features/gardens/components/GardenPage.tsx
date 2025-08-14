@@ -27,6 +27,7 @@ import { GardenMetadataSidebar } from "./GardenMetadataSidebar";
 import { EditableTitle } from "@/components/shared/metadata";
 
 import { SUPER_USERS } from "@/utils/utils";
+import { ShareGardenButton } from "./ShareGardenButton";
 
 interface GardenContentProps {
   garden: Garden;
@@ -81,8 +82,9 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
                   });
                 }}
               />
-              <div className="flex">
+              <div className="flex items-center">
                 <SaveGardenButton garden={garden} />
+                <ShareGardenButton garden={garden} />
                 <GardenDropdownOptions
                   garden={garden}
                   setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
