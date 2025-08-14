@@ -9,7 +9,7 @@ export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
 
     const useDoi = !garden.doi_is_draft;
     const copyText = (useDoi) ? `https://doi.org/${garden.doi}`
-        : `${window.location.origin}/#/garden / ${encodeURIComponent(garden.doi)} `;
+        : `${window.location.origin}/#/garden/${encodeURIComponent(garden.doi)}`;
     const toastText = (useDoi) ? "doi.org URL" : "URL";
 
     const handleClick = () => {
