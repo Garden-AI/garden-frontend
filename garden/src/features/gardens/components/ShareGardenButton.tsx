@@ -1,5 +1,5 @@
 import React from "react";
-import { CopyIcon } from "lucide-react";
+import { Clipboard } from "lucide-react";
 import { toast } from "sonner";
 import { Garden } from "@/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
@@ -15,7 +15,7 @@ export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
             <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                     <div className="h-5 w-5 flex items-center justify-center hover:bg-green-400">
-                        <CopyIcon className="hover:text-green" onClick={handleClick} />
+                        <Clipboard className="hover:text-green" onClick={handleClick} />
                     </div>
                 </TooltipTrigger>
                 <TooltipContent>
