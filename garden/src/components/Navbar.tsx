@@ -52,7 +52,7 @@ const Navbar = () => {
 
   const Links = [
     { name: "Search", link: "/search" },
-    { name: "Documentation", link: "https://garden-ai.readthedocs.io/en/latest/" },
+    { name: "Docs", link: "https://garden-ai.readthedocs.io/en/latest/" },
   ];
 
   return (
@@ -88,7 +88,7 @@ const Navbar = () => {
 
           {/* Links menu */}
           {Links.map((link) => (
-            <Link key={link.name} to={link.link} target={link.name === "Documentation" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
+            <Link key={link.name} to={link.link} target={link.name === "Docs" ? "_blank" : ""} className="flex my-5 no-underline hover:underline md:my-0 ml-4">
               {link.name}
             </Link>
           ))}
@@ -135,7 +135,7 @@ const Navbar = () => {
               </div>
             ) : (
               <button
-                className="transform rounded bg-green px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen"
+                className="transform rounded bg-green ml-4 px-4 py-1 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:bg-darkgreen"
                 onClick={handleLogin}
               >
                 Login
