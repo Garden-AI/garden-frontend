@@ -173,6 +173,8 @@ return my_garden.${modalFunction.function_name}(input)`;
       onSave={handleSave}
       ownsThisEntity={ownsThisFunction}
       language="python"
+      editing={false}
+      showSaveButton={true}
     />
   );
 };
