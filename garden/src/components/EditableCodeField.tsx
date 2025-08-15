@@ -1,11 +1,12 @@
 import React from "react";
 import { useEffect, useRef, useState } from 'react';
 import { EditorState } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
+import { EditorView, keymap, lineNumbers } from '@codemirror/view';
 import { python } from '@codemirror/lang-python';
 import { markdown } from "@codemirror/lang-markdown";
-import { defaultKeymap, indentWithTab } from '@codemirror/commands';
-import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
+import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
+import { syntaxHighlighting, defaultHighlightStyle, indentOnInput, bracketMatching } from '@codemirror/language';
+import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { Button } from './shadcn/button';
 import { XIcon, CheckIcon, Loader2Icon, EditIcon } from 'lucide-react';
 import CopyButton from './CopyButton';
@@ -29,7 +30,7 @@ const basicSetup = [
       height: '100%'
     },
     '.cm-content': {
-      fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+      fontFamily: 'Noto Sans Mono, monospace',
       padding: '8px'
     },
     '.cm-scroller': {
@@ -72,7 +73,7 @@ export const EditableCodeField = ({
       const startState = EditorState.create({
         doc: value || '',
         extensions: [
-          (language === "python") ? python() : markdown(),
+          (language === "python") ? python() : markdown({ defaultCodeLanguage: python() }),
           ...basicSetup,
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
@@ -80,7 +81,18 @@ export const EditableCodeField = ({
               setEditValue(newValue);
               onEdit(newValue);
             }
-          })
+          }),
+          lineNumbers(),
+          indentOnInput(),
+          bracketMatching(),
+          closeBrackets(),
+          autocompletion(),
+          history(),
+          keymap.of([
+            ...closeBracketsKeymap,
+            ...completionKeymap,
+            ...historyKeymap,
+          ]),
         ]
       });
 
