@@ -6,8 +6,8 @@ import { Input } from "@/components/shadcn/input";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Garden, ModalFunction } from "@/types";
 import { toast } from "sonner";
-import Markdown from "@/components/Markdown";
 import { EditableCodeField } from "@/components/EditableCodeField";
+import TruncatedDescription from "@/components/shared/metadata/TruncatedDescription";
 import {
   Tooltip,
   TooltipContent,
@@ -234,9 +234,7 @@ const EditableMetadataField = ({
             )}
           </div>
         ) : fieldName === 'description' ? (
-          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
-            <Markdown content={value as string || ""} />
-          </div>
+          <TruncatedDescription content={value as string || ""} />
         ) : (
           // Display single value
           <p className="font-medium text-gray-800">
