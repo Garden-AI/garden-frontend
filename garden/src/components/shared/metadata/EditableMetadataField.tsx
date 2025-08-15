@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import { EditIcon, SaveIcon, XIcon, InfoIcon } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
-import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Garden, ModalFunction } from "@/types";
 import { toast } from "sonner";
-import Markdown from "@/components/Markdown";
+import { EditableCodeField } from "@/components/EditableCodeField";
+import TruncatedDescription from "@/components/shared/metadata/TruncatedDescription";
 import {
   Tooltip,
   TooltipContent,
@@ -129,11 +129,16 @@ const EditableMetadataField = ({
             />
           )
         ) : fieldName === 'description' ? (
-          <Textarea
-            value={inputValue as string}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder={placeholder}
-            className="w-full min-h-[80px]"
+          <EditableCodeField
+            label="Markdown"
+            language="markdown"
+            fieldName="description"
+            onSave={async (value) => { }}
+            onEdit={(newValue) => { setInputValue(newValue) }}
+            value={entity.description || ""}
+            ownsThisEntity={ownsThisEntity}
+            editing={true}
+            showSaveButton={false}
           />
         ) : (
           <Input
@@ -229,9 +234,7 @@ const EditableMetadataField = ({
             )}
           </div>
         ) : fieldName === 'description' ? (
-          <div className="prose prose-sm max-w-none prose-p:text-gray-700 prose-headings:text-gray-800">
-            <Markdown content={value as string || ""} />
-          </div>
+          <TruncatedDescription content={value as string || ""} />
         ) : (
           // Display single value
           <p className="font-medium text-gray-800">

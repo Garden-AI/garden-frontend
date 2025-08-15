@@ -9,7 +9,7 @@ interface GardenDescriptionProps {
 }
 
 const GardenDescription = ({ garden, ownsThisGarden }: GardenDescriptionProps) => {
-  const { mutateAsync: updateGarden} = usePatchGarden();
+  const { mutateAsync: updateGarden } = usePatchGarden();
 
   return (
     <div className="space-y-3 py-2">

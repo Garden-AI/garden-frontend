@@ -1,10 +1,12 @@
 import React from "react";
 import { useEffect, useRef, useState } from 'react';
 import { EditorState } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
+import { EditorView, keymap, lineNumbers } from '@codemirror/view';
 import { python } from '@codemirror/lang-python';
-import { defaultKeymap, indentWithTab } from '@codemirror/commands';
-import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
+import { markdown } from "@codemirror/lang-markdown";
+import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
+import { syntaxHighlighting, defaultHighlightStyle, indentOnInput, bracketMatching } from '@codemirror/language';
+import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { Button } from './shadcn/button';
 import { XIcon, CheckIcon, Loader2Icon, EditIcon } from 'lucide-react';
 import CopyButton from './CopyButton';
@@ -28,7 +30,7 @@ const basicSetup = [
       height: '100%'
     },
     '.cm-content': {
-      fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+      fontFamily: 'Noto Sans Mono, monospace',
       padding: '8px'
     },
     '.cm-scroller': {
@@ -42,8 +44,11 @@ interface EditableCodeFieldProps {
   value: string;
   fieldName: string;
   onSave: (value: string) => Promise<void>;
-  ownsThisFunction: boolean;
+  onEdit?: (value: string) => void;
+  ownsThisEntity: boolean;
   language?: string;
+  editing: boolean;
+  showSaveButton: boolean;
 }
 
 export const EditableCodeField = ({
@@ -51,10 +56,13 @@ export const EditableCodeField = ({
   value,
   fieldName,
   onSave,
-  ownsThisFunction,
+  onEdit = () => { },
+  ownsThisEntity: ownsThisFunction,
   language = 'python',
+  editing = false,
+  showSaveButton = true,
 }: EditableCodeFieldProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(editing);
   const [isSaving, setIsSaving] = useState(false);
   const [editValue, setEditValue] = useState(value || '');
   const editorRef = useRef<HTMLDivElement>(null);
@@ -65,14 +73,26 @@ export const EditableCodeField = ({
       const startState = EditorState.create({
         doc: value || '',
         extensions: [
-          python(),
+          (language === "python") ? python() : markdown({ defaultCodeLanguage: python() }),
           ...basicSetup,
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
               const newValue = update.state.doc.toString();
               setEditValue(newValue);
+              onEdit(newValue);
             }
-          })
+          }),
+          lineNumbers(),
+          indentOnInput(),
+          bracketMatching(),
+          closeBrackets(),
+          autocompletion(),
+          history(),
+          keymap.of([
+            ...closeBracketsKeymap,
+            ...completionKeymap,
+            ...historyKeymap,
+          ]),
         ]
       });
 
@@ -152,37 +172,38 @@ export const EditableCodeField = ({
   return (
     <div className="group border border-transparent bg-white rounded-md py-1.5 px-2.5 shadow-sm">
       <p className="text-sm text-gray-500 font-medium mb-1">{label}</p>
-      <div 
+      <div
         ref={editorRef}
         className="w-full min-h-[200px] font-mono text-sm rounded-md overflow-hidden border border-gray-200 resize-vertical"
         style={{ resize: 'vertical' }}
       />
-      <div className="flex justify-end gap-2 mt-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleCancel}
-          className="h-7 px-2"
-          disabled={isSaving}
-        >
-          <XIcon className="h-4 w-4 mr-1" />
-          Cancel
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleSave}
-          className="h-7 px-2"
-          disabled={isSaving}
-        >
-          {isSaving ? (
-            <Loader2Icon className="h-4 w-4 mr-1 animate-spin" />
-          ) : (
-            <CheckIcon className="h-4 w-4 mr-1" />
-          )}
-          {isSaving ? 'Saving...' : 'Save'}
-        </Button>
-      </div>
+      {(showSaveButton) ?
+        <div className="flex justify-end gap-2 mt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCancel}
+            className="h-7 px-2"
+            disabled={isSaving}
+          >
+            <XIcon className="h-4 w-4 mr-1" />
+            Cancel
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSave}
+            className="h-7 px-2"
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <Loader2Icon className="h-4 w-4 mr-1 animate-spin" />
+            ) : (
+              <CheckIcon className="h-4 w-4 mr-1" />
+            )}
+            {isSaving ? 'Saving...' : 'Save'}
+          </Button>
+        </div> : <></>}
     </div>
   );
 }; 

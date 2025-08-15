@@ -50,14 +50,14 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
     try {
       const currentMaterials = resource[type] || [];
       const updatedMaterials = [...currentMaterials, material];
-      
+
       await patchModalFunction({
         id: resource.id,
         modalFunction: {
           [type]: updatedMaterials
         }
       });
-      
+
       toast.success(`${type.slice(0, -1)} added successfully`);
     } catch (error) {
       toast.error(`Failed to add ${type.slice(0, -1)}`);
@@ -70,14 +70,14 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
       const currentMaterials = resource[type] || [];
       const updatedMaterials = [...currentMaterials];
       updatedMaterials[index] = material;
-      
+
       await patchModalFunction({
         id: resource.id,
         modalFunction: {
           [type]: updatedMaterials
         }
       });
-      
+
       toast.success(`${type.slice(0, -1)} updated successfully`);
     } catch (error) {
       toast.error(`Failed to update ${type.slice(0, -1)}`);
@@ -89,14 +89,14 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
     try {
       const currentMaterials = resource[type] || [];
       const updatedMaterials = currentMaterials.filter((_, i) => i !== index);
-      
+
       await patchModalFunction({
         id: resource.id,
         modalFunction: {
           [type]: updatedMaterials
         }
       });
-      
+
       toast.success(`${type.slice(0, -1)} removed successfully`);
     } catch (error) {
       toast.error(`Failed to remove ${type.slice(0, -1)}`);
@@ -106,8 +106,8 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
 
   return (
     <div className="mt-6">
-      <Tabs 
-        defaultValue="function" 
+      <Tabs
+        defaultValue="function"
         className="w-full min-h-[400px]"
       >
         <TabsList className="mb-2 bg-gray-200 p-0.5 grid grid-cols-6">
@@ -154,17 +154,13 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
               <CardTitle className="text-xl font-bold text-gray-800">
                 {resource.function_name}
               </CardTitle>
-              <MarkdownCardContent 
-                className="mt-1 text-gray-600"
-                content={resource.description || ""}
-              />
             </CardHeader>
             <CardContent className="px-6 py-4">
               <SyntaxHighlighter>{resource.function_text}</SyntaxHighlighter>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         {/* App Text Tab */}
         <TabsContent value="apptext" className="mt-0 relative p-4">
           {!resource.file_contents ? (
@@ -201,7 +197,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
             </Card>
           )}
         </TabsContent>
-        
+
         {/* Datasets Tab */}
         <TabsContent value="datasets" className="mt-0 relative">
           <Card className="border-0 shadow-none bg-transparent">
@@ -225,12 +221,12 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                     />
                   )}
                 </div>
-                
+
                 {datasets.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
                     {datasets.map((dataset, index) => (
-                      <DatasetCard 
-                        key={dataset.doi || index} 
+                      <DatasetCard
+                        key={dataset.doi || index}
                         dataset={dataset}
                         isOwner={ownsThisFunction}
                         context={{
@@ -249,7 +245,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         {/* Papers Tab */}
         <TabsContent value="papers" className="mt-0 relative">
           <Card className="border-0 shadow-none bg-transparent">
@@ -262,7 +258,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                   </h3>
                   {ownsThisFunction && (
                     <PaperModal
-                      context={{modalFunction: resource}}
+                      context={{ modalFunction: resource }}
                       onSave={(data) => handleAddMaterial('papers', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -273,12 +269,12 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                     />
                   )}
                 </div>
-                
+
                 {papers.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
                     {papers.map((paper, index) => (
-                      <PaperCard 
-                        key={paper.doi || paper.title || index} 
+                      <PaperCard
+                        key={paper.doi || paper.title || index}
                         paper={paper}
                         isOwner={ownsThisFunction}
                         context={{
@@ -321,12 +317,12 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                     />
                   )}
                 </div>
-                
+
                 {repositories.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
                     {repositories.map((repo, index) => (
-                      <RepositoryCard 
-                        key={repo.url || index} 
+                      <RepositoryCard
+                        key={repo.url || index}
                         repository={repo}
                         isOwner={ownsThisFunction}
                         context={{
@@ -369,12 +365,12 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                     />
                   )}
                 </div>
-                
+
                 {notebooks.length > 0 ? (
                   <div className="grid grid-cols-1 gap-8 py-2">
                     {notebooks.map((notebook, index) => (
-                      <NotebookCard 
-                        key={notebook.url || index} 
+                      <NotebookCard
+                        key={notebook.url || index}
                         notebook={notebook}
                         isOwner={ownsThisFunction}
                         context={{
