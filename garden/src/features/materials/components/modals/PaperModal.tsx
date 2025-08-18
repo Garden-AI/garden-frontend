@@ -1,6 +1,7 @@
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Book, CheckCheck, FileText, Hash, Link, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -24,11 +25,11 @@ import {
   FormDescription,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { Textarea } from "@/components/shadcn/textarea";
 import MultipleSelector from "@/components/shadcn/multiple-select";
-import { Garden, ModalFunction, Paper } from "@/types";
-import { paperSchema, PaperSchema} from "../../types/material.types";
+import { Paper } from "@/types";
+import { paperSchema, PaperSchema } from "../../types/material.types";
 import { extractArxivId, fetchArxivMetadata } from "../../utils/arxiv";
+import { extractDoiFromUrl, validateDoi, fetchDoiMetadata } from "../../utils/doi";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { usePatchGarden } from "@/features/gardens/api/usePatchGarden";
 import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
@@ -46,9 +47,10 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
   const [isOpen, setIsOpen] = useState(false);
   const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
   const [previousUrl, setPreviousUrl] = useState("");
+  const [previousDoi, setPreviousDoi] = useState("");
   const [addAuthorsToEntity, setAddAuthorsToEntity] = useState(false);
-  const { mutate: patchGarden} = usePatchGarden();
-  const { mutate: patchModalFunction} = usePatchModalFunction();
+  const { mutate: patchGarden } = usePatchGarden();
+  const { mutate: patchModalFunction } = usePatchModalFunction();
 
   const form = useForm<PaperSchema>({
     resolver: zodResolver(paperSchema),
@@ -66,6 +68,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
   });
 
   const url = form.watch("url");
+  const doi = form.watch("doi");
 
   // Reset form when modal is opened or closed
   useEffect(() => {
@@ -94,51 +97,60 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
         });
       }
       setPreviousUrl("");
+      setPreviousDoi("");
     }
   }, [isOpen, edit, initialData, form]);
 
   useEffect(() => {
+    const autoFillMetadata = async (metadata: Partial<Paper>, source: string) => {
+      let fieldsUpdated = false;
+
+      // Only auto-fill empty fields
+      if (metadata.title && !form.getValues("title")) {
+        form.setValue("title", metadata.title);
+        fieldsUpdated = true;
+      }
+
+      if (metadata.doi && !form.getValues("doi")) {
+        form.setValue("doi", metadata.doi);
+        fieldsUpdated = true;
+      }
+
+      if (metadata.url && !form.getValues("url")) {
+        form.setValue("url", metadata.url);
+        fieldsUpdated = true;
+      }
+
+      if (metadata.citation && !form.getValues("citation")) {
+        form.setValue("citation", metadata.citation);
+        fieldsUpdated = true;
+      }
+
+      // Check if authors field is empty
+      const currentAuthors = form.getValues("authors");
+      const isAuthorsEmpty = !currentAuthors || currentAuthors.length === 0;
+
+      if (metadata.authors && metadata.authors.length > 0 && isAuthorsEmpty) {
+        form.setValue(
+          "authors",
+          metadata.authors.map((author) => ({
+            value: author,
+            label: author,
+          }))
+        );
+        fieldsUpdated = true;
+      }
+
+      if (fieldsUpdated) {
+        toast.success(`Paper metadata auto-filled from ${source}`);
+      }
+    };
+
     const fetchArxivData = async (arxivId: string) => {
       setIsLoadingMetadata(true);
       try {
         const metadata = await fetchArxivMetadata(arxivId);
-        
-        let fieldsUpdated = false;
-        
-        // Only auto-fill empty fields
-        if (metadata.title && !form.getValues("title")) {
-          form.setValue("title", metadata.title);
-          fieldsUpdated = true;
-        }
-        
-        if (metadata.doi && !form.getValues("doi")) {
-          form.setValue("doi", metadata.doi);
-          fieldsUpdated = true;
-        }
-        
-        if (metadata.citation && !form.getValues("citation")) {
-          form.setValue("citation", metadata.citation);
-          fieldsUpdated = true;
-        }
-        
-        // Check if authors field is empty
-        const currentAuthors = form.getValues("authors");
-        const isAuthorsEmpty = !currentAuthors || currentAuthors.length === 0;
-        
-        if (metadata.authors && metadata.authors.length > 0 && isAuthorsEmpty) {
-          form.setValue(
-            "authors",
-            metadata.authors.map((author) => ({
-              value: author,
-              label: author,
-            }))
-          );
-          fieldsUpdated = true;
-        }
-        
-        if (fieldsUpdated) {
-          toast.success("Paper metadata auto-filled from arXiv");
-        }
+        await autoFillMetadata(metadata, "arXiv");
       } catch (error) {
         console.error("Error fetching arXiv metadata:", error);
         toast.error("Failed to fetch paper metadata from arXiv");
@@ -147,15 +159,50 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
       }
     };
 
-    // Check if URL is an arXiv link and different from the previous one
+    const fetchDoiData = async (doi: string) => {
+      setIsLoadingMetadata(true);
+      try {
+        const metadata = await fetchDoiMetadata(doi);
+        await autoFillMetadata(metadata, "DOI");
+      } catch (error) {
+        console.error("Error fetching DOI metadata:", error);
+        toast.error("Failed to fetch paper metadata from DOI");
+      } finally {
+        setIsLoadingMetadata(false);
+      }
+    };
+
+    // Check if URL changed and process it
     if (url && url !== previousUrl) {
       setPreviousUrl(url);
+
+      // Try arxiv
       const arxivId = extractArxivId(url);
       if (arxivId) {
         fetchArxivData(arxivId);
+        return;
+      }
+
+      // Try DOI URL if not arXiv
+      const doiFromUrl = extractDoiFromUrl(url);
+      if (doiFromUrl) {
+        fetchDoiData(doiFromUrl);
+        return;
       }
     }
-  }, [url, form, previousUrl]);
+
+    // Check if DOI field changed and process it
+    if (doi && doi !== previousDoi) {
+      setPreviousDoi(doi);
+
+      // Validate and fetch DOI metadata
+      const validDoi = validateDoi(doi);
+      if (validDoi) {
+        fetchDoiData(validDoi);
+        return;
+      }
+    }
+  }, [url, doi, form, previousUrl, previousDoi]);
 
   const handleSave = (data: PaperSchema) => {
     if (addAuthorsToEntity) {
@@ -163,7 +210,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
         // Get unique authors by comparing string values rather than object references
         const existingGardenAuthors = context.garden.authors || [];
         const newAuthors = data.authors?.map(a => a.value) || [];
-        
+
         // Create a properly deduplicated list by using a Set with string values
         const uniqueGardenAuthors = Array.from(new Set([...existingGardenAuthors, ...newAuthors]));
 
@@ -177,7 +224,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
       if (context.modalFunction) {
         const existingModalAuthors = context.modalFunction.authors || [];
         const newAuthors = data.authors?.map(a => a.value) || [];
-        
+
         // Create a properly deduplicated list by using a Set with string values
         const uniqueModalAuthors = Array.from(new Set([...existingModalAuthors, ...newAuthors]));
 
@@ -216,9 +263,9 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
                   <FormLabel>Paper URL</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input 
-                        {...field} 
-                        placeholder="https://arxiv.org/abs/2101.12345 or https://arxiv.org/pdf/2101.12345.pdf" 
+                      <Input
+                        {...field}
+                        placeholder="https://doi.org/10.1038/nature12373 or https://arxiv.org/abs/2101.12345"
                         className={isLoadingMetadata ? "pr-10" : ""}
                       />
                       {isLoadingMetadata && (
@@ -229,7 +276,24 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
                     </div>
                   </FormControl>
                   <FormDescription>
-                    Paste an arXiv link to auto-fill paper details
+                    Paste a doi.org or arXiv URL to auto-fill paper details
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="doi"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Paper DOI</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="10.1038/nature12373" value={field.value || ""} />
+                  </FormControl>
+                  <FormDescription>
+                    Paste a DOI to auto-fill paper details
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -250,19 +314,6 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="doi"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Paper DOI</FormLabel>
-                  <FormControl>
-                    <Input {...field} className="rounded-l-none" placeholder="Paper DOI" value={field.value || ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <FormField
               control={form.control}
