@@ -8,6 +8,7 @@ import { Garden, ModalFunction } from "@/types";
 import { toast } from "sonner";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import TruncatedDescription from "@/components/shared/metadata/TruncatedDescription";
+import TruncatedList from "@/components/shared/metadata/TruncatedList";
 import {
   Tooltip,
   TooltipContent,
@@ -218,21 +219,29 @@ const EditableMetadataField = ({
 
       <div className="mt-0.5">
         {isArray ? (
-          // Display array items
-          <div className="flex flex-wrap gap-1 mt-1">
-            {value && Array.isArray(value) && value.length > 0 ? (
-              value.map((item, index) => (
-                <span
-                  key={index}
-                  className="inline-flex items-center bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded"
-                >
-                  {item}
-                </span>
-              ))
-            ) : (
-              <p className="text-gray-400 italic text-sm">No {label.toLowerCase()} added</p>
-            )}
-          </div>
+          // Display array items with truncation for authors/contributors
+          fieldName === 'authors' || fieldName === 'contributors' || fieldName === 'tags' ? (
+            <TruncatedList
+              items={Array.isArray(value) ? value : []}
+              label={label}
+            />
+          ) : (
+            // Display other arrays normally
+            <div className="flex flex-wrap gap-1 mt-1">
+              {value && Array.isArray(value) && value.length > 0 ? (
+                value.map((item, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded"
+                  >
+                    {item}
+                  </span>
+                ))
+              ) : (
+                <p className="text-gray-400 italic text-sm">No {label.toLowerCase()} added</p>
+              )}
+            </div>
+          )
         ) : fieldName === 'description' ? (
           <TruncatedDescription content={value as string || ""} />
         ) : (
