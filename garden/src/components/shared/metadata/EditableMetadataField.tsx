@@ -8,7 +8,7 @@ import { Garden, ModalFunction } from "@/types";
 import { toast } from "sonner";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import TruncatedDescription from "@/components/shared/metadata/TruncatedDescription";
-import TruncatedAuthorList from "@/components/shared/metadata/TruncatedAuthorList";
+import TruncatedList from "@/components/shared/metadata/TruncatedList";
 import {
   Tooltip,
   TooltipContent,
@@ -220,9 +220,9 @@ const EditableMetadataField = ({
       <div className="mt-0.5">
         {isArray ? (
           // Display array items with truncation for authors/contributors
-          fieldName === 'authors' || fieldName === 'contributors' ? (
-            <TruncatedAuthorList 
-              items={Array.isArray(value) ? value : []} 
+          fieldName === 'authors' || fieldName === 'contributors' || fieldName === 'tags' ? (
+            <TruncatedList
+              items={Array.isArray(value) ? value : []}
               label={label}
             />
           ) : (

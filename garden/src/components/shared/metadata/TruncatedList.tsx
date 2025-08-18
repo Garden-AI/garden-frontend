@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
-interface TruncatedAuthorListProps {
+interface TruncatedListProps {
   items: string[];
   label: string;
   maxVisible?: number;
 }
 
-const TruncatedAuthorList = ({ 
-  items, 
-  label, 
-  maxVisible = 5 
-}: TruncatedAuthorListProps) => {
+const TruncatedList = ({
+  items,
+  label,
+  maxVisible = 5
+}: TruncatedListProps) => {
   const [showAll, setShowAll] = useState(false);
-  
+
   if (!items || items.length === 0) {
     return (
       <p className="text-gray-400 italic text-sm">No {label.toLowerCase()} added</p>
@@ -33,7 +33,7 @@ const TruncatedAuthorList = ({
           {item}
         </span>
       ))}
-      
+
       {shouldTruncate && (
         <button
           onClick={() => setShowAll(!showAll)}
@@ -46,4 +46,4 @@ const TruncatedAuthorList = ({
   );
 };
 
-export default TruncatedAuthorList;
+export default TruncatedList;
