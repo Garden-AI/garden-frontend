@@ -86,7 +86,9 @@ export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
   } : undefined;
 
-  const handleSelect = () => {
+  const handleSelect = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (onSelect) {
       onSelect(fn);
     }
@@ -94,17 +96,25 @@ export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
   
   return (
     <div 
-      ref={setNodeRef} 
-      {...listeners} 
-      {...attributes} 
-      className="flex items-center p-2 rounded-md hover:bg-blue-50 cursor-grab active:cursor-grabbing transition-colors duration-150 group"
+      ref={setNodeRef}
+      className="flex items-center rounded-md hover:bg-blue-50 transition-colors duration-150 group"
       style={style}
-      onClick={handleSelect}
     >
-      <div className="w-4 h-4 mr-2 flex items-center justify-center">
+      {/* Drag handle */}
+      <div 
+        {...listeners} 
+        {...attributes}
+        className="w-4 h-4 mr-2 flex items-center justify-center cursor-grab active:cursor-grabbing"
+      >
         <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
       </div>
-      <div className="text-sm text-gray-700 truncate">{fn.function_name}</div>
+      {/* Clickable content */}
+      <div 
+        className="flex-1 p-2 cursor-pointer"
+        onClick={handleSelect}
+      >
+        <div className="text-sm text-gray-700 truncate">{fn.function_name}</div>
+      </div>
     </div>
   );
 }
