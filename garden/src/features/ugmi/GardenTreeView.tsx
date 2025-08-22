@@ -2,7 +2,16 @@ import React, { useState } from "react";
 import { Garden, ModalFunction } from "@/types";
 
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { ChevronDown, ChevronRight, Sprout, Book, BookDashed, ArchiveX } from "lucide-react";
+import { ChevronDown, ChevronRight, Sprout, Book, BookDashed, ArchiveX, Plus } from "lucide-react";
+import { Button } from "@/components/shadcn/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
+import { CreateGardenForm } from "../gardens/components/create/CreateGardenForm";
 
 type GardenTreeViewProps = {
   gardens: Garden[];
@@ -10,13 +19,34 @@ type GardenTreeViewProps = {
 };
 
 export const GardenTreeView = ({ gardens, onSelect }: GardenTreeViewProps) => {
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+
   return (
     <div className="flex h-full flex-col">
       <div className="border-b-2 border-emerald-300 bg-emerald-100">
         <div className="px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Sprout className="h-5 w-5 text-emerald-700" />
-            <h2 className="text-lg font-semibold text-emerald-900">My Gardens</h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sprout className="h-5 w-5 text-emerald-700" />
+              <h2 className="text-lg font-semibold text-emerald-900">My Gardens</h2>
+            </div>
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0 hover:bg-emerald-200"
+                    onClick={() => setShowCreateDialog(true)}
+                  >
+                    <Plus className="h-4 w-4 text-emerald-700" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Create New Garden</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>
@@ -25,6 +55,16 @@ export const GardenTreeView = ({ gardens, onSelect }: GardenTreeViewProps) => {
           return <GardenTreeNode key={index} garden={g} onSelect={onSelect} />;
         })}
       </div>
+
+      {/* Create Garden Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-h-[90vh] w-[95%] max-w-4xl overflow-y-auto md:w-4/5 lg:w-3/4">
+          <DialogHeader>
+            <DialogTitle>Create New Garden</DialogTitle>
+          </DialogHeader>
+          <CreateGardenForm onFormStateChange={() => {}} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -55,21 +95,21 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
         icon: <ArchiveX className="h-4 w-4 text-gray-500" />,
         textColor: "text-gray-600",
         hoverBg: "hover:bg-gray-50",
-        hoverBorder: "hover:border-gray-200"
+        hoverBorder: "hover:border-gray-200",
       };
     } else if (garden.doi_is_draft) {
       return {
         icon: <BookDashed className="h-4 w-4 text-amber-500" />,
         textColor: "text-gray-900",
         hoverBg: "hover:bg-amber-50",
-        hoverBorder: "hover:border-amber-200"
+        hoverBorder: "hover:border-amber-200",
       };
     } else {
       return {
         icon: <Book className="h-4 w-4 text-emerald-600" />,
         textColor: "text-gray-900",
         hoverBg: "hover:bg-emerald-50",
-        hoverBorder: "hover:border-emerald-200"
+        hoverBorder: "hover:border-emerald-200",
       };
     }
   };
@@ -147,7 +187,7 @@ export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
         <div className="h-2 w-2 rounded-full bg-blue-400 transition-colors group-hover:bg-blue-500"></div>
       </div>
       {/* Clickable content */}
-      <div className="flex-1 cursor-pointer py-1.5 px-2" onClick={handleSelect}>
+      <div className="flex-1 cursor-pointer px-2 py-1.5" onClick={handleSelect}>
         <div className="truncate text-sm font-medium text-gray-700">{fn.function_name}</div>
       </div>
     </div>

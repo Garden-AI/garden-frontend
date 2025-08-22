@@ -2,7 +2,24 @@ import React, { useState } from "react";
 import { ModelDeployment } from "../model-deployments/ModelDeployments";
 import { ModalFunction } from "@/types";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { ChevronDown, ChevronRight, Boxes, CircleCheck, CircleDotDashed, CircleX } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Boxes,
+  CircleCheck,
+  CircleDotDashed,
+  CircleX,
+  Plus,
+} from "lucide-react";
+import { Button } from "@/components/shadcn/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
+import { ModalAppForm } from "../modal/components/ModalAppForm";
 
 type AppTreeViewProps = {
   apps: ModelDeployment[];
@@ -10,13 +27,34 @@ type AppTreeViewProps = {
 };
 
 export const AppTreeView = ({ apps, onSelect }: AppTreeViewProps) => {
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+
   return (
     <div className="flex h-full flex-col">
       <div className="border-b-2 border-purple-300 bg-purple-100">
         <div className="px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Boxes className="h-5 w-5 text-purple-700" />
-            <h2 className="text-lg font-semibold text-purple-900">My Apps</h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Boxes className="h-5 w-5 text-purple-700" />
+              <h2 className="text-lg font-semibold text-purple-900">My Apps</h2>
+            </div>
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0 hover:bg-purple-200"
+                    onClick={() => setShowCreateDialog(true)}
+                  >
+                    <Plus className="h-4 w-4 text-purple-700" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Create App</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>
@@ -25,6 +63,16 @@ export const AppTreeView = ({ apps, onSelect }: AppTreeViewProps) => {
           return <AppTreeNode key={index} app={app} onSelect={onSelect} />;
         })}
       </div>
+
+      {/* Create App Deployment Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-h-[90vh] w-[95%] max-w-4xl overflow-y-auto md:w-4/5 lg:w-3/4">
+          <DialogHeader>
+            <DialogTitle>Create New Model Deployment</DialogTitle>
+          </DialogHeader>
+          <ModalAppForm onSuccess={() => setShowCreateDialog(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -59,22 +107,22 @@ export const AppTreeNode = ({ app, onSelect }: AppTreeNodeProps) => {
           icon: <CircleCheck className="h-4 w-4" style={{ color: "#059669" }} />,
           textColor: "text-gray-900",
           hoverBg: "hover:bg-green-100",
-          hoverBorder: "hover:border-green-300"
+          hoverBorder: "hover:border-green-300",
         };
       case "error":
         return {
           icon: <CircleX className="h-4 w-4" style={{ color: "#dc2626" }} />,
-          textColor: "text-gray-900", 
+          textColor: "text-gray-900",
           hoverBg: "hover:bg-red-100",
-          hoverBorder: "hover:border-red-300"
+          hoverBorder: "hover:border-red-300",
         };
       case "undeployed":
       default:
         return {
           icon: <CircleDotDashed className="h-4 w-4" style={{ color: "#ea580c" }} />,
           textColor: "text-gray-900",
-          hoverBg: "hover:bg-amber-100", 
-          hoverBorder: "hover:border-amber-300"
+          hoverBg: "hover:bg-amber-100",
+          hoverBorder: "hover:border-amber-300",
         };
     }
   };
@@ -153,8 +201,10 @@ export const AppFunctionTreeNode = ({ fn, onSelect }: AppFunctionTreeNodeProps) 
         <div className="h-2 w-2 rounded-full bg-purple-400 transition-colors group-hover:bg-purple-500"></div>
       </div>
       {/* Clickable content */}
-      <div className="flex-1 cursor-pointer py-1.5 px-2" onClick={handleSelect}>
-        <div className="truncate text-sm font-medium text-gray-700">{fn.function_name || fn.title}</div>
+      <div className="flex-1 cursor-pointer px-2 py-1.5" onClick={handleSelect}>
+        <div className="truncate text-sm font-medium text-gray-700">
+          {fn.function_name || fn.title}
+        </div>
       </div>
     </div>
   );
