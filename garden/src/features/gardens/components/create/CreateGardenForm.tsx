@@ -9,7 +9,7 @@ import { Form } from "@/components/shadcn/form";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import { CreateGardenFormFields } from "./CreateGardenFormFields";
-import { GardenCreateRequest } from "@/types";
+import { GardenCreateRequest, Garden } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
 import { useModalAppMetadata } from "../../../modal/api/useModalAppMetadata";
@@ -31,11 +31,14 @@ interface CreateGardenFormProps {
   hasModalApp?: boolean;
   /** Callback for tracking form submission state */
   onFormStateChange?: (isSubmitting: boolean) => void;
+  /** Callback fired when garden is successfully created */
+  onSuccess?: (garden: Garden) => void;
 }
 
 export const CreateGardenForm = ({
   modalAppId,
-  onFormStateChange
+  onFormStateChange,
+  onSuccess
 }: CreateGardenFormProps) => {
   const navigate = useNavigate();
   const auth = useGlobusAuth();
@@ -112,7 +115,13 @@ export const CreateGardenForm = ({
         throw new ApiError("Did not receive DOI from backend!!")
       }
       toast.success("Garden created successfully!");
-      navigate(`/garden/${encodeURIComponent(garden.doi)}?newlyCreated=true`);
+
+      // If onSuccess callback is provided, use it instead of navigating
+      if (onSuccess) {
+        onSuccess(garden);
+      } else {
+        navigate(`/garden/${encodeURIComponent(garden.doi)}?newlyCreated=true`);
+      }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         const apiError = ApiError.fromAxiosError(error);
