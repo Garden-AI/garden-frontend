@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Garden, ModalFunction } from "@/types";
 
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { ChevronDown, ChevronRight, Sprout } from "lucide-react";
+import { ChevronDown, ChevronRight, Sprout, Book, BookDashed, ArchiveX } from "lucide-react";
 
 type GardenTreeViewProps = {
   gardens: Garden[];
@@ -47,10 +47,38 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
       onSelect(garden);
     }
   };
+
+  // Determine garden state and styling
+  const getGardenStatus = () => {
+    if (garden.is_archived) {
+      return {
+        icon: <ArchiveX className="h-4 w-4 text-gray-500" />,
+        textColor: "text-gray-600",
+        hoverBg: "hover:bg-gray-50",
+        hoverBorder: "hover:border-gray-200"
+      };
+    } else if (garden.doi_is_draft) {
+      return {
+        icon: <BookDashed className="h-4 w-4 text-amber-500" />,
+        textColor: "text-gray-900",
+        hoverBg: "hover:bg-amber-50",
+        hoverBorder: "hover:border-amber-200"
+      };
+    } else {
+      return {
+        icon: <Book className="h-4 w-4 text-emerald-600" />,
+        textColor: "text-gray-900",
+        hoverBg: "hover:bg-emerald-50",
+        hoverBorder: "hover:border-emerald-200"
+      };
+    }
+  };
+
+  const status = getGardenStatus();
   return (
     <div ref={setNodeRef} className="select-none">
       <div
-        className="group flex cursor-pointer items-center rounded-md p-2 transition-colors duration-150 hover:bg-gray-50"
+        className={`group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`}
         onClick={handleSelect}
       >
         <button
@@ -66,10 +94,13 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
             <ChevronRight className="h-4 w-4 text-gray-600" />
           )}
         </button>
-        <div className="truncate font-medium text-gray-900">{garden.title}</div>
+        <div className="flex items-center gap-2">
+          {status.icon}
+          <div className={`truncate font-medium ${status.textColor}`}>{garden.title}</div>
+        </div>
       </div>
       {isExpanded && (
-        <div className="ml-7 space-y-1">
+        <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
           {garden.modal_functions?.map((fn, index) => {
             return <FunctionTreeNode key={index} fn={fn} onSelect={onSelect} />;
           })}
@@ -104,7 +135,7 @@ export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
   return (
     <div
       ref={setNodeRef}
-      className="group flex items-center rounded-md transition-colors duration-150 hover:bg-blue-50"
+      className="group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm"
       style={style}
     >
       {/* Drag handle */}
@@ -113,11 +144,11 @@ export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
         {...attributes}
         className="mr-2 flex h-4 w-4 cursor-grab items-center justify-center active:cursor-grabbing"
       >
-        <div className="h-2 w-2 rounded-full bg-blue-400"></div>
+        <div className="h-2 w-2 rounded-full bg-blue-400 transition-colors group-hover:bg-blue-500"></div>
       </div>
       {/* Clickable content */}
-      <div className="flex-1 cursor-pointer p-2" onClick={handleSelect}>
-        <div className="truncate text-sm text-gray-700">{fn.function_name}</div>
+      <div className="flex-1 cursor-pointer py-1.5 px-2" onClick={handleSelect}>
+        <div className="truncate text-sm font-medium text-gray-700">{fn.function_name}</div>
       </div>
     </div>
   );
