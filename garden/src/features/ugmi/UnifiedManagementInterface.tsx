@@ -7,7 +7,6 @@ import {
 import { GardenTreeView } from "./GardenTreeView";
 import { useGetGardens } from "../gardens/api/useGetGardens";
 import { useGetUserInfo } from "../users/api/useGetUserInfo";
-import { CardHeader } from "@/components/shadcn/card";
 import { DndContext } from "@dnd-kit/core";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../model-deployments/ModelDeployments";
@@ -86,7 +85,6 @@ const LeftSidePanel = ({ onItemSelected }: LeftSidePanelProps) => {
     <ResizablePanel minSize={20} maxSize={33}>
       <ResizablePanelGroup direction="vertical">
         <ResizablePanel minSize={25}>
-          <CardHeader>My Gardens</CardHeader>
           <GardenTreeView gardens={gardens || []} onSelect={onItemSelected} />
         </ResizablePanel>
         <ResizableHandle withHandle />
