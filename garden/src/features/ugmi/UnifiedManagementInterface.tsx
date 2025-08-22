@@ -10,14 +10,24 @@ import { useGetUserInfo } from "../users/api/useGetUserInfo";
 import { DndContext } from "@dnd-kit/core";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../model-deployments/ModelDeployments";
-import ModalFunctionPage from "../modal/components/ModalFunctionPage";
 import { ModelDeploymentDetails } from "../model-deployments/ModelDeploymentDetails";
-import { useGetGarden } from "../gardens/api/useGetGarden";
+import { GardenMetadataSidebar } from "../gardens/components/GardenMetadataSidebar";
+import { FunctionSidebar } from "../modal/components/FunctionSidebar";
+import { useGlobusAuth } from "@globus/react-auth-context";
+import { SUPER_USERS } from "@/utils/utils";
+import { GardenDescription } from "../gardens/components/garden-page";
+import { GardenTabbedSection } from "../gardens/components/GardenTabbedSection";
+import { Separator } from "@/components/shadcn/separator";
+import ModalAssociatedMaterials from "../materials/components/ModalAssociatedMaterials";
+import { LinkIcon } from "lucide-react";
+import CopyButton from "@/components/CopyButton";
+import { MaterialsProvider } from "../materials/contexts/MaterialsContext";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
 
 export const UnifiedManagmentInterface = () => {
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
+  const auth = useGlobusAuth();
 
   const hanldeItemSelected = (entity: Entity) => {
     setSelectedItem(entity);
@@ -28,9 +38,9 @@ export const UnifiedManagmentInterface = () => {
         <ResizablePanelGroup direction="horizontal">
           <LeftSidePanel onItemSelected={hanldeItemSelected} />
           <ResizableHandle withHandle />
-          <MainContentPanel entity={selectedItem ?? null} />
+          <MainContentPanel entity={selectedItem ?? null} auth={auth} />
           <ResizableHandle withHandle />
-          <RightSidePanel />
+          <RightSidePanel entity={selectedItem ?? null} auth={auth} />
         </ResizablePanelGroup>
       </div>
     </DndContext>
@@ -39,13 +49,10 @@ export const UnifiedManagmentInterface = () => {
 
 type MainContentPanelProps = {
   entity: Garden | ModalFunction | ModelDeployment | null;
+  auth: any;
 };
 
-const MainContentPanel = ({ entity }: MainContentPanelProps) => {
-  const refetchGarden = (garden) => {
-    return useGetGarden(garden.doi);
-  };
-
+const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
   const entityType = ((entity) => {
     if (entity === null) return null;
     if ("modal_functions" in entity) {
@@ -59,16 +66,23 @@ const MainContentPanel = ({ entity }: MainContentPanelProps) => {
     return "function";
   })(entity);
 
+  const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
+  const ownsEntity = auth?.isAuthenticated && ((entity as any)?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
+
   return (
-    <ResizablePanel minSize={25} defaultSize={66} className="flex items-center justify-center">
+    <ResizablePanel minSize={25} defaultSize={50} className="flex flex-col">
       {entityType === null ? (
-        <p>Select a Garden, Function, or App</p>
+        <div className="flex items-center justify-center h-full">
+          <p className="text-gray-500">Select a Garden, Function, or App</p>
+        </div>
       ) : entityType === "function" ? (
-        <ModalFunctionPage />
+        <UnifiedFunctionContent modalFunction={entity as ModalFunction} ownsThisFunction={ownsEntity} />
       ) : entityType === "garden" ? (
-        <>{entity.metadata}</>
+        <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} />
       ) : (
-        <ModelDeploymentDetails entity={entity} />
+        <div className="flex items-center justify-center h-full">
+          <p className="text-gray-500">App details coming soon</p>
+        </div>
       )}
     </ResizablePanel>
   );
@@ -96,10 +110,107 @@ const LeftSidePanel = ({ onItemSelected }: LeftSidePanelProps) => {
   );
 };
 
-const RightSidePanel = () => {
+const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: any }) => {
+  const entityType = ((entity) => {
+    if (entity === null) return null;
+    if ("modal_functions" in entity) {
+      if ("doi" in entity) {
+        return "garden";
+      } else {
+        return "deployment";
+      }
+    }
+    return "function";
+  })(entity);
+
+  const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
+  const ownsEntity = auth?.isAuthenticated && ((entity as any)?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
+
   return (
-    <ResizablePanel minSize={20} maxSize={33} className="flex items-center justify-center">
-      Right Sidebar
+    <ResizablePanel minSize={20} maxSize={33} className="flex flex-col h-full">
+      {entityType === null ? (
+        <div className="flex items-center justify-center h-full">
+          <p className="text-gray-500">Metadata will appear here</p>
+        </div>
+      ) : entityType === "function" ? (
+        <div className="h-full overflow-y-auto p-4">
+          <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
+            <FunctionSidebar modalFunction={entity as ModalFunction} ownsThisFunction={ownsEntity} />
+          </div>
+        </div>
+      ) : entityType === "garden" ? (
+        <div className="h-full overflow-y-auto p-4">
+          <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
+            <GardenMetadataSidebar garden={entity as Garden} ownsThisGarden={ownsEntity} />
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center h-full">
+          <p className="text-gray-500">Deployment metadata</p>
+        </div>
+      )}
     </ResizablePanel>
+  );
+};
+
+// Unified content components without sidebars
+const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
+  return (
+    <MaterialsProvider garden={garden} refetchGarden={() => Promise.resolve()}>
+      <div className="h-full overflow-y-auto p-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">{garden.title}</h1>
+          <GardenDescription garden={garden} ownsThisGarden={ownsThisGarden} />
+        </div>
+        
+        <div className="mt-6">
+          <GardenTabbedSection
+            garden={garden}
+            ownsThisGarden={ownsThisGarden}
+          />
+        </div>
+      </div>
+    </MaterialsProvider>
+  );
+};
+
+const UnifiedFunctionContent = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction, ownsThisFunction: boolean }) => {
+  return (
+    <div className="h-full overflow-y-auto p-6">
+      <div className="mb-4">
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <h1 className="text-2xl font-bold text-gray-900">{modalFunction.title}</h1>
+          <CopyButton
+            icon={<LinkIcon className="h-4 w-4" />}
+            content={`${window.location.origin}/modal-functions/${modalFunction.id}`}
+            hint="Copy Link"
+            className="border-none bg-transparent"
+          />
+        </div>
+        
+        {modalFunction.description && (
+          <>
+            <p className="text-gray-700 mb-4">{modalFunction.description}</p>
+            <Separator className="my-4" />
+          </>
+        )}
+      </div>
+      
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-semibold mb-3">Example Usage</h3>
+          <div className="bg-gray-50 p-4 rounded-md">
+            <code className="text-sm text-gray-800">
+              {modalFunction.example_usage || `from garden_ai import GardenClient\nclient = GardenClient()\nmy_garden = client.get_garden(my_garden_doi)\n\ninput = ['Data Here']\nreturn my_garden.${modalFunction.function_name}(input)`}
+            </code>
+          </div>
+        </div>
+        
+        <ModalAssociatedMaterials
+          resource={modalFunction}
+          ownsThisFunction={ownsThisFunction}
+        />
+      </div>
+    </div>
   );
 };

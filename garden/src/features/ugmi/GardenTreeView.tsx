@@ -6,7 +6,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 
 type GardenTreeViewProps = {
   gardens: Garden[];
-  onSelect?: (garden: Garden) => void;
+  onSelect?: (entity: Garden | ModalFunction) => void;
 };
 
 export const GardenTreeView = ({ gardens, onSelect }: GardenTreeViewProps) => {
@@ -26,7 +26,7 @@ export const GardenTreeView = ({ gardens, onSelect }: GardenTreeViewProps) => {
 
 type GardenTreeNodeProps = {
   garden: Garden,
-  onSelect?: (garden: Garden) => void,
+  onSelect?: (entity: Garden | ModalFunction) => void,
 };
 
 export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
@@ -66,7 +66,7 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
       {isExpanded && (
         <div className="ml-7 space-y-1">
           {garden.modal_functions?.map((fn, index) => {
-            return <FunctionTreeNode key={index} fn={fn} />
+            return <FunctionTreeNode key={index} fn={fn} onSelect={onSelect} />
           })}
         </div>
       )}
@@ -76,14 +76,21 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
 
 type FunctionTreeNodeProps = {
   fn: ModalFunction,
+  onSelect?: (entity: Garden | ModalFunction) => void,
 }
 
-export const FunctionTreeNode = ({ fn }: FunctionTreeNodeProps) => {
+export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: fn.id })
   
   const style = transform ? {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
   } : undefined;
+
+  const handleSelect = () => {
+    if (onSelect) {
+      onSelect(fn);
+    }
+  }
   
   return (
     <div 
@@ -92,6 +99,7 @@ export const FunctionTreeNode = ({ fn }: FunctionTreeNodeProps) => {
       {...attributes} 
       className="flex items-center p-2 rounded-md hover:bg-blue-50 cursor-grab active:cursor-grabbing transition-colors duration-150 group"
       style={style}
+      onClick={handleSelect}
     >
       <div className="w-4 h-4 mr-2 flex items-center justify-center">
         <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
