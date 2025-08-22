@@ -84,7 +84,7 @@ const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
     <ResizablePanel minSize={25} defaultSize={50} className="flex flex-col">
       {entityType === null ? (
         <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500">Select a Garden, Function, or App</p>
+          <p className="text-gray-500">Select a Garden, Function, or App in the left panel</p>
         </div>
       ) : entityType === "function" ? (
         <UnifiedFunctionContent modalFunction={entity as ModalFunction} ownsThisFunction={ownsEntity} />
@@ -173,7 +173,7 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
     <ResizablePanel minSize={20} maxSize={33} className="flex flex-col h-full">
       {entityType === null ? (
         <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500">Metadata will appear here</p>
+          <p className="text-gray-500">Select a Garden or Function in the left panel</p>
         </div>
       ) : entityType === "function" ? (
         <div className="h-full overflow-y-auto p-4">
