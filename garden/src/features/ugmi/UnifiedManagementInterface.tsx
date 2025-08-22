@@ -38,7 +38,7 @@ export const UnifiedManagmentInterface = () => {
     <DndContext>
       <div className="flex h-screen w-screen items-center">
         <ResizablePanelGroup direction="horizontal">
-          <LeftSidePanel onItemSelected={hanldeItemSelected} />
+          <LeftSidePanel onItemSelected={hanldeItemSelected} selectedItem={selectedItem} />
           <ResizableHandle withHandle />
           <MainContentPanel entity={selectedItem ?? null} auth={auth} />
           <ResizableHandle withHandle />
@@ -101,9 +101,10 @@ const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
 
 type LeftSidePanelProps = {
   onItemSelected?: (entity: Entity) => void;
+  selectedItem?: Entity | null;
 };
 
-const LeftSidePanel = ({ onItemSelected }: LeftSidePanelProps) => {
+const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => {
   const { data: userInfo } = useGetUserInfo();
   const { data: gardens, refetch: refetchGardens } = useGetGardens({ owner_uuid: userInfo?.identity_id });
   const { data: modelDeployments } = useGetModelDeployments();
@@ -120,11 +121,12 @@ const LeftSidePanel = ({ onItemSelected }: LeftSidePanelProps) => {
             gardens={gardens || []}
             onSelect={onItemSelected}
             onGardenCreated={handleGardenCreated}
+            selectedItem={selectedItem}
           />
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel minSize={25}>
-          <AppTreeView apps={modelDeployments || []} onSelect={onItemSelected} />
+          <AppTreeView apps={modelDeployments || []} onSelect={onItemSelected} selectedItem={selectedItem} />
         </ResizablePanel>
       </ResizablePanelGroup>
     </ResizablePanel>
