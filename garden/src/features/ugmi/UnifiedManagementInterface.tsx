@@ -17,11 +17,9 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import { GardenDescription } from "../gardens/components/garden-page";
 import { GardenTabbedSection } from "../gardens/components/GardenTabbedSection";
-import { Separator } from "@/components/shadcn/separator";
 import ModalAssociatedMaterials from "../materials/components/ModalAssociatedMaterials";
-import { LinkIcon } from "lucide-react";
-import CopyButton from "@/components/CopyButton";
 import { MaterialsProvider } from "../materials/contexts/MaterialsContext";
+import { ModalFunctionHeader, ModalFunctionBody, ModalFunctionExample } from "../modal/components/ModalFunctionPage";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
 
@@ -177,40 +175,22 @@ const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, owns
 const UnifiedFunctionContent = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction, ownsThisFunction: boolean }) => {
   return (
     <div className="h-full overflow-y-auto p-6">
-      <div className="mb-4">
-        <div className="flex items-center justify-between gap-2 mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">{modalFunction.title}</h1>
-          <CopyButton
-            icon={<LinkIcon className="h-4 w-4" />}
-            content={`${window.location.origin}/modal-functions/${modalFunction.id}`}
-            hint="Copy Link"
-            className="border-none bg-transparent"
-          />
-        </div>
-        
-        {modalFunction.description && (
-          <>
-            <p className="text-gray-700 mb-4">{modalFunction.description}</p>
-            <Separator className="my-4" />
-          </>
-        )}
-      </div>
-      
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Example Usage</h3>
-          <div className="bg-gray-50 p-4 rounded-md">
-            <code className="text-sm text-gray-800">
-              {modalFunction.example_usage || `from garden_ai import GardenClient\nclient = GardenClient()\nmy_garden = client.get_garden(my_garden_doi)\n\ninput = ['Data Here']\nreturn my_garden.${modalFunction.function_name}(input)`}
-            </code>
-          </div>
-        </div>
-        
-        <ModalAssociatedMaterials
-          resource={modalFunction}
-          ownsThisFunction={ownsThisFunction}
-        />
-      </div>
+      <ModalFunctionHeader 
+        modalFunction={modalFunction as any} 
+        ownsThisFunction={ownsThisFunction} 
+      />
+      <ModalFunctionBody 
+        modalFunction={modalFunction} 
+        ownsThisFunction={ownsThisFunction} 
+      />
+      <ModalFunctionExample 
+        modalFunction={modalFunction} 
+        ownsThisFunction={ownsThisFunction} 
+      />
+      <ModalAssociatedMaterials
+        resource={modalFunction}
+        ownsThisFunction={ownsThisFunction}
+      />
     </div>
   );
 };
