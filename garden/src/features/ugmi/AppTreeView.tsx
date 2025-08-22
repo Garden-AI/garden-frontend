@@ -24,9 +24,10 @@ import { ModalAppForm } from "../modal/components/ModalAppForm";
 type AppTreeViewProps = {
   apps: ModelDeployment[];
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
+  selectedItem?: ModelDeployment | ModalFunction | any | null;
 };
 
-export const AppTreeView = ({ apps, onSelect }: AppTreeViewProps) => {
+export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   return (
@@ -60,7 +61,7 @@ export const AppTreeView = ({ apps, onSelect }: AppTreeViewProps) => {
       </div>
       <div className="flex-1 space-y-1 overflow-y-auto p-2">
         {apps.map((app, index) => {
-          return <AppTreeNode key={index} app={app} onSelect={onSelect} />;
+          return <AppTreeNode key={index} app={app} onSelect={onSelect} selectedItem={selectedItem} />;
         })}
       </div>
 
@@ -80,9 +81,10 @@ export const AppTreeView = ({ apps, onSelect }: AppTreeViewProps) => {
 type AppTreeNodeProps = {
   app: ModelDeployment;
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
+  selectedItem?: ModelDeployment | ModalFunction | any | null;
 };
 
-export const AppTreeNode = ({ app, onSelect }: AppTreeNodeProps) => {
+export const AppTreeNode = ({ app, onSelect, selectedItem }: AppTreeNodeProps) => {
   const { setNodeRef } = useDroppable({ id: app.id.toString() });
   const [isExpanded, setExpanded] = useState(false);
 
@@ -95,6 +97,12 @@ export const AppTreeNode = ({ app, onSelect }: AppTreeNodeProps) => {
       onSelect(app);
     }
   };
+
+  // Check if this app is selected
+  const isSelected = selectedItem &&
+    "originalData" in selectedItem &&
+    "status" in selectedItem &&
+    selectedItem.id === app.id;
 
   // Get functions from the app's originalData
   const appFunctions = app.originalData?.modal_functions || [];
@@ -129,10 +137,15 @@ export const AppTreeNode = ({ app, onSelect }: AppTreeNodeProps) => {
 
   const status = getAppStatus();
 
+  // Combine base styles with selected state styles
+  const containerClasses = isSelected
+    ? `group flex cursor-pointer items-center rounded-lg border-2 border-purple-400 bg-purple-50 p-2 transition-all duration-150 shadow-md`
+    : `group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`;
+
   return (
     <div ref={setNodeRef} className="select-none">
       <div
-        className={`group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`}
+        className={containerClasses}
         onClick={handleSelect}
       >
         <button
@@ -156,7 +169,7 @@ export const AppTreeNode = ({ app, onSelect }: AppTreeNodeProps) => {
       {isExpanded && appFunctions.length > 0 && (
         <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
           {appFunctions.map((fn: any, index: number) => {
-            return <AppFunctionTreeNode key={index} fn={fn} onSelect={onSelect} />;
+            return <AppFunctionTreeNode key={index} fn={fn} onSelect={onSelect} selectedItem={selectedItem} />;
           })}
         </div>
       )}
@@ -167,15 +180,16 @@ export const AppTreeNode = ({ app, onSelect }: AppTreeNodeProps) => {
 type AppFunctionTreeNodeProps = {
   fn: any; // Modal function metadata from the app
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
+  selectedItem?: ModelDeployment | ModalFunction | any | null;
 };
 
-export const AppFunctionTreeNode = ({ fn, onSelect }: AppFunctionTreeNodeProps) => {
+export const AppFunctionTreeNode = ({ fn, onSelect, selectedItem }: AppFunctionTreeNodeProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `app-fn-${fn.id}` });
 
   const style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    }
     : undefined;
 
   const handleSelect = (e: React.MouseEvent) => {
@@ -186,10 +200,22 @@ export const AppFunctionTreeNode = ({ fn, onSelect }: AppFunctionTreeNodeProps) 
     }
   };
 
+  // Check if this function is selected
+  // A function is selected if the selectedItem is a ModalFunction with matching id
+  const isSelected = selectedItem &&
+    "id" in selectedItem &&
+    selectedItem.id === fn.id &&
+    (("function_name" in selectedItem) || ("title" in selectedItem)); // Make sure it's a ModalFunction
+
+  // Combine base styles with selected state styles
+  const containerClasses = isSelected
+    ? `group flex items-center rounded-md border-2 border-purple-400 bg-purple-50 transition-all duration-150 shadow-md`
+    : `group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-purple-200 hover:bg-purple-50 hover:shadow-sm`;
+
   return (
     <div
       ref={setNodeRef}
-      className="group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-purple-200 hover:bg-purple-50 hover:shadow-sm"
+      className={containerClasses}
       style={style}
     >
       {/* Drag handle */}

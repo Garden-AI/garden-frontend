@@ -17,9 +17,10 @@ type GardenTreeViewProps = {
   gardens: Garden[];
   onSelect?: (entity: Garden | ModalFunction) => void;
   onGardenCreated?: (garden: Garden) => void;
+  selectedItem?: Garden | ModalFunction | any | null;
 };
 
-export const GardenTreeView = ({ gardens, onSelect, onGardenCreated }: GardenTreeViewProps) => {
+export const GardenTreeView = ({ gardens, onSelect, onGardenCreated, selectedItem }: GardenTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   return (
@@ -53,7 +54,7 @@ export const GardenTreeView = ({ gardens, onSelect, onGardenCreated }: GardenTre
       </div>
       <div className="flex-1 space-y-1 overflow-y-auto p-2">
         {gardens.map((g, index) => {
-          return <GardenTreeNode key={index} garden={g} onSelect={onSelect} />;
+          return <GardenTreeNode key={index} garden={g} onSelect={onSelect} selectedItem={selectedItem} />;
         })}
       </div>
 
@@ -84,9 +85,10 @@ export const GardenTreeView = ({ gardens, onSelect, onGardenCreated }: GardenTre
 type GardenTreeNodeProps = {
   garden: Garden;
   onSelect?: (entity: Garden | ModalFunction) => void;
+  selectedItem?: Garden | ModalFunction | any | null;
 };
 
-export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
+export const GardenTreeNode = ({ garden, onSelect, selectedItem }: GardenTreeNodeProps) => {
   const { setNodeRef } = useDroppable({ id: garden.doi });
   const [isExpanded, setExpanded] = useState(false);
 
@@ -99,6 +101,12 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
       onSelect(garden);
     }
   };
+
+  // Check if this garden is selected
+  const isSelected = selectedItem &&
+    "doi" in selectedItem &&
+    "modal_functions" in selectedItem &&
+    selectedItem.doi === garden.doi;
 
   // Determine garden state and styling
   const getGardenStatus = () => {
@@ -127,10 +135,16 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
   };
 
   const status = getGardenStatus();
+
+  // Combine base styles with selected state styles
+  const containerClasses = isSelected
+    ? `group flex cursor-pointer items-center rounded-lg border-2 border-emerald-400 bg-emerald-50 p-2 transition-all duration-150 shadow-md`
+    : `group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`;
+
   return (
     <div ref={setNodeRef} className="select-none">
       <div
-        className={`group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`}
+        className={containerClasses}
         onClick={handleSelect}
       >
         <button
@@ -154,7 +168,7 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
       {isExpanded && (
         <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
           {garden.modal_functions?.map((fn, index) => {
-            return <FunctionTreeNode key={index} fn={fn} onSelect={onSelect} />;
+            return <FunctionTreeNode key={index} fn={fn} onSelect={onSelect} selectedItem={selectedItem} />;
           })}
         </div>
       )}
@@ -165,9 +179,10 @@ export const GardenTreeNode = ({ garden, onSelect }: GardenTreeNodeProps) => {
 type FunctionTreeNodeProps = {
   fn: ModalFunction;
   onSelect?: (entity: Garden | ModalFunction) => void;
+  selectedItem?: Garden | ModalFunction | any | null;
 };
 
-export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
+export const FunctionTreeNode = ({ fn, onSelect, selectedItem }: FunctionTreeNodeProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: fn.id });
 
   const style = transform
@@ -184,10 +199,22 @@ export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
     }
   };
 
+  // Check if this function is selected
+  // A function is selected if the selectedItem is a ModalFunction with matching id
+  const isSelected = selectedItem &&
+    "id" in selectedItem &&
+    selectedItem.id === fn.id &&
+    (("function_name" in selectedItem) || ("title" in selectedItem)); // Make sure it's a ModalFunction
+
+  // Combine base styles with selected state styles
+  const containerClasses = isSelected
+    ? `group flex items-center rounded-md border-2 border-blue-400 bg-blue-50 transition-all duration-150 shadow-md`
+    : `group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm`;
+
   return (
     <div
       ref={setNodeRef}
-      className="group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm"
+      className={containerClasses}
       style={style}
     >
       {/* Drag handle */}
