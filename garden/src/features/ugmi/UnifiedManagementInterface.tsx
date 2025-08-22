@@ -23,6 +23,7 @@ import ModalAssociatedMaterials from "../materials/components/ModalAssociatedMat
 import { MaterialsProvider } from "../materials/contexts/MaterialsContext";
 import { ModalFunctionHeader, ModalFunctionBody, ModalFunctionExample } from "../modal/components/ModalFunctionPage";
 import { GardenHeader, GardenContentView, GardenPublishModal } from "../gardens/components/shared/GardenComponents";
+import TombstonePage from "@/components/TombstonePage";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
 
@@ -206,6 +207,15 @@ const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, owns
   const memoizedRefetch = React.useCallback(async () => {
     await refetch();
   }, [refetch]);
+
+  // Show tombstone page for archived gardens
+  if (currentGarden.is_archived) {
+    return (
+      <div className="h-full overflow-y-auto">
+        <TombstonePage garden={currentGarden} />
+      </div>
+    );
+  }
 
   return (
     <MaterialsProvider garden={currentGarden} refetchGarden={memoizedRefetch}>
