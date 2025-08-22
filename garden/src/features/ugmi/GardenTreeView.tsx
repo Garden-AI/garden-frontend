@@ -16,9 +16,10 @@ import { CreateGardenForm } from "../gardens/components/create/CreateGardenForm"
 type GardenTreeViewProps = {
   gardens: Garden[];
   onSelect?: (entity: Garden | ModalFunction) => void;
+  onGardenCreated?: (garden: Garden) => void;
 };
 
-export const GardenTreeView = ({ gardens, onSelect }: GardenTreeViewProps) => {
+export const GardenTreeView = ({ gardens, onSelect, onGardenCreated }: GardenTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   return (
@@ -62,7 +63,18 @@ export const GardenTreeView = ({ gardens, onSelect }: GardenTreeViewProps) => {
           <DialogHeader>
             <DialogTitle>Create New Garden</DialogTitle>
           </DialogHeader>
-          <CreateGardenForm onFormStateChange={() => {}} />
+          <CreateGardenForm
+            onFormStateChange={() => { }}
+            onSuccess={(garden) => {
+              setShowCreateDialog(false);
+              if (onGardenCreated) {
+                onGardenCreated(garden);
+              }
+              if (onSelect) {
+                onSelect(garden);
+              }
+            }}
+          />
         </DialogContent>
       </Dialog>
     </div>
@@ -160,8 +172,8 @@ export const FunctionTreeNode = ({ fn, onSelect }: FunctionTreeNodeProps) => {
 
   const style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    }
     : undefined;
 
   const handleSelect = (e: React.MouseEvent) => {
