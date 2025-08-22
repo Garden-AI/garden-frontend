@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ModelDeployment } from "../model-deployments/ModelDeployments";
 import { ModalFunction } from "@/types";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Boxes } from "lucide-react";
 
 type AppTreeViewProps = {
   apps: ModelDeployment[];
@@ -11,13 +11,18 @@ type AppTreeViewProps = {
 
 export const AppTreeView = ({ apps, onSelect }: AppTreeViewProps) => {
   return (
-    <div className="h-full flex flex-col">
-      <div className="px-4 py-3 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">My Apps</h2>
+    <div className="flex h-full flex-col">
+      <div className="border-b-2 border-purple-300 bg-purple-100">
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Boxes className="h-5 w-5 text-purple-700" />
+            <h2 className="text-lg font-semibold text-purple-900">My Apps</h2>
+          </div>
+        </div>
       </div>
-      <div className="flex-1 p-2 space-y-1 overflow-y-auto">
+      <div className="flex-1 space-y-1 overflow-y-auto p-2">
         {apps.map((app, index) => {
-          return <AppTreeNode key={index} app={app} onSelect={onSelect} />
+          return <AppTreeNode key={index} app={app} onSelect={onSelect} />;
         })}
       </div>
     </div>
@@ -46,42 +51,41 @@ export const AppTreeNode = ({ app, onSelect }: AppTreeNodeProps) => {
   // Get functions from the app's originalData
   const appFunctions = app.originalData?.modal_functions || [];
 
-  const statusColor = {
-    deployed: 'text-green-600',
-    undeployed: 'text-gray-500',
-    error: 'text-red-600',
-  }[app.status] || 'text-gray-500';
+  const statusColor =
+    {
+      deployed: "text-green-600",
+      undeployed: "text-gray-500",
+      error: "text-red-600",
+    }[app.status] || "text-gray-500";
 
   return (
     <div ref={setNodeRef} className="select-none">
-      <div 
-        className="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer group transition-colors duration-150"
+      <div
+        className="group flex cursor-pointer items-center rounded-md p-2 transition-colors duration-150 hover:bg-gray-50"
         onClick={handleSelect}
       >
         <button
-          className="flex items-center justify-center w-5 h-5 mr-2 hover:bg-gray-200 rounded transition-colors duration-150"
+          className="mr-2 flex h-5 w-5 items-center justify-center rounded transition-colors duration-150 hover:bg-gray-200"
           onClick={(e) => {
             e.stopPropagation();
             handleToggleExpand();
           }}
         >
           {isExpanded ? (
-            <ChevronDown className="w-4 h-4 text-gray-600" />
+            <ChevronDown className="h-4 w-4 text-gray-600" />
           ) : (
-            <ChevronRight className="w-4 h-4 text-gray-600" />
+            <ChevronRight className="h-4 w-4 text-gray-600" />
           )}
         </button>
-        <div className="flex items-center gap-2 flex-1">
-          <div className="font-medium text-gray-900 truncate">{app.name}</div>
-          <span className={`text-xs font-medium ${statusColor}`}>
-            {app.status}
-          </span>
+        <div className="flex flex-1 items-center gap-2">
+          <div className="truncate font-medium text-gray-900">{app.name}</div>
+          <span className={`text-xs font-medium ${statusColor}`}>{app.status}</span>
         </div>
       </div>
       {isExpanded && appFunctions.length > 0 && (
         <div className="ml-7 space-y-1">
-          {appFunctions.map((fn, index) => {
-            return <AppFunctionTreeNode key={index} fn={fn} onSelect={onSelect} />
+          {appFunctions.map((fn: any, index: number) => {
+            return <AppFunctionTreeNode key={index} fn={fn} onSelect={onSelect} />;
           })}
         </div>
       )}
@@ -96,10 +100,12 @@ type AppFunctionTreeNodeProps = {
 
 export const AppFunctionTreeNode = ({ fn, onSelect }: AppFunctionTreeNodeProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `app-fn-${fn.id}` });
-  
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  } : undefined;
+
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
 
   const handleSelect = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -108,27 +114,24 @@ export const AppFunctionTreeNode = ({ fn, onSelect }: AppFunctionTreeNodeProps) 
       onSelect(fn);
     }
   };
-  
+
   return (
-    <div 
+    <div
       ref={setNodeRef}
-      className="flex items-center rounded-md hover:bg-purple-50 transition-colors duration-150 group"
+      className="group flex items-center rounded-md transition-colors duration-150 hover:bg-purple-50"
       style={style}
     >
       {/* Drag handle */}
-      <div 
-        {...listeners} 
+      <div
+        {...listeners}
         {...attributes}
-        className="w-4 h-4 mr-2 flex items-center justify-center cursor-grab active:cursor-grabbing"
+        className="mr-2 flex h-4 w-4 cursor-grab items-center justify-center active:cursor-grabbing"
       >
-        <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+        <div className="h-2 w-2 rounded-full bg-purple-400"></div>
       </div>
       {/* Clickable content */}
-      <div 
-        className="flex-1 p-2 cursor-pointer"
-        onClick={handleSelect}
-      >
-        <div className="text-sm text-gray-700 truncate">{fn.function_name || fn.title}</div>
+      <div className="flex-1 cursor-pointer p-2" onClick={handleSelect}>
+        <div className="truncate text-sm text-gray-700">{fn.function_name || fn.title}</div>
       </div>
     </div>
   );
