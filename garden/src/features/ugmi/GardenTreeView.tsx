@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Garden, ModalFunction } from "@/types";
+import { useGlobusAuth } from "@globus/react-auth-context";
 
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { ChevronDown, ChevronRight, Sprout, Book, BookDashed, ArchiveX, Plus } from "lucide-react";
@@ -22,6 +23,16 @@ type GardenTreeViewProps = {
 
 export const GardenTreeView = ({ gardens, onSelect, onGardenCreated, selectedItem }: GardenTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const auth = useGlobusAuth();
+
+  const handleCreateClick = async () => {
+    if (!auth.isAuthenticated) {
+      // Trigger login flow
+      await auth.authorization?.login();
+      return;
+    }
+    setShowCreateDialog(true);
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -39,7 +50,7 @@ export const GardenTreeView = ({ gardens, onSelect, onGardenCreated, selectedIte
                     size="sm"
                     variant="ghost"
                     className="h-8 w-8 p-0 hover:bg-emerald-200"
-                    onClick={() => setShowCreateDialog(true)}
+                    onClick={handleCreateClick}
                   >
                     <Plus className="h-4 w-4 text-emerald-700" />
                   </Button>
@@ -53,9 +64,26 @@ export const GardenTreeView = ({ gardens, onSelect, onGardenCreated, selectedIte
         </div>
       </div>
       <div className="flex-1 space-y-1 overflow-y-auto p-2">
-        {gardens.map((g, index) => {
-          return <GardenTreeNode key={index} garden={g} onSelect={onSelect} selectedItem={selectedItem} />;
-        })}
+        {gardens.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
+            <Sprout className="h-12 w-12 text-emerald-300" />
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium text-gray-900">No Gardens</h3>
+              <p className="text-sm text-gray-500">Create one to get started</p>
+            </div>
+            <Button
+              onClick={handleCreateClick}
+              className="bg-emerald-600 hover:bg-emerald-700"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create Garden
+            </Button>
+          </div>
+        ) : (
+          gardens.map((g, index) => {
+            return <GardenTreeNode key={index} garden={g} onSelect={onSelect} selectedItem={selectedItem} />;
+          })
+        )}
       </div>
 
       {/* Create Garden Dialog */}

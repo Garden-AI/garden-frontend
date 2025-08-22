@@ -105,6 +105,7 @@ type LeftSidePanelProps = {
 };
 
 const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => {
+  const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
   const { data: gardens, refetch: refetchGardens } = useGetGardens({ owner_uuid: userInfo?.identity_id });
   const { data: modelDeployments } = useGetModelDeployments();
@@ -113,12 +114,15 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
     refetchGardens();
   };
 
+  // Only show gardens if user is authenticated and has an identity_id
+  const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? (gardens || []) : [];
+
   return (
     <ResizablePanel minSize={20} maxSize={33}>
       <ResizablePanelGroup direction="vertical">
         <ResizablePanel minSize={25}>
           <GardenTreeView
-            gardens={gardens || []}
+            gardens={filteredGardens}
             onSelect={onItemSelected}
             onGardenCreated={handleGardenCreated}
             selectedItem={selectedItem}
