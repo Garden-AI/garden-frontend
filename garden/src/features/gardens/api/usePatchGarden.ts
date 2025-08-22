@@ -71,6 +71,12 @@ export const usePatchGarden = () => {
     onSuccess: (data, input) => {
       // Update the cache with the new data
       queryClient.setQueryData(["gardens", data.doi], data);
+
+      // Invalidate all garden-related queries to ensure UI updates across all components
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "gardens"
+      });
+
       // Use custom success message if provided, otherwise use default
       toast.success(input.successMessage || "Garden updated successfully!");
     },

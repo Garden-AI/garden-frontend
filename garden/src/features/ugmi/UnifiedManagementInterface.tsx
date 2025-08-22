@@ -6,6 +6,8 @@ import {
 } from "@/components/shadcn/resizable";
 import { GardenTreeView } from "./GardenTreeView";
 import { useGetGardens } from "../gardens/api/useGetGardens";
+import { useGetGarden } from "../gardens/api/useGetGarden";
+import { useGetModalFunction } from "../modal/api/useGetModalFunction";
 import { useGetUserInfo } from "../users/api/useGetUserInfo";
 import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
 import { AppTreeView } from "./AppTreeView";
@@ -154,6 +156,16 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
   const ownsEntity = auth?.isAuthenticated && ((entity as Garden | ModalFunction)?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
 
+  // For gardens, fetch fresh data to ensure metadata is up to date
+  const gardenEntity = entityType === "garden" ? (entity as Garden) : null;
+  const { data: freshGarden } = useGetGarden(gardenEntity?.doi || "");
+  const currentGarden = gardenEntity && (freshGarden || gardenEntity);
+
+  // For functions, fetch fresh data to ensure metadata is up to date
+  const functionEntity = entityType === "function" ? (entity as ModalFunction) : null;
+  const { data: freshModalFunction } = useGetModalFunction(functionEntity?.id.toString() || "");
+  const currentModalFunction = functionEntity && (freshModalFunction || functionEntity);
+
   return (
     <ResizablePanel minSize={20} maxSize={33} className="flex flex-col h-full">
       {entityType === null ? (
@@ -163,13 +175,13 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
       ) : entityType === "function" ? (
         <div className="h-full overflow-y-auto p-4">
           <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
-            <FunctionSidebar modalFunction={entity as ModalFunction} ownsThisFunction={ownsEntity} />
+            <FunctionSidebar modalFunction={currentModalFunction!} ownsThisFunction={ownsEntity} />
           </div>
         </div>
       ) : entityType === "garden" ? (
         <div className="h-full overflow-y-auto p-4">
           <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
-            <GardenMetadataSidebar garden={entity as Garden} ownsThisGarden={ownsEntity} />
+            <GardenMetadataSidebar garden={currentGarden!} ownsThisGarden={ownsEntity} />
           </div>
         </div>
       ) : (
@@ -185,24 +197,34 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
 const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
   const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
 
+  // Fetch fresh garden data to ensure updates are reflected
+  const { data: freshGarden, refetch } = useGetGarden(garden.doi);
+
+  // Use fresh data if available, fallback to prop
+  const currentGarden = freshGarden || garden;
+
+  const memoizedRefetch = React.useCallback(async () => {
+    await refetch();
+  }, [refetch]);
+
   return (
-    <MaterialsProvider garden={garden} refetchGarden={() => Promise.resolve()}>
+    <MaterialsProvider garden={currentGarden} refetchGarden={memoizedRefetch}>
       <div className="h-full overflow-y-auto p-6">
         <div className="mb-6">
           <GardenHeader
-            garden={garden}
+            garden={currentGarden}
             ownsThisGarden={ownsThisGarden}
             setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
           />
 
           <GardenContentView
-            garden={garden}
+            garden={currentGarden}
             ownsThisGarden={ownsThisGarden}
           />
         </div>
 
         <GardenPublishModal
-          garden={garden}
+          garden={currentGarden}
           isPublishGardenModalOpen={isPublishGardenModalOpen}
           setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
         />
@@ -212,22 +234,28 @@ const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, owns
 };
 
 const UnifiedFunctionContent = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction, ownsThisFunction: boolean }) => {
+  // Fetch fresh modal function data to ensure updates are reflected
+  const { data: freshModalFunction } = useGetModalFunction(modalFunction.id.toString());
+
+  // Use fresh data if available, fallback to prop
+  const currentModalFunction = freshModalFunction || modalFunction;
+
   return (
     <div className="h-full overflow-y-auto p-6">
       <ModalFunctionHeader
-        modalFunction={modalFunction}
+        modalFunction={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
       />
       <ModalFunctionBody
-        modalFunction={modalFunction}
+        modalFunction={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
       />
       <ModalFunctionExample
-        modalFunction={modalFunction}
+        modalFunction={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
       />
       <ModalAssociatedMaterials
-        resource={modalFunction}
+        resource={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
       />
     </div>

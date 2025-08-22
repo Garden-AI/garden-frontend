@@ -141,7 +141,10 @@ export const PublishGardenModal = ({
       });
       setIsOpen(false);
       setInput("");
-      queryClient.invalidateQueries({ queryKey: ["gardens"] });
+      // Invalidate all garden-related queries to ensure UI updates
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "gardens"
+      });
       queryClient.setQueryData(["gardens", doi], (oldData: Garden) => {
         return { ...oldData, doi_is_draft: false, is_archived: false };
       });
@@ -225,7 +228,10 @@ const DeleteGardenModal = ({
       onSuccess: () => {
         setIsOpen(false);
         setInput("");
-        queryClient.invalidateQueries({ queryKey: ["gardens"] });
+        // Invalidate all garden-related queries to ensure UI updates
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === "gardens"
+        });
         queryClient.removeQueries({ queryKey: ["gardens", doi] });
         toast.success("Garden deleted successfully!");
         navigate("/");
@@ -310,7 +316,10 @@ const ArchiveGardenModal = ({
       });
       setIsOpen(false);
       setInput("");
-      queryClient.invalidateQueries({ queryKey: ["gardens", "search"] });
+      // Invalidate all garden-related queries to ensure UI updates
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "gardens"
+      });
       queryClient.setQueryData(["gardens", doi], (oldData: Garden) => {
         return { ...oldData, is_archived: true };
       });

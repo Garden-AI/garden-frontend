@@ -23,7 +23,10 @@ export const useCreateGarden = () => {
     mutationFn: createGarden,
     onSuccess: (garden) => {
       queryClient.setQueryData(["gardens", garden.doi], garden);
-      queryClient.invalidateQueries({ queryKey: ["gardens"] });
+      // Invalidate all garden-related queries to ensure UI updates across all components
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "gardens"
+      });
     },
   });
 };
