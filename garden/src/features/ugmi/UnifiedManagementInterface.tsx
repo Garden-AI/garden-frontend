@@ -7,6 +7,8 @@ import {
 import { GardenTreeView } from "./GardenTreeView";
 import { useGetGardens } from "../gardens/api/useGetGardens";
 import { useGetUserInfo } from "../users/api/useGetUserInfo";
+import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
+import { AppTreeView } from "./AppTreeView";
 import { DndContext } from "@dnd-kit/core";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../model-deployments/ModelDeployments";
@@ -53,15 +55,24 @@ type MainContentPanelProps = {
 const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
   const entityType = ((entity) => {
     if (entity === null) return null;
-    if ("modal_functions" in entity) {
-      // it is either a garden or a ModelDeployment
-      if ("doi" in entity) {
-        return "garden";
-      } else {
-        return "deployment";
-      }
+    
+    // Check if it's a Garden (has doi and modal_functions)
+    if ("doi" in entity && "modal_functions" in entity) {
+      return "garden";
     }
-    return "function";
+    
+    // Check if it's a ModelDeployment (has originalData property)
+    if ("originalData" in entity && "status" in entity) {
+      return "deployment";
+    }
+    
+    // Check if it's a ModalFunction (has function_name or title, and id)
+    if (("function_name" in entity || "title" in entity) && "id" in entity) {
+      return "function";
+    }
+    
+    // Fallback - shouldn't happen
+    return null;
   })(entity);
 
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
@@ -78,8 +89,8 @@ const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
       ) : entityType === "garden" ? (
         <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} />
       ) : (
-        <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500">App details coming soon</p>
+        <div className="h-full overflow-y-auto">
+          <ModelDeploymentDetails entity={(entity as ModelDeployment).originalData} />
         </div>
       )}
     </ResizablePanel>
@@ -93,6 +104,8 @@ type LeftSidePanelProps = {
 const LeftSidePanel = ({ onItemSelected }: LeftSidePanelProps) => {
   const { data: userInfo } = useGetUserInfo();
   const { data: gardens } = useGetGardens({ owner_uuid: userInfo?.identity_id });
+  const { data: modelDeployments } = useGetModelDeployments();
+  
   return (
     <ResizablePanel minSize={20} maxSize={33}>
       <ResizablePanelGroup direction="vertical">
@@ -100,8 +113,8 @@ const LeftSidePanel = ({ onItemSelected }: LeftSidePanelProps) => {
           <GardenTreeView gardens={gardens || []} onSelect={onItemSelected} />
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel minSize={25} className="flex items-center justify-center">
-          Apps
+        <ResizablePanel minSize={25}>
+          <AppTreeView apps={modelDeployments || []} onSelect={onItemSelected} />
         </ResizablePanel>
       </ResizablePanelGroup>
     </ResizablePanel>
@@ -111,14 +124,24 @@ const LeftSidePanel = ({ onItemSelected }: LeftSidePanelProps) => {
 const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: any }) => {
   const entityType = ((entity) => {
     if (entity === null) return null;
-    if ("modal_functions" in entity) {
-      if ("doi" in entity) {
-        return "garden";
-      } else {
-        return "deployment";
-      }
+    
+    // Check if it's a Garden (has doi and modal_functions)
+    if ("doi" in entity && "modal_functions" in entity) {
+      return "garden";
     }
-    return "function";
+    
+    // Check if it's a ModelDeployment (has originalData property)
+    if ("originalData" in entity && "status" in entity) {
+      return "deployment";
+    }
+    
+    // Check if it's a ModalFunction (has function_name or title, and id)
+    if (("function_name" in entity || "title" in entity) && "id" in entity) {
+      return "function";
+    }
+    
+    // Fallback - shouldn't happen
+    return null;
   })(entity);
 
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
@@ -144,7 +167,7 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: any }) 
         </div>
       ) : (
         <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500">Deployment metadata</p>
+          <p className="text-gray-500">App details shown in main panel</p>
         </div>
       )}
     </ResizablePanel>
