@@ -17,11 +17,10 @@ import { GardenMetadataSidebar } from "../gardens/components/GardenMetadataSideb
 import { FunctionSidebar } from "../modal/components/FunctionSidebar";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
-import { GardenDescription } from "../gardens/components/garden-page";
-import { GardenTabbedSection } from "../gardens/components/GardenTabbedSection";
 import ModalAssociatedMaterials from "../materials/components/ModalAssociatedMaterials";
 import { MaterialsProvider } from "../materials/contexts/MaterialsContext";
 import { ModalFunctionHeader, ModalFunctionBody, ModalFunctionExample } from "../modal/components/ModalFunctionPage";
+import { GardenHeader, GardenContentView, GardenPublishModal } from "../gardens/components/shared/GardenComponents";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
 
@@ -184,20 +183,29 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
 
 // Unified content components without sidebars
 const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
+  const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
+
   return (
     <MaterialsProvider garden={garden} refetchGarden={() => Promise.resolve()}>
       <div className="h-full overflow-y-auto p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">{garden.title}</h1>
-          <GardenDescription garden={garden} ownsThisGarden={ownsThisGarden} />
-        </div>
+          <GardenHeader
+            garden={garden}
+            ownsThisGarden={ownsThisGarden}
+            setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+          />
 
-        <div className="mt-6">
-          <GardenTabbedSection
+          <GardenContentView
             garden={garden}
             ownsThisGarden={ownsThisGarden}
           />
         </div>
+
+        <GardenPublishModal
+          garden={garden}
+          isPublishGardenModalOpen={isPublishGardenModalOpen}
+          setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+        />
       </div>
     </MaterialsProvider>
   );
