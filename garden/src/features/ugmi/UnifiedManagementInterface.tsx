@@ -10,7 +10,7 @@ import { useGetGarden } from "../gardens/api/useGetGarden";
 import { useGetModalFunction } from "../modal/api/useGetModalFunction";
 import { useGetUserInfo } from "../users/api/useGetUserInfo";
 import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
-import { AppTreeView } from "./AppTreeView";
+import { DeploymentTreeView } from "./DeploymentTreeView";
 import { DndContext } from "@dnd-kit/core";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../model-deployments/ModelDeployments";
@@ -21,8 +21,16 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import ModalAssociatedMaterials from "../materials/components/ModalAssociatedMaterials";
 import { MaterialsProvider } from "../materials/contexts/MaterialsContext";
-import { ModalFunctionHeader, ModalFunctionBody, ModalFunctionExample } from "../modal/components/ModalFunctionPage";
-import { GardenHeader, GardenContentView, GardenPublishModal } from "../gardens/components/shared/GardenComponents";
+import {
+  ModalFunctionHeader,
+  ModalFunctionBody,
+  ModalFunctionExample,
+} from "../modal/components/ModalFunctionPage";
+import {
+  GardenHeader,
+  GardenContentView,
+  GardenPublishModal,
+} from "../gardens/components/shared/GardenComponents";
 import TombstonePage from "@/components/TombstonePage";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
@@ -78,16 +86,22 @@ const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
   })(entity);
 
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
-  const ownsEntity = auth?.isAuthenticated && ((entity as Garden | ModalFunction)?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
+  const ownsEntity =
+    auth?.isAuthenticated &&
+    ((entity as Garden | ModalFunction)?.owner_identity_id === auth?.authorization?.user?.sub ||
+      isSuperUser);
 
   return (
     <ResizablePanel minSize={25} defaultSize={50} className="flex flex-col">
       {entityType === null ? (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex h-full items-center justify-center">
           <p className="text-gray-500">Select a Garden, Function, or App in the left panel</p>
         </div>
       ) : entityType === "function" ? (
-        <UnifiedFunctionContent modalFunction={entity as ModalFunction} ownsThisFunction={ownsEntity} />
+        <UnifiedFunctionContent
+          modalFunction={entity as ModalFunction}
+          ownsThisFunction={ownsEntity}
+        />
       ) : entityType === "garden" ? (
         <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} />
       ) : (
@@ -107,7 +121,9 @@ type LeftSidePanelProps = {
 const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => {
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
-  const { data: gardens, refetch: refetchGardens } = useGetGardens({ owner_uuid: userInfo?.identity_id });
+  const { data: gardens, refetch: refetchGardens } = useGetGardens({
+    owner_uuid: userInfo?.identity_id,
+  });
   const { data: modelDeployments } = useGetModelDeployments();
 
   const handleGardenCreated = () => {
@@ -115,7 +131,7 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
   };
 
   // Only show gardens if user is authenticated and has an identity_id
-  const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? (gardens || []) : [];
+  const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
 
   return (
     <ResizablePanel minSize={20} maxSize={33}>
@@ -130,14 +146,24 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel minSize={25}>
-          <AppTreeView apps={modelDeployments || []} onSelect={onItemSelected} selectedItem={selectedItem} />
+          <DeploymentTreeView
+            apps={modelDeployments || []}
+            onSelect={onItemSelected}
+            selectedItem={selectedItem}
+          />
         </ResizablePanel>
       </ResizablePanelGroup>
     </ResizablePanel>
   );
 };
 
-const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnType<typeof useGlobusAuth> }) => {
+const RightSidePanel = ({
+  entity,
+  auth,
+}: {
+  entity: Entity | null;
+  auth: ReturnType<typeof useGlobusAuth>;
+}) => {
   const entityType = ((entity) => {
     if (entity === null) return null;
 
@@ -161,7 +187,10 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
   })(entity);
 
   const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
-  const ownsEntity = auth?.isAuthenticated && ((entity as Garden | ModalFunction)?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
+  const ownsEntity =
+    auth?.isAuthenticated &&
+    ((entity as Garden | ModalFunction)?.owner_identity_id === auth?.authorization?.user?.sub ||
+      isSuperUser);
 
   // For gardens, fetch fresh data to ensure metadata is up to date
   const gardenEntity = entityType === "garden" ? (entity as Garden) : null;
@@ -174,9 +203,9 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
   const currentModalFunction = functionEntity && (freshModalFunction || functionEntity);
 
   return (
-    <ResizablePanel minSize={20} maxSize={33} className="flex flex-col h-full">
+    <ResizablePanel minSize={20} maxSize={33} className="flex h-full flex-col">
       {entityType === null ? (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex h-full items-center justify-center">
           <p className="text-gray-500">Select a Garden or Function in the left panel</p>
         </div>
       ) : entityType === "function" ? (
@@ -192,7 +221,7 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
           </div>
         </div>
       ) : (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex h-full items-center justify-center">
           <p className="text-gray-500">App details shown in main panel</p>
         </div>
       )}
@@ -201,7 +230,13 @@ const RightSidePanel = ({ entity, auth }: { entity: Entity | null, auth: ReturnT
 };
 
 // Unified content components without sidebars
-const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, ownsThisGarden: boolean }) => {
+const UnifiedGardenContent = ({
+  garden,
+  ownsThisGarden,
+}: {
+  garden: Garden;
+  ownsThisGarden: boolean;
+}) => {
   const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
 
   // Fetch fresh garden data to ensure updates are reflected
@@ -233,10 +268,7 @@ const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, owns
             setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
           />
 
-          <GardenContentView
-            garden={currentGarden}
-            ownsThisGarden={ownsThisGarden}
-          />
+          <GardenContentView garden={currentGarden} ownsThisGarden={ownsThisGarden} />
         </div>
 
         <GardenPublishModal
@@ -249,7 +281,13 @@ const UnifiedGardenContent = ({ garden, ownsThisGarden }: { garden: Garden, owns
   );
 };
 
-const UnifiedFunctionContent = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction, ownsThisFunction: boolean }) => {
+const UnifiedFunctionContent = ({
+  modalFunction,
+  ownsThisFunction,
+}: {
+  modalFunction: ModalFunction;
+  ownsThisFunction: boolean;
+}) => {
   // Fetch fresh modal function data to ensure updates are reflected
   const { data: freshModalFunction } = useGetModalFunction(modalFunction.id.toString());
 
@@ -262,10 +300,7 @@ const UnifiedFunctionContent = ({ modalFunction, ownsThisFunction }: { modalFunc
         modalFunction={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
       />
-      <ModalFunctionBody
-        modalFunction={currentModalFunction}
-        ownsThisFunction={ownsThisFunction}
-      />
+      <ModalFunctionBody modalFunction={currentModalFunction} ownsThisFunction={ownsThisFunction} />
       <ModalFunctionExample
         modalFunction={currentModalFunction}
         ownsThisFunction={ownsThisFunction}

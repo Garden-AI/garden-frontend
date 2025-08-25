@@ -39,29 +39,29 @@ import { ModalAppForm } from "../modal/components/ModalAppForm";
 // Union type for selected items
 type SelectedItem = ModelDeployment | ModalFunction | null;
 
-type AppTreeViewProps = {
+type DeploymentTreeViewProps = {
   apps: ModelDeployment[];
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
   selectedItem?: SelectedItem;
 };
 
-type AppFilterState = {
+type DeploymentFilterState = {
   deployed: boolean;
   undeployed: boolean;
   error: boolean;
 };
 
-type AppSortOption = {
+type DeploymentSortOption = {
   label: string;
   value: string;
   sortFn: (a: ModelDeployment, b: ModelDeployment) => number;
 };
 
-export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) => {
+export const DeploymentTreeView = ({ apps, onSelect, selectedItem }: DeploymentTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [filterState, setFilterState] = useState<AppFilterState>({
+  const [filterState, setFilterState] = useState<DeploymentFilterState>({
     deployed: true,
     undeployed: true,
     error: true,
@@ -70,7 +70,7 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
   const auth = useGlobusAuth();
 
   // Define sorting options
-  const sortOptions: AppSortOption[] = [
+  const sortOptions: DeploymentSortOption[] = [
     {
       label: "Name (A-Z)",
       value: "name",
@@ -115,10 +115,10 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
     setIsSearching(!isSearching);
   };
 
-  const handleFilterChange = (filterType: keyof AppFilterState) => {
-    setFilterState(prev => ({
+  const handleFilterChange = (filterType: keyof DeploymentFilterState) => {
+    setFilterState((prev) => ({
       ...prev,
-      [filterType]: !prev[filterType]
+      [filterType]: !prev[filterType],
     }));
   };
 
@@ -136,7 +136,7 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
 
   // Filter, search, and sort apps
   const filteredApps = useMemo(() => {
-    const filtered = apps.filter(app => {
+    const filtered = apps.filter((app) => {
       // Apply status filters
       if (app.status === "deployed" && !filterState.deployed) return false;
       if (app.status === "undeployed" && !filterState.undeployed) return false;
@@ -152,7 +152,7 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
     });
 
     // Apply sorting
-    const currentSortOption = sortOptions.find(option => option.value === sortBy);
+    const currentSortOption = sortOptions.find((option) => option.value === sortBy);
     if (currentSortOption) {
       return [...filtered].sort(currentSortOption.sortFn);
     }
@@ -170,7 +170,7 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Boxes className="h-5 w-5 text-purple-700" />
-              <h2 className="text-lg font-semibold text-purple-900">My Apps</h2>
+              <h2 className="text-lg font-semibold text-purple-900">My Deployments</h2>
             </div>
             <div className="flex items-center gap-1">
               <TooltipProvider>
@@ -190,7 +190,7 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{isSearching ? "Close Search" : "Search Apps"}</p>
+                    <p>{isSearching ? "Close Search" : "Search Deployments"}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -203,15 +203,16 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
                         <Button
                           size="sm"
                           variant="ghost"
-                          className={`h-8 w-8 p-0 hover:bg-purple-200 ${hasActiveFilters ? "bg-purple-200" : ""
-                            }`}
+                          className={`h-8 w-8 p-0 hover:bg-purple-200 ${
+                            hasActiveFilters ? "bg-purple-200" : ""
+                          }`}
                         >
                           <ListFilter className="h-4 w-4 text-purple-700" />
                         </Button>
                       </TooltipTrigger>
                     </DropdownMenuTrigger>
                     <TooltipContent>
-                      <p>Filter & Sort Apps</p>
+                      <p>Filter & Sort Deployments</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -276,7 +277,7 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Create App</p>
+                    <p>Create Deployment</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -318,10 +319,7 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
               )}
             </div>
             {apps.length === 0 && (
-              <Button
-                onClick={handleCreateClick}
-                className="bg-purple-600 hover:bg-purple-700"
-              >
+              <Button onClick={handleCreateClick} className="bg-purple-600 hover:bg-purple-700">
                 <Plus className="mr-2 h-4 w-4" />
                 Create App
               </Button>
@@ -329,7 +327,14 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
           </div>
         ) : (
           filteredApps.map((app, index) => {
-            return <AppTreeNode key={index} app={app} onSelect={onSelect} selectedItem={selectedItem} />;
+            return (
+              <DeploymentTreeNode
+                key={index}
+                app={app}
+                onSelect={onSelect}
+                selectedItem={selectedItem}
+              />
+            );
           })
         )}
       </div>
@@ -347,13 +352,13 @@ export const AppTreeView = ({ apps, onSelect, selectedItem }: AppTreeViewProps) 
   );
 };
 
-type AppTreeNodeProps = {
+type DeploymentTreeNodeProps = {
   app: ModelDeployment;
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
   selectedItem?: SelectedItem;
 };
 
-export const AppTreeNode = ({ app, onSelect, selectedItem }: AppTreeNodeProps) => {
+export const DeploymentTreeNode = ({ app, onSelect, selectedItem }: DeploymentTreeNodeProps) => {
   const { setNodeRef } = useDroppable({ id: app.id.toString() });
   const [isExpanded, setExpanded] = useState(false);
 
@@ -368,7 +373,8 @@ export const AppTreeNode = ({ app, onSelect, selectedItem }: AppTreeNodeProps) =
   };
 
   // Check if this app is selected
-  const isSelected = selectedItem &&
+  const isSelected =
+    selectedItem &&
     "originalData" in selectedItem &&
     "status" in selectedItem &&
     selectedItem.id === app.id;
@@ -413,10 +419,7 @@ export const AppTreeNode = ({ app, onSelect, selectedItem }: AppTreeNodeProps) =
 
   return (
     <div ref={setNodeRef} className="select-none">
-      <div
-        className={containerClasses}
-        onClick={handleSelect}
-      >
+      <div className={containerClasses} onClick={handleSelect}>
         <button
           className="mr-2 flex h-5 w-5 items-center justify-center rounded transition-colors duration-150 hover:bg-gray-200"
           onClick={(e) => {
@@ -438,7 +441,14 @@ export const AppTreeNode = ({ app, onSelect, selectedItem }: AppTreeNodeProps) =
       {isExpanded && appFunctions.length > 0 && (
         <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
           {appFunctions.map((fn: ModalFunction, index: number) => {
-            return <AppFunctionTreeNode key={index} fn={fn} onSelect={onSelect} selectedItem={selectedItem} />;
+            return (
+              <DeploymentFunctionTreeNode
+                key={index}
+                fn={fn}
+                onSelect={onSelect}
+                selectedItem={selectedItem}
+              />
+            );
           })}
         </div>
       )}
@@ -446,19 +456,23 @@ export const AppTreeNode = ({ app, onSelect, selectedItem }: AppTreeNodeProps) =
   );
 };
 
-type AppFunctionTreeNodeProps = {
+type DeploymentFunctionTreeNodeProps = {
   fn: ModalFunction; // Modal function metadata from the app
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
   selectedItem?: SelectedItem;
 };
 
-export const AppFunctionTreeNode = ({ fn, onSelect, selectedItem }: AppFunctionTreeNodeProps) => {
+export const DeploymentFunctionTreeNode = ({
+  fn,
+  onSelect,
+  selectedItem,
+}: DeploymentFunctionTreeNodeProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `app-fn-${fn.id}` });
 
   const style = transform
     ? {
-      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    }
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
     : undefined;
 
   const handleSelect = (e: React.MouseEvent) => {
@@ -471,10 +485,11 @@ export const AppFunctionTreeNode = ({ fn, onSelect, selectedItem }: AppFunctionT
 
   // Check if this function is selected
   // A function is selected if the selectedItem is a ModalFunction with matching id
-  const isSelected = selectedItem &&
+  const isSelected =
+    selectedItem &&
     "id" in selectedItem &&
     selectedItem.id === fn.id &&
-    (("function_name" in selectedItem) || ("title" in selectedItem)); // Make sure it's a ModalFunction
+    ("function_name" in selectedItem || "title" in selectedItem); // Make sure it's a ModalFunction
 
   // Combine base styles with selected state styles
   const containerClasses = isSelected
@@ -482,11 +497,7 @@ export const AppFunctionTreeNode = ({ fn, onSelect, selectedItem }: AppFunctionT
     : `group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-purple-200 hover:bg-purple-50 hover:shadow-sm`;
 
   return (
-    <div
-      ref={setNodeRef}
-      className={containerClasses}
-      style={style}
-    >
+    <div ref={setNodeRef} className={containerClasses} style={style}>
       {/* Drag handle */}
       <div
         {...listeners}
