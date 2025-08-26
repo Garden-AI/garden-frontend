@@ -39,10 +39,11 @@ import { ModalAppForm } from "../modal/components/ModalAppForm";
 // Union type for selected items
 type SelectedItem = ModelDeployment | ModalFunction | null;
 
-type DeploymentTreeViewProps = {
+export type DeploymentTreeViewProps = {
   apps: ModelDeployment[];
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
   selectedItem?: SelectedItem;
+  isCompact?: boolean;
 };
 
 type DeploymentFilterState = {
@@ -57,7 +58,7 @@ type DeploymentSortOption = {
   sortFn: (a: ModelDeployment, b: ModelDeployment) => number;
 };
 
-export const DeploymentTreeView = ({ apps, onSelect, selectedItem }: DeploymentTreeViewProps) => {
+export const DeploymentTreeView = ({ apps, onSelect, selectedItem, isCompact = false }: DeploymentTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -163,6 +164,75 @@ export const DeploymentTreeView = ({ apps, onSelect, selectedItem }: DeploymentT
   // Check if any filters are active (not all selected)
   const hasActiveFilters = !filterState.deployed || !filterState.undeployed || !filterState.error;
 
+  // Compact layout for when embedded in the deployment section
+  if (isCompact) {
+    return (
+      <div className="flex h-full flex-col">
+        {/* Compact header with just create button */}
+        <div className="px-3 py-2 bg-gray-100 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Boxes className="h-4 w-4 text-gray-600" />
+              <span className="text-sm font-medium text-gray-700">Deployments</span>
+            </div>
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 w-6 p-0 hover:bg-gray-200"
+                    onClick={handleCreateClick}
+                  >
+                    <Plus className="h-3 w-3 text-gray-600" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Create Deployment</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+
+        <div className="flex-1 space-y-1 overflow-y-auto p-2">
+          {filteredApps.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center space-y-2 text-center py-4">
+              <Boxes className="h-8 w-8 text-gray-300" />
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-600">No Deployments</p>
+                <p className="text-xs text-gray-500">Create one to get started</p>
+              </div>
+            </div>
+          ) : (
+            filteredApps.map((app, index) => {
+              return (
+                <DeploymentTreeNode
+                  key={index}
+                  app={app}
+                  onSelect={onSelect}
+                  selectedItem={selectedItem}
+                  isCompact={true}
+                />
+              );
+            })
+          )}
+        </div>
+
+        {/* Create App Deployment Dialog */}
+        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+          <DialogContent className="max-h-[90vh] w-[95%] max-w-4xl overflow-y-auto md:w-4/5 lg:w-3/4">
+            <DialogHeader>
+              <DialogTitle>Create New Model Deployment</DialogTitle>
+            </DialogHeader>
+            <ModalAppForm onSuccess={() => setShowCreateDialog(false)} />
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
+
+  // Full layout for standalone deployment management
   return (
     <div className="flex h-full flex-col">
       <div className="border-b-2 border-purple-300 bg-purple-100">
@@ -203,9 +273,8 @@ export const DeploymentTreeView = ({ apps, onSelect, selectedItem }: DeploymentT
                         <Button
                           size="sm"
                           variant="ghost"
-                          className={`h-8 w-8 p-0 hover:bg-purple-200 ${
-                            hasActiveFilters ? "bg-purple-200" : ""
-                          }`}
+                          className={`h-8 w-8 p-0 hover:bg-purple-200 ${hasActiveFilters ? "bg-purple-200" : ""
+                            }`}
                         >
                           <ListFilter className="h-4 w-4 text-purple-700" />
                         </Button>
@@ -356,9 +425,10 @@ type DeploymentTreeNodeProps = {
   app: ModelDeployment;
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
   selectedItem?: SelectedItem;
+  isCompact?: boolean;
 };
 
-export const DeploymentTreeNode = ({ app, onSelect, selectedItem }: DeploymentTreeNodeProps) => {
+export const DeploymentTreeNode = ({ app, onSelect, selectedItem, isCompact = false }: DeploymentTreeNodeProps) => {
   const { setNodeRef } = useDroppable({ id: app.id.toString() });
   const [isExpanded, setExpanded] = useState(false);
 
@@ -414,32 +484,37 @@ export const DeploymentTreeNode = ({ app, onSelect, selectedItem }: DeploymentTr
 
   // Combine base styles with selected state styles
   const containerClasses = isSelected
-    ? `group flex cursor-pointer items-center rounded-lg border-2 border-purple-400 bg-purple-50 p-2 transition-all duration-150 shadow-md`
-    : `group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`;
+    ? `group flex cursor-pointer items-center rounded-lg border-2 border-purple-400 bg-purple-50 ${isCompact ? 'p-1' : 'p-2'} transition-all duration-150 shadow-md`
+    : `group flex cursor-pointer items-center rounded-lg border border-transparent ${isCompact ? 'p-1' : 'p-2'} transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`;
 
   return (
     <div ref={setNodeRef} className="select-none">
       <div className={containerClasses} onClick={handleSelect}>
         <button
-          className="mr-2 flex h-5 w-5 items-center justify-center rounded transition-colors duration-150 hover:bg-gray-200"
+          className={`mr-2 flex ${isCompact ? 'h-4 w-4' : 'h-5 w-5'} items-center justify-center rounded transition-colors duration-150 hover:bg-gray-200`}
           onClick={(e) => {
             e.stopPropagation();
             handleToggleExpand();
           }}
         >
           {isExpanded ? (
-            <ChevronDown className="h-4 w-4 text-gray-600" />
+            <ChevronDown className={`${isCompact ? 'h-3 w-3' : 'h-4 w-4'} text-gray-600`} />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-600" />
+            <ChevronRight className={`${isCompact ? 'h-3 w-3' : 'h-4 w-4'} text-gray-600`} />
           )}
         </button>
         <div className="flex flex-1 items-center gap-2">
-          {status.icon}
-          <div className={`truncate font-medium ${status.textColor}`}>{app.name}</div>
+          {React.cloneElement(status.icon, {
+            className: `${isCompact ? 'h-3 w-3' : 'h-4 w-4'}`,
+            style: status.icon.props.style
+          })}
+          <div className={`truncate ${isCompact ? 'text-xs' : 'text-sm'} font-medium ${status.textColor}`}>
+            {app.name}
+          </div>
         </div>
       </div>
       {isExpanded && appFunctions.length > 0 && (
-        <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
+        <div className={`${isCompact ? 'ml-5' : 'ml-7'} mt-1 space-y-1 border-l border-gray-200 pl-3`}>
           {appFunctions.map((fn: ModalFunction, index: number) => {
             return (
               <DeploymentFunctionTreeNode
@@ -447,6 +522,7 @@ export const DeploymentTreeNode = ({ app, onSelect, selectedItem }: DeploymentTr
                 fn={fn}
                 onSelect={onSelect}
                 selectedItem={selectedItem}
+                isCompact={isCompact}
               />
             );
           })}
@@ -460,19 +536,21 @@ type DeploymentFunctionTreeNodeProps = {
   fn: ModalFunction; // Modal function metadata from the app
   onSelect?: (entity: ModelDeployment | ModalFunction) => void;
   selectedItem?: SelectedItem;
+  isCompact?: boolean;
 };
 
 export const DeploymentFunctionTreeNode = ({
   fn,
   onSelect,
   selectedItem,
+  isCompact = false,
 }: DeploymentFunctionTreeNodeProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `app-fn-${fn.id}` });
 
   const style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    }
     : undefined;
 
   const handleSelect = (e: React.MouseEvent) => {
@@ -502,13 +580,13 @@ export const DeploymentFunctionTreeNode = ({
       <div
         {...listeners}
         {...attributes}
-        className="mr-2 flex h-4 w-4 cursor-grab items-center justify-center active:cursor-grabbing"
+        className={`mr-2 flex ${isCompact ? 'h-3 w-3' : 'h-4 w-4'} cursor-grab items-center justify-center active:cursor-grabbing`}
       >
-        <div className="h-2 w-2 rounded-full bg-purple-400 transition-colors group-hover:bg-purple-500"></div>
+        <div className={`${isCompact ? 'h-1.5 w-1.5' : 'h-2 w-2'} rounded-full bg-purple-400 transition-colors group-hover:bg-purple-500`}></div>
       </div>
       {/* Clickable content */}
-      <div className="flex-1 cursor-pointer px-2 py-1.5" onClick={handleSelect}>
-        <div className="truncate text-sm font-medium text-gray-700">
+      <div className={`flex-1 cursor-pointer ${isCompact ? 'px-1 py-1' : 'px-2 py-1.5'}`} onClick={handleSelect}>
+        <div className={`truncate ${isCompact ? 'text-xs' : 'text-sm'} font-medium text-gray-700`}>
           {fn.function_name || fn.title}
         </div>
       </div>
