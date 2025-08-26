@@ -12,6 +12,8 @@ import { useGetModalFunction } from "../modal/api/useGetModalFunction";
 import { useGetUserInfo } from "../users/api/useGetUserInfo";
 import { useSavedGardens } from "../users/api/useSavedGardens";
 import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
+import { useGetAllModalFunctions } from "../modal/api/useGetAllModalFunctions";
+import { useGetUserModalFunctions } from "../modal/api/useGetUserModalFunctions";
 
 import { DndContext } from "@dnd-kit/core";
 import { Garden, ModalFunction } from "@/types";
@@ -34,7 +36,7 @@ import {
   GardenPublishModal,
 } from "../gardens/components/shared/GardenComponents";
 import TombstonePage from "@/components/TombstonePage";
-import { ChevronDown, ChevronRight, Plus, Library, User, LogOut, Bookmark } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, Library, User, LogOut, Bookmark, Globe, UserCircle } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -255,12 +257,29 @@ const RightSidePanel = ({
   return (
     <ResizablePanel defaultSize={30} minSize={25} maxSize={40} className="flex h-full flex-col bg-blue-50 rounded-r-lg">
       <UserInfoPanel auth={auth} userInfo={userInfo} />
-      <FunctionLibraryView
-        modelDeployments={modelDeployments || []}
-        gardens={filteredGardens}
-        onSelect={onItemSelected}
-        selectedItem={entity}
-      />
+      <ResizablePanelGroup direction="vertical" className="flex-1">
+        {/* My Function Library Panel */}
+        <ResizablePanel defaultSize={50} minSize={30}>
+          <MyFunctionLibraryView
+            modelDeployments={modelDeployments || []}
+            gardens={filteredGardens}
+            onSelect={onItemSelected}
+            selectedItem={entity}
+          />
+        </ResizablePanel>
+        
+        <ResizableHandle withHandle className="bg-blue-200 hover:bg-blue-300 transition-colors h-1" />
+        
+        {/* All Functions Panel */}
+        <ResizablePanel defaultSize={50} minSize={30}>
+          <AllFunctionsView
+            modelDeployments={modelDeployments || []}
+            gardens={filteredGardens}
+            onSelect={onItemSelected}
+            selectedItem={entity}
+          />
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </ResizablePanel>
   );
 };
@@ -498,7 +517,106 @@ type FunctionLibraryViewProps = {
   selectedItem?: Entity | null;
 };
 
-const FunctionLibraryView = ({
+// All Functions component - shows all published functions as a simple list
+const AllFunctionsView = ({
+  modelDeployments,
+  gardens,
+  onSelect,
+  selectedItem,
+}: FunctionLibraryViewProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: allModalFunctions } = useGetAllModalFunctions();
+
+  // Get functions that are already in gardens for badge indicators
+  const functionsInGardens = useMemo(() => {
+    const inGardens = new Set();
+    gardens.forEach((garden) => {
+      garden.modal_functions?.forEach((func) => {
+        inGardens.add(func.id);
+      });
+    });
+    return inGardens;
+  }, [gardens]);
+
+  // Filter and prepare all functions for display
+  const filteredFunctions = useMemo(() => {
+    if (!allModalFunctions) return [];
+    
+    // Add garden badge info to each function
+    const functionsWithGardenInfo = allModalFunctions.map(func => ({
+      ...func,
+      inGarden: functionsInGardens.has(func.id),
+    }));
+
+    // Apply search filter
+    if (!searchTerm) return functionsWithGardenInfo;
+    
+    const searchLower = searchTerm.toLowerCase();
+    return functionsWithGardenInfo.filter(func => 
+      func.function_name?.toLowerCase().includes(searchLower) ||
+      func.title?.toLowerCase().includes(searchLower) ||
+      func.description?.toLowerCase().includes(searchLower)
+    );
+  }, [allModalFunctions, searchTerm, functionsInGardens]);
+
+  return (
+    <div className="flex h-full flex-col">
+      {/* Header */}
+      <div className="border-b-2 border-purple-300 bg-purple-100">
+        <div className="px-4 py-2">
+          <div className="flex items-center gap-2">
+            <Globe className="h-4 w-4 text-purple-700" />
+            <h2 className="text-sm font-semibold text-purple-900">All Functions</h2>
+          </div>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="border-b border-purple-200 p-2">
+        <Input
+          placeholder="Search all functions..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border-purple-200 focus:border-purple-400 focus:ring-purple-400 text-xs"
+        />
+      </div>
+
+      {/* Functions List */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent">
+        {filteredFunctions.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center space-y-4 p-4 text-center">
+            <Globe className="h-8 w-8 text-gray-300" />
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-900">No Functions Found</h3>
+              <p className="text-xs text-gray-500">
+                {searchTerm
+                  ? "No functions match your search"
+                  : "No published functions available"}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="p-2">
+            <div className="space-y-1">
+              {filteredFunctions.map((func) => (
+                <SimpleFunctionItem
+                  key={func.id}
+                  func={func}
+                  onSelect={onSelect}
+                  selectedItem={selectedItem}
+                  showInGardenBadge={true}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// My Function Library component - shows user's functions grouped by deployments
+const MyFunctionLibraryView = ({
   modelDeployments,
   gardens,
   onSelect,
@@ -507,6 +625,7 @@ const FunctionLibraryView = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const auth = useGlobusAuth();
+  const { data: userModalFunctions } = useGetUserModalFunctions();
 
   const handleCreateClick = async () => {
     if (!auth.isAuthenticated) {
@@ -527,21 +646,27 @@ const FunctionLibraryView = ({
     return inGardens;
   }, [gardens]);
 
-  // Group deployments with their functions, filtered by search
+  // Get the set of user's function IDs
+  const userFunctionIds = useMemo(() => {
+    if (!userModalFunctions) return new Set();
+    return new Set(userModalFunctions.map(func => func.id));
+  }, [userModalFunctions]);
+
+  // Group deployments with user's functions, filtered by search
   const deploymentGroups = useMemo(() => {
     const groups = new Map();
 
-    // Initialize groups from deployments
+    // Filter deployments that have user's functions
     modelDeployments.forEach((deployment) => {
-      const functions = (deployment.originalData?.modal_functions || []).map(
-        (func: ModalFunction) => ({
+      const functions = (deployment.originalData?.modal_functions || [])
+        .filter((func: ModalFunction) => userFunctionIds.has(func.id)) // Only show user's functions
+        .map((func: ModalFunction) => ({
           ...func,
           deploymentId: deployment.id,
           deploymentName: deployment.name,
           deploymentStatus: deployment.status,
           inGarden: functionsInGardens.has(func.id),
-        }),
-      );
+        }));
 
       // Apply search filter
       const filteredFunctions = functions.filter(
@@ -567,68 +692,66 @@ const FunctionLibraryView = ({
     });
 
     return Array.from(groups.values());
-  }, [modelDeployments, searchTerm, functionsInGardens]);
+  }, [modelDeployments, searchTerm, functionsInGardens, userFunctionIds]);
 
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
       <div className="border-b-2 border-blue-300 bg-blue-100">
-        <div className="px-4 py-3">
+        <div className="px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Library className="h-5 w-5 text-blue-700" />
-              <h2 className="text-lg font-semibold text-blue-900">Function Library</h2>
+              <Library className="h-4 w-4 text-blue-700" />
+              <h2 className="text-sm font-semibold text-blue-900">My Function Library</h2>
             </div>
-            <div className="flex items-center gap-1">
-              <TooltipProvider>
-                <Tooltip delayDuration={200}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 hover:bg-blue-200"
-                      onClick={handleCreateClick}
-                    >
-                      <Plus className="h-4 w-4 text-blue-700" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Create New Function</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0 hover:bg-blue-200"
+                    onClick={handleCreateClick}
+                  >
+                    <Plus className="h-3 w-3 text-blue-700" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Create New Function</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>
 
       {/* Search */}
-      <div className="border-b border-blue-200 p-3">
+      <div className="border-b border-blue-200 p-2">
         <Input
-          placeholder="Search functions..."
+          placeholder="Search my functions..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+          className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 text-xs"
         />
       </div>
 
       {/* Deployment Groups */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent">
         {deploymentGroups.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center space-y-4 p-8 text-center">
-            <Library className="h-12 w-12 text-gray-300" />
+          <div className="flex h-full flex-col items-center justify-center space-y-4 p-4 text-center">
+            <Library className="h-8 w-8 text-gray-300" />
             <div className="space-y-2">
-              <h3 className="text-lg font-medium text-gray-900">No Functions Found</h3>
-              <p className="text-sm text-gray-500">
+              <h3 className="text-sm font-medium text-gray-900">No Functions Found</h3>
+              <p className="text-xs text-gray-500">
                 {searchTerm
                   ? "No functions match your search"
-                  : "Create a deployment to add functions"}
+                  : "You haven't created any functions yet"}
               </p>
             </div>
             {!searchTerm && (
-              <Button onClick={handleCreateClick} className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Your First Function
+              <Button onClick={handleCreateClick} className="bg-blue-600 hover:bg-blue-700 text-xs">
+                <Plus className="mr-1 h-3 w-3" />
+                Create Function
               </Button>
             )}
           </div>
@@ -817,6 +940,65 @@ const FunctionItem = ({
         ${
           isSelected
             ? "border-2 border-blue-400 bg-blue-100 shadow-sm"
+            : "border border-transparent hover:bg-white hover:shadow-sm"
+        }
+      `}
+    >
+      <div className="flex items-start gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <div className="truncate text-sm font-medium text-gray-900">
+              {func.function_name || func.title}
+            </div>
+            {showInGardenBadge && func.inGarden && (
+              <span className="flex-shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-xs text-emerald-600">
+                ✓ in garden
+              </span>
+            )}
+          </div>
+          {func.description && (
+            <div className="line-clamp-2 text-xs text-gray-500">{func.description}</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Simple function item component for All Functions panel (no deployment info)
+type SimpleFunctionItemProps = {
+  func: ModalFunction & { inGarden?: boolean };
+  onSelect?: (entity: Entity) => void;
+  selectedItem?: Entity | null;
+  showInGardenBadge?: boolean;
+};
+
+const SimpleFunctionItem = ({
+  func,
+  onSelect,
+  selectedItem,
+  showInGardenBadge = false,
+}: SimpleFunctionItemProps) => {
+  const isSelected =
+    selectedItem &&
+    "id" in selectedItem &&
+    selectedItem.id === func.id &&
+    ("function_name" in selectedItem || "title" in selectedItem);
+
+  const handleSelect = () => {
+    if (onSelect) {
+      onSelect(func as ModalFunction);
+    }
+  };
+
+  return (
+    <div
+      onClick={handleSelect}
+      className={`
+        group cursor-pointer rounded p-2 transition-all duration-150
+        ${
+          isSelected
+            ? "border-2 border-purple-400 bg-purple-100 shadow-sm"
             : "border border-transparent hover:bg-white hover:shadow-sm"
         }
       `}
