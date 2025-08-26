@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
 } from "@/components/shadcn/resizable";
+import { Button } from "@/components/shadcn/button";
 import { GardenTreeView } from "./GardenTreeView";
 import { useGetGardens } from "../gardens/api/useGetGardens";
 import { useGetGarden } from "../gardens/api/useGetGarden";
 import { useGetModalFunction } from "../modal/api/useGetModalFunction";
 import { useGetUserInfo } from "../users/api/useGetUserInfo";
 import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
-import { DeploymentTreeView } from "./DeploymentTreeView";
+
 import { DndContext } from "@dnd-kit/core";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../model-deployments/ModelDeployments";
@@ -32,6 +33,16 @@ import {
   GardenPublishModal,
 } from "../gardens/components/shared/GardenComponents";
 import TombstonePage from "@/components/TombstonePage";
+import { ChevronDown, ChevronRight, Plus, Library } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
+import { Input } from "@/components/shadcn/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
+import { ModalAppForm } from "../modal/components/ModalAppForm";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
 
@@ -42,9 +53,10 @@ export const UnifiedManagmentInterface = () => {
   const hanldeItemSelected = (entity: Entity) => {
     setSelectedItem(entity);
   };
+
   return (
     <DndContext>
-      <div className="flex h-screen w-screen items-center">
+      <div className="relative flex h-screen w-screen items-center">
         <ResizablePanelGroup direction="horizontal">
           <LeftSidePanel onItemSelected={hanldeItemSelected} selectedItem={selectedItem} />
           <ResizableHandle withHandle />
@@ -104,9 +116,13 @@ const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
         />
       ) : entityType === "garden" ? (
         <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} />
-      ) : (
+      ) : entityType === "deployment" ? (
         <div className="h-full overflow-y-auto">
           <ModelDeploymentDetails entity={(entity as ModelDeployment).originalData} />
+        </div>
+      ) : (
+        <div className="flex h-full items-center justify-center">
+          <p className="text-gray-500">Unknown entity type</p>
         </div>
       )}
     </ResizablePanel>
@@ -134,24 +150,23 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
   const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
 
   return (
-    <ResizablePanel minSize={20} maxSize={33}>
+    <ResizablePanel defaultSize={20} minSize={20} maxSize={33}>
       <ResizablePanelGroup direction="vertical">
-        <ResizablePanel minSize={25}>
+        {/* Gardens Section - Takes most space but still resizable */}
+        <ResizablePanel defaultSize={60} minSize={30}>
           <GardenTreeView
             gardens={filteredGardens}
             onSelect={onItemSelected}
             onGardenCreated={handleGardenCreated}
-            selectedItem={selectedItem}
+            selectedItem={
+              selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
+                ? (selectedItem as Garden | ModalFunction)
+                : null
+            }
           />
         </ResizablePanel>
+
         <ResizableHandle withHandle />
-        <ResizablePanel minSize={25}>
-          <DeploymentTreeView
-            apps={modelDeployments || []}
-            onSelect={onItemSelected}
-            selectedItem={selectedItem}
-          />
-        </ResizablePanel>
       </ResizablePanelGroup>
     </ResizablePanel>
   );
@@ -203,7 +218,7 @@ const RightSidePanel = ({
   const currentModalFunction = functionEntity && (freshModalFunction || functionEntity);
 
   return (
-    <ResizablePanel minSize={20} maxSize={33} className="flex h-full flex-col">
+    <ResizablePanel defaultSize={20} minSize={20} maxSize={33} className="flex h-full flex-col">
       {entityType === null ? (
         <div className="flex h-full items-center justify-center">
           <p className="text-gray-500">Select a Garden or Function in the left panel</p>
@@ -220,9 +235,13 @@ const RightSidePanel = ({
             <GardenMetadataSidebar garden={currentGarden!} ownsThisGarden={ownsEntity} />
           </div>
         </div>
+      ) : entityType === "deployment" ? (
+        <div className="flex h-full items-center justify-center">
+          <p className="text-gray-500">Deployment details shown in main panel</p>
+        </div>
       ) : (
         <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">App details shown in main panel</p>
+          <p className="text-gray-500">Select an item to view details</p>
         </div>
       )}
     </ResizablePanel>
@@ -309,6 +328,366 @@ const UnifiedFunctionContent = ({
         resource={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
       />
+    </div>
+  );
+};
+
+
+// Function Library component - shows functions organized by their source deployment
+// Extended function type with deployment info
+type FunctionWithDeployment = ModalFunction & {
+  deploymentId: number;
+  deploymentName: string;
+  deploymentStatus: string;
+};
+
+type FunctionLibraryViewProps = {
+  modelDeployments: ModelDeployment[];
+  gardens: Garden[];
+  onSelect?: (entity: Entity) => void;
+  selectedItem?: Entity | null;
+};
+
+const FunctionLibraryView = ({
+  modelDeployments,
+  gardens,
+  onSelect,
+  selectedItem,
+}: FunctionLibraryViewProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const auth = useGlobusAuth();
+
+  const handleCreateClick = async () => {
+    if (!auth.isAuthenticated) {
+      await auth.authorization?.login();
+      return;
+    }
+    setShowCreateDialog(true);
+  };
+
+  // Get functions that are already in gardens for badge indicators
+  const functionsInGardens = useMemo(() => {
+    const inGardens = new Set();
+    gardens.forEach((garden) => {
+      garden.modal_functions?.forEach((func) => {
+        inGardens.add(func.id);
+      });
+    });
+    return inGardens;
+  }, [gardens]);
+
+  // Group deployments with their functions, filtered by search
+  const deploymentGroups = useMemo(() => {
+    const groups = new Map();
+
+    // Initialize groups from deployments
+    modelDeployments.forEach((deployment) => {
+      const functions = (deployment.originalData?.modal_functions || []).map(
+        (func: ModalFunction) => ({
+          ...func,
+          deploymentId: deployment.id,
+          deploymentName: deployment.name,
+          deploymentStatus: deployment.status,
+          inGarden: functionsInGardens.has(func.id),
+        }),
+      );
+
+      // Apply search filter
+      const filteredFunctions = functions.filter(
+        (func: FunctionWithDeployment & { inGarden: boolean }) => {
+          if (!searchTerm) return true;
+          const searchLower = searchTerm.toLowerCase();
+          return (
+            func.function_name?.toLowerCase().includes(searchLower) ||
+            func.title?.toLowerCase().includes(searchLower) ||
+            func.description?.toLowerCase().includes(searchLower) ||
+            func.deploymentName.toLowerCase().includes(searchLower)
+          );
+        },
+      );
+
+      // Only include groups that have functions (after filtering)
+      if (filteredFunctions.length > 0) {
+        groups.set(deployment.id, {
+          deployment,
+          functions: filteredFunctions,
+        });
+      }
+    });
+
+    return Array.from(groups.values());
+  }, [modelDeployments, searchTerm, functionsInGardens]);
+
+  return (
+    <div className="flex h-full flex-col">
+      {/* Header */}
+      <div className="border-b-2 border-blue-300 bg-blue-100">
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Library className="h-5 w-5 text-blue-700" />
+              <h2 className="text-lg font-semibold text-blue-900">Function Library</h2>
+            </div>
+            <div className="flex items-center gap-1">
+              <TooltipProvider>
+                <Tooltip delayDuration={200}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0 hover:bg-blue-200"
+                      onClick={handleCreateClick}
+                    >
+                      <Plus className="h-4 w-4 text-blue-700" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Create New Function</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="border-b border-blue-200 p-3">
+        <Input
+          placeholder="Search functions..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+        />
+      </div>
+
+      {/* Deployment Groups */}
+      <div className="flex-1 overflow-y-auto">
+        {deploymentGroups.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center space-y-4 p-8 text-center">
+            <Library className="h-12 w-12 text-gray-300" />
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium text-gray-900">No Functions Found</h3>
+              <p className="text-sm text-gray-500">
+                {searchTerm
+                  ? "No functions match your search"
+                  : "Create a deployment to add functions"}
+              </p>
+            </div>
+            {!searchTerm && (
+              <Button onClick={handleCreateClick} className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="mr-2 h-4 w-4" />
+                Create Your First Function
+              </Button>
+            )}
+          </div>
+        ) : (
+          deploymentGroups.map((group) => (
+            <DeploymentGroup
+              key={group.deployment.id}
+              deployment={group.deployment}
+              functions={group.functions}
+              onSelect={onSelect}
+              selectedItem={selectedItem}
+            />
+          ))
+        )}
+      </div>
+
+      {/* Create Function Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-h-[90vh] w-[95%] max-w-4xl overflow-y-auto md:w-4/5 lg:w-3/4">
+          <DialogHeader>
+            <DialogTitle>Create New Function</DialogTitle>
+          </DialogHeader>
+          <ModalAppForm onSuccess={() => setShowCreateDialog(false)} />
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+// Component for displaying a deployment group with its functions
+type DeploymentGroupProps = {
+  deployment: ModelDeployment;
+  functions: Array<FunctionWithDeployment & { inGarden: boolean }>;
+  onSelect?: (entity: Entity) => void;
+  selectedItem?: Entity | null;
+};
+
+const DeploymentGroup = ({
+  deployment,
+  functions,
+  onSelect,
+  selectedItem,
+}: DeploymentGroupProps) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const getDeploymentStatusIcon = (status: string) => {
+    switch (status) {
+      case "deployed":
+        return "🟢";
+      case "error":
+        return "🔴";
+      case "undeployed":
+      default:
+        return "🟡";
+    }
+  };
+
+  const getDeploymentStatusColor = (status: string) => {
+    switch (status) {
+      case "deployed":
+        return "border-green-200 bg-green-50";
+      case "error":
+        return "border-red-200 bg-red-50";
+      case "undeployed":
+      default:
+        return "border-yellow-200 bg-yellow-50";
+    }
+  };
+
+  const functionsInGardens = functions.filter((f) => f.inGarden).length;
+
+  // Check if this deployment is selected
+  const isDeploymentSelected =
+    selectedItem &&
+    "originalData" in selectedItem &&
+    "status" in selectedItem &&
+    selectedItem.id === deployment.id;
+
+  const handleDeploymentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onSelect) {
+      onSelect(deployment);
+    }
+  };
+
+  const handleExpandClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <div className={`border-b border-gray-200 ${getDeploymentStatusColor(deployment.status)}`}>
+      {/* Deployment Header */}
+      <div className="flex">
+        {/* Expand/Collapse button */}
+        <button
+          className="flex items-center px-2 py-2 transition-colors hover:bg-gray-100"
+          onClick={handleExpandClick}
+        >
+          {isExpanded ? (
+            <ChevronDown className="h-4 w-4 text-gray-600" />
+          ) : (
+            <ChevronRight className="h-4 w-4 text-gray-600" />
+          )}
+        </button>
+
+        {/* Deployment info - clickable to select deployment */}
+        <div
+          className={`flex-1 cursor-pointer px-1 py-2 transition-colors ${
+            isDeploymentSelected
+              ? "border-r-4 border-purple-400 bg-purple-100"
+              : "hover:bg-gray-100"
+          }`}
+          onClick={handleDeploymentClick}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs">{getDeploymentStatusIcon(deployment.status)}</span>
+              <span className="text-sm font-medium text-gray-800">{deployment.name}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {functionsInGardens > 0 && (
+                <span className="text-green-600 bg-green-100 rounded px-2 py-1 text-xs">
+                  {functionsInGardens} in gardens
+                </span>
+              )}
+              <span className="rounded bg-gray-200 px-2 py-1 text-xs text-gray-500">
+                {functions.length} function{functions.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Function List */}
+      {isExpanded && (
+        <div className="px-2 pb-2">
+          <div className="space-y-1">
+            {functions.map((func) => (
+              <FunctionItem
+                key={func.id}
+                func={func}
+                onSelect={onSelect}
+                selectedItem={selectedItem}
+                showInGardenBadge={true}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Individual function item component
+type FunctionItemProps = {
+  func: FunctionWithDeployment & { inGarden?: boolean };
+  onSelect?: (entity: Entity) => void;
+  selectedItem?: Entity | null;
+  showInGardenBadge?: boolean;
+};
+
+const FunctionItem = ({
+  func,
+  onSelect,
+  selectedItem,
+  showInGardenBadge = false,
+}: FunctionItemProps) => {
+  const isSelected =
+    selectedItem &&
+    "id" in selectedItem &&
+    selectedItem.id === func.id &&
+    ("function_name" in selectedItem || "title" in selectedItem);
+
+  const handleSelect = () => {
+    if (onSelect) {
+      onSelect(func as ModalFunction);
+    }
+  };
+
+  return (
+    <div
+      onClick={handleSelect}
+      className={`
+        group cursor-pointer rounded p-2 transition-all duration-150
+        ${
+          isSelected
+            ? "border-2 border-blue-400 bg-blue-100 shadow-sm"
+            : "border border-transparent hover:bg-white hover:shadow-sm"
+        }
+      `}
+    >
+      <div className="flex items-start gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <div className="truncate text-sm font-medium text-gray-900">
+              {func.function_name || func.title}
+            </div>
+            {showInGardenBadge && func.inGarden && (
+              <span className="flex-shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-xs text-emerald-600">
+                ✓ in garden
+              </span>
+            )}
+          </div>
+          {func.description && (
+            <div className="line-clamp-2 text-xs text-gray-500">{func.description}</div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
