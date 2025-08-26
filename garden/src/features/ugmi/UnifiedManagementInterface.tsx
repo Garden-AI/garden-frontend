@@ -10,6 +10,7 @@ import { useGetGardens } from "../gardens/api/useGetGardens";
 import { useGetGarden } from "../gardens/api/useGetGarden";
 import { useGetModalFunction } from "../modal/api/useGetModalFunction";
 import { useGetUserInfo } from "../users/api/useGetUserInfo";
+import { useSavedGardens } from "../users/api/useSavedGardens";
 import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
 
 import { DndContext } from "@dnd-kit/core";
@@ -33,7 +34,7 @@ import {
   GardenPublishModal,
 } from "../gardens/components/shared/GardenComponents";
 import TombstonePage from "@/components/TombstonePage";
-import { ChevronDown, ChevronRight, Plus, Library, User, LogOut } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, Library, User, LogOut, Bookmark } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -188,6 +189,11 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
   const { data: gardens, refetch: refetchGardens } = useGetGardens({
     owner_uuid: userInfo?.identity_id,
   });
+  
+  // Get saved gardens from user's saved DOIs
+  const savedGardenDois = userInfo?.saved_garden_dois || [];
+  const { data: savedGardensResponse } = useSavedGardens(savedGardenDois);
+  const savedGardens = savedGardensResponse?.garden_meta || [];
 
   const handleGardenCreated = () => {
     refetchGardens();
@@ -198,16 +204,32 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
 
   return (
     <ResizablePanel defaultSize={20} minSize={20} maxSize={33} className="bg-emerald-50 rounded-l-lg">
-      <GardenTreeView
-        gardens={filteredGardens}
-        onSelect={onItemSelected}
-        onGardenCreated={handleGardenCreated}
-        selectedItem={
-          selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
-            ? (selectedItem as Garden | ModalFunction)
-            : null
-        }
-      />
+      <ResizablePanelGroup direction="vertical">
+        {/* Saved Gardens Section */}
+        <ResizablePanel defaultSize={40} minSize={25}>
+          <SavedGardensView
+            savedGardens={savedGardens}
+            onSelect={onItemSelected}
+            selectedItem={selectedItem}
+          />
+        </ResizablePanel>
+        
+        <ResizableHandle withHandle className="bg-emerald-200 hover:bg-emerald-300 transition-colors h-1" />
+        
+        {/* My Gardens Section */}
+        <ResizablePanel defaultSize={60} minSize={35}>
+          <GardenTreeView
+            gardens={filteredGardens}
+            onSelect={onItemSelected}
+            onGardenCreated={handleGardenCreated}
+            selectedItem={
+              selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
+                ? (selectedItem as Garden | ModalFunction)
+                : null
+            }
+          />
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </ResizablePanel>
   );
 };
@@ -323,6 +345,82 @@ const UnifiedFunctionContent = ({
         resource={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
       />
+    </div>
+  );
+};
+
+// Saved Gardens View - shows user's saved/bookmarked gardens
+type SavedGardensViewProps = {
+  savedGardens: Garden[];
+  onSelect?: (entity: Entity) => void;
+  selectedItem?: Entity | null;
+};
+
+const SavedGardensView = ({ savedGardens, onSelect, selectedItem }: SavedGardensViewProps) => {
+  return (
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="border-b-2 border-amber-300 bg-amber-100">
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Bookmark className="h-5 w-5 text-amber-700" />
+            <h2 className="text-lg font-semibold text-amber-900">Saved Gardens</h2>
+            <span className="text-sm text-amber-600">({savedGardens.length})</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent p-2">
+        {savedGardens.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
+            <Bookmark className="h-12 w-12 text-amber-300" />
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium text-gray-900">No Saved Gardens</h3>
+              <p className="text-sm text-gray-500">Gardens you bookmark will appear here</p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            {savedGardens.map((garden) => (
+              <SavedGardenItem
+                key={garden.doi}
+                garden={garden}
+                onSelect={onSelect}
+                isSelected={!!(selectedItem && 'doi' in selectedItem && selectedItem.doi === garden.doi)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Individual saved garden item
+type SavedGardenItemProps = {
+  garden: Garden;
+  onSelect?: (entity: Entity) => void;
+  isSelected: boolean;
+};
+
+const SavedGardenItem = ({ garden, onSelect, isSelected }: SavedGardenItemProps) => {
+  const handleSelect = () => {
+    if (onSelect) {
+      onSelect(garden);
+    }
+  };
+
+  const containerClasses = isSelected
+    ? `group flex cursor-pointer items-center rounded-lg border-2 border-amber-400 bg-amber-50 p-2 transition-all duration-150 shadow-md`
+    : `group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm hover:bg-amber-50 hover:border-amber-200`;
+
+  return (
+    <div className={containerClasses} onClick={handleSelect}>
+      <div className="flex items-center gap-2 w-full">
+        <Bookmark className="h-4 w-4 text-amber-600 flex-shrink-0" />
+        <div className="truncate font-medium text-gray-900 text-sm">{garden.title}</div>
+      </div>
     </div>
   );
 };
