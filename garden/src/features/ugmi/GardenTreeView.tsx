@@ -31,6 +31,18 @@ type GardenTreeViewProps = {
   onSelect?: (entity: Garden | ModalFunction) => void;
   onGardenCreated?: (garden: Garden) => void;
   selectedItem?: SelectedItem;
+  // Header configuration
+  showHeader?: boolean;
+  headerIcon?: React.ReactNode;
+  headerTitle?: string;
+  headerThemeColors?: {
+    bg: string;
+    border: string;
+    text: string;
+    iconColor: string;
+    hoverColor: string;
+    activeColor: string;
+  };
 };
 
 type GardenFilterState = {
@@ -45,7 +57,23 @@ type SortOption = {
   sortFn: (a: Garden, b: Garden) => number;
 };
 
-export const GardenTreeView = ({ gardens, onSelect, onGardenCreated, selectedItem }: GardenTreeViewProps) => {
+export const GardenTreeView = ({ 
+  gardens, 
+  onSelect, 
+  onGardenCreated, 
+  selectedItem,
+  showHeader = false,
+  headerIcon,
+  headerTitle = "Gardens",
+  headerThemeColors = {
+    bg: "bg-emerald-100",
+    border: "border-emerald-300", 
+    text: "text-emerald-900",
+    iconColor: "text-emerald-700",
+    hoverColor: "hover:bg-emerald-200",
+    activeColor: "bg-emerald-200"
+  }
+}: GardenTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -165,134 +193,138 @@ export const GardenTreeView = ({ gardens, onSelect, onGardenCreated, selectedIte
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b-2 border-emerald-300 bg-emerald-100">
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sprout className="h-5 w-5 text-emerald-700" />
-              <h2 className="text-lg font-semibold text-emerald-900">My Gardens</h2>
-            </div>
-            <div className="flex items-center gap-1">
-              <TooltipProvider>
-                <Tooltip delayDuration={200}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 hover:bg-emerald-200"
-                      onClick={handleSearchToggle}
-                    >
-                      {isSearching ? (
-                        <X className="h-4 w-4 text-emerald-700" />
-                      ) : (
-                        <Search className="h-4 w-4 text-emerald-700" />
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{isSearching ? "Close Search" : "Search Gardens"}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <DropdownMenu>
+      {/* Conditional Header */}
+      {showHeader && (
+        <div className={`border-b-2 ${headerThemeColors.border} ${headerThemeColors.bg}`}>
+          <div className="px-4 py-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {headerIcon && <div className={headerThemeColors.iconColor}>{headerIcon}</div>}
+                <h2 className={`text-sm font-semibold ${headerThemeColors.text}`}>{headerTitle}</h2>
+              </div>
+              <div className="flex items-center gap-1">
                 <TooltipProvider>
                   <Tooltip delayDuration={200}>
-                    <DropdownMenuTrigger asChild>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor}`}
+                        onClick={handleSearchToggle}
+                      >
+                        {isSearching ? (
+                          <X className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
+                        ) : (
+                          <Search className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{isSearching ? "Close Search" : "Search Gardens"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <DropdownMenu>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={200}>
+                      <DropdownMenuTrigger asChild>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor} ${hasActiveFilters ? headerThemeColors.activeColor : ""}`}
+                          >
+                            <ListFilter className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
+                          </Button>
+                        </TooltipTrigger>
+                      </DropdownMenuTrigger>
+                      <TooltipContent>
+                        <p>Filter & Sort Gardens</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <DropdownMenuContent align="end" className="w-56">
+                    {/* Sort Section */}
+                    <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">Sort by</div>
+                    {sortOptions.map((option) => (
+                      <DropdownMenuItem
+                        key={option.value}
+                        onClick={() => handleSortChange(option.value)}
+                        className={sortBy === option.value ? "bg-emerald-50" : ""}
+                      >
+                        {option.label}
+                      </DropdownMenuItem>
+                    ))}
+
+                    <DropdownMenuSeparator />
+
+                    {/* Filter Section */}
+                    <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">Show states</div>
+                    <DropdownMenuCheckboxItem
+                      checked={filterState.published}
+                      onCheckedChange={() => handleFilterChange("published")}
+                    >
+                      Published
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={filterState.draft}
+                      onCheckedChange={() => handleFilterChange("draft")}
+                    >
+                      Draft
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={filterState.archived}
+                      onCheckedChange={() => handleFilterChange("archived")}
+                    >
+                      Archived
+                    </DropdownMenuCheckboxItem>
+
+                    {hasActiveFilters && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleResetFilters}>
+                          <RotateCcw className="mr-2 h-4 w-4" />
+                          Reset Filters
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {onGardenCreated && (
+                  <TooltipProvider>
+                    <Tooltip delayDuration={200}>
                       <TooltipTrigger asChild>
                         <Button
                           size="sm"
                           variant="ghost"
-                          className={`h-8 w-8 p-0 hover:bg-emerald-200 ${hasActiveFilters ? "bg-emerald-200" : ""
-                            }`}
+                          className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor}`}
+                          onClick={handleCreateClick}
                         >
-                          <ListFilter className="h-4 w-4 text-emerald-700" />
+                          <Plus className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
                         </Button>
                       </TooltipTrigger>
-                    </DropdownMenuTrigger>
-                    <TooltipContent>
-                      <p>Filter & Sort Gardens</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <DropdownMenuContent align="end" className="w-56">
-                  {/* Sort Section */}
-                  <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">Sort by</div>
-                  {sortOptions.map((option) => (
-                    <DropdownMenuItem
-                      key={option.value}
-                      onClick={() => handleSortChange(option.value)}
-                      className={sortBy === option.value ? "bg-emerald-50" : ""}
-                    >
-                      {option.label}
-                    </DropdownMenuItem>
-                  ))}
-
-                  <DropdownMenuSeparator />
-
-                  {/* Filter Section */}
-                  <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">Show states</div>
-                  <DropdownMenuCheckboxItem
-                    checked={filterState.published}
-                    onCheckedChange={() => handleFilterChange("published")}
-                  >
-                    Published
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={filterState.draft}
-                    onCheckedChange={() => handleFilterChange("draft")}
-                  >
-                    Draft
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={filterState.archived}
-                    onCheckedChange={() => handleFilterChange("archived")}
-                  >
-                    Archived
-                  </DropdownMenuCheckboxItem>
-
-                  {hasActiveFilters && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleResetFilters}>
-                        <RotateCcw className="mr-2 h-4 w-4" />
-                        Reset Filters
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <TooltipProvider>
-                <Tooltip delayDuration={200}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 hover:bg-emerald-200"
-                      onClick={handleCreateClick}
-                    >
-                      <Plus className="h-4 w-4 text-emerald-700" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Create New Garden</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                      <TooltipContent>
+                        <p>Create New Garden</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Search Input */}
       {isSearching && (
-        <div className="border-b border-emerald-200 p-3">
+        <div className={`border-b ${headerThemeColors.border.replace('border-', 'border-').replace('-300', '-200')} p-3`}>
           <Input
             placeholder="Search gardens by name, description, or author..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border-emerald-200 focus:border-emerald-400 focus:ring-emerald-400"
+            className={`${headerThemeColors.border.replace('border-', 'border-').replace('-300', '-200')} focus:border-emerald-400 focus:ring-emerald-400 text-xs`}
             autoFocus
           />
         </div>
