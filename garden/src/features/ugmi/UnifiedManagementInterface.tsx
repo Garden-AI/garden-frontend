@@ -56,13 +56,13 @@ export const UnifiedManagmentInterface = () => {
 
   return (
     <DndContext>
-      <div className="relative flex h-screen w-screen items-center">
-        <ResizablePanelGroup direction="horizontal">
+      <div className="relative flex h-screen w-full items-center bg-gray-100 p-2 scrollbar-thin scrollbar-track-transparent overflow-hidden">
+        <ResizablePanelGroup direction="horizontal" className="rounded-lg overflow-hidden shadow-sm">
           <LeftSidePanel onItemSelected={hanldeItemSelected} selectedItem={selectedItem} />
-          <ResizableHandle withHandle />
+          <ResizableHandle withHandle className="bg-slate-200 hover:bg-slate-300 transition-colors w-1" />
           <MainContentPanel entity={selectedItem ?? null} auth={auth} />
-          <ResizableHandle withHandle />
-          <RightSidePanel entity={selectedItem ?? null} auth={auth} />
+          <ResizableHandle withHandle className="bg-slate-200 hover:bg-slate-300 transition-colors w-1" />
+          <RightSidePanel entity={selectedItem ?? null} auth={auth} onItemSelected={hanldeItemSelected} />
         </ResizablePanelGroup>
       </div>
     </DndContext>
@@ -103,27 +103,75 @@ const MainContentPanel = ({ entity, auth }: MainContentPanelProps) => {
     ((entity as Garden | ModalFunction)?.owner_identity_id === auth?.authorization?.user?.sub ||
       isSuperUser);
 
+  // For gardens, fetch fresh data to ensure metadata is up to date
+  const gardenEntity = entityType === "garden" ? (entity as Garden) : null;
+  const { data: freshGarden } = useGetGarden(gardenEntity?.doi || "");
+  const currentGarden = gardenEntity && (freshGarden || gardenEntity);
+
+  // For functions, fetch fresh data to ensure metadata is up to date
+  const functionEntity = entityType === "function" ? (entity as ModalFunction) : null;
+  const { data: freshModalFunction } = useGetModalFunction(functionEntity?.id.toString() || "");
+  const currentModalFunction = functionEntity && (freshModalFunction || functionEntity);
+
   return (
-    <ResizablePanel minSize={25} defaultSize={50} className="flex flex-col">
+    <ResizablePanel minSize={25} defaultSize={40} className="flex flex-col bg-white">
       {entityType === null ? (
         <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">Select a Garden, Function, or App in the left panel</p>
-        </div>
-      ) : entityType === "function" ? (
-        <UnifiedFunctionContent
-          modalFunction={entity as ModalFunction}
-          ownsThisFunction={ownsEntity}
-        />
-      ) : entityType === "garden" ? (
-        <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} />
-      ) : entityType === "deployment" ? (
-        <div className="h-full overflow-y-auto">
-          <ModelDeploymentDetails entity={(entity as ModelDeployment).originalData} />
+          <div className="text-center space-y-2">
+            <div className="text-4xl">🌿</div>
+            <p className="text-gray-500 font-medium">Select a Garden, Function, or App</p>
+            <p className="text-sm text-gray-400">Choose from the left panel to get started</p>
+          </div>
         </div>
       ) : (
-        <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">Unknown entity type</p>
-        </div>
+        <ResizablePanelGroup direction="vertical">
+          {/* Main Content Section */}
+          <ResizablePanel defaultSize={entityType === "deployment" ? 100 : 70} minSize={30} className="bg-white">
+            {entityType === "function" ? (
+              <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent">
+                <UnifiedFunctionContent
+                  modalFunction={entity as ModalFunction}
+                  ownsThisFunction={ownsEntity}
+                />
+              </div>
+            ) : entityType === "garden" ? (
+              <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent">
+                <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} />
+              </div>
+            ) : entityType === "deployment" ? (
+              <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent">
+                <ModelDeploymentDetails entity={(entity as ModelDeployment).originalData} />
+              </div>
+            ) : (
+              <div className="flex h-full items-center justify-center">
+                <p className="text-gray-500">Unknown entity type</p>
+              </div>
+            )}
+          </ResizablePanel>
+
+          {/* Metadata Section - only show for gardens and functions */}
+          {(entityType === "garden" || entityType === "function") && (
+            <>
+              <ResizableHandle withHandle className="bg-slate-300 hover:bg-slate-400 transition-colors h-1" />
+              <ResizablePanel defaultSize={30} minSize={20} maxSize={70} className="bg-slate-100">
+                <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-4">
+                  <div className="mb-2 pb-2 border-b border-slate-300">
+                    <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                      {entityType === "garden" ? "Garden Metadata" : "Function Metadata"}
+                    </h3>
+                  </div>
+                  <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
+                    {entityType === "garden" ? (
+                      <GardenMetadataSidebar garden={currentGarden!} ownsThisGarden={ownsEntity} />
+                    ) : (
+                      <FunctionSidebar modalFunction={currentModalFunction!} ownsThisFunction={ownsEntity} />
+                    )}
+                  </div>
+                </div>
+              </ResizablePanel>
+            </>
+          )}
+        </ResizablePanelGroup>
       )}
     </ResizablePanel>
   );
@@ -140,7 +188,6 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
   const { data: gardens, refetch: refetchGardens } = useGetGardens({
     owner_uuid: userInfo?.identity_id,
   });
-  const { data: modelDeployments } = useGetModelDeployments();
 
   const handleGardenCreated = () => {
     refetchGardens();
@@ -150,24 +197,17 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
   const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
 
   return (
-    <ResizablePanel defaultSize={20} minSize={20} maxSize={33}>
-      <ResizablePanelGroup direction="vertical">
-        {/* Gardens Section - Takes most space but still resizable */}
-        <ResizablePanel defaultSize={60} minSize={30}>
-          <GardenTreeView
-            gardens={filteredGardens}
-            onSelect={onItemSelected}
-            onGardenCreated={handleGardenCreated}
-            selectedItem={
-              selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
-                ? (selectedItem as Garden | ModalFunction)
-                : null
-            }
-          />
-        </ResizablePanel>
-
-        <ResizableHandle withHandle />
-      </ResizablePanelGroup>
+    <ResizablePanel defaultSize={20} minSize={20} maxSize={33} className="bg-emerald-50 rounded-l-lg">
+      <GardenTreeView
+        gardens={filteredGardens}
+        onSelect={onItemSelected}
+        onGardenCreated={handleGardenCreated}
+        selectedItem={
+          selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
+            ? (selectedItem as Garden | ModalFunction)
+            : null
+        }
+      />
     </ResizablePanel>
   );
 };
@@ -175,75 +215,29 @@ const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => 
 const RightSidePanel = ({
   entity,
   auth,
+  onItemSelected,
 }: {
   entity: Entity | null;
   auth: ReturnType<typeof useGlobusAuth>;
+  onItemSelected?: (entity: Entity) => void;
 }) => {
-  const entityType = ((entity) => {
-    if (entity === null) return null;
+  const { data: userInfo } = useGetUserInfo();
+  const { data: gardens } = useGetGardens({
+    owner_uuid: userInfo?.identity_id,
+  });
+  const { data: modelDeployments } = useGetModelDeployments();
 
-    // Check if it's a Garden (has doi and modal_functions)
-    if ("doi" in entity && "modal_functions" in entity) {
-      return "garden";
-    }
-
-    // Check if it's a ModelDeployment (has originalData property)
-    if ("originalData" in entity && "status" in entity) {
-      return "deployment";
-    }
-
-    // Check if it's a ModalFunction (has function_name or title, and id)
-    if (("function_name" in entity || "title" in entity) && "id" in entity) {
-      return "function";
-    }
-
-    // Fallback - shouldn't happen
-    return null;
-  })(entity);
-
-  const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
-  const ownsEntity =
-    auth?.isAuthenticated &&
-    ((entity as Garden | ModalFunction)?.owner_identity_id === auth?.authorization?.user?.sub ||
-      isSuperUser);
-
-  // For gardens, fetch fresh data to ensure metadata is up to date
-  const gardenEntity = entityType === "garden" ? (entity as Garden) : null;
-  const { data: freshGarden } = useGetGarden(gardenEntity?.doi || "");
-  const currentGarden = gardenEntity && (freshGarden || gardenEntity);
-
-  // For functions, fetch fresh data to ensure metadata is up to date
-  const functionEntity = entityType === "function" ? (entity as ModalFunction) : null;
-  const { data: freshModalFunction } = useGetModalFunction(functionEntity?.id.toString() || "");
-  const currentModalFunction = functionEntity && (freshModalFunction || functionEntity);
+  // Only show gardens if user is authenticated and has an identity_id
+  const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
 
   return (
-    <ResizablePanel defaultSize={20} minSize={20} maxSize={33} className="flex h-full flex-col">
-      {entityType === null ? (
-        <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">Select a Garden or Function in the left panel</p>
-        </div>
-      ) : entityType === "function" ? (
-        <div className="h-full overflow-y-auto p-4">
-          <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
-            <FunctionSidebar modalFunction={currentModalFunction!} ownsThisFunction={ownsEntity} />
-          </div>
-        </div>
-      ) : entityType === "garden" ? (
-        <div className="h-full overflow-y-auto p-4">
-          <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
-            <GardenMetadataSidebar garden={currentGarden!} ownsThisGarden={ownsEntity} />
-          </div>
-        </div>
-      ) : entityType === "deployment" ? (
-        <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">Deployment details shown in main panel</p>
-        </div>
-      ) : (
-        <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">Select an item to view details</p>
-        </div>
-      )}
+    <ResizablePanel defaultSize={30} minSize={25} maxSize={40} className="flex h-full flex-col bg-blue-50 rounded-r-lg">
+      <FunctionLibraryView
+        modelDeployments={modelDeployments || []}
+        gardens={filteredGardens}
+        onSelect={onItemSelected}
+        selectedItem={entity}
+      />
     </ResizablePanel>
   );
 };
@@ -271,7 +265,7 @@ const UnifiedGardenContent = ({
   // Show tombstone page for archived gardens
   if (currentGarden.is_archived) {
     return (
-      <div className="h-full overflow-y-auto">
+      <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent">
         <TombstonePage garden={currentGarden} />
       </div>
     );
@@ -279,7 +273,7 @@ const UnifiedGardenContent = ({
 
   return (
     <MaterialsProvider garden={currentGarden} refetchGarden={memoizedRefetch}>
-      <div className="h-full overflow-y-auto p-6">
+      <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-6">
         <div className="mb-6">
           <GardenHeader
             garden={currentGarden}
@@ -314,7 +308,7 @@ const UnifiedFunctionContent = ({
   const currentModalFunction = freshModalFunction || modalFunction;
 
   return (
-    <div className="h-full overflow-y-auto p-6">
+    <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-6">
       <ModalFunctionHeader
         modalFunction={currentModalFunction}
         ownsThisFunction={ownsThisFunction}
@@ -463,7 +457,7 @@ const FunctionLibraryView = ({
       </div>
 
       {/* Deployment Groups */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent">
         {deploymentGroups.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center space-y-4 p-8 text-center">
             <Library className="h-12 w-12 text-gray-300" />
