@@ -33,7 +33,7 @@ import {
   GardenPublishModal,
 } from "../gardens/components/shared/GardenComponents";
 import TombstonePage from "@/components/TombstonePage";
-import { ChevronDown, ChevronRight, Plus, Library } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, Library, User, LogOut } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -232,6 +232,7 @@ const RightSidePanel = ({
 
   return (
     <ResizablePanel defaultSize={30} minSize={25} maxSize={40} className="flex h-full flex-col bg-blue-50 rounded-r-lg">
+      <UserInfoPanel auth={auth} userInfo={userInfo} />
       <FunctionLibraryView
         modelDeployments={modelDeployments || []}
         gardens={filteredGardens}
@@ -326,6 +327,63 @@ const UnifiedFunctionContent = ({
   );
 };
 
+// User Info Panel - shows logged in user information
+type UserInfoPanelProps = {
+  auth: ReturnType<typeof useGlobusAuth>;
+  userInfo: any; // Replace with proper type when available
+};
+
+const UserInfoPanel = ({ auth, userInfo }: UserInfoPanelProps) => {
+  if (!auth.isAuthenticated || !userInfo) {
+    return (
+      <div className="border-b border-slate-300 bg-slate-100 p-3">
+        <div className="flex items-center gap-2 text-slate-600">
+          <User className="h-4 w-4" />
+          <span className="text-sm">Not logged in</span>
+        </div>
+      </div>
+    );
+  }
+
+  const handleSignOut = () => {
+    auth.authorization?.logout();
+  };
+
+  return (
+    <div className="border-b border-slate-300 bg-slate-100 p-3">
+      <div className="flex items-center gap-2">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200">
+          <User className="h-4 w-4 text-slate-600" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-medium text-slate-800 truncate">
+            {userInfo.name || userInfo.preferred_username || 'User'}
+          </div>
+          <div className="text-xs text-slate-600 truncate">
+            {userInfo.email || 'No email available'}
+          </div>
+        </div>
+        <TooltipProvider>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-7 w-7 p-0 hover:bg-slate-200"
+                onClick={handleSignOut}
+              >
+                <LogOut className="h-3 w-3 text-slate-600" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Sign Out</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+    </div>
+  );
+};
 
 // Function Library component - shows functions organized by their source deployment
 // Extended function type with deployment info
