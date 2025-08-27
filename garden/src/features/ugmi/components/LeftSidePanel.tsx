@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   ResizablePanel,
   ResizablePanelGroup,
@@ -14,6 +14,7 @@ import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { SavedGardensPanel } from "./SavedGardensPanel";
 import { MyGardensPanel } from "./MyGardensPanel";
 import { MyFunctionLibraryView } from "./MyFunctionLibraryView";
+import { getPanelElement } from "react-resizable-panels";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
 
@@ -43,20 +44,17 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
   const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
 
   return (
-    <ResizablePanel
-      defaultSize={20}
-      minSize={20}
-      maxSize={33}
-      className="rounded-l-lg bg-emerald-50"
-    >
+    <ResizablePanel defaultSize={15} minSize={15} maxSize={75} className="rounded-lg bg-emerald-50">
       <ResizablePanelGroup direction="vertical">
         {/* Saved Gardens Panel */}
-        <ResizablePanel defaultSize={33} minSize={20} className="p-2">
-          <SavedGardensPanel
-            savedGardens={savedGardens}
-            onSelect={onItemSelected}
-            selectedItem={selectedItem}
-          />
+        <ResizablePanel id="saved-gardens" defaultSize={33} minSize={10} className="p-2">
+          <div className="rounded-lg">
+            <SavedGardensPanel
+              savedGardens={savedGardens}
+              onSelect={onItemSelected}
+              selectedItem={selectedItem}
+            />
+          </div>
         </ResizablePanel>
 
         <ResizableHandle
@@ -65,7 +63,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
         />
 
         {/* My Gardens Panel */}
-        <ResizablePanel defaultSize={34} minSize={20} className="p-2">
+        <ResizablePanel defaultSize={34} minSize={10} className="p-2">
           <MyGardensPanel
             gardens={filteredGardens}
             onSelect={onItemSelected}
@@ -80,7 +78,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
         />
 
         {/* My Function Library Panel */}
-        <ResizablePanel defaultSize={33} minSize={20} className="p-2">
+        <ResizablePanel defaultSize={33} minSize={10} className="p-2">
           <MyFunctionLibraryView
             modelDeployments={modelDeployments || []}
             gardens={filteredGardens}
