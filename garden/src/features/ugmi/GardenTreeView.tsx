@@ -3,7 +3,19 @@ import { Garden, ModalFunction } from "@/types";
 import { useGlobusAuth } from "@globus/react-auth-context";
 
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { ChevronDown, ChevronRight, Sprout, Book, BookDashed, ArchiveX, Plus, ListFilter, Search, X, RotateCcw, ArrowUpDown } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Sprout,
+  Book,
+  BookDashed,
+  ArchiveX,
+  Plus,
+  ListFilter,
+  Search,
+  X,
+  RotateCcw,
+} from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
 import {
@@ -29,6 +41,7 @@ type SelectedItem = Garden | ModalFunction | null;
 type GardenTreeViewProps = {
   gardens: Garden[];
   onSelect?: (entity: Garden | ModalFunction) => void;
+  onDoubleClick: () => void;
   onGardenCreated?: (garden: Garden) => void;
   selectedItem?: SelectedItem;
   // Header configuration
@@ -57,22 +70,23 @@ type SortOption = {
   sortFn: (a: Garden, b: Garden) => number;
 };
 
-export const GardenTreeView = ({ 
-  gardens, 
-  onSelect, 
-  onGardenCreated, 
+export const GardenTreeView = ({
+  gardens,
+  onSelect,
+  onDoubleClick,
+  onGardenCreated,
   selectedItem,
   showHeader = false,
   headerIcon,
   headerTitle = "Gardens",
   headerThemeColors = {
     bg: "bg-emerald-100",
-    border: "border-emerald-300", 
+    border: "border-emerald-300",
     text: "text-emerald-900",
     iconColor: "text-emerald-700",
     hoverColor: "hover:bg-emerald-200",
-    activeColor: "bg-emerald-200"
-  }
+    activeColor: "bg-emerald-200",
+  },
 }: GardenTreeViewProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,6 +148,10 @@ export const GardenTreeView = ({
     setShowCreateDialog(true);
   };
 
+  const handleDoubleClick = () => {
+    onDoubleClick();
+  };
+
   const handleSearchToggle = () => {
     if (isSearching) {
       setSearchTerm("");
@@ -142,9 +160,9 @@ export const GardenTreeView = ({
   };
 
   const handleFilterChange = (filterType: keyof GardenFilterState) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
-      [filterType]: !prev[filterType]
+      [filterType]: !prev[filterType],
     }));
   };
 
@@ -162,7 +180,7 @@ export const GardenTreeView = ({
 
   // Filter, search, and sort gardens
   const filteredGardens = useMemo(() => {
-    const filtered = gardens.filter(garden => {
+    const filtered = gardens.filter((garden) => {
       // Apply status filters
       if (garden.is_archived && !filterState.archived) return false;
       if (garden.doi_is_draft && !filterState.draft) return false;
@@ -171,16 +189,18 @@ export const GardenTreeView = ({
       // Apply search filter
       if (searchTerm.trim()) {
         const searchLower = searchTerm.toLowerCase();
-        return garden.title.toLowerCase().includes(searchLower) ||
-          (garden.description?.toLowerCase().includes(searchLower)) ||
-          (garden.authors?.some(author => author.toLowerCase().includes(searchLower)));
+        return (
+          garden.title.toLowerCase().includes(searchLower) ||
+          garden.description?.toLowerCase().includes(searchLower) ||
+          garden.authors?.some((author) => author.toLowerCase().includes(searchLower))
+        );
       }
 
       return true;
     });
 
     // Apply sorting
-    const currentSortOption = sortOptions.find(option => option.value === sortBy);
+    const currentSortOption = sortOptions.find((option) => option.value === sortBy);
     if (currentSortOption) {
       return [...filtered].sort(currentSortOption.sortFn);
     }
@@ -195,7 +215,10 @@ export const GardenTreeView = ({
     <div className="flex h-full flex-col">
       {/* Conditional Header */}
       {showHeader && (
-        <div className={`border-b-2 ${headerThemeColors.border} ${headerThemeColors.bg}`}>
+        <div
+          className={`rounded-lg border-b-2 ${headerThemeColors.border} ${headerThemeColors.bg}`}
+          onDoubleClick={handleDoubleClick}
+        >
           <div className="px-4 py-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -207,7 +230,7 @@ export const GardenTreeView = ({
                   <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
                       <Button
-                        size="sm"
+                        size="icon"
                         variant="ghost"
                         className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor}`}
                         onClick={handleSearchToggle}
@@ -231,7 +254,7 @@ export const GardenTreeView = ({
                       <DropdownMenuTrigger asChild>
                         <TooltipTrigger asChild>
                           <Button
-                            size="sm"
+                            size="icon"
                             variant="ghost"
                             className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor} ${hasActiveFilters ? headerThemeColors.activeColor : ""}`}
                           >
@@ -240,7 +263,7 @@ export const GardenTreeView = ({
                         </TooltipTrigger>
                       </DropdownMenuTrigger>
                       <TooltipContent>
-                        <p>Filter & Sort Gardens</p>
+                        <p>Filter & Sort</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -260,7 +283,9 @@ export const GardenTreeView = ({
                     <DropdownMenuSeparator />
 
                     {/* Filter Section */}
-                    <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">Show states</div>
+                    <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">
+                      Show states
+                    </div>
                     <DropdownMenuCheckboxItem
                       checked={filterState.published}
                       onCheckedChange={() => handleFilterChange("published")}
@@ -297,7 +322,7 @@ export const GardenTreeView = ({
                     <Tooltip delayDuration={200}>
                       <TooltipTrigger asChild>
                         <Button
-                          size="sm"
+                          size="icon"
                           variant="ghost"
                           className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor}`}
                           onClick={handleCreateClick}
@@ -319,18 +344,20 @@ export const GardenTreeView = ({
 
       {/* Search Input */}
       {isSearching && (
-        <div className={`border-b ${headerThemeColors.border.replace('border-', 'border-').replace('-300', '-200')} p-3`}>
+        <div
+          className={`border-b ${headerThemeColors.border.replace("border-", "border-").replace("-300", "-200")} p-3`}
+        >
           <Input
             placeholder="Search gardens by name, description, or author..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`${headerThemeColors.border.replace('border-', 'border-').replace('-300', '-200')} focus:border-emerald-400 focus:ring-emerald-400 text-xs`}
+            className={`${headerThemeColors.border.replace("border-", "border-").replace("-300", "-200")} text-xs focus:border-emerald-400 focus:ring-emerald-400`}
             autoFocus
           />
         </div>
       )}
 
-      <div className="flex-1 space-y-1 overflow-y-auto p-2">
+      <div className="scrollbar-thin scrollbar-track-transparent flex-1 space-y-1 overflow-y-auto overflow-x-hidden p-2">
         {filteredGardens.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
             <Sprout className="h-12 w-12 text-emerald-300" />
@@ -350,10 +377,7 @@ export const GardenTreeView = ({
               )}
             </div>
             {gardens.length === 0 && (
-              <Button
-                onClick={handleCreateClick}
-                className="bg-emerald-600 hover:bg-emerald-700"
-              >
+              <Button onClick={handleCreateClick} className="bg-emerald-600 hover:bg-emerald-700">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Garden
               </Button>
@@ -361,7 +385,14 @@ export const GardenTreeView = ({
           </div>
         ) : (
           filteredGardens.map((g, index) => {
-            return <GardenTreeNode key={index} garden={g} onSelect={onSelect} selectedItem={selectedItem} />;
+            return (
+              <GardenTreeNode
+                key={index}
+                garden={g}
+                onSelect={onSelect}
+                selectedItem={selectedItem}
+              />
+            );
           })
         )}
       </div>
@@ -373,7 +404,7 @@ export const GardenTreeView = ({
             <DialogTitle>Create New Garden</DialogTitle>
           </DialogHeader>
           <CreateGardenForm
-            onFormStateChange={() => { }}
+            onFormStateChange={() => {}}
             onSuccess={(garden) => {
               setShowCreateDialog(false);
               if (onGardenCreated) {
@@ -411,7 +442,8 @@ export const GardenTreeNode = ({ garden, onSelect, selectedItem }: GardenTreeNod
   };
 
   // Check if this garden is selected
-  const isSelected = selectedItem &&
+  const isSelected =
+    selectedItem &&
     "doi" in selectedItem &&
     "modal_functions" in selectedItem &&
     selectedItem.doi === garden.doi;
@@ -451,10 +483,7 @@ export const GardenTreeNode = ({ garden, onSelect, selectedItem }: GardenTreeNod
 
   return (
     <div ref={setNodeRef} className="select-none">
-      <div
-        className={containerClasses}
-        onClick={handleSelect}
-      >
+      <div className={`${containerClasses}`} onClick={handleSelect}>
         <button
           className="mr-2 flex h-5 w-5 items-center justify-center rounded transition-colors duration-150 hover:bg-gray-200"
           onClick={(e) => {
@@ -470,13 +499,20 @@ export const GardenTreeNode = ({ garden, onSelect, selectedItem }: GardenTreeNod
         </button>
         <div className="flex items-center gap-2">
           {status.icon}
-          <div className={`truncate font-medium ${status.textColor}`}>{garden.title}</div>
+          <div className={`truncate text-sm font-medium ${status.textColor}`}>{garden.title}</div>
         </div>
       </div>
       {isExpanded && (
         <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
           {garden.modal_functions?.map((fn, index) => {
-            return <FunctionTreeNode key={index} fn={fn} onSelect={onSelect} selectedItem={selectedItem} />;
+            return (
+              <FunctionTreeNode
+                key={index}
+                fn={fn}
+                onSelect={onSelect}
+                selectedItem={selectedItem}
+              />
+            );
           })}
         </div>
       )}
@@ -495,8 +531,8 @@ export const FunctionTreeNode = ({ fn, onSelect, selectedItem }: FunctionTreeNod
 
   const style = transform
     ? {
-      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    }
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
     : undefined;
 
   const handleSelect = (e: React.MouseEvent) => {
@@ -509,10 +545,11 @@ export const FunctionTreeNode = ({ fn, onSelect, selectedItem }: FunctionTreeNod
 
   // Check if this function is selected
   // A function is selected if the selectedItem is a ModalFunction with matching id
-  const isSelected = selectedItem &&
+  const isSelected =
+    selectedItem &&
     "id" in selectedItem &&
     selectedItem.id === fn.id &&
-    (("function_name" in selectedItem) || ("title" in selectedItem)); // Make sure it's a ModalFunction
+    ("function_name" in selectedItem || "title" in selectedItem); // Make sure it's a ModalFunction
 
   // Combine base styles with selected state styles
   const containerClasses = isSelected
@@ -520,11 +557,7 @@ export const FunctionTreeNode = ({ fn, onSelect, selectedItem }: FunctionTreeNod
     : `group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm`;
 
   return (
-    <div
-      ref={setNodeRef}
-      className={containerClasses}
-      style={style}
-    >
+    <div ref={setNodeRef} className={containerClasses} style={style}>
       {/* Drag handle */}
       <div
         {...listeners}
@@ -535,7 +568,7 @@ export const FunctionTreeNode = ({ fn, onSelect, selectedItem }: FunctionTreeNod
       </div>
       {/* Clickable content */}
       <div className="flex-1 cursor-pointer px-2 py-1.5" onClick={handleSelect}>
-        <div className="truncate text-sm font-medium text-gray-700">{fn.function_name}</div>
+        <div className="truncate text-xs font-medium text-gray-700">{fn.function_name}</div>
       </div>
     </div>
   );
