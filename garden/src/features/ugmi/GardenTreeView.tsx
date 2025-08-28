@@ -17,6 +17,7 @@ type SelectedItem = Garden | ModalFunction | null;
 
 type GardenTreeViewProps = {
   gardens: Garden[];
+  isLoading?: boolean;
   onSelect?: (entity: Garden | ModalFunction) => void;
   onDoubleClick?: () => void;
   onGardenCreated?: (garden: Garden) => void;
@@ -30,6 +31,7 @@ type GardenTreeViewProps = {
 
 export const GardenTreeView = ({
   gardens,
+  isLoading = false,
   onSelect,
   onDoubleClick = () => {},
   onGardenCreated,
@@ -119,6 +121,7 @@ export const GardenTreeView = ({
   return (
     <BaseTreeView
       data={treeData}
+      isLoading={isLoading}
       ParentNodeComponent={GardenParentNode}
       ChildNodeComponent={GardenFunctionNode}
       onSelect={onSelect}

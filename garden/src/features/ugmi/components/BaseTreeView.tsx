@@ -81,6 +81,7 @@ export type FilterConfig = {
 export type BaseTreeViewProps<TParent, TChild> = {
   // Data
   data: TreeNode<TParent, TChild>[];
+  isLoading?: boolean;
 
   // Node renderers
   ParentNodeComponent: React.ComponentType<ParentNodeProps<TParent, TChild>>;
@@ -134,6 +135,7 @@ const defaultTheme: ThemeColors = {
 
 export function BaseTreeView<TParent, TChild>({
   data,
+  isLoading = false,
   ParentNodeComponent,
   ChildNodeComponent,
   onSelect,
@@ -412,7 +414,17 @@ export function BaseTreeView<TParent, TChild>({
 
       {/* Content */}
       <div className="scrollbar-thin scrollbar-track-transparent flex-1 space-y-1 overflow-y-auto overflow-x-hidden p-2">
-        {!hasResults ? (
+        {isLoading ? (
+          <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
+            <div className="text-gray-400">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium text-gray-900">Loading...</h3>
+              <p className="text-sm text-gray-500">Fetching data</p>
+            </div>
+          </div>
+        ) : !hasResults ? (
           <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
             {emptyIcon && <div className="text-gray-300">{emptyIcon}</div>}
             <div className="space-y-2">

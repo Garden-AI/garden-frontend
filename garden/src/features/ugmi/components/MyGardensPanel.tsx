@@ -12,13 +12,15 @@ type MyGardensPanelProps = {
     onGardenCreated?: (garden: Garden) => void;
     onDoubleClick?: () => void;
     selectedItem?: Entity | null;
+    isLoading?: boolean;
 };
 
-export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleClick, selectedItem }: MyGardensPanelProps) => {
+export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleClick, selectedItem, isLoading = false }: MyGardensPanelProps) => {
     return (
         <div className="h-full bg-emerald-50 rounded-lg">
             <GardenTreeView
                 gardens={gardens}
+                isLoading={isLoading}
                 onSelect={onSelect}
                 onGardenCreated={onGardenCreated}
                 onDoubleClick={onDoubleClick}
@@ -42,3 +44,4 @@ export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleCli
         </div>
     );
 };
+
