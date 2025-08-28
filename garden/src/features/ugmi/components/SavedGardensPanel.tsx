@@ -1,4 +1,4 @@
-import React, { Ref } from "react";
+import React from "react";
 import { Bookmark } from "lucide-react";
 import { GardenTreeView } from "../GardenTreeView";
 import { Garden, ModalFunction } from "@/types";

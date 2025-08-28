@@ -1,29 +1,21 @@
-import React, { useState, useMemo } from "react";
-import { Button } from "@/components/shadcn/button";
-import { Input } from "@/components/shadcn/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/shadcn/tooltip";
-import { Plus, Library } from "lucide-react";
-import { useGlobusAuth } from "@globus/react-auth-context";
+import React, { useMemo } from "react";
+import { Library } from "lucide-react";
 import { useGetUserModalFunctions } from "../../modal/api/useGetUserModalFunctions";
 import { ModalAppForm } from "../../modal/components/ModalAppForm";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
-import { DeploymentGroup } from "./DeploymentGroup";
+import {
+  BaseTreeView,
+  TreeNode,
+  SortOption,
+  FilterConfig,
+  ThemeColors,
+  SearchFunction,
+  FilterFunction,
+} from "./BaseTreeView";
+import { DeploymentParentNode, DeploymentFunctionNode } from "./DeploymentTreeNodes";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
-
-// Extended function type with deployment info
-type FunctionWithDeployment = ModalFunction & {
-  deploymentId: number;
-  deploymentName: string;
-  deploymentStatus: string;
-};
 
 type FunctionLibraryViewProps = {
   modelDeployments: ModelDeployment[];
@@ -38,29 +30,7 @@ export const MyFunctionLibraryView = ({
   onSelect,
   selectedItem,
 }: FunctionLibraryViewProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const auth = useGlobusAuth();
   const { data: userModalFunctions } = useGetUserModalFunctions();
-
-  const handleCreateClick = async () => {
-    if (!auth.isAuthenticated) {
-      await auth.authorization?.login();
-      return;
-    }
-    setShowCreateDialog(true);
-  };
-
-  // Get functions that are already in gardens for badge indicators
-  const functionsInGardens = useMemo(() => {
-    const inGardens = new Set();
-    gardens.forEach((garden) => {
-      garden.modal_functions?.forEach((func) => {
-        inGardens.add(func.id);
-      });
-    });
-    return inGardens;
-  }, [gardens]);
 
   // Get the set of user's function IDs
   const userFunctionIds = useMemo(() => {
@@ -68,131 +38,115 @@ export const MyFunctionLibraryView = ({
     return new Set(userModalFunctions.map((func) => func.id));
   }, [userModalFunctions]);
 
-  // Group deployments with user's functions, filtered by search
-  const deploymentGroups = useMemo(() => {
-    const groups = new Map();
+  // Transform deployments with user's functions into tree node structure
+  const treeData: TreeNode<ModelDeployment, ModalFunction>[] = useMemo(() => {
+    const nodes: TreeNode<ModelDeployment, ModalFunction>[] = [];
 
-    // Filter deployments that have user's functions
     modelDeployments.forEach((deployment) => {
-      const functions = (deployment.originalData?.modal_functions || [])
-        .filter((func: ModalFunction) => userFunctionIds.has(func.id)) // Only show user's functions
-        .map((func: ModalFunction) => ({
-          ...func,
-          deploymentId: deployment.id,
-          deploymentName: deployment.name,
-          deploymentStatus: deployment.status,
-          inGarden: functionsInGardens.has(func.id),
-        }));
-
-      // Apply search filter
-      const filteredFunctions = functions.filter(
-        (func: FunctionWithDeployment & { inGarden: boolean }) => {
-          if (!searchTerm) return true;
-          const searchLower = searchTerm.toLowerCase();
-          return (
-            func.function_name?.toLowerCase().includes(searchLower) ||
-            func.title?.toLowerCase().includes(searchLower) ||
-            func.description?.toLowerCase().includes(searchLower) ||
-            func.deploymentName.toLowerCase().includes(searchLower)
-          );
-        },
+      // Get user's functions from this deployment
+      const userFunctions = (deployment.originalData?.modal_functions || []).filter(
+        (func: ModalFunction) => userFunctionIds.has(func.id),
       );
 
-      // Only include groups that have functions (after filtering)
-      if (filteredFunctions.length > 0) {
-        groups.set(deployment.id, {
-          deployment,
-          functions: filteredFunctions,
+      // Only include deployments that have user functions
+      if (userFunctions.length > 0) {
+        nodes.push({
+          parent: deployment,
+          children: userFunctions,
         });
       }
     });
 
-    return Array.from(groups.values());
-  }, [modelDeployments, searchTerm, functionsInGardens, userFunctionIds]);
+    return nodes;
+  }, [modelDeployments, userFunctionIds]);
+
+  // Define sorting options
+  const sortOptions: SortOption<ModelDeployment>[] = [
+    {
+      label: "Name (A-Z)",
+      value: "name",
+      sortFn: (a, b) => a.name.localeCompare(b.name),
+    },
+    {
+      label: "Name (Z-A)",
+      value: "name-desc",
+      sortFn: (a, b) => b.name.localeCompare(a.name),
+    },
+    {
+      label: "Status (Deployed First)",
+      value: "status-deployed",
+      sortFn: (a, b) => {
+        const statusOrder = { deployed: 0, undeployed: 1, error: 2 };
+        return statusOrder[a.status] - statusOrder[b.status];
+      },
+    },
+  ];
+
+  // Define filter configurations
+  const filterConfigs: FilterConfig[] = [
+    { label: "Deployed", key: "deployed", defaultChecked: true },
+    { label: "Undeployed", key: "undeployed", defaultChecked: true },
+    { label: "Error", key: "error", defaultChecked: true },
+  ];
+
+  // Define search function
+  const searchFunction: SearchFunction<ModelDeployment, ModalFunction> = (node, searchTerm) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      node.parent.name.toLowerCase().includes(searchLower) ||
+      node.children.some(
+        (func) =>
+          func.function_name?.toLowerCase().includes(searchLower) ||
+          func.title?.toLowerCase().includes(searchLower) ||
+          (func.description?.toLowerCase().includes(searchLower) ?? false),
+      )
+    );
+  };
+
+  // Define filter function
+  const filterFunction: FilterFunction<ModelDeployment, ModalFunction> = (node, filterState) => {
+    const deployment = node.parent;
+    if (deployment.status === "deployed" && !filterState.deployed) return false;
+    if (deployment.status === "undeployed" && !filterState.undeployed) return false;
+    if (deployment.status === "error" && !filterState.error) return false;
+    return true;
+  };
+
+  const themeColors: ThemeColors = {
+    bg: "bg-blue-100",
+    border: "border-blue-300",
+    text: "text-blue-900",
+    iconColor: "text-blue-700",
+    hoverColor: "hover:bg-blue-200",
+    activeColor: "bg-blue-200",
+  };
 
   return (
-    <div className="flex h-full flex-col">
-      {/* Header */}
-      <div className="rounded-lg border-b-2 border-blue-300 bg-blue-100">
-        <div className="px-4 py-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Library className="h-4 w-4 text-blue-700" />
-              <h2 className="text-sm font-semibold text-blue-900">My Function Library</h2>
-            </div>
-            <TooltipProvider>
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 w-7 p-0 hover:bg-blue-200"
-                    onClick={handleCreateClick}
-                  >
-                    <Plus className="h-3 w-3 text-blue-700" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Create New Function</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="border-b border-blue-200 p-2">
-        <Input
-          placeholder="Search my functions..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border-blue-200 text-xs focus:border-blue-400 focus:ring-blue-400"
-        />
-      </div>
-
-      {/* Deployment Groups */}
-      <div className="scrollbar-thin scrollbar-track-transparent flex-1 overflow-y-auto">
-        {deploymentGroups.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center space-y-4 p-4 text-center">
-            <Library className="h-8 w-8 text-gray-300" />
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium text-gray-900">No Functions Found</h3>
-              <p className="text-xs text-gray-500">
-                {searchTerm
-                  ? "No functions match your search"
-                  : "You haven't created any functions yet"}
-              </p>
-            </div>
-            {!searchTerm && (
-              <Button onClick={handleCreateClick} className="bg-blue-600 text-xs hover:bg-blue-700">
-                <Plus className="mr-1 h-3 w-3" />
-                Create Function
-              </Button>
-            )}
-          </div>
-        ) : (
-          deploymentGroups.map((group) => (
-            <DeploymentGroup
-              key={group.deployment.id}
-              deployment={group.deployment}
-              functions={group.functions}
-              onSelect={onSelect}
-              selectedItem={selectedItem}
-            />
-          ))
-        )}
-      </div>
-
-      {/* Create Function Dialog */}
-      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-h-[90vh] w-[95%] max-w-4xl overflow-y-auto md:w-4/5 lg:w-3/4">
-          <DialogHeader>
-            <DialogTitle>Create New Function</DialogTitle>
-          </DialogHeader>
-          <ModalAppForm onSuccess={() => setShowCreateDialog(false)} />
-        </DialogContent>
-      </Dialog>
-    </div>
+    <BaseTreeView
+      data={treeData}
+      ParentNodeComponent={DeploymentParentNode}
+      ChildNodeComponent={DeploymentFunctionNode}
+      onSelect={onSelect}
+      selectedItem={selectedItem}
+      showHeader={true}
+      headerIcon={<Library className="h-4 w-4" />}
+      headerTitle="My Function Library"
+      headerThemeColors={themeColors}
+      searchPlaceholder="Search my functions..."
+      searchFunction={searchFunction}
+      sortOptions={sortOptions}
+      filterConfigs={filterConfigs}
+      filterFunction={filterFunction}
+      emptyIcon={<Library className="h-8 w-8" />}
+      emptyTitle="No Functions Found"
+      emptyDescription="You haven't created any functions yet"
+      CreateFormComponent={CreateFunctionFormWrapper}
+      createDialogTitle="Create New Function"
+    />
   );
 };
+
+// Wrapper component to match the expected onSuccess signature
+const CreateFunctionFormWrapper: React.FC<{ onSuccess: (fn: any) => void }> = ({ onSuccess }) => (
+  <ModalAppForm onSuccess={onSuccess} />
+);
