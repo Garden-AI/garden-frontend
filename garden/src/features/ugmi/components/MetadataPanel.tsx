@@ -13,9 +13,10 @@ type Entity = Garden | ModalFunction | ModelDeployment;
 
 type MetadataPanelProps = {
     entity: Entity | null;
+    onDoubleClick?: () => void;
 };
 
-export const MetadataPanel = ({ entity }: MetadataPanelProps) => {
+export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => {
     const auth = useGlobusAuth();
 
     // Determine entity type and get fresh data
@@ -45,7 +46,10 @@ export const MetadataPanel = ({ entity }: MetadataPanelProps) => {
     if (!entity) {
         return (
             <div className="h-full flex flex-col bg-slate-50">
-                <div className="border-b-2 border-slate-300 bg-slate-100">
+                <div 
+                    className="border-b-2 border-slate-300 bg-slate-100 cursor-pointer"
+                    onDoubleClick={onDoubleClick}
+                >
                     <div className="px-4 py-2">
                         <div className="flex items-center gap-2">
                             <Library className="h-4 w-4 text-slate-700" />
@@ -66,7 +70,10 @@ export const MetadataPanel = ({ entity }: MetadataPanelProps) => {
     // For garden and function metadata, don't show custom header since components have their own
     if (entityType === "garden" && currentGarden) {
         return (
-            <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50">
+            <div 
+                className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 cursor-pointer"
+                onDoubleClick={onDoubleClick}
+            >
                 <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
                     <GardenMetadataSidebar garden={currentGarden} ownsThisGarden={ownsEntity} />
                 </div>
@@ -76,7 +83,10 @@ export const MetadataPanel = ({ entity }: MetadataPanelProps) => {
 
     if (entityType === "function" && currentModalFunction) {
         return (
-            <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50">
+            <div 
+                className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 cursor-pointer"
+                onDoubleClick={onDoubleClick}
+            >
                 <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
                     <FunctionSidebar modalFunction={currentModalFunction} ownsThisFunction={ownsEntity} />
                 </div>
@@ -87,7 +97,10 @@ export const MetadataPanel = ({ entity }: MetadataPanelProps) => {
     // For deployments and other types, show custom header
     return (
         <div className="h-full flex flex-col bg-slate-50">
-            <div className="border-b-2 border-slate-300 bg-slate-100">
+            <div 
+                className="border-b-2 border-slate-300 bg-slate-100 cursor-pointer"
+                onDoubleClick={onDoubleClick}
+            >
                 <div className="px-4 py-2">
                     <div className="flex items-center gap-2">
                         <Library className="h-4 w-4 text-slate-700" />

@@ -10,16 +10,18 @@ type MyGardensPanelProps = {
     gardens: Garden[];
     onSelect?: (entity: Entity) => void;
     onGardenCreated?: (garden: Garden) => void;
+    onDoubleClick?: () => void;
     selectedItem?: Entity | null;
 };
 
-export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, selectedItem }: MyGardensPanelProps) => {
+export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleClick, selectedItem }: MyGardensPanelProps) => {
     return (
         <div className="h-full">
             <GardenTreeView
                 gardens={gardens}
                 onSelect={onSelect}
                 onGardenCreated={onGardenCreated}
+                onDoubleClick={onDoubleClick}
                 selectedItem={
                     selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
                         ? (selectedItem as Garden | ModalFunction)

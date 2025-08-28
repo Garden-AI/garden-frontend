@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   ResizablePanel,
   ResizablePanelGroup,
   ResizableHandle,
 } from "@/components/shadcn/resizable";
+import { ImperativePanelHandle } from "react-resizable-panels";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetUserInfo } from "../../users/api/useGetUserInfo";
 import { Garden, ModalFunction } from "@/types";
@@ -23,6 +24,37 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
 
+  // Panel refs for imperative control
+  const metadataPanelRef = useRef<ImperativePanelHandle>(null);
+  const publishedGardensPanelRef = useRef<ImperativePanelHandle>(null);
+
+  // Double-click expand handlers
+  const handleMetadataExpand = () => {
+    const currentSize = metadataPanelRef.current?.getSize() ?? 40;
+    if (currentSize > 70) {
+      // If already expanded, reset to default sizes
+      metadataPanelRef.current?.resize(40);
+      publishedGardensPanelRef.current?.resize(60);
+    } else {
+      // Expand this panel and shrink others
+      metadataPanelRef.current?.resize(80);
+      publishedGardensPanelRef.current?.resize(20);
+    }
+  };
+
+  const handlePublishedGardensExpand = () => {
+    const currentSize = publishedGardensPanelRef.current?.getSize() ?? 60;
+    if (currentSize > 70) {
+      // If already expanded, reset to default sizes
+      metadataPanelRef.current?.resize(40);
+      publishedGardensPanelRef.current?.resize(60);
+    } else {
+      // Expand this panel and shrink others
+      metadataPanelRef.current?.resize(20);
+      publishedGardensPanelRef.current?.resize(80);
+    }
+  };
+
   return (
     <ResizablePanel
       defaultSize={30}
@@ -33,8 +65,8 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
       <UserInfoPanel auth={auth} userInfo={userInfo} />
       <ResizablePanelGroup direction="vertical" className="flex-1">
         {/* Metadata Panel */}
-        <ResizablePanel defaultSize={40} minSize={20}>
-          <MetadataPanel entity={entity} />
+        <ResizablePanel ref={metadataPanelRef} defaultSize={40} minSize={20}>
+          <MetadataPanel entity={entity} onDoubleClick={handleMetadataExpand} />
         </ResizablePanel>
 
         <ResizableHandle
@@ -43,8 +75,12 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
         />
 
         {/* Published Gardens Panel */}
-        <ResizablePanel defaultSize={60} minSize={30}>
-          <PublishedGardensPanel onSelect={onItemSelected} selectedItem={entity} />
+        <ResizablePanel ref={publishedGardensPanelRef} defaultSize={60} minSize={30}>
+          <PublishedGardensPanel 
+            onSelect={onItemSelected} 
+            selectedItem={entity} 
+            onDoubleClick={handlePublishedGardensExpand}
+          />
         </ResizablePanel>
       </ResizablePanelGroup>
     </ResizablePanel>
