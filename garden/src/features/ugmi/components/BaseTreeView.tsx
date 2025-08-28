@@ -275,13 +275,13 @@ export function BaseTreeView<TParent, TChild>({
                       <Button
                         size="icon"
                         variant="ghost"
-                        className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor}`}
+                        className={`h-8 w-8 p-0 transition-colors hover:shadow-sm ${headerThemeColors.hoverColor}`}
                         onClick={handleSearchToggle}
                       >
                         {isSearching ? (
-                          <X className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
+                          <X className={`h-4 w-4 ${headerThemeColors.iconColor}`} />
                         ) : (
-                          <Search className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
+                          <Search className={`h-4 w-4 ${headerThemeColors.iconColor}`} />
                         )}
                       </Button>
                     </TooltipTrigger>
@@ -300,11 +300,11 @@ export function BaseTreeView<TParent, TChild>({
                           <Button
                             size="icon"
                             variant="ghost"
-                            className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor} ${
+                            className={`h-8 w-8 p-0 transition-colors hover:shadow-sm ${headerThemeColors.hoverColor} ${
                               hasActiveFilters ? headerThemeColors.activeColor : ""
                             }`}
                           >
-                            <ListFilter className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
+                            <ListFilter className={`h-4 w-4 ${headerThemeColors.iconColor}`} />
                           </Button>
                         </TooltipTrigger>
                       </DropdownMenuTrigger>
@@ -377,10 +377,10 @@ export function BaseTreeView<TParent, TChild>({
                         <Button
                           size="icon"
                           variant="ghost"
-                          className={`h-7 w-7 p-0 ${headerThemeColors.hoverColor}`}
+                          className={`h-8 w-8 p-0 transition-colors hover:shadow-sm ${headerThemeColors.hoverColor}`}
                           onClick={handleCreateClick}
                         >
-                          <Plus className={`h-3 w-3 ${headerThemeColors.iconColor}`} />
+                          <Plus className={`h-4 w-4 ${headerThemeColors.iconColor}`} />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>

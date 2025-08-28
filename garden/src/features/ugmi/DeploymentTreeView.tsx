@@ -134,10 +134,10 @@ export const DeploymentTreeView = ({
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-6 w-6 p-0 hover:bg-gray-200"
+                    className="h-7 w-7 p-0 transition-colors hover:bg-gray-200 hover:shadow-sm"
                     onClick={handleCreateClick}
                   >
-                    <Plus className="h-3 w-3 text-gray-600" />
+                    <Plus className="h-4 w-4 text-gray-600" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
