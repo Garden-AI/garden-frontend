@@ -11,6 +11,7 @@ type SavedGardensPanelProps = {
   onSelect?: (entity: Entity) => void;
   onDoubleClick?: () => void;
   selectedItem?: Entity | null;
+  isLoading?: boolean;
 };
 
 export const SavedGardensPanel = ({
@@ -18,11 +19,13 @@ export const SavedGardensPanel = ({
   onSelect,
   onDoubleClick = () => {},
   selectedItem,
+  isLoading = false,
 }: SavedGardensPanelProps) => {
   return (
     <div className="h-full w-full bg-amber-50 rounded-lg">
       <GardenTreeView
         gardens={savedGardens}
+        isLoading={isLoading}
         onSelect={onSelect}
         onDoubleClick={onDoubleClick}
         selectedItem={
@@ -45,3 +48,4 @@ export const SavedGardensPanel = ({
     </div>
   );
 };
+

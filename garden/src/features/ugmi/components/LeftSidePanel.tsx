@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo, useEffect } from "react";
 import {
   ResizablePanel,
   ResizablePanelGroup,
@@ -25,24 +25,64 @@ type LeftSidePanelProps = {
 
 export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => {
   const auth = useGlobusAuth();
-  const { data: userInfo } = useGetUserInfo();
-  const { data: gardens, refetch: refetchGardens } = useGetGardens({
+
+  // Stage 1: User info (needed for everything else)
+  const { data: userInfo, isLoading: userInfoLoading } = useGetUserInfo();
+
+  // Stage 2: User's gardens (high priority, enabled after userInfo loads)
+  const {
+    data: gardens,
+    isLoading: userGardensLoading,
+    refetch: refetchGardens
+  } = useGetGardens({
     owner_uuid: userInfo?.identity_id,
   });
-  const { data: modelDeployments } = useGetModelDeployments();
+
+  // Stage 3: Saved gardens (enabled after userInfo loads)
+  const savedGardenDois = userInfo?.saved_garden_dois || [];
+  const {
+    data: savedGardensResponse,
+    isLoading: savedGardensLoading
+  } = useSavedGardens(savedGardenDois);
+
+  // Stage 4: Model deployments (can load in parallel with gardens)
+  const {
+    data: modelDeployments,
+    isLoading: modelDeploymentsLoading,
+    refetch: refetchModelDeployments
+  } = useGetModelDeployments();
+
+  // Determine if we need to poll for deployment status updates
+  const shouldPollDeployments = useMemo(() => {
+    return modelDeployments?.some(
+      deployment => deployment.originalData?.deploy_status === "pending"
+    ) ?? false;
+  }, [modelDeployments]);
+
+  // Set up polling for in-progress deployments
+  useEffect(() => {
+    if (!shouldPollDeployments) return;
+
+    const intervalId = setInterval(() => {
+      refetchModelDeployments();
+    }, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, [shouldPollDeployments, refetchModelDeployments]);
 
   // Panel refs for imperative control
   const savedGardensPanelRef = useRef<ImperativePanelHandle>(null);
   const myGardensPanelRef = useRef<ImperativePanelHandle>(null);
   const functionLibraryPanelRef = useRef<ImperativePanelHandle>(null);
 
-  // Get saved gardens from user's saved DOIs
-  const savedGardenDois = userInfo?.saved_garden_dois || [];
-  const { data: savedGardensResponse } = useSavedGardens(savedGardenDois);
   const savedGardens = savedGardensResponse?.garden_meta || [];
 
   const handleGardenCreated = () => {
     refetchGardens();
+  };
+
+  const handleDeploymentCreated = () => {
+    refetchModelDeployments();
   };
 
   // Double-click expand handlers
@@ -110,6 +150,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
             onSelect={onItemSelected}
             selectedItem={selectedItem}
             onDoubleClick={handleSavedGardensExpand}
+            isLoading={savedGardensLoading}
           />
         </ResizablePanel>
 
@@ -126,6 +167,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
             onGardenCreated={handleGardenCreated}
             selectedItem={selectedItem}
             onDoubleClick={handleMyGardensExpand}
+            isLoading={userGardensLoading}
           />
         </ResizablePanel>
 
@@ -142,9 +184,12 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
             onSelect={onItemSelected}
             selectedItem={selectedItem}
             onDoubleClick={handleFunctionLibraryExpand}
+            onDeploymentCreated={handleDeploymentCreated}
+            isLoading={modelDeploymentsLoading}
           />
         </ResizablePanel>
       </ResizablePanelGroup>
     </ResizablePanel>
   );
 };
+

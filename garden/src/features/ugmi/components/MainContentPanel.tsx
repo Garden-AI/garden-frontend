@@ -50,3 +50,4 @@ export const MainContentPanel = ({ entity }: MainContentPanelProps) => {
     </ResizablePanel>
   );
 };
+

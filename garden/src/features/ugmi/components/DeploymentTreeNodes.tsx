@@ -2,7 +2,7 @@ import React from "react";
 import { ModalFunction } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { ChevronDown, ChevronRight, CircleCheck, CircleDotDashed, CircleX } from "lucide-react";
+import { ChevronDown, ChevronRight, CircleCheck, CircleDotDashed, CircleX, Loader2 } from "lucide-react";
 import { ParentNodeProps, ChildNodeProps } from "./BaseTreeView";
 
 // Deployment parent node component
@@ -35,6 +35,18 @@ export const DeploymentParentNode: React.FC<
 
   // Determine deployment status and styling
   const getDeploymentStatus = () => {
+    // Check if deployment is pending
+    const isPending = deployment.originalData?.deploy_status === "pending";
+    
+    if (isPending) {
+      return {
+        icon: <Loader2 className={`${isCompact ? "h-3 w-3" : "h-4 w-4"} text-blue-500 animate-spin`} />,
+        textColor: "text-gray-900",
+        hoverBg: "hover:bg-blue-50",
+        hoverBorder: "hover:border-blue-200",
+      };
+    }
+
     switch (deployment.status) {
       case "deployed":
         return {

@@ -60,7 +60,7 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
       defaultSize={15}
       minSize={15}
       maxSize={75}
-      className="bg-gray-50 flex h-full flex-col rounded-r-lg"
+      className="flex h-full flex-col rounded-r-lg bg-gray-50"
     >
       <UserInfoPanel auth={auth} userInfo={userInfo} />
       <ResizablePanelGroup direction="vertical" className="flex-1">
@@ -71,11 +71,16 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
 
         <ResizableHandle
           withHandle
-          className="bg-gray-200 hover:bg-gray-300 h-1 transition-colors"
+          className="h-1 bg-gray-200 transition-colors hover:bg-gray-300"
         />
 
         {/* Published Gardens Panel */}
-        <ResizablePanel ref={publishedGardensPanelRef} defaultSize={40} minSize={10} className="p-2">
+        <ResizablePanel
+          ref={publishedGardensPanelRef}
+          defaultSize={40}
+          minSize={10}
+          className="p-2"
+        >
           <PublishedGardensPanel
             onSelect={onItemSelected}
             selectedItem={entity}
@@ -86,3 +91,4 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
     </ResizablePanel>
   );
 };
+

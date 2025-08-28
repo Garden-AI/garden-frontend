@@ -22,7 +22,9 @@ type FunctionLibraryViewProps = {
   gardens: Garden[];
   onSelect?: (entity: Entity) => void;
   onDoubleClick?: () => void;
+  onDeploymentCreated?: () => void;
   selectedItem?: Entity | null;
+  isLoading?: boolean;
 };
 
 export const MyFunctionLibraryView = ({
@@ -30,7 +32,9 @@ export const MyFunctionLibraryView = ({
   gardens,
   onSelect,
   onDoubleClick,
+  onDeploymentCreated,
   selectedItem,
+  isLoading = false,
 }: FunctionLibraryViewProps) => {
   const { data: userModalFunctions } = useGetUserModalFunctions();
 
@@ -126,32 +130,49 @@ export const MyFunctionLibraryView = ({
   return (
     <div className="h-full bg-blue-50 rounded-lg">
       <BaseTreeView
-      data={treeData}
-      ParentNodeComponent={DeploymentParentNode}
-      ChildNodeComponent={DeploymentFunctionNode}
-      onSelect={onSelect}
-      onDoubleClick={onDoubleClick}
-      selectedItem={selectedItem}
-      showHeader={true}
-      headerIcon={<Library className="h-4 w-4" />}
-      headerTitle="My Function Library"
-      headerThemeColors={themeColors}
-      searchPlaceholder="Search my functions..."
-      searchFunction={searchFunction}
-      sortOptions={sortOptions}
-      filterConfigs={filterConfigs}
-      filterFunction={filterFunction}
-      emptyIcon={<Library className="h-8 w-8" />}
-      emptyTitle="No Functions Found"
-      emptyDescription="You haven't created any functions yet"
-      CreateFormComponent={CreateFunctionFormWrapper}
-      createDialogTitle="Create New Function"
-    />
+        data={treeData}
+        isLoading={isLoading}
+        ParentNodeComponent={DeploymentParentNode}
+        ChildNodeComponent={DeploymentFunctionNode}
+        onSelect={onSelect}
+        onDoubleClick={onDoubleClick}
+        selectedItem={selectedItem}
+        showHeader={true}
+        headerIcon={<Library className="h-4 w-4" />}
+        headerTitle="My Function Library"
+        headerThemeColors={themeColors}
+        searchPlaceholder="Search my functions..."
+        searchFunction={searchFunction}
+        sortOptions={sortOptions}
+        filterConfigs={filterConfigs}
+        filterFunction={filterFunction}
+        emptyIcon={<Library className="h-8 w-8" />}
+        emptyTitle="No Functions Found"
+        emptyDescription="You haven't created any functions yet"
+        CreateFormComponent={(props) => (
+          <CreateFunctionFormWrapper {...props} onDeploymentCreated={onDeploymentCreated} />
+        )}
+        createDialogTitle="Create New Function"
+      />
     </div>
   );
 };
 
 // Wrapper component to match the expected onSuccess signature
-const CreateFunctionFormWrapper: React.FC<{ onSuccess: (fn: any) => void }> = ({ onSuccess }) => (
-  <ModalAppForm onSuccess={onSuccess} />
+const CreateFunctionFormWrapper: React.FC<{
+  onSuccess: (fn: any) => void;
+  onDeploymentCreated?: () => void;
+}> = ({ onSuccess, onDeploymentCreated }) => (
+  <ModalAppForm
+    onDeploymentSuccess={(id: number) => {
+      // Call onDeploymentCreated immediately when deployment starts
+      // This allows the user to close the modal and see the pending deployment
+      onDeploymentCreated?.();
+    }}
+    onSuccess={(id: number) => {
+      // This is called when the form wants to close (after deployment starts)
+      onSuccess(id);
+    }}
+  />
 );
+

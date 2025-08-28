@@ -14,8 +14,8 @@ type PublishedGardensPanelProps = {
 };
 
 export const PublishedGardensPanel = ({ onSelect, onDoubleClick, selectedItem }: PublishedGardensPanelProps) => {
-    // Fetch published gardens (non-draft)
-    const { data: publishedGardens } = useGetGardens({
+    // Fetch published gardens (non-draft) - lowest priority
+    const { data: publishedGardens, isLoading: publishedGardensLoading } = useGetGardens({
         draft: false,
         limit: 100
     });
@@ -24,6 +24,7 @@ export const PublishedGardensPanel = ({ onSelect, onDoubleClick, selectedItem }:
         <div className="h-full flex-1 bg-purple-50 rounded-lg">
             <GardenTreeView
                 gardens={publishedGardens || []}
+                isLoading={publishedGardensLoading}
                 onSelect={onSelect}
                 onDoubleClick={onDoubleClick}
                 selectedItem={
@@ -46,3 +47,4 @@ export const PublishedGardensPanel = ({ onSelect, onDoubleClick, selectedItem }:
         </div>
     );
 };
+
