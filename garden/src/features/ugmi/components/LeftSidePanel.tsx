@@ -98,7 +98,13 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
     <ResizablePanel defaultSize={15} minSize={15} maxSize={75} className="rounded-lg bg-emerald-50">
       <ResizablePanelGroup direction="vertical">
         {/* Saved Gardens Panel */}
-        <ResizablePanel id="saved-gardens" ref={savedGardensPanelRef} defaultSize={33} minSize={10} className="p-2">
+        <ResizablePanel
+          id="saved-gardens"
+          ref={savedGardensPanelRef}
+          defaultSize={33}
+          minSize={10}
+          className="p-2"
+        >
           <div className="rounded-lg">
             <SavedGardensPanel
               savedGardens={savedGardens}
