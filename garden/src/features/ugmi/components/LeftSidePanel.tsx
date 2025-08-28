@@ -95,7 +95,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
   const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
 
   return (
-    <ResizablePanel defaultSize={15} minSize={15} maxSize={75} className="rounded-lg bg-emerald-50">
+    <ResizablePanel defaultSize={15} minSize={15} maxSize={75} className="rounded-lg bg-gray-50">
       <ResizablePanelGroup direction="vertical">
         {/* Saved Gardens Panel */}
         <ResizablePanel
@@ -105,19 +105,17 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
           minSize={10}
           className="p-2"
         >
-          <div className="rounded-lg">
-            <SavedGardensPanel
-              savedGardens={savedGardens}
-              onSelect={onItemSelected}
-              selectedItem={selectedItem}
-              onDoubleClick={handleSavedGardensExpand}
-            />
-          </div>
+          <SavedGardensPanel
+            savedGardens={savedGardens}
+            onSelect={onItemSelected}
+            selectedItem={selectedItem}
+            onDoubleClick={handleSavedGardensExpand}
+          />
         </ResizablePanel>
 
         <ResizableHandle
           withHandle
-          className="h-1 bg-emerald-200 transition-colors hover:bg-emerald-300"
+          className="h-1 bg-gray-200 transition-colors hover:bg-gray-300"
         />
 
         {/* My Gardens Panel */}
@@ -133,7 +131,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
 
         <ResizableHandle
           withHandle
-          className="h-1 bg-emerald-200 transition-colors hover:bg-emerald-300"
+          className="h-1 bg-gray-200 transition-colors hover:bg-gray-300"
         />
 
         {/* My Function Library Panel */}

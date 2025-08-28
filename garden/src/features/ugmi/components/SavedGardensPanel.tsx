@@ -20,7 +20,7 @@ export const SavedGardensPanel = ({
   selectedItem,
 }: SavedGardensPanelProps) => {
   return (
-    <div className="h-full w-full bg-amber-50">
+    <div className="h-full w-full bg-amber-50 rounded-lg">
       <GardenTreeView
         gardens={savedGardens}
         onSelect={onSelect}

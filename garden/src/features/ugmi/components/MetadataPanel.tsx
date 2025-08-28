@@ -45,7 +45,7 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
 
     if (!entity) {
         return (
-            <div className="h-full flex flex-col bg-slate-50">
+            <div className="h-full flex flex-col bg-slate-50 rounded-lg">
                 <div 
                     className="border-b-2 border-slate-300 bg-slate-100 cursor-pointer"
                     onDoubleClick={onDoubleClick}
@@ -71,7 +71,7 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
     if (entityType === "garden" && currentGarden) {
         return (
             <div 
-                className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 cursor-pointer"
+                className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 rounded-lg cursor-pointer"
                 onDoubleClick={onDoubleClick}
             >
                 <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
@@ -84,7 +84,7 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
     if (entityType === "function" && currentModalFunction) {
         return (
             <div 
-                className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 cursor-pointer"
+                className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 rounded-lg cursor-pointer"
                 onDoubleClick={onDoubleClick}
             >
                 <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
@@ -96,7 +96,7 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
 
     // For deployments and other types, show custom header
     return (
-        <div className="h-full flex flex-col bg-slate-50">
+        <div className="h-full flex flex-col bg-slate-50 rounded-lg">
             <div 
                 className="border-b-2 border-slate-300 bg-slate-100 cursor-pointer"
                 onDoubleClick={onDoubleClick}

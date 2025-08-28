@@ -16,7 +16,7 @@ type MyGardensPanelProps = {
 
 export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleClick, selectedItem }: MyGardensPanelProps) => {
     return (
-        <div className="h-full">
+        <div className="h-full bg-emerald-50 rounded-lg">
             <GardenTreeView
                 gardens={gardens}
                 onSelect={onSelect}
