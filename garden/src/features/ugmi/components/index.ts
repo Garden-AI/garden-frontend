@@ -10,8 +10,6 @@ export { PublishedGardensPanel } from "./PublishedGardensPanel";
 
 // Function Library Components
 export { MyFunctionLibraryView } from "./MyFunctionLibraryView";
-export { DeploymentGroup } from "./DeploymentGroup";
-export { FunctionItem } from "./FunctionItem";
 
 // Metadata and User Components
 export { MetadataPanel } from "./MetadataPanel";
