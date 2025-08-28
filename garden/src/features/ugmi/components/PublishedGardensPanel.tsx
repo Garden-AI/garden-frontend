@@ -21,7 +21,7 @@ export const PublishedGardensPanel = ({ onSelect, onDoubleClick, selectedItem }:
     });
 
     return (
-        <div className="h-full flex-1">
+        <div className="h-full flex-1 bg-purple-50 rounded-lg">
             <GardenTreeView
                 gardens={publishedGardens || []}
                 onSelect={onSelect}
@@ -35,12 +35,12 @@ export const PublishedGardensPanel = ({ onSelect, onDoubleClick, selectedItem }:
                 headerIcon={<Globe className="h-4 w-4" />}
                 headerTitle={`Published Gardens${publishedGardens ? ` (${publishedGardens.length})` : ''}`}
                 headerThemeColors={{
-                    bg: "bg-green-100",
-                    border: "border-green-300",
-                    text: "text-green-900",
-                    iconColor: "text-green-700",
-                    hoverColor: "hover:bg-green-200",
-                    activeColor: "bg-green-200"
+                    bg: "bg-purple-100",
+                    border: "border-purple-300",
+                    text: "text-purple-900",
+                    iconColor: "text-purple-700",
+                    hoverColor: "hover:bg-purple-200",
+                    activeColor: "bg-purple-200"
                 }}
             />
         </div>

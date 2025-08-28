@@ -60,22 +60,22 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
       defaultSize={15}
       minSize={15}
       maxSize={75}
-      className="bg-green-50 flex h-full flex-col rounded-r-lg"
+      className="bg-gray-50 flex h-full flex-col rounded-r-lg"
     >
       <UserInfoPanel auth={auth} userInfo={userInfo} />
       <ResizablePanelGroup direction="vertical" className="flex-1">
         {/* Metadata Panel */}
-        <ResizablePanel ref={metadataPanelRef} defaultSize={60} minSize={10}>
+        <ResizablePanel ref={metadataPanelRef} defaultSize={60} minSize={10} className="p-2">
           <MetadataPanel entity={entity} onDoubleClick={handleMetadataExpand} />
         </ResizablePanel>
 
         <ResizableHandle
           withHandle
-          className="bg-green-200 hover:bg-green-300 h-1 transition-colors"
+          className="bg-gray-200 hover:bg-gray-300 h-1 transition-colors"
         />
 
         {/* Published Gardens Panel */}
-        <ResizablePanel ref={publishedGardensPanelRef} defaultSize={40} minSize={10}>
+        <ResizablePanel ref={publishedGardensPanelRef} defaultSize={40} minSize={10} className="p-2">
           <PublishedGardensPanel
             onSelect={onItemSelected}
             selectedItem={entity}

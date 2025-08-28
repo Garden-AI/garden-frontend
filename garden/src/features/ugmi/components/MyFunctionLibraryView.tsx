@@ -124,7 +124,8 @@ export const MyFunctionLibraryView = ({
   };
 
   return (
-    <BaseTreeView
+    <div className="h-full bg-blue-50 rounded-lg">
+      <BaseTreeView
       data={treeData}
       ParentNodeComponent={DeploymentParentNode}
       ChildNodeComponent={DeploymentFunctionNode}
@@ -146,6 +147,7 @@ export const MyFunctionLibraryView = ({
       CreateFormComponent={CreateFunctionFormWrapper}
       createDialogTitle="Create New Function"
     />
+    </div>
   );
 };
 
