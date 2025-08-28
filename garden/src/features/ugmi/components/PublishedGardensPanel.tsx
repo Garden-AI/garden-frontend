@@ -9,10 +9,11 @@ type Entity = Garden | ModalFunction | ModelDeployment;
 
 type PublishedGardensPanelProps = {
     onSelect?: (entity: Entity) => void;
+    onDoubleClick?: () => void;
     selectedItem?: Entity | null;
 };
 
-export const PublishedGardensPanel = ({ onSelect, selectedItem }: PublishedGardensPanelProps) => {
+export const PublishedGardensPanel = ({ onSelect, onDoubleClick, selectedItem }: PublishedGardensPanelProps) => {
     // Fetch published gardens (non-draft)
     const { data: publishedGardens } = useGetGardens({
         draft: false,
@@ -24,6 +25,7 @@ export const PublishedGardensPanel = ({ onSelect, selectedItem }: PublishedGarde
             <GardenTreeView
                 gardens={publishedGardens || []}
                 onSelect={onSelect}
+                onDoubleClick={onDoubleClick}
                 selectedItem={
                     selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
                         ? (selectedItem as Garden | ModalFunction)

@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import {
   ResizablePanel,
   ResizablePanelGroup,
   ResizableHandle,
 } from "@/components/shadcn/resizable";
+import { ImperativePanelHandle } from "react-resizable-panels";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetGardens } from "../../gardens/api/useGetGardens";
 import { useGetModelDeployments } from "../../model-deployments/api/useGetModelDeployments";
@@ -14,7 +15,6 @@ import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { SavedGardensPanel } from "./SavedGardensPanel";
 import { MyGardensPanel } from "./MyGardensPanel";
 import { MyFunctionLibraryView } from "./MyFunctionLibraryView";
-import { getPanelElement } from "react-resizable-panels";
 
 type Entity = Garden | ModalFunction | ModelDeployment;
 
@@ -31,6 +31,11 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
   });
   const { data: modelDeployments } = useGetModelDeployments();
 
+  // Panel refs for imperative control
+  const savedGardensPanelRef = useRef<ImperativePanelHandle>(null);
+  const myGardensPanelRef = useRef<ImperativePanelHandle>(null);
+  const functionLibraryPanelRef = useRef<ImperativePanelHandle>(null);
+
   // Get saved gardens from user's saved DOIs
   const savedGardenDois = userInfo?.saved_garden_dois || [];
   const { data: savedGardensResponse } = useSavedGardens(savedGardenDois);
@@ -40,6 +45,52 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
     refetchGardens();
   };
 
+  // Double-click expand handlers
+  const handleSavedGardensExpand = () => {
+    const currentSize = savedGardensPanelRef.current?.getSize() ?? 33;
+    if (currentSize > 70) {
+      // If already expanded, reset to default sizes
+      savedGardensPanelRef.current?.resize(33);
+      myGardensPanelRef.current?.resize(34);
+      functionLibraryPanelRef.current?.resize(33);
+    } else {
+      // Expand this panel and shrink others
+      savedGardensPanelRef.current?.resize(80);
+      myGardensPanelRef.current?.resize(10);
+      functionLibraryPanelRef.current?.resize(10);
+    }
+  };
+
+  const handleMyGardensExpand = () => {
+    const currentSize = myGardensPanelRef.current?.getSize() ?? 34;
+    if (currentSize > 70) {
+      // If already expanded, reset to default sizes
+      savedGardensPanelRef.current?.resize(33);
+      myGardensPanelRef.current?.resize(34);
+      functionLibraryPanelRef.current?.resize(33);
+    } else {
+      // Expand this panel and shrink others
+      savedGardensPanelRef.current?.resize(10);
+      myGardensPanelRef.current?.resize(80);
+      functionLibraryPanelRef.current?.resize(10);
+    }
+  };
+
+  const handleFunctionLibraryExpand = () => {
+    const currentSize = functionLibraryPanelRef.current?.getSize() ?? 33;
+    if (currentSize > 70) {
+      // If already expanded, reset to default sizes
+      savedGardensPanelRef.current?.resize(33);
+      myGardensPanelRef.current?.resize(34);
+      functionLibraryPanelRef.current?.resize(33);
+    } else {
+      // Expand this panel and shrink others
+      savedGardensPanelRef.current?.resize(10);
+      myGardensPanelRef.current?.resize(10);
+      functionLibraryPanelRef.current?.resize(80);
+    }
+  };
+
   // Only show gardens if user is authenticated and has an identity_id
   const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
 
@@ -47,12 +98,13 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
     <ResizablePanel defaultSize={15} minSize={15} maxSize={75} className="rounded-lg bg-emerald-50">
       <ResizablePanelGroup direction="vertical">
         {/* Saved Gardens Panel */}
-        <ResizablePanel id="saved-gardens" defaultSize={33} minSize={10} className="p-2">
+        <ResizablePanel id="saved-gardens" ref={savedGardensPanelRef} defaultSize={33} minSize={10} className="p-2">
           <div className="rounded-lg">
             <SavedGardensPanel
               savedGardens={savedGardens}
               onSelect={onItemSelected}
               selectedItem={selectedItem}
+              onDoubleClick={handleSavedGardensExpand}
             />
           </div>
         </ResizablePanel>
@@ -63,12 +115,13 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
         />
 
         {/* My Gardens Panel */}
-        <ResizablePanel defaultSize={34} minSize={10} className="p-2">
+        <ResizablePanel ref={myGardensPanelRef} defaultSize={34} minSize={10} className="p-2">
           <MyGardensPanel
             gardens={filteredGardens}
             onSelect={onItemSelected}
             onGardenCreated={handleGardenCreated}
             selectedItem={selectedItem}
+            onDoubleClick={handleMyGardensExpand}
           />
         </ResizablePanel>
 
@@ -78,12 +131,13 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
         />
 
         {/* My Function Library Panel */}
-        <ResizablePanel defaultSize={33} minSize={10} className="p-2">
+        <ResizablePanel ref={functionLibraryPanelRef} defaultSize={33} minSize={10} className="p-2">
           <MyFunctionLibraryView
             modelDeployments={modelDeployments || []}
             gardens={filteredGardens}
             onSelect={onItemSelected}
             selectedItem={selectedItem}
+            onDoubleClick={handleFunctionLibraryExpand}
           />
         </ResizablePanel>
       </ResizablePanelGroup>

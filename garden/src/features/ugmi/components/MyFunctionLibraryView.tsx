@@ -21,6 +21,7 @@ type FunctionLibraryViewProps = {
   modelDeployments: ModelDeployment[];
   gardens: Garden[];
   onSelect?: (entity: Entity) => void;
+  onDoubleClick?: () => void;
   selectedItem?: Entity | null;
 };
 
@@ -28,6 +29,7 @@ export const MyFunctionLibraryView = ({
   modelDeployments,
   gardens,
   onSelect,
+  onDoubleClick,
   selectedItem,
 }: FunctionLibraryViewProps) => {
   const { data: userModalFunctions } = useGetUserModalFunctions();
@@ -127,6 +129,7 @@ export const MyFunctionLibraryView = ({
       ParentNodeComponent={DeploymentParentNode}
       ChildNodeComponent={DeploymentFunctionNode}
       onSelect={onSelect}
+      onDoubleClick={onDoubleClick}
       selectedItem={selectedItem}
       showHeader={true}
       headerIcon={<Library className="h-4 w-4" />}
