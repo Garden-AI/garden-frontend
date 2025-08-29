@@ -15,18 +15,24 @@ const getModelDeployments = async (): Promise<ModelDeployment[]> => {
             name: ma.original_app_name || ma.app_name,
             status: ma.deploy_status === "done" ? "deployed" :
                 ma.deploy_status === "error" ? "error" :
-                    ma.deploy_status === "timed_out" ? "error" : "undeployed",
+                    ma.deploy_status === "timed_out" ? "error" :
+                        ma.deploy_status === "pending" ? "undeployed" : "undeployed",
             type: "Modal App",
             originalData: ma,
         };
     });
 };
 
-export const useGetModelDeployments = () => {
+export const useGetModelDeployments = (options?: {
+    refetchInterval?: number;
+    enabled?: boolean;
+}) => {
     const auth = useGlobusAuth();
     return useQuery<ModelDeployment[]>({
         queryKey: ["modelDeployments"],
         queryFn: getModelDeployments,
-        enabled: auth.isAuthenticated,
+        enabled: auth.isAuthenticated && (options?.enabled !== false),
+        refetchInterval: options?.refetchInterval,
+        refetchIntervalInBackground: false,
     });
 };

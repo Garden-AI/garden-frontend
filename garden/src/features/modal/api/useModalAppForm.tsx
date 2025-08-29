@@ -265,9 +265,10 @@ export const useModalAppForm = ({
       }
 
       setDeployedAppId(appId);
-      toast.success(`Modal app ${toUpdate ? "updated" : "deployed"} successfully!`);
+      toast.success(`Modal app ${toUpdate ? "updated" : "deployment started"} successfully!`);
 
-      // Invalidate the modelDeployments query to ensure fresh data is fetched
+      // Immediately invalidate the modelDeployments query to show the new deployment
+      // This will trigger a refetch and show the deployment in pending state
       queryClient.invalidateQueries({ queryKey: ["modelDeployments"] });
 
       if (showSuccessScreen) {
@@ -275,6 +276,7 @@ export const useModalAppForm = ({
         setIsDeploymentComplete(true);
       }
 
+      // Call the deployment success callback immediately after backend confirms deployment started
       if (onDeploymentSuccess && appId !== undefined) {
         onDeploymentSuccess(appId);
       } else if (toUpdate) {

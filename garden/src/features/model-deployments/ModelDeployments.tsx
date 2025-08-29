@@ -72,7 +72,7 @@ export const ModelDeployments = () => {
                                 <SelectItem value="all">All</SelectItem>
                                 <SelectItem value="deployed">Deployed</SelectItem>
                                 <SelectItem value="undeployed">Undeployed</SelectItem>
-                                <SelectItem value ="error">Error</SelectItem>
+                                <SelectItem value="error">Error</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -83,7 +83,7 @@ export const ModelDeployments = () => {
                         <TooltipTrigger asChild>
                             <div className="h-10">
                                 <Button onClick={handleCreateDeployment} size={"sm"} variant={"outline"} className="h-full" aria-description="Create a new model deployment">
-                                    <Plus className="mr-1 h-4 w-4"/>
+                                    <Plus className="mr-1 h-4 w-4" />
                                     New Deployment
                                 </Button>
                             </div>
@@ -107,7 +107,7 @@ export const ModelDeployments = () => {
                     const statusClass = statusColors[status];
 
                     return (
-                        <div 
+                        <div
                             key={deployment.id}
                             onClick={() => handleOpenDeployment(deployment)}
                             className="w-full cursor-pointer rounded-xl border border-[#d6e9dd] bg-white hover:shadow-lg hover:ring-2 hover:ring-[#a5d6b1] transition px-5 py-4 flex flex-col gap-4 sm:flex-row sm:items-center justify-between"
@@ -124,7 +124,7 @@ export const ModelDeployments = () => {
                                     <span className="bg-gray-100 px-2 py-0.5 rounded-full">{functionCount} function{functionCount != 1 ? "s" : ""}</span>
                                 </div>
                             </div>
-                            
+
                             <Button
                                 size="sm"
                                 variant="secondary"

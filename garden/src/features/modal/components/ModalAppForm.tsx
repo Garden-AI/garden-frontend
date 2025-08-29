@@ -45,6 +45,11 @@ export interface ModalAppFormProps extends UseModalAppFormOptions {
    * @param id The ID of the deployed app
    */
   onSuccess?: (id: number) => void;
+  /**
+   * Function called immediately when deployment starts (before completion)
+   * @param id The ID of the deployment that was started
+   */
+  onDeploymentSuccess?: (id: number) => void;
 }
 
 export const ModalAppForm = ({
@@ -53,6 +58,7 @@ export const ModalAppForm = ({
   viewDeploymentsUrl = "/user",
   redirectUrl,
   onSuccess,
+  onDeploymentSuccess,
   ...hookOptions
 }: ModalAppFormProps) => {
   const {
@@ -74,7 +80,12 @@ export const ModalAppForm = ({
   } = useModalAppForm({
     ...hookOptions,
     redirectUrl,
-    onDeploymentSuccess: onSuccess
+    onDeploymentSuccess: (id: number) => {
+      // Call the immediate callback when deployment starts
+      onDeploymentSuccess?.(id);
+      // Also call onSuccess for backward compatibility and to handle form closing
+      onSuccess?.(id);
+    }
   });
 
   // Determine the current step based on state

@@ -36,9 +36,13 @@ import { SUPER_USERS } from "@/utils/utils";
 const GardenDropdownMenu = ({
   garden,
   setIsPublishGardenModalOpen,
+  redirectPath,
+  onAfterDelete,
 }: {
   garden: Garden;
   setIsPublishGardenModalOpen: (open: boolean) => void;
+  redirectPath?: string;
+  onAfterDelete?: () => void;
 }) => {
   const auth = useGlobusAuth();
 
@@ -96,6 +100,8 @@ const GardenDropdownMenu = ({
         garden={garden}
         isOpen={isDeleteGardenModalOpen}
         setIsOpen={setIsDeleteGardenModalOpen}
+        redirectPath={redirectPath}
+        onAfterDelete={onAfterDelete}
       />
 
       <ArchiveGardenModal
@@ -211,10 +217,14 @@ const DeleteGardenModal = ({
   garden,
   isOpen,
   setIsOpen,
+  redirectPath = "/",
+  onAfterDelete,
 }: {
   garden: Garden;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  redirectPath?: string;
+  onAfterDelete?: () => void;
 }) => {
   const queryClient = useQueryClient();
   const [input, setInput] = React.useState("");
@@ -234,7 +244,11 @@ const DeleteGardenModal = ({
         });
         queryClient.removeQueries({ queryKey: ["gardens", doi] });
         toast.success("Garden deleted successfully!");
-        navigate("/");
+        if (onAfterDelete) {
+          onAfterDelete();
+        } else {
+          navigate(redirectPath);
+        }
       },
     });
   };

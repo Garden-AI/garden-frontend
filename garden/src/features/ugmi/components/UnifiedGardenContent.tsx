@@ -12,11 +12,13 @@ import { Garden } from "@/types";
 type UnifiedGardenContentProps = {
     garden: Garden;
     ownsThisGarden: boolean;
+    onAfterDelete?: () => void;
 };
 
 export const UnifiedGardenContent = ({
     garden,
     ownsThisGarden,
+    onAfterDelete,
 }: UnifiedGardenContentProps) => {
     const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
 
@@ -47,6 +49,7 @@ export const UnifiedGardenContent = ({
                         garden={currentGarden}
                         ownsThisGarden={ownsThisGarden}
                         setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+                        onAfterDelete={onAfterDelete}
                     />
 
                     <GardenContentView garden={currentGarden} ownsThisGarden={ownsThisGarden} />
