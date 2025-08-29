@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { RefObject, useRef, useState } from "react";
 import {
   ResizablePanel,
   ResizablePanelGroup,
@@ -21,39 +21,35 @@ type RightSidePanelProps = {
 };
 
 export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) => {
+  const [lastExpanded, setLastExpanded] = useState(null);
+
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
 
   // Panel refs for imperative control
-  const metadataPanelRef = useRef<ImperativePanelHandle>(null);
-  const publishedGardensPanelRef = useRef<ImperativePanelHandle>(null);
-
-  // Double-click expand handlers
-  const handleMetadataExpand = () => {
-    const currentSize = metadataPanelRef.current?.getSize() ?? 40;
-    if (currentSize > 70) {
-      // If already expanded, reset to default sizes
-      metadataPanelRef.current?.resize(40);
-      publishedGardensPanelRef.current?.resize(60);
-    } else {
-      // Expand this panel and shrink others
-      metadataPanelRef.current?.resize(80);
-      publishedGardensPanelRef.current?.resize(20);
-    }
+  const panelRefs = {
+    metadataPanelRef: useRef<ImperativePanelHandle>(null),
+    publishedGardensPanelRef: useRef<ImperativePanelHandle>(null),
   };
 
-  const handlePublishedGardensExpand = () => {
-    const currentSize = publishedGardensPanelRef.current?.getSize() ?? 60;
-    if (currentSize > 70) {
-      // If already expanded, reset to default sizes
-      metadataPanelRef.current?.resize(40);
-      publishedGardensPanelRef.current?.resize(60);
-    } else {
-      // Expand this panel and shrink others
-      metadataPanelRef.current?.resize(20);
-      publishedGardensPanelRef.current?.resize(80);
+  const handlePanelExpand = (selected: RefObject<ImperativePanelHandle>) => {
+    if (selected === lastExpanded) {
+      // evenly space the panels, return
+      Object.entries(panelRefs).forEach(([_, p]) => p.current?.resize(100 / Object.keys(panelRefs).length));
+      setLastExpanded(null);
+      return;
     }
-  };
+    // expand the selected panel, shrink the others
+    Object.entries(panelRefs).forEach(([ref, p]) => {
+      if (p === selected) {
+        p.current?.resize(80);
+        setLastExpanded(p);
+        return;
+      } else {
+        p.current?.resize(10);
+      }
+    });
+  }
 
   return (
     <ResizablePanel
@@ -65,8 +61,8 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
       <UserInfoPanel auth={auth} userInfo={userInfo} />
       <ResizablePanelGroup direction="vertical" className="flex-1">
         {/* Metadata Panel */}
-        <ResizablePanel ref={metadataPanelRef} defaultSize={60} minSize={10} className="p-2">
-          <MetadataPanel entity={entity} onDoubleClick={handleMetadataExpand} />
+        <ResizablePanel ref={panelRefs.metadataPanelRef} defaultSize={60} minSize={10} className="p-2">
+          <MetadataPanel entity={entity} onDoubleClick={() => handlePanelExpand(panelRefs.metadataPanelRef)} />
         </ResizablePanel>
 
         <ResizableHandle
@@ -76,7 +72,7 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
 
         {/* Published Gardens Panel */}
         <ResizablePanel
-          ref={publishedGardensPanelRef}
+          ref={panelRefs.publishedGardensPanelRef}
           defaultSize={40}
           minSize={10}
           className="p-2"
@@ -84,7 +80,7 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
           <PublishedGardensPanel
             onSelect={onItemSelected}
             selectedItem={entity}
-            onDoubleClick={handlePublishedGardensExpand}
+            onDoubleClick={() => handlePanelExpand(panelRefs.publishedGardensPanelRef)}
           />
         </ResizablePanel>
       </ResizablePanelGroup>
