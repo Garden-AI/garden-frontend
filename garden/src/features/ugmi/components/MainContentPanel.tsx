@@ -29,8 +29,8 @@ export const MainContentPanel = ({ entity }: MainContentPanelProps) => {
         <div className="flex h-full items-center justify-center">
           <div className="space-y-2 text-center">
             <div className="text-4xl">🌿</div>
-            <p className="font-medium text-gray-500">Select a Garden or Function</p>
-            <p className="text-sm text-gray-400">Choose from the left panel to get started</p>
+            <p className="font-medium text-gray-500">Select a Garden or Function from a panel on the left</p>
+            <p className="text-sm text-gray-400">or from the Published Gardens panel.</p>
           </div>
         </div>
       ) : (

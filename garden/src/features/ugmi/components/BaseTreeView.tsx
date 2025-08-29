@@ -139,7 +139,7 @@ export function BaseTreeView<TParent, TChild>({
   ParentNodeComponent,
   ChildNodeComponent,
   onSelect,
-  onDoubleClick = () => {},
+  onDoubleClick = () => { },
   onCreate,
   onCreateSuccess,
   selectedItem,
@@ -164,7 +164,6 @@ export function BaseTreeView<TParent, TChild>({
   const [isSearching, setIsSearching] = useState(false);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
-  // Initialize filter state from config
   const initialFilterState = useMemo(() => {
     const state: FilterState = {};
     filterConfigs.forEach((config) => {
@@ -180,7 +179,7 @@ export function BaseTreeView<TParent, TChild>({
   const handleCreateClick = async () => {
     if (!auth.isAuthenticated) {
       await auth.authorization?.login();
-      return;
+      await handleCreateClick();
     }
     if (onCreate) {
       onCreate();
@@ -223,7 +222,7 @@ export function BaseTreeView<TParent, TChild>({
     });
   };
 
-  // Filter, search, and sort data
+  // Filter, search, and sort nodes
   const filteredAndSortedData = useMemo(() => {
     let filtered = data.filter((node) => {
       // Apply filters
@@ -302,9 +301,8 @@ export function BaseTreeView<TParent, TChild>({
                           <Button
                             size="icon"
                             variant="ghost"
-                            className={`h-8 w-8 p-0 transition-colors hover:shadow-sm ${headerThemeColors.hoverColor} ${
-                              hasActiveFilters ? headerThemeColors.activeColor : ""
-                            }`}
+                            className={`h-8 w-8 p-0 transition-colors hover:shadow-sm ${headerThemeColors.hoverColor} ${hasActiveFilters ? headerThemeColors.activeColor : ""
+                              }`}
                           >
                             <ListFilter className={`h-4 w-4 ${headerThemeColors.iconColor}`} />
                           </Button>
@@ -329,8 +327,8 @@ export function BaseTreeView<TParent, TChild>({
                             className={
                               sortBy === option.value
                                 ? headerThemeColors.activeColor
-                                    .replace("bg-", "bg-")
-                                    .replace("-200", "-50")
+                                  .replace("bg-", "bg-")
+                                  .replace("-200", "-50")
                                 : ""
                             }
                           >

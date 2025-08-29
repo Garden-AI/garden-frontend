@@ -1,7 +1,7 @@
 import React from "react";
 import { Garden, ModalFunction } from "@/types";
 import { Sprout } from "lucide-react";
-import { CreateGardenForm } from "../gardens/components/create/CreateGardenForm";
+import { useCreateGarden } from "../gardens/api/useCreateGarden";
 import {
   BaseTreeView,
   TreeNode,
@@ -22,20 +22,25 @@ type GardenTreeViewProps = {
   onDoubleClick?: () => void;
   onGardenCreated?: (garden: Garden) => void;
   selectedItem?: SelectedItem;
+  // Create configuration
+  allowCreate?: boolean;
   // Header configuration
   showHeader?: boolean;
   headerIcon?: React.ReactNode;
   headerTitle?: string;
   headerThemeColors?: ThemeColors;
+  emptyTitle?: string;
+  emptyDescription?: string;
 };
 
 export const GardenTreeView = ({
   gardens,
   isLoading = false,
   onSelect,
-  onDoubleClick = () => {},
+  onDoubleClick = () => { },
   onGardenCreated,
   selectedItem,
+  allowCreate = false,
   showHeader = false,
   headerIcon,
   headerTitle = "Gardens",
@@ -47,7 +52,30 @@ export const GardenTreeView = ({
     hoverColor: "hover:bg-emerald-200",
     activeColor: "bg-emerald-200",
   },
+  emptyTitle = "No Gardens Found",
+  emptyDescription = "",
 }: GardenTreeViewProps) => {
+  const { mutateAsync: createGarden, isPending: isCreating } = useCreateGarden();
+
+  const handleCreateGarden = async () => {
+    try {
+      const newGarden = await createGarden({
+        title: "New Garden",
+        description: null,
+        doi_is_draft: true,
+        publisher: "Garden-AI",
+      });
+      
+      if (onGardenCreated) {
+        onGardenCreated(newGarden);
+      }
+      if (onSelect) {
+        onSelect(newGarden);
+      }
+    } catch (error) {
+      console.error("Failed to create garden:", error);
+    }
+  };
   // Transform gardens into tree node structure
   const treeData: TreeNode<Garden, ModalFunction>[] = gardens.map((garden) => ({
     parent: garden,
@@ -92,14 +120,12 @@ export const GardenTreeView = ({
     },
   ];
 
-  // Define filter configurations
   const filterConfigs: FilterConfig[] = [
     { label: "Published", key: "published", defaultChecked: true },
     { label: "Draft", key: "draft", defaultChecked: true },
     { label: "Archived", key: "archived", defaultChecked: true },
   ];
 
-  // Define search function
   const searchFunction: SearchFunction<Garden, ModalFunction> = (node, searchTerm) => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -109,7 +135,6 @@ export const GardenTreeView = ({
     );
   };
 
-  // Define filter function
   const filterFunction: FilterFunction<Garden, ModalFunction> = (node, filterState) => {
     const garden = node.parent;
     if (garden.is_archived && !filterState.archived) return false;
@@ -121,32 +146,25 @@ export const GardenTreeView = ({
   return (
     <BaseTreeView
       data={treeData}
-      isLoading={isLoading}
+      isLoading={isLoading || (allowCreate && isCreating)}
       ParentNodeComponent={GardenParentNode}
       ChildNodeComponent={GardenFunctionNode}
       onSelect={onSelect}
       onDoubleClick={onDoubleClick}
-      onCreateSuccess={onGardenCreated}
+      onCreate={allowCreate ? handleCreateGarden : undefined}
       selectedItem={selectedItem}
       showHeader={showHeader}
       headerIcon={headerIcon}
       headerTitle={headerTitle}
       headerThemeColors={headerThemeColors}
-      searchPlaceholder="Search gardens by name, description, or author..."
+      searchPlaceholder="Search by doi, name, description, or author..."
       searchFunction={searchFunction}
       sortOptions={sortOptions}
       filterConfigs={filterConfigs}
       filterFunction={filterFunction}
       emptyIcon={<Sprout className="h-12 w-12" />}
-      emptyTitle="No Gardens"
-      emptyDescription="Create one to get started"
-      CreateFormComponent={onGardenCreated ? CreateGardenFormWrapper : undefined}
-      createDialogTitle="Create New Garden"
+      emptyTitle={emptyTitle}
+      emptyDescription={emptyDescription}
     />
   );
 };
-
-// Wrapper component to match the expected onSuccess signature
-const CreateGardenFormWrapper: React.FC<{ onSuccess: (garden: Garden) => void }> = ({
-  onSuccess,
-}) => <CreateGardenForm onFormStateChange={() => {}} onSuccess={onSuccess} />;
