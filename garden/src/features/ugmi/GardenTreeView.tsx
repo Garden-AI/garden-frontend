@@ -65,7 +65,7 @@ export const GardenTreeView = ({
         doi_is_draft: true,
         publisher: "Garden-AI",
       });
-      
+
       if (onGardenCreated) {
         onGardenCreated(newGarden);
       }
@@ -123,7 +123,7 @@ export const GardenTreeView = ({
   const filterConfigs: FilterConfig[] = [
     { label: "Published", key: "published", defaultChecked: true },
     { label: "Draft", key: "draft", defaultChecked: true },
-    { label: "Archived", key: "archived", defaultChecked: true },
+    { label: "Archived", key: "archived", defaultChecked: false },
   ];
 
   const searchFunction: SearchFunction<Garden, ModalFunction> = (node, searchTerm) => {
