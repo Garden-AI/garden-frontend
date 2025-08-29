@@ -91,7 +91,7 @@ export const MyFunctionLibraryView = ({
   // Define filter configurations
   const filterConfigs: FilterConfig[] = [
     { label: "Deployed", key: "deployed", defaultChecked: true },
-    { label: "Undeployed", key: "undeployed", defaultChecked: true },
+    { label: "In-Progress", key: "undeployed", defaultChecked: true },
     { label: "Error", key: "error", defaultChecked: true },
   ];
 
@@ -148,7 +148,7 @@ export const MyFunctionLibraryView = ({
         filterFunction={filterFunction}
         emptyIcon={<Library className="h-8 w-8" />}
         emptyTitle="No Functions Found"
-        emptyDescription="You haven't created any functions yet"
+        emptyDescription="Deploy a new function to get started"
         CreateFormComponent={(props) => (
           <CreateFunctionFormWrapper {...props} onDeploymentCreated={onDeploymentCreated} />
         )}

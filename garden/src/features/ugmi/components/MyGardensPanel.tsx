@@ -29,6 +29,7 @@ export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleCli
                         ? (selectedItem as Garden | ModalFunction)
                         : null
                 }
+                allowCreate={true}
                 showHeader={true}
                 headerIcon={<Sprout className="h-4 w-4" />}
                 headerTitle="My Gardens"
@@ -40,6 +41,7 @@ export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleCli
                     hoverColor: "hover:bg-emerald-200",
                     activeColor: "bg-emerald-200"
                 }}
+                emptyDescription="Create a new Garden to get started"
             />
         </div>
     );

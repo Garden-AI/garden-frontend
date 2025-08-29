@@ -17,7 +17,7 @@ type SavedGardensPanelProps = {
 export const SavedGardensPanel = ({
   savedGardens,
   onSelect,
-  onDoubleClick = () => {},
+  onDoubleClick = () => { },
   selectedItem,
   isLoading = false,
 }: SavedGardensPanelProps) => {
@@ -44,6 +44,8 @@ export const SavedGardensPanel = ({
           hoverColor: "hover:bg-amber-200",
           activeColor: "bg-amber-200",
         }}
+        emptyTitle="No Saved Gardens"
+        emptyDescription="Save a Garden"
       />
     </div>
   );
