@@ -11,9 +11,10 @@ import { Entity, matchEntityType } from "../types";
 
 type MainContentPanelProps = {
   entity: Entity | null;
+  onAfterDelete?: () => void;
 };
 
-export const MainContentPanel = ({ entity }: MainContentPanelProps) => {
+export const MainContentPanel = ({ entity, onAfterDelete }: MainContentPanelProps) => {
   const auth = useGlobusAuth();
 
   const entityType = matchEntityType(entity);
@@ -41,9 +42,9 @@ export const MainContentPanel = ({ entity }: MainContentPanelProps) => {
               ownsThisFunction={ownsEntity}
             />
           ) : entityType === "garden" ? (
-            <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} />
+            <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} onAfterDelete={onAfterDelete} />
           ) : (
-            <ModelDeploymentDetails entity={(entity as ModelDeployment).originalData} />
+            <ModelDeploymentDetails entity={(entity as ModelDeployment).originalData} onAfterDelete={onAfterDelete} />
           )}
         </div>
       )}

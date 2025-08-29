@@ -17,6 +17,10 @@ export const UnifiedManagementInterface = () => {
     setSelectedItem(entity);
   };
 
+  const handleAfterDelete = () => {
+    setSelectedItem(null);
+  };
+
   return (
     <DndContext>
       <div className="scrollbar-thin scrollbar-track-transparent relative flex h-screen w-full items-center overflow-hidden bg-gray-100 p-2">
@@ -29,7 +33,7 @@ export const UnifiedManagementInterface = () => {
             withHandle
             className="w-1 bg-slate-200 transition-colors hover:bg-slate-300"
           />
-          <MainContentPanel entity={selectedItem} />
+          <MainContentPanel entity={selectedItem} onAfterDelete={handleAfterDelete} />
           <ResizableHandle
             withHandle
             className="w-1 bg-slate-200 transition-colors hover:bg-slate-300"

@@ -13,9 +13,11 @@ interface GardenHeaderProps {
     garden: Garden;
     ownsThisGarden: boolean;
     setIsPublishGardenModalOpen: (open: boolean) => void;
+    redirectPath?: string;
+    onAfterDelete?: () => void;
 }
 
-export const GardenHeader = ({ garden, ownsThisGarden, setIsPublishGardenModalOpen }: GardenHeaderProps) => {
+export const GardenHeader = ({ garden, ownsThisGarden, setIsPublishGardenModalOpen, redirectPath, onAfterDelete }: GardenHeaderProps) => {
     const { mutateAsync: patchGarden } = usePatchGarden();
 
     return (
@@ -36,6 +38,8 @@ export const GardenHeader = ({ garden, ownsThisGarden, setIsPublishGardenModalOp
                 <GardenDropdownOptions
                     garden={garden}
                     setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+                    redirectPath={redirectPath}
+                    onAfterDelete={onAfterDelete}
                 />
             </div>
         </div>

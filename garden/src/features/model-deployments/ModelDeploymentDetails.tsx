@@ -39,9 +39,11 @@ import { ModalAppForm } from "@/features/modal/components/ModalAppForm";
 
 interface ModelDeploymentDetailsProps {
     entity: ModalAppMetadataResponse | AsyncModalAppMetadataResponse,
+    redirectPath?: string,
+    onAfterDelete?: () => void,
 }
 
-export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) => {
+export const ModelDeploymentDetails = ({ entity, redirectPath = "/user?tab=model-deployments", onAfterDelete }: ModelDeploymentDetailsProps) => {
     // Fetch gardens that use functions from this deployment
     const { data: relatedGardens = [], isLoading: isLoadingGardens } = useGardensUsingFunctions(entity);
     const navigate = useNavigate();
@@ -99,8 +101,12 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
             entity.modal_function_ids.forEach((id) => {
                 queryClient.invalidateQueries({ queryKey: ["modalFunctions", id] });
             });
-            navigate("/user?tab=model-deployments");
             toast(`Deployment Deleted: ${entity.original_app_name || entity.app_name}`);
+            if (onAfterDelete) {
+                onAfterDelete();
+            } else {
+                navigate(redirectPath);
+            }
         } catch (error: any) {
             const errorMessage = error.response?.data?.detail
                 || error.message
