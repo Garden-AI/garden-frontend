@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useRef, useMemo, useEffect, useState, RefObject } from "react";
 import {
   ResizablePanel,
   ResizablePanelGroup,
@@ -24,12 +24,11 @@ type LeftSidePanelProps = {
 };
 
 export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => {
-  const auth = useGlobusAuth();
+  const [lastExpanded, setLastExpanded] = useState<RefObject<ImperativePanelHandle> | null>(null);
 
-  // Stage 1: User info (needed for everything else)
+  const auth = useGlobusAuth();
   const { data: userInfo, isLoading: userInfoLoading } = useGetUserInfo();
 
-  // Stage 2: User's gardens (high priority, enabled after userInfo loads)
   const {
     data: gardens,
     isLoading: userGardensLoading,
@@ -38,28 +37,24 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
     owner_uuid: userInfo?.identity_id,
   });
 
-  // Stage 3: Saved gardens (enabled after userInfo loads)
   const savedGardenDois = userInfo?.saved_garden_dois || [];
   const {
     data: savedGardensResponse,
     isLoading: savedGardensLoading
   } = useSavedGardens(savedGardenDois);
 
-  // Stage 4: Model deployments (can load in parallel with gardens)
   const {
     data: modelDeployments,
     isLoading: modelDeploymentsLoading,
     refetch: refetchModelDeployments
   } = useGetModelDeployments();
 
-  // Determine if we need to poll for deployment status updates
   const shouldPollDeployments = useMemo(() => {
     return modelDeployments?.some(
       deployment => deployment.originalData?.deploy_status === "pending"
     ) ?? false;
   }, [modelDeployments]);
 
-  // Set up polling for in-progress deployments
   useEffect(() => {
     if (!shouldPollDeployments) return;
 
@@ -71,9 +66,11 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
   }, [shouldPollDeployments, refetchModelDeployments]);
 
   // Panel refs for imperative control
-  const savedGardensPanelRef = useRef<ImperativePanelHandle>(null);
-  const myGardensPanelRef = useRef<ImperativePanelHandle>(null);
-  const functionLibraryPanelRef = useRef<ImperativePanelHandle>(null);
+  const panelRefs = {
+    savedGardensPanelRef: useRef<ImperativePanelHandle>(null),
+    myGardensPanelRef: useRef<ImperativePanelHandle>(null),
+    functionLibraryPanelRef: useRef<ImperativePanelHandle>(null),
+  };
 
   const savedGardens = savedGardensResponse?.garden_meta || [];
 
@@ -85,51 +82,24 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
     refetchModelDeployments();
   };
 
-  // Double-click expand handlers
-  const handleSavedGardensExpand = () => {
-    const currentSize = savedGardensPanelRef.current?.getSize() ?? 33;
-    if (currentSize > 70) {
-      // If already expanded, reset to default sizes
-      savedGardensPanelRef.current?.resize(33);
-      myGardensPanelRef.current?.resize(34);
-      functionLibraryPanelRef.current?.resize(33);
-    } else {
-      // Expand this panel and shrink others
-      savedGardensPanelRef.current?.resize(80);
-      myGardensPanelRef.current?.resize(10);
-      functionLibraryPanelRef.current?.resize(10);
+  const handlePanelExpand = (selected: RefObject<ImperativePanelHandle>) => {
+    if (selected === lastExpanded) {
+      // evenly resize the panels, return
+      Object.entries(panelRefs).forEach(([_, p]) => p.current?.resize(100 / Object.keys(panelRefs).length));
+      setLastExpanded(null);
+      return;
     }
-  };
-
-  const handleMyGardensExpand = () => {
-    const currentSize = myGardensPanelRef.current?.getSize() ?? 34;
-    if (currentSize > 70) {
-      // If already expanded, reset to default sizes
-      savedGardensPanelRef.current?.resize(33);
-      myGardensPanelRef.current?.resize(34);
-      functionLibraryPanelRef.current?.resize(33);
-    } else {
-      // Expand this panel and shrink others
-      savedGardensPanelRef.current?.resize(10);
-      myGardensPanelRef.current?.resize(80);
-      functionLibraryPanelRef.current?.resize(10);
-    }
-  };
-
-  const handleFunctionLibraryExpand = () => {
-    const currentSize = functionLibraryPanelRef.current?.getSize() ?? 33;
-    if (currentSize > 70) {
-      // If already expanded, reset to default sizes
-      savedGardensPanelRef.current?.resize(33);
-      myGardensPanelRef.current?.resize(34);
-      functionLibraryPanelRef.current?.resize(33);
-    } else {
-      // Expand this panel and shrink others
-      savedGardensPanelRef.current?.resize(10);
-      myGardensPanelRef.current?.resize(10);
-      functionLibraryPanelRef.current?.resize(80);
-    }
-  };
+    // expand the selected panel, shrink the others
+    Object.entries(panelRefs).forEach(([ref, p]) => {
+      if (p === selected) {
+        p.current?.resize(80);
+        setLastExpanded(p);
+        return;
+      } else {
+        p.current?.resize(10);
+      }
+    });
+  }
 
   // Only show gardens if user is authenticated and has an identity_id
   const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];
@@ -140,7 +110,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
         {/* Saved Gardens Panel */}
         <ResizablePanel
           id="saved-gardens"
-          ref={savedGardensPanelRef}
+          ref={panelRefs.savedGardensPanelRef}
           defaultSize={33}
           minSize={10}
           className="p-2"
@@ -149,7 +119,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
             savedGardens={savedGardens}
             onSelect={onItemSelected}
             selectedItem={selectedItem}
-            onDoubleClick={handleSavedGardensExpand}
+            onDoubleClick={() => handlePanelExpand(panelRefs.savedGardensPanelRef)}
             isLoading={savedGardensLoading}
           />
         </ResizablePanel>
@@ -160,13 +130,13 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
         />
 
         {/* My Gardens Panel */}
-        <ResizablePanel ref={myGardensPanelRef} defaultSize={34} minSize={10} className="p-2">
+        <ResizablePanel ref={panelRefs.myGardensPanelRef} defaultSize={34} minSize={10} className="p-2">
           <MyGardensPanel
             gardens={filteredGardens}
             onSelect={onItemSelected}
             onGardenCreated={handleGardenCreated}
             selectedItem={selectedItem}
-            onDoubleClick={handleMyGardensExpand}
+            onDoubleClick={() => handlePanelExpand(panelRefs.myGardensPanelRef)}
             isLoading={userGardensLoading}
           />
         </ResizablePanel>
@@ -177,13 +147,13 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
         />
 
         {/* My Function Library Panel */}
-        <ResizablePanel ref={functionLibraryPanelRef} defaultSize={33} minSize={10} className="p-2">
+        <ResizablePanel ref={panelRefs.functionLibraryPanelRef} defaultSize={33} minSize={10} className="p-2">
           <MyFunctionLibraryView
             modelDeployments={modelDeployments || []}
             gardens={filteredGardens}
             onSelect={onItemSelected}
             selectedItem={selectedItem}
-            onDoubleClick={handleFunctionLibraryExpand}
+            onDoubleClick={() => { handlePanelExpand(panelRefs.functionLibraryPanelRef) }}
             onDeploymentCreated={handleDeploymentCreated}
             isLoading={modelDeploymentsLoading}
           />
