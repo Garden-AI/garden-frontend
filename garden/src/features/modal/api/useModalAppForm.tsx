@@ -10,6 +10,8 @@ import { ApiError } from "@/features/gardens/utils/garden.utils";
 import { ModalFileMetadataResponse } from "@/types";
 import { ValidationError, DeploymentError } from "./useModalAppUpload";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "@/lib/axios";
+import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 
 export const modalAppFormSchema = z.object({
   file_contents: z.string().min(1, "Modal file is required"),
@@ -23,9 +25,9 @@ export type ModalAppFormValues = z.infer<typeof modalAppFormSchema>;
 export interface UseModalAppFormOptions {
   /**
    * Function called after successful deployment
-   * @param appId The ID of the deployed app
+   * @param deployment The full deployment object
    */
-  onDeploymentSuccess?: (appId: number) => void;
+  onDeploymentSuccess?: (deployment: ModelDeployment) => void;
   /**
    * Whether to show a success screen after deployment
    * @default false
@@ -267,19 +269,37 @@ export const useModalAppForm = ({
       setDeployedAppId(appId);
       toast.success(`Modal app ${toUpdate ? "updated" : "deployment started"} successfully!`);
 
-      // Immediately invalidate the modelDeployments query to show the new deployment
-      // This will trigger a refetch and show the deployment in pending state
-      queryClient.invalidateQueries({ queryKey: ["modelDeployments"] });
+      // Cache invalidation already handled in useModalAppUpload when deployment starts
+      // Fetch the full deployment object and pass it to the callback
+      if (onDeploymentSuccess && appId !== undefined) {
+        try {
+          // Fetch the full deployment object from the API
+          const modalAppResponse = await axios.get(`/modal-apps/${appId}`);
+          const deployment: ModelDeployment = {
+            id: modalAppResponse.data.id ?? -1,
+            name: modalAppResponse.data.original_app_name || modalAppResponse.data.app_name,
+            status: modalAppResponse.data.deploy_status === "done" ? "deployed" :
+              modalAppResponse.data.deploy_status === "error" ? "error" :
+              modalAppResponse.data.deploy_status === "timed_out" ? "error" :
+              modalAppResponse.data.deploy_status === "pending" ? "undeployed" : "undeployed",
+            type: "Modal App",
+            originalData: modalAppResponse.data,
+          };
+          
+          // Call the callback with the full deployment object
+          onDeploymentSuccess(deployment);
+        } catch (error) {
+          console.error("Failed to fetch deployment object:", error);
+          // Fallback: still show success but without selection
+        }
+      }
 
       if (showSuccessScreen) {
         // Show success screen in the form (don't navigate away immediately)
         setIsDeploymentComplete(true);
       }
 
-      // Call the deployment success callback immediately after backend confirms deployment started
-      if (onDeploymentSuccess && appId !== undefined) {
-        onDeploymentSuccess(appId);
-      } else if (toUpdate) {
+      if (toUpdate) {
         console.log("UPDATED!!");
       } else {
         // Handle redirection based on redirectUrl or default behavior
