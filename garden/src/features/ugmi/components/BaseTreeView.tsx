@@ -1,4 +1,5 @@
 import React, { useState, useMemo, ReactNode } from "react";
+import { useDroppable } from "@dnd-kit/core";
 import { Button } from "@/components/shadcn/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
 import {
@@ -61,6 +62,7 @@ export type ParentNodeProps<TParent, TChild> = {
   isExpanded: boolean;
   onToggleExpanded: () => void;
   themeColors: ThemeColors;
+  isDropTarget?: boolean;
 };
 
 export type ChildNodeProps<TParent, TChild> = {
@@ -132,6 +134,87 @@ const defaultTheme: ThemeColors = {
   hoverColor: "hover:bg-gray-200",
   activeColor: "bg-gray-200",
 };
+
+// Helper component that wraps a tree node with a droppable zone
+type TreeNodeWithDropZoneProps<TParent, TChild> = {
+  node: TreeNode<TParent, TChild>;
+  parentId: string;
+  isExpanded: boolean;
+  onToggleExpanded: () => void;
+  ParentNodeComponent: React.ComponentType<ParentNodeProps<TParent, TChild>>;
+  ChildNodeComponent: React.ComponentType<ChildNodeProps<TParent, TChild>>;
+  onSelect?: (item: TParent | TChild) => void;
+  selectedItem?: any;
+  themeColors: ThemeColors;
+};
+
+function TreeNodeWithDropZone<TParent, TChild>({
+  node,
+  parentId,
+  isExpanded,
+  onToggleExpanded,
+  ParentNodeComponent,
+  ChildNodeComponent,
+  onSelect,
+  selectedItem,
+  themeColors,
+}: TreeNodeWithDropZoneProps<TParent, TChild>) {
+  // Create droppable zone ID based on parent item
+  const getDroppableId = (parent: TParent): string => {
+    if (parent && typeof parent === 'object') {
+      // For gardens, use DOI
+      if ('doi' in parent) {
+        return (parent as any).doi;
+      }
+      // For deployments, use ID
+      if ('id' in parent) {
+        return (parent as any).id.toString();
+      }
+    }
+    return parentId;
+  };
+
+  const { setNodeRef, isOver } = useDroppable({ 
+    id: getDroppableId(node.parent)
+  });
+
+  return (
+    <div 
+      ref={setNodeRef}
+      className={`transition-all duration-200 ${
+        isOver 
+          ? 'bg-blue-50 border-2 border-blue-300 border-dashed rounded-lg p-1' 
+          : ''
+      }`}
+    >
+      <ParentNodeComponent
+        item={node.parent}
+        children={node.children}
+        onSelect={onSelect}
+        selectedItem={selectedItem}
+        isExpanded={isExpanded}
+        onToggleExpanded={onToggleExpanded}
+        themeColors={themeColors}
+        isDropTarget={isOver}
+      />
+
+      {isExpanded && node.children.length > 0 && (
+        <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
+          {node.children.map((child, childIndex) => (
+            <ChildNodeComponent
+              key={childIndex}
+              item={child}
+              parent={node.parent}
+              onSelect={onSelect}
+              selectedItem={selectedItem}
+              themeColors={themeColors}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function BaseTreeView<TParent, TChild>({
   data,
@@ -453,32 +536,18 @@ export function BaseTreeView<TParent, TChild>({
             const isExpanded = expandedItems.has(parentId);
 
             return (
-              <div key={index}>
-                <ParentNodeComponent
-                  item={node.parent}
-                  children={node.children}
-                  onSelect={onSelect}
-                  selectedItem={selectedItem}
-                  isExpanded={isExpanded}
-                  onToggleExpanded={() => handleToggleExpanded(parentId)}
-                  themeColors={headerThemeColors}
-                />
-
-                {isExpanded && node.children.length > 0 && (
-                  <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
-                    {node.children.map((child, childIndex) => (
-                      <ChildNodeComponent
-                        key={childIndex}
-                        item={child}
-                        parent={node.parent}
-                        onSelect={onSelect}
-                        selectedItem={selectedItem}
-                        themeColors={headerThemeColors}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+              <TreeNodeWithDropZone
+                key={index}
+                node={node}
+                parentId={parentId}
+                isExpanded={isExpanded}
+                onToggleExpanded={() => handleToggleExpanded(parentId)}
+                ParentNodeComponent={ParentNodeComponent}
+                ChildNodeComponent={ChildNodeComponent}
+                onSelect={onSelect}
+                selectedItem={selectedItem}
+                themeColors={headerThemeColors}
+              />
             );
           })
         )}

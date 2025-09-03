@@ -1,6 +1,6 @@
 import React from "react";
 import { Garden, ModalFunction } from "@/types";
-import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronRight, Book, BookDashed, ArchiveX } from "lucide-react";
 import { ParentNodeProps, ChildNodeProps } from "./BaseTreeView";
 
@@ -13,9 +13,8 @@ export const GardenParentNode: React.FC<ParentNodeProps<Garden, ModalFunction>> 
   isExpanded,
   onToggleExpanded,
   themeColors,
+  isDropTarget,
 }) => {
-  const { setNodeRef } = useDroppable({ id: garden.doi });
-
   const handleSelect = () => {
     if (onSelect) {
       onSelect(garden);
@@ -57,13 +56,15 @@ export const GardenParentNode: React.FC<ParentNodeProps<Garden, ModalFunction>> 
 
   const status = getGardenStatus();
 
-  // Combine base styles with selected state styles
+  // Combine base styles with selected state styles and drop target state
   const containerClasses = isSelected
     ? `group flex cursor-pointer items-center rounded-lg border-2 border-emerald-400 bg-emerald-50 p-2 transition-all duration-150 shadow-md`
+    : isDropTarget
+    ? `group flex cursor-pointer items-center rounded-lg border-2 border-blue-400 bg-blue-100 p-2 transition-all duration-150 shadow-lg`
     : `group flex cursor-pointer items-center rounded-lg border border-transparent p-2 transition-all duration-150 hover:shadow-sm ${status.hoverBg} ${status.hoverBorder}`;
 
   return (
-    <div ref={setNodeRef} className="select-none">
+    <div className="select-none">
       <div className={containerClasses} onClick={handleSelect}>
         <button
           className="mr-2 flex h-5 w-5 items-center justify-center rounded transition-colors duration-150 hover:bg-gray-200"
@@ -104,8 +105,7 @@ export const GardenFunctionNode: React.FC<ChildNodeProps<Garden, ModalFunction>>
     : undefined;
 
   const handleSelect = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    // Don't prevent default or stop propagation to allow drag events
     if (onSelect) {
       onSelect(fn);
     }
@@ -124,17 +124,16 @@ export const GardenFunctionNode: React.FC<ChildNodeProps<Garden, ModalFunction>>
     : `group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm`;
 
   return (
-    <div ref={setNodeRef} className={containerClasses} style={style}>
-      {/* Drag handle */}
-      <div
-        {...listeners}
-        {...attributes}
-        className="mr-2 flex h-4 w-4 cursor-grab items-center justify-center active:cursor-grabbing"
-      >
-        <div className="h-2 w-2 rounded-full bg-blue-400 transition-colors group-hover:bg-blue-500"></div>
-      </div>
-      {/* Clickable content */}
-      <div className="flex-1 cursor-pointer px-2 py-1.5" onClick={handleSelect}>
+    <div 
+      ref={setNodeRef} 
+      className={`${containerClasses} cursor-grab active:cursor-grabbing`} 
+      style={style}
+      {...listeners}
+      {...attributes}
+      onClick={handleSelect}
+      title="Click to select, drag to add to garden"
+    >
+      <div className="flex-1 px-2 py-1.5">
         <div className="truncate text-xs font-medium text-gray-700">{fn.function_name}</div>
       </div>
     </div>
