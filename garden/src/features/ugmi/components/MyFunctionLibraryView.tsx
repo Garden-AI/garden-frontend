@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { Library } from "lucide-react";
-import { useGetUserModalFunctions } from "../../modal/api/useGetUserModalFunctions";
 import { ModalAppForm } from "../../modal/components/ModalAppForm";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
@@ -22,7 +21,7 @@ type FunctionLibraryViewProps = {
   gardens: Garden[];
   onSelect?: (entity: Entity) => void;
   onDoubleClick?: () => void;
-  onDeploymentCreated?: () => void;
+  onDeploymentCreated?: (deployment: ModelDeployment) => void;
   selectedItem?: Entity | null;
   isLoading?: boolean;
 };
@@ -36,35 +35,26 @@ export const MyFunctionLibraryView = ({
   selectedItem,
   isLoading = false,
 }: FunctionLibraryViewProps) => {
-  const { data: userModalFunctions } = useGetUserModalFunctions();
-
-  // Get the set of user's function IDs
-  const userFunctionIds = useMemo(() => {
-    if (!userModalFunctions) return new Set();
-    return new Set(userModalFunctions.map((func) => func.id));
-  }, [userModalFunctions]);
-
-  // Transform deployments with user's functions into tree node structure
+  // Transform deployments into tree node structure - no filtering needed since
+  // we only get the user's deployments anyway
   const treeData: TreeNode<ModelDeployment, ModalFunction>[] = useMemo(() => {
     const nodes: TreeNode<ModelDeployment, ModalFunction>[] = [];
 
     modelDeployments.forEach((deployment) => {
-      // Get user's functions from this deployment
-      const userFunctions = (deployment.originalData?.modal_functions || []).filter(
-        (func: ModalFunction) => userFunctionIds.has(func.id),
-      );
+      // Get all functions from this deployment
+      const deploymentFunctions = deployment.originalData?.modal_functions || [];
 
-      // Only include deployments that have user functions
-      if (userFunctions.length > 0) {
+      // Include all deployments (they're already filtered to user's deployments)
+      if (deploymentFunctions.length > 0) {
         nodes.push({
           parent: deployment,
-          children: userFunctions,
+          children: deploymentFunctions,
         });
       }
     });
 
     return nodes;
-  }, [modelDeployments, userFunctionIds]);
+  }, [modelDeployments]);
 
   // Define sorting options
   const sortOptions: SortOption<ModelDeployment>[] = [
@@ -150,7 +140,10 @@ export const MyFunctionLibraryView = ({
         emptyTitle="No Functions Found"
         emptyDescription="Deploy a new function to get started"
         CreateFormComponent={(props) => (
-          <CreateFunctionFormWrapper {...props} onDeploymentCreated={onDeploymentCreated} />
+          <CreateFunctionFormWrapper 
+            {...props} 
+            onDeploymentCreated={onDeploymentCreated}
+          />
         )}
         createDialogTitle="Create New Function"
       />
@@ -161,13 +154,13 @@ export const MyFunctionLibraryView = ({
 // Wrapper component to match the expected onSuccess signature
 const CreateFunctionFormWrapper: React.FC<{
   onSuccess: (fn: any) => void;
-  onDeploymentCreated?: () => void;
+  onDeploymentCreated?: (deployment: ModelDeployment) => void;
 }> = ({ onSuccess, onDeploymentCreated }) => (
   <ModalAppForm
-    onDeploymentSuccess={(id: number) => {
-      // Call onDeploymentCreated immediately when deployment starts
-      // This allows the user to close the modal and see the pending deployment
-      onDeploymentCreated?.();
+    onDeploymentSuccess={(deployment: ModelDeployment) => {
+      // Call onDeploymentCreated immediately with the full deployment object
+      // No need to refetch user functions - we get functions directly from deployments
+      onDeploymentCreated?.(deployment);
     }}
     onSuccess={(id: number) => {
       // This is called when the form wants to close (after deployment starts)

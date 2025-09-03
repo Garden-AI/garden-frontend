@@ -1,4 +1,5 @@
 import React, { useRef, useMemo, useEffect, useState, RefObject } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ResizablePanel,
   ResizablePanelGroup,
@@ -21,10 +22,12 @@ type Entity = Garden | ModalFunction | ModelDeployment;
 type LeftSidePanelProps = {
   onItemSelected?: (entity: Entity) => void;
   selectedItem?: Entity | null;
+  onDeploymentCreated?: (deployment: ModelDeployment) => void;
 };
 
-export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelProps) => {
+export const LeftSidePanel = ({ onItemSelected, selectedItem, onDeploymentCreated }: LeftSidePanelProps) => {
   const [lastExpanded, setLastExpanded] = useState<RefObject<ImperativePanelHandle> | null>(null);
+  const queryClient = useQueryClient();
 
   const auth = useGlobusAuth();
   const { data: userInfo, isLoading: userInfoLoading } = useGetUserInfo();
@@ -78,8 +81,19 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
     refetchGardens();
   };
 
-  const handleDeploymentCreated = () => {
-    refetchModelDeployments();
+  const handleDeploymentCreatedLocal = (deployment: ModelDeployment) => {
+    // Cache invalidation already happened in useModalAppForm
+    // Just handle the selection logic
+    
+    // Immediately select the deployment object and pass it up
+    if (onDeploymentCreated) {
+      onDeploymentCreated(deployment);
+    }
+    
+    // Also select it in the current panel
+    if (onItemSelected) {
+      onItemSelected(deployment);
+    }
   };
 
   const handlePanelExpand = (selected: RefObject<ImperativePanelHandle>) => {
@@ -154,7 +168,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem }: LeftSidePanelPro
             onSelect={onItemSelected}
             selectedItem={selectedItem}
             onDoubleClick={() => { handlePanelExpand(panelRefs.functionLibraryPanelRef) }}
-            onDeploymentCreated={handleDeploymentCreated}
+            onDeploymentCreated={handleDeploymentCreatedLocal}
             isLoading={modelDeploymentsLoading}
           />
         </ResizablePanel>

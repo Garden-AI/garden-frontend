@@ -238,11 +238,8 @@ export const ModelDeploymentDetails = ({ entity, redirectPath = "/user?tab=model
                 <CardHeader>
                     <CardTitle className="flex items-center text-lg">
                         <LeafIcon className="h-5 w-5 text-green-600 mr-2" />
-                        Gardens Using This Deployment
+                        Gardens Using These Functions
                     </CardTitle>
-                    <CardDescription>
-                        Gardens that utilize functions from this model deployment
-                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     {isLoadingGardens ? (
@@ -265,7 +262,7 @@ export const ModelDeploymentDetails = ({ entity, redirectPath = "/user?tab=model
                     ) : (
                         <div className="flex flex-col items-center justify-center p-6 text-center text-gray-500">
                             <AlertTriangleIcon className="h-8 w-8 mb-3 text-amber-500" />
-                            <p className="mb-1">No gardens using this model yet</p>
+                            <p className="mb-1">No gardens using these functions yet</p>
                         </div>
                     )}
                 </CardContent>
