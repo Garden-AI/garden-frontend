@@ -9,7 +9,7 @@ export const commonGardenSortOptions: GardenSortOption[] = [
     sortFn: (a, b) => (a.title || "").localeCompare(b.title || ""),
   },
   {
-    label: "Title (Z-A)", 
+    label: "Title (Z-A)",
     value: "title-desc",
     sortFn: (a, b) => (b.title || "").localeCompare(a.title || ""),
   },
@@ -31,19 +31,42 @@ export const myGardensFilterConfig: GardenFilterConfig[] = [
     label: "Published",
     key: "published",
     defaultChecked: true,
-    filterFn: (garden) => !garden.is_draft,
+    filterFn: (garden) => !garden.doi_is_draft && !garden.is_archived,
   },
   {
-    label: "Draft", 
+    label: "Draft",
     key: "draft",
     defaultChecked: true,
-    filterFn: (garden) => garden.is_draft,
+    filterFn: (garden) => garden.doi_is_draft && !garden.is_archived,
+  },
+  {
+    label: "Archived",
+    key: "archived",
+    defaultChecked: true,
+    filterFn: (garden) => garden.is_archived,
   },
 ];
 
-// Filter configs for Saved Gardens panel (usually no special filters needed)
+// Filter configs for Saved Gardens panel 
 export const savedGardensFilterConfig: GardenFilterConfig[] = [
-  // Could add filters like "Recently Saved" if we had that data
+  {
+    label: "Published",
+    key: "published",
+    defaultChecked: true,
+    filterFn: (garden) => !garden.doi_is_draft && !garden.is_archived,
+  },
+  {
+    label: "Draft",
+    key: "draft",
+    defaultChecked: true,
+    filterFn: (garden) => garden.doi_is_draft && !garden.is_archived,
+  },
+  {
+    label: "Archived",
+    key: "archived",
+    defaultChecked: true,
+    filterFn: (garden) => garden.is_archived,
+  },
 ];
 
 // Filter configs for Published Gardens panel
@@ -54,7 +77,7 @@ export const publishedGardensFilterConfig: GardenFilterConfig[] = [
 // Search field configurations
 export const commonGardenSearchFields: Array<keyof Garden | ((garden: Garden) => string)> = [
   'title',
-  'description', 
+  'description',
   'doi',
   // Search in authors
   (garden: Garden) => {

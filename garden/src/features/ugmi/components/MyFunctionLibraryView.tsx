@@ -8,6 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
 } from "@/components/shadcn/dropdown-menu";
 import {
@@ -17,6 +19,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/shadcn/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
 import { ModalAppForm } from "../../modal/components/ModalAppForm";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
@@ -131,98 +139,109 @@ export const MyFunctionLibraryView = ({
   const headerActions = (
     <>
       {/* Combined Sort & Filter dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <ListFilter className={`h-4 w-4 ${hasActiveFilters ? 'text-blue-600' : ''}`} />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {/* Sort options */}
-          <DropdownMenuItem
-            onClick={() => setSortBy("name")}
-            className={sortBy === "name" ? "bg-accent" : ""}
-          >
-            <ArrowUpDown className="h-4 w-4 mr-2" />
-            Name (A-Z)
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setSortBy("name-desc")}
-            className={sortBy === "name-desc" ? "bg-accent" : ""}
-          >
-            <ArrowUpDown className="h-4 w-4 mr-2" />
-            Name (Z-A)
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setSortBy("status-deployed")}
-            className={sortBy === "status-deployed" ? "bg-accent" : ""}
-          >
-            <ArrowUpDown className="h-4 w-4 mr-2" />
-            Status (Deployed First)
-          </DropdownMenuItem>
+      <TooltipProvider>
+        <Tooltip>
+          <DropdownMenu>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <ListFilter className={`h-4 w-4 ${hasActiveFilters ? 'text-blue-600' : ''}`} />
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent>Sort and filter options</TooltipContent>
+            <DropdownMenuContent align="end">
+              {/* Sort options */}
+              <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+                <DropdownMenuRadioItem value="name" onSelect={(e) => e.preventDefault()}>
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  Name (A-Z)
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="name-desc" onSelect={(e) => e.preventDefault()}>
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  Name (Z-A)
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="status-deployed" onSelect={(e) => e.preventDefault()}>
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  Status (Deployed First)
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
 
-          <DropdownMenuSeparator />
-
-          {/* Filter options */}
-          <DropdownMenuCheckboxItem
-            checked={filters.deployed}
-            onCheckedChange={() => handleFilterToggle('deployed')}
-          >
-            Deployed
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={filters.undeployed}
-            onCheckedChange={() => handleFilterToggle('undeployed')}
-          >
-            In-Progress
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={filters.error}
-            onCheckedChange={() => handleFilterToggle('error')}
-          >
-            Error
-          </DropdownMenuCheckboxItem>
-
-          {/* Reset button */}
-          {(searchTerm || hasActiveFilters) && (
-            <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  // Reset search
-                  setSearchTerm('');
-                  // Reset sort to default
-                  setSortBy('name');
-                  // Reset all filters to default values
-                  setFilters({
-                    deployed: true,
-                    undeployed: true,
-                    error: true,
-                  });
-                }}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+
+              {/* Filter options */}
+              <DropdownMenuCheckboxItem
+                checked={filters.deployed}
+                onCheckedChange={() => handleFilterToggle('deployed')}
+                onSelect={(e) => e.preventDefault()}
               >
-                Reset
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+                Deployed
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={filters.undeployed}
+                onCheckedChange={() => handleFilterToggle('undeployed')}
+                onSelect={(e) => e.preventDefault()}
+              >
+                In-Progress
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={filters.error}
+                onCheckedChange={() => handleFilterToggle('error')}
+                onSelect={(e) => e.preventDefault()}
+              >
+                Error
+              </DropdownMenuCheckboxItem>
+
+              {/* Reset button */}
+              {(searchTerm || hasActiveFilters) && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      // Reset search
+                      setSearchTerm('');
+                      // Reset sort to default
+                      setSortBy('name');
+                      // Reset all filters to default values
+                      setFilters({
+                        deployed: true,
+                        undeployed: true,
+                        error: true,
+                      });
+                    }}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Reset
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Tooltip>
+      </TooltipProvider>
 
       {/* Create button */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <Plus className="h-4 w-4" />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="w-[95%] md:w-4/5 lg:w-3/4 max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Create New Function</DialogTitle>
-          </DialogHeader>
-          <CreateFunctionFormWrapper onSuccess={handleCreateSuccess} onDeploymentCreated={onDeploymentCreated} />
-        </DialogContent>
-      </Dialog>
+      <TooltipProvider>
+        <Tooltip>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <TooltipTrigger asChild>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent>Create new function</TooltipContent>
+            <DialogContent className="w-[95%] md:w-4/5 lg:w-3/4 max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Create New Function</DialogTitle>
+              </DialogHeader>
+              <CreateFunctionFormWrapper onSuccess={handleCreateSuccess} onDeploymentCreated={onDeploymentCreated} />
+            </DialogContent>
+          </Dialog>
+        </Tooltip>
+      </TooltipProvider>
     </>
   );
 

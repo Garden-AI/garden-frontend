@@ -8,6 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
 } from "@/components/shadcn/dropdown-menu";
 import {
@@ -17,6 +19,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/shadcn/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
 import { useGardenFiltering } from "../hooks/useGardenFiltering";
 
 interface GardenPanelHeaderActionsProps {
@@ -65,85 +73,103 @@ export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> =
     <>
       {/* Combined Sort & Filter dropdown */}
       {(sortOptions.length > 0 || filterConfigs.length > 0) && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <ListFilter className={`h-4 w-4 ${hasActiveFilters ? 'text-blue-600' : ''}`} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {/* Sort options */}
-            {sortOptions.length > 0 && (
-              <>
-                {sortOptions.map((option) => (
-                  <DropdownMenuItem
-                    key={option.value}
-                    onClick={() => setSortBy(option.value)}
-                    className={sortBy === option.value ? "bg-accent" : ""}
-                  >
-                    <ArrowUpDown className="h-4 w-4 mr-2" />
-                    {option.label}
-                  </DropdownMenuItem>
-                ))}
-                {filterConfigs.length > 0 && (
-                  <DropdownMenuSeparator />
+        <TooltipProvider>
+          <Tooltip>
+            <DropdownMenu>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <ListFilter className={`h-4 w-4 ${hasActiveFilters ? 'text-blue-600' : ''}`} />
+                  </Button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Sort and filter options</TooltipContent>
+              <DropdownMenuContent align="end">
+                {/* Sort options */}
+                {sortOptions.length > 0 && (
+                  <>
+                    <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+                      {sortOptions.map((option) => (
+                        <DropdownMenuRadioItem
+                          key={option.value}
+                          value={option.value}
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          <ArrowUpDown className="h-4 w-4 mr-2" />
+                          {option.label}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                    {filterConfigs.length > 0 && (
+                      <DropdownMenuSeparator />
+                    )}
+                  </>
                 )}
-              </>
-            )}
 
-            {/* Filter options */}
-            {filterConfigs.map((config) => (
-              <DropdownMenuCheckboxItem
-                key={config.key}
-                checked={filters[config.key]}
-                onCheckedChange={() => handleFilterToggle(config.key)}
-              >
-                {config.label}
-              </DropdownMenuCheckboxItem>
-            ))}
+                {/* Filter options */}
+                {filterConfigs.map((config) => (
+                  <DropdownMenuCheckboxItem
+                    key={config.key}
+                    checked={filters[config.key]}
+                    onCheckedChange={() => handleFilterToggle(config.key)}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    {config.label}
+                  </DropdownMenuCheckboxItem>
+                ))}
 
-            {/* Clear/Reset button */}
-            {(sortOptions.length > 0 || filterConfigs.length > 0) && (searchTerm || hasActiveFilters) && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    // Reset search
-                    setSearchTerm('');
-                    // Reset sort to default
-                    setSortBy(sortOptions[0]?.value || '');
-                    // Reset all filters to default values
-                    filterConfigs.forEach(config => {
-                      if (filters[config.key] !== config.defaultChecked) {
-                        handleFilterToggle(config.key);
-                      }
-                    });
-                  }}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  Reset
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                {/* Clear/Reset button */}
+                {(sortOptions.length > 0 || filterConfigs.length > 0) && (searchTerm || hasActiveFilters) && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onSelect={(e) => {
+                        e.preventDefault();
+                        // Reset search
+                        setSearchTerm('');
+                        // Reset sort to default
+                        setSortBy(sortOptions[0]?.value || '');
+                        // Reset all filters to default values
+                        filterConfigs.forEach(config => {
+                          if (filters[config.key] !== config.defaultChecked) {
+                            handleFilterToggle(config.key);
+                          }
+                        });
+                      }}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      Reset
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </Tooltip>
+        </TooltipProvider>
       )}
 
       {/* Create button */}
       {showCreateButton && CreateComponent && setIsCreateDialogOpen && (
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <Plus className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-[95vw] w-[95vw] max-h-[90vh] h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{createDialogTitle}</DialogTitle>
-            </DialogHeader>
-            <CreateComponent onSuccess={handleCreateSuccess} />
-          </DialogContent>
-        </Dialog>
+        <TooltipProvider>
+          <Tooltip>
+            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Create new garden</TooltipContent>
+              <DialogContent className="w-[95%] md:w-4/5 lg:w-3/4 max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>{createDialogTitle}</DialogTitle>
+                </DialogHeader>
+                <CreateComponent onSuccess={handleCreateSuccess} />
+              </DialogContent>
+            </Dialog>
+          </Tooltip>
+        </TooltipProvider>
       )}
     </>
   );

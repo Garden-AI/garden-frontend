@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Garden } from "@/types";
 
 export interface GardenSortOption {
@@ -34,7 +34,7 @@ export const useGardenFiltering = (
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState(defaultSort);
-  
+
   // Initialize filters based on config
   const initialFilters = useMemo(() => {
     const filters: Record<string, boolean> = {};
@@ -43,8 +43,13 @@ export const useGardenFiltering = (
     });
     return filters;
   }, [filterConfigs]);
-  
+
   const [filters, setFilters] = useState(initialFilters);
+
+  // Sync filters when initial filters change
+  useEffect(() => {
+    setFilters(initialFilters);
+  }, [initialFilters]);
 
   // Filter, search, and sort gardens
   const processedGardens = useMemo(() => {
@@ -55,7 +60,7 @@ export const useGardenFiltering = (
           return false;
         }
       }
-      
+
       // Apply search filter
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
@@ -69,7 +74,7 @@ export const useGardenFiltering = (
         });
         if (!matches) return false;
       }
-      
+
       return true;
     });
 
@@ -95,17 +100,17 @@ export const useGardenFiltering = (
     searchTerm,
     sortBy,
     filters,
-    
+
     // Actions
     setSearchTerm,
     setSortBy,
     setFilters,
     handleFilterToggle,
-    
+
     // Computed
     processedGardens,
     hasActiveFilters,
-    
+
     // Config
     sortOptions,
     filterConfigs,
