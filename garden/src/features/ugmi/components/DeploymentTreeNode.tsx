@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { ChevronRight, ChevronDown, Server, Clock, AlertCircle, CheckCircle } from "lucide-react";
+import React from "react";
+import { ChevronRight, ChevronDown, CircleCheck, CircleX, Loader2 } from "lucide-react";
 import { TreeNode } from "./TreeView";
 import { FunctionTreeNode } from "./FunctionTreeNode";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { useSelection } from "../hooks";
 import { Entity } from "../types";
+import { ModalFunction } from "@/types";
 
 interface DeploymentTreeNodeProps {
   deployment: ModelDeployment;
@@ -28,26 +29,13 @@ export const DeploymentTreeNode: React.FC<DeploymentTreeNodeProps> = ({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'deployed':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CircleCheck className="h-4 w-4 text-green-600" />;
       case 'undeployed':
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />;
       case 'error':
-        return <AlertCircle className="h-4 w-4 text-red-600" />;
+        return <CircleX className="h-4 w-4 text-red-600" />;
       default:
-        return <Server className="h-4 w-4 text-gray-600" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'deployed':
-        return 'border-green-200 bg-green-50';
-      case 'undeployed':
-        return 'border-yellow-200 bg-yellow-50';
-      case 'error':
-        return 'border-red-200 bg-red-50';
-      default:
-        return 'border-gray-200 bg-gray-50';
+        return <CircleCheck className="h-4 w-4 text-gray-600" />;
     }
   };
 
@@ -74,38 +62,31 @@ export const DeploymentTreeNode: React.FC<DeploymentTreeNodeProps> = ({
           data: deployment
         }}
         className={`
-          rounded-md border p-3 cursor-pointer transition-all
-          ${getStatusColor(deployment.status)}
-          ${isSelected ? 'ring-2 ring-blue-400' : ''}
-          hover:shadow-sm
+          rounded-md p-2 cursor-pointer transition-all hover:bg-gray-100
+          ${isSelected ? 'bg-blue-50 ring-1 ring-blue-300' : 'hover:bg-gray-50'}
         `}
       >
         <div onClick={handleSelect} className="w-full">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 min-w-0 flex-1">
-              {hasChildren && (
-                <button
-                  onClick={handleToggle}
-                  className="flex-shrink-0 p-0.5 hover:bg-white/50 rounded"
-                >
-                  {isExpanded ? (
-                    <ChevronDown className="h-4 w-4 text-gray-600" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 text-gray-600" />
-                  )}
-                </button>
-              )}
-              {!hasChildren && <div className="w-4" />}
+          <div className="flex items-center space-x-2">
+            {hasChildren && (
+              <button
+                onClick={handleToggle}
+                className="flex-shrink-0 p-0.5 hover:bg-gray-200 rounded"
+              >
+                {isExpanded ? (
+                  <ChevronDown className="h-3 w-3 text-gray-600" />
+                ) : (
+                  <ChevronRight className="h-3 w-3 text-gray-600" />
+                )}
+              </button>
+            )}
+            {!hasChildren && <div className="w-4" />}
 
-              {getStatusIcon(deployment.status)}
+            {getStatusIcon(deployment.status)}
 
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium text-gray-900 truncate">
-                  {deployment.name}
-                </div>
-                <div className="text-xs text-gray-500 capitalize">
-                  {deployment.status} • {functions.length} function{functions.length !== 1 ? 's' : ''}
-                </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium text-gray-900 truncate">
+                {deployment.name}
               </div>
             </div>
           </div>
@@ -114,12 +95,12 @@ export const DeploymentTreeNode: React.FC<DeploymentTreeNodeProps> = ({
 
       {/* Render child functions when expanded */}
       {isExpanded && hasChildren && (
-        <div className="ml-4 mt-1 space-y-1">
-          {functions.map((func, index) => (
+        <div className="ml-6 mt-1 space-y-1">
+          {functions.map((func: ModalFunction, index: number) => (
             <FunctionTreeNode
               key={func.function_name || index}
-              func={func}
-              selection={selection}
+              fn={func}
+              selection={selection!}
               onSelect={onSelect}
             />
           ))}
