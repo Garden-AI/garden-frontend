@@ -47,7 +47,7 @@ const Footer = () => {
             <p>
               <a
                 target="blank"
-                href="mailto:garden@teams.uchicago.edu"
+                href="mailto:support@thegardens.ai"
                 className="no-underline hover:underline"
               >
                 Email Us!
