@@ -90,7 +90,7 @@ export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> =
                 )}
               </>
             )}
-            
+
             {/* Filter options */}
             {filterConfigs.map((config) => (
               <DropdownMenuCheckboxItem
@@ -101,7 +101,7 @@ export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> =
                 {config.label}
               </DropdownMenuCheckboxItem>
             ))}
-            
+
             {/* Clear/Reset button */}
             {(sortOptions.length > 0 || filterConfigs.length > 0) && (searchTerm || hasActiveFilters) && (
               <>
@@ -128,7 +128,7 @@ export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> =
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-      
+
       {/* Create button */}
       {showCreateButton && CreateComponent && setIsCreateDialogOpen && (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -137,7 +137,7 @@ export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> =
               <Plus className="h-4 w-4" />
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-[95vw] w-[95vw] max-h-[90vh] h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{createDialogTitle}</DialogTitle>
             </DialogHeader>

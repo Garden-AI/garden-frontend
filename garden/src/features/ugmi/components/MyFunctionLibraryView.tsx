@@ -216,7 +216,7 @@ export const MyFunctionLibraryView = ({
             <Plus className="h-4 w-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="w-[95%] md:w-4/5 lg:w-3/4 max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create New Function</DialogTitle>
           </DialogHeader>

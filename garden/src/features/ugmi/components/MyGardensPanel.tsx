@@ -8,10 +8,10 @@ import { Garden, ModalFunction } from "@/types";
 import { Entity } from "../types";
 import { useSelection } from "../hooks";
 import { usePatchGarden } from "../../gardens/api/usePatchGarden";
-import { useCreateGarden } from "../../gardens/api/useCreateGarden";
 import { useGardenFiltering } from "../hooks/useGardenFiltering";
 import { myGardensFilteringOptions } from "../hooks/gardenFilteringConfigs";
 import { toast } from "sonner";
+import { CreateGardenForm } from "../../gardens/components/create/CreateGardenForm";
 
 type MyGardensPanelProps = {
   gardens: Garden[];
@@ -35,7 +35,6 @@ export const MyGardensPanel = ({
   const [expandedGardens, setExpandedGardens] = useState<Set<string>>(new Set());
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const patchGardenMutation = usePatchGarden();
-  const { mutateAsync: createGarden, isPending: isCreating } = useCreateGarden();
 
   // Use the garden filtering hook
   const filtering = useGardenFiltering(gardens, myGardensFilteringOptions);
@@ -52,28 +51,14 @@ export const MyGardensPanel = ({
     });
   };
 
-  const handleCreateSuccess = async () => {
-    try {
-      const newGarden = await createGarden({
-        title: "New Garden",
-        description: null,
-        doi_is_draft: true,
-        publisher: "Garden-AI",
-        language: "en",
-        version: "1.0.0",
-        is_archived: false,
-      });
-
-      if (onGardenCreated) {
-        onGardenCreated(newGarden);
-      }
-      if (onSelect) {
-        onSelect(newGarden);
-      }
-      setIsCreateDialogOpen(false);
-    } catch (error) {
-      console.error("Failed to create garden:", error);
+  const handleCreateSuccess = (newGarden: Garden) => {
+    if (onGardenCreated) {
+      onGardenCreated(newGarden);
     }
+    if (onSelect) {
+      onSelect(newGarden);
+    }
+    setIsCreateDialogOpen(false);
   };
 
   const handleAddToGarden = (draggedItems: any[], garden: Garden) => {
@@ -115,26 +100,15 @@ export const MyGardensPanel = ({
     iconColor: "text-emerald-700",
   };
 
-  // Simple create component
+  // Create garden form component wrapper
   const CreateGardenComponent: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
-    const handleCreate = async () => {
-      await handleCreateSuccess();
-      onSuccess();
-    };
-
     return (
-      <div className="space-y-4">
-        <p className="text-sm text-gray-600">Create a new garden to organize your functions.</p>
-        <div className="flex justify-end">
-          <button
-            onClick={handleCreate}
-            disabled={isCreating}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50"
-          >
-            {isCreating ? "Creating..." : "Create Garden"}
-          </button>
-        </div>
-      </div>
+      <CreateGardenForm
+        onSuccess={(newGarden) => {
+          handleCreateSuccess(newGarden);
+          onSuccess();
+        }}
+      />
     );
   };
 
