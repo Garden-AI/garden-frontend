@@ -22,8 +22,8 @@ export const GlobusGroupError = () => {
 
           <p className="text-gray-700">
             If you have already been approved and are seeing this page, please email us at{" "}
-            <a href="mailto:garden@teams.uchicago.edu" className="font-bold text-primary">
-              garden@teams.uchicago.edu
+            <a href="mailto:support@thegardens.ai" className="font-bold text-primary">
+              support@thegardens.ai
             </a>{" "}
           </p>
 
