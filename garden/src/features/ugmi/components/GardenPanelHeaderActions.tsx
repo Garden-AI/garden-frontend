@@ -1,0 +1,168 @@
+import React from "react";
+import { Search, Filter, ArrowUpDown, Plus, ListFilter } from "lucide-react";
+import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+} from "@/components/shadcn/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/shadcn/dialog";
+import { useGardenFiltering } from "../hooks/useGardenFiltering";
+
+interface GardenPanelHeaderActionsProps {
+  filtering: ReturnType<typeof useGardenFiltering>;
+  searchPlaceholder?: string;
+  showCreateButton?: boolean;
+  CreateComponent?: React.ComponentType<{ onSuccess: () => void }>;
+  createDialogTitle?: string;
+  onCreateSuccess?: () => void;
+  isCreateDialogOpen?: boolean;
+  setIsCreateDialogOpen?: (open: boolean) => void;
+}
+
+export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> = ({
+  filtering,
+  searchPlaceholder = "Search gardens...",
+  showCreateButton = false,
+  CreateComponent,
+  createDialogTitle = "Create New Garden",
+  onCreateSuccess,
+  isCreateDialogOpen = false,
+  setIsCreateDialogOpen,
+}) => {
+  const {
+    searchTerm,
+    setSearchTerm,
+    sortBy,
+    setSortBy,
+    sortOptions,
+    filterConfigs,
+    filters,
+    handleFilterToggle,
+    hasActiveFilters,
+  } = filtering;
+
+  const handleCreateSuccess = () => {
+    if (setIsCreateDialogOpen) {
+      setIsCreateDialogOpen(false);
+    }
+    if (onCreateSuccess) {
+      onCreateSuccess();
+    }
+  };
+
+  const actions = (
+    <>
+      {/* Combined Sort & Filter dropdown */}
+      {(sortOptions.length > 0 || filterConfigs.length > 0) && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <ListFilter className={`h-4 w-4 ${hasActiveFilters ? 'text-blue-600' : ''}`} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {/* Sort options */}
+            {sortOptions.length > 0 && (
+              <>
+                {sortOptions.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    onClick={() => setSortBy(option.value)}
+                    className={sortBy === option.value ? "bg-accent" : ""}
+                  >
+                    <ArrowUpDown className="h-4 w-4 mr-2" />
+                    {option.label}
+                  </DropdownMenuItem>
+                ))}
+                {filterConfigs.length > 0 && (
+                  <DropdownMenuSeparator />
+                )}
+              </>
+            )}
+            
+            {/* Filter options */}
+            {filterConfigs.map((config) => (
+              <DropdownMenuCheckboxItem
+                key={config.key}
+                checked={filters[config.key]}
+                onCheckedChange={() => handleFilterToggle(config.key)}
+              >
+                {config.label}
+              </DropdownMenuCheckboxItem>
+            ))}
+            
+            {/* Clear/Reset button */}
+            {(sortOptions.length > 0 || filterConfigs.length > 0) && (searchTerm || hasActiveFilters) && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    // Reset search
+                    setSearchTerm('');
+                    // Reset sort to default
+                    setSortBy(sortOptions[0]?.value || '');
+                    // Reset all filters to default values
+                    filterConfigs.forEach(config => {
+                      if (filters[config.key] !== config.defaultChecked) {
+                        handleFilterToggle(config.key);
+                      }
+                    });
+                  }}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  Reset
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+      
+      {/* Create button */}
+      {showCreateButton && CreateComponent && setIsCreateDialogOpen && (
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Plus className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{createDialogTitle}</DialogTitle>
+            </DialogHeader>
+            <CreateComponent onSuccess={handleCreateSuccess} />
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
+  );
+
+  const searchComponent = (
+    <div className="relative">
+      <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <Input
+        type="text"
+        placeholder={searchPlaceholder}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="h-7 pl-7 text-xs bg-white/50 border-gray-200"
+      />
+    </div>
+  );
+
+  return {
+    actions,
+    searchComponent,
+  };
+};

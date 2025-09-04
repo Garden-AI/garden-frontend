@@ -1,49 +1,203 @@
-import React from "react";
+import React, { useState } from "react";
 import { Sprout } from "lucide-react";
-import { GardenTreeView } from "../GardenTreeView";
+import { TreeView } from "./TreeView";
+import { GardenTreeNode } from "./GardenTreeNode";
+import { PanelHeader } from "./PanelHeader";
+import { GardenPanelHeaderActions } from "./GardenPanelHeaderActions";
 import { Garden, ModalFunction } from "@/types";
-import { ModelDeployment } from "../../model-deployments/ModelDeployments";
-
-type Entity = Garden | ModalFunction | ModelDeployment;
+import { Entity } from "../types";
+import { useSelection } from "../hooks";
+import { usePatchGarden } from "../../gardens/api/usePatchGarden";
+import { useCreateGarden } from "../../gardens/api/useCreateGarden";
+import { useGardenFiltering } from "../hooks/useGardenFiltering";
+import { myGardensFilteringOptions } from "../hooks/gardenFilteringConfigs";
+import { toast } from "sonner";
 
 type MyGardensPanelProps = {
-    gardens: Garden[];
-    onSelect?: (entity: Entity) => void;
-    onGardenCreated?: (garden: Garden) => void;
-    onDoubleClick?: () => void;
-    selectedItem?: Entity | null;
-    isLoading?: boolean;
+  gardens: Garden[];
+  onSelect?: (entity: Entity, event?: { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean }) => void;
+  onGardenCreated?: (garden: Garden) => void;
+  onDoubleClick?: () => void;
+  selectedItem?: Entity | null;
+  selection: ReturnType<typeof useSelection>;
+  isLoading?: boolean;
 };
 
-export const MyGardensPanel = ({ gardens, onSelect, onGardenCreated, onDoubleClick, selectedItem, isLoading = false }: MyGardensPanelProps) => {
+export const MyGardensPanel = ({
+  gardens,
+  onSelect,
+  onGardenCreated,
+  onDoubleClick,
+  selectedItem,
+  selection,
+  isLoading = false
+}: MyGardensPanelProps) => {
+  const [expandedGardens, setExpandedGardens] = useState<Set<string>>(new Set());
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const patchGardenMutation = usePatchGarden();
+  const { mutateAsync: createGarden, isPending: isCreating } = useCreateGarden();
+
+  // Use the garden filtering hook
+  const filtering = useGardenFiltering(gardens, myGardensFilteringOptions);
+
+  const handleToggleExpansion = (gardenDoi: string) => {
+    setExpandedGardens(prev => {
+      const next = new Set(prev);
+      if (next.has(gardenDoi)) {
+        next.delete(gardenDoi);
+      } else {
+        next.add(gardenDoi);
+      }
+      return next;
+    });
+  };
+
+  const handleCreateSuccess = async () => {
+    try {
+      const newGarden = await createGarden({
+        title: "New Garden",
+        description: null,
+        doi_is_draft: true,
+        publisher: "Garden-AI",
+        language: "en",
+        version: "1.0.0",
+        is_archived: false,
+      });
+
+      if (onGardenCreated) {
+        onGardenCreated(newGarden);
+      }
+      if (onSelect) {
+        onSelect(newGarden);
+      }
+      setIsCreateDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to create garden:", error);
+    }
+  };
+
+  const handleAddToGarden = (draggedItems: any[], garden: Garden) => {
+    // Extract functions from dragged items
+    const functions = draggedItems
+      .filter(item => item.type === 'function' || item.function_name) // Handle both formats
+      .map(item => item.type === 'function' ? item.data : item);
+
+    if (functions.length === 0) return;
+
+    // Create updated modal_function_ids array
+    const currentFunctionIds = garden.modal_functions?.map(fn => fn.id) || [];
+    const newFunctionIds = functions.map((fn: ModalFunction) => fn.id);
+
+    // Filter out functions already in the target garden
+    const existingFunctionIds = new Set(currentFunctionIds);
+    const filteredNewIds = newFunctionIds.filter(id => !existingFunctionIds.has(id));
+
+    if (filteredNewIds.length === 0) {
+      const functionNames = functions.map((fn: ModalFunction) => fn.function_name).join(', ');
+      toast.info(`${functionNames} already in "${garden.title}"`);
+      return;
+    }
+
+    const updatedFunctionIds = [...currentFunctionIds, ...filteredNewIds];
+
+    // Update the garden
+    patchGardenMutation.mutate({
+      doi: garden.doi,
+      garden: { modal_function_ids: updatedFunctionIds },
+      successMessage: `Added ${filteredNewIds.length === 1 ? `"${functions[0].function_name}"` : `${filteredNewIds.length} functions`} to "${garden.title}"`
+    });
+  };
+
+  const themeColors = {
+    bg: "bg-emerald-100",
+    border: "border-emerald-300",
+    text: "text-emerald-900",
+    iconColor: "text-emerald-700",
+  };
+
+  // Simple create component
+  const CreateGardenComponent: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
+    const handleCreate = async () => {
+      await handleCreateSuccess();
+      onSuccess();
+    };
+
     return (
-        <div className="h-full bg-emerald-50 rounded-lg">
-            <GardenTreeView
-                gardens={gardens}
-                isLoading={isLoading}
-                onSelect={onSelect}
-                onGardenCreated={onGardenCreated}
-                onDoubleClick={onDoubleClick}
-                selectedItem={
-                    selectedItem && ("doi" in selectedItem || "function_name" in selectedItem)
-                        ? (selectedItem as Garden | ModalFunction)
-                        : null
-                }
-                allowCreate={true}
-                showHeader={true}
-                headerIcon={<Sprout className="h-4 w-4" />}
-                headerTitle="My Gardens"
-                headerThemeColors={{
-                    bg: "bg-emerald-100",
-                    border: "border-emerald-300",
-                    text: "text-emerald-900",
-                    iconColor: "text-emerald-700",
-                    hoverColor: "hover:bg-emerald-200",
-                    activeColor: "bg-emerald-200"
-                }}
-                emptyDescription="Create a new Garden to get started"
-            />
+      <div className="space-y-4">
+        <p className="text-sm text-gray-600">Create a new garden to organize your functions.</p>
+        <div className="flex justify-end">
+          <button
+            onClick={handleCreate}
+            disabled={isCreating}
+            className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50"
+          >
+            {isCreating ? "Creating..." : "Create Garden"}
+          </button>
         </div>
+      </div>
     );
+  };
+
+  const headerActions = GardenPanelHeaderActions({
+    filtering,
+    searchPlaceholder: "Search my gardens...",
+    showCreateButton: true,
+    CreateComponent: CreateGardenComponent,
+    createDialogTitle: "Create New Garden",
+    onCreateSuccess: () => { },
+    isCreateDialogOpen,
+    setIsCreateDialogOpen,
+  });
+
+  return (
+    <div className="h-full bg-emerald-50 rounded-lg">
+      <PanelHeader
+        icon={<Sprout className="h-5 w-5" />}
+        title="My Gardens"
+        count={filtering.processedGardens.length}
+        onDoubleClick={onDoubleClick}
+        themeColors={themeColors}
+        actions={headerActions.actions}
+        searchComponent={headerActions.searchComponent}
+        showSearchToggle={true}
+      />
+
+      {/* Content */}
+      <div className="flex-1 space-y-1 overflow-y-auto p-2">
+        {isLoading ? (
+          <div className="flex h-full items-center justify-center">
+            <div className="text-sm text-gray-500">Loading...</div>
+          </div>
+        ) : filtering.processedGardens.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center space-y-4 py-8 text-center">
+            <Sprout className="h-12 w-12 text-gray-300" />
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-600">
+                {gardens.length === 0 ? "No Gardens" : "No matches found"}
+              </p>
+              <p className="text-xs text-gray-500">
+                {gardens.length === 0 ? "Create a new Garden to get started" : "Try adjusting your search or filters"}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <TreeView>
+            {filtering.processedGardens.map(garden => (
+              <GardenTreeNode
+                key={garden.doi}
+                garden={garden}
+                selection={selection}
+                onSelect={onSelect}
+                onDrop={(items) => handleAddToGarden(items, garden)}
+                isExpanded={expandedGardens.has(garden.doi)}
+                onToggleExpanded={() => handleToggleExpansion(garden.doi)}
+                panelId="my-gardens"
+              />
+            ))}
+          </TreeView>
+        )}
+      </div>
+    </div>
+  );
 };
 

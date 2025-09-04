@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useEffect, useState, RefObject } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+
 import {
   ResizablePanel,
   ResizablePanelGroup,
@@ -11,26 +11,27 @@ import { useGetGardens } from "../../gardens/api/useGetGardens";
 import { useGetModelDeployments } from "../../model-deployments/api/useGetModelDeployments";
 import { useGetUserInfo } from "../../users/api/useGetUserInfo";
 import { useSavedGardens } from "../../users/api/useSavedGardens";
-import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
+import { Garden } from "@/types";
 import { SavedGardensPanel } from "./SavedGardensPanel";
 import { MyGardensPanel } from "./MyGardensPanel";
 import { MyFunctionLibraryView } from "./MyFunctionLibraryView";
-
-type Entity = Garden | ModalFunction | ModelDeployment;
+import { Entity } from "../types";
+import { useSelection } from "../hooks";
 
 type LeftSidePanelProps = {
-  onItemSelected?: (entity: Entity) => void;
+  onItemSelected?: (entity: Entity, event?: { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean }) => void;
   selectedItem?: Entity | null;
+  selection: ReturnType<typeof useSelection>;
   onDeploymentCreated?: (deployment: ModelDeployment) => void;
+  onGardenSaved?: (garden: Garden) => void;
 };
 
-export const LeftSidePanel = ({ onItemSelected, selectedItem, onDeploymentCreated }: LeftSidePanelProps) => {
+export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeploymentCreated, onGardenSaved }: LeftSidePanelProps) => {
   const [lastExpanded, setLastExpanded] = useState<RefObject<ImperativePanelHandle> | null>(null);
-  const queryClient = useQueryClient();
 
   const auth = useGlobusAuth();
-  const { data: userInfo, isLoading: userInfoLoading } = useGetUserInfo();
+  const { data: userInfo } = useGetUserInfo();
 
   const {
     data: gardens,
@@ -84,12 +85,12 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, onDeploymentCreate
   const handleDeploymentCreatedLocal = (deployment: ModelDeployment) => {
     // Cache invalidation already happened in useModalAppForm
     // Just handle the selection logic
-    
+
     // Immediately select the deployment object and pass it up
     if (onDeploymentCreated) {
       onDeploymentCreated(deployment);
     }
-    
+
     // Also select it in the current panel
     if (onItemSelected) {
       onItemSelected(deployment);
@@ -99,12 +100,12 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, onDeploymentCreate
   const handlePanelExpand = (selected: RefObject<ImperativePanelHandle>) => {
     if (selected === lastExpanded) {
       // evenly resize the panels, return
-      Object.entries(panelRefs).forEach(([_, p]) => p.current?.resize(100 / Object.keys(panelRefs).length));
+      Object.values(panelRefs).forEach(p => p.current?.resize(100 / Object.keys(panelRefs).length));
       setLastExpanded(null);
       return;
     }
     // expand the selected panel, shrink the others
-    Object.entries(panelRefs).forEach(([ref, p]) => {
+    Object.values(panelRefs).forEach(p => {
       if (p === selected) {
         p.current?.resize(80);
         setLastExpanded(p);
@@ -133,8 +134,10 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, onDeploymentCreate
             savedGardens={savedGardens}
             onSelect={onItemSelected}
             selectedItem={selectedItem}
+            selection={selection}
             onDoubleClick={() => handlePanelExpand(panelRefs.savedGardensPanelRef)}
             isLoading={savedGardensLoading}
+            onGardenSaved={onGardenSaved}
           />
         </ResizablePanel>
 
@@ -150,6 +153,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, onDeploymentCreate
             onSelect={onItemSelected}
             onGardenCreated={handleGardenCreated}
             selectedItem={selectedItem}
+            selection={selection}
             onDoubleClick={() => handlePanelExpand(panelRefs.myGardensPanelRef)}
             isLoading={userGardensLoading}
           />
@@ -167,6 +171,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, onDeploymentCreate
             gardens={filteredGardens}
             onSelect={onItemSelected}
             selectedItem={selectedItem}
+            selection={selection}
             onDoubleClick={() => { handlePanelExpand(panelRefs.functionLibraryPanelRef) }}
             onDeploymentCreated={handleDeploymentCreatedLocal}
             isLoading={modelDeploymentsLoading}

@@ -12,15 +12,16 @@ import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { UserInfoPanel } from "./UserInfoPanel";
 import { MetadataPanel } from "./MetadataPanel";
 import { PublishedGardensPanel } from "./PublishedGardensPanel";
-
-type Entity = Garden | ModalFunction | ModelDeployment;
+import { useSelection } from "../hooks";
+import { Entity } from "../types";
 
 type RightSidePanelProps = {
   entity: Entity | null;
   onItemSelected?: (entity: Entity) => void;
+  selection?: ReturnType<typeof useSelection>;
 };
 
-export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) => {
+export const RightSidePanel = ({ entity, onItemSelected, selection }: RightSidePanelProps) => {
   const [lastExpanded, setLastExpanded] = useState(null);
 
   const auth = useGlobusAuth();
@@ -80,6 +81,7 @@ export const RightSidePanel = ({ entity, onItemSelected }: RightSidePanelProps) 
           <PublishedGardensPanel
             onSelect={onItemSelected}
             selectedItem={entity}
+            selection={selection}
             onDoubleClick={() => handlePanelExpand(panelRefs.publishedGardensPanelRef)}
           />
         </ResizablePanel>

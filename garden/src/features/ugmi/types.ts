@@ -3,7 +3,12 @@ import { ModelDeployment } from "../model-deployments/ModelDeployments";
 
 export type Entity = Garden | ModalFunction | ModelDeployment;
 
-export const matchEntityType = (entity: Entity | null) => {
+export type EntityType = "garden" | "deployment" | "function";
+
+// Click event type for UI interactions
+export type ClickEvent = { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean };
+
+export const matchEntityType = (entity: Entity | null): EntityType | null => {
     if (entity === null) return null;
 
     // Check if it's a Garden (has doi and modal_functions)
@@ -24,3 +29,76 @@ export const matchEntityType = (entity: Entity | null) => {
     // Fallback - shouldn't happen
     return null;
 };
+
+// Selection hook return type
+export type SelectionHook = {
+    selectedItems: Set<string>;
+    primarySelection: Entity | null;
+    hasSelection: boolean;
+    hasMultipleSelected: boolean;
+    selectSingle: (entity: Entity) => void;
+    toggleSelection: (entity: Entity) => void;
+    clearSelection: () => void;
+    handleClick: (entity: Entity, event: ClickEvent) => void;
+    isSelected: (entity: Entity) => boolean;
+    isPrimarySelection: (entity: Entity) => boolean;
+    getSelectedEntities: (allEntities: Entity[]) => Entity[];
+};
+
+// Create callback type for components that support creation
+export type CreateCallback<T = Entity> = (item: T) => void;
+
+// Utility functions for entity operations
+export const getEntityId = (entity: Entity): string => {
+    const type = matchEntityType(entity);
+    switch (type) {
+        case "garden":
+            return `garden-${(entity as Garden).doi}`;
+        case "deployment":
+            return `deployment-${(entity as ModelDeployment).originalData?.id || 'unknown'}`;
+        case "function":
+            return `function-${(entity as ModalFunction).id}`;
+        default:
+            return "unknown";
+    }
+};
+
+export const getEntityDisplayName = (entity: Entity): string => {
+    const type = matchEntityType(entity);
+    switch (type) {
+        case "garden":
+            return (entity as Garden).title;
+        case "deployment":
+            return (entity as ModelDeployment).name;
+        case "function":
+            return (entity as ModalFunction).function_name || "Unknown Function";
+        default:
+            return "Unknown Entity";
+    }
+};
+
+export const getFunctionsFromEntity = (entity: Entity): ModalFunction[] => {
+    const type = matchEntityType(entity);
+    switch (type) {
+        case "garden":
+            return (entity as Garden).modal_functions || [];
+        case "deployment":
+            return (entity as ModelDeployment).originalData?.modal_functions || [];
+        case "function":
+            return [entity as ModalFunction];
+        default:
+            return [];
+    }
+};
+
+// Removed canDropOnTarget - validation is now handled directly in the drag hook
+
+// Type guards
+export const isGarden = (entity: Entity): entity is Garden =>
+    matchEntityType(entity) === "garden";
+
+export const isDeployment = (entity: Entity): entity is ModelDeployment =>
+    matchEntityType(entity) === "deployment";
+
+export const isFunction = (entity: Entity): entity is ModalFunction =>
+    matchEntityType(entity) === "function";
