@@ -1,11 +1,10 @@
-import React, { useRef, useMemo, useEffect, useState, RefObject } from "react";
+import React, { useMemo, useEffect } from "react";
 
 import {
   ResizablePanel,
   ResizablePanelGroup,
   ResizableHandle,
 } from "@/components/shadcn/resizable";
-import { ImperativePanelHandle } from "react-resizable-panels";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetGardens } from "../../gardens/api/useGetGardens";
 import { useGetModelDeployments } from "../../model-deployments/api/useGetModelDeployments";
@@ -18,6 +17,7 @@ import { MyGardensPanel } from "./MyGardensPanel";
 import { MyFunctionLibraryView } from "./MyFunctionLibraryView";
 import { Entity } from "../types";
 import { useSelection } from "../hooks";
+import { usePanelExpansion, createPanelRefs } from "../hooks/usePanelExpansion";
 
 type LeftSidePanelProps = {
   onItemSelected?: (entity: Entity, event?: { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean }) => void;
@@ -28,7 +28,6 @@ type LeftSidePanelProps = {
 };
 
 export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeploymentCreated, onGardenSaved }: LeftSidePanelProps) => {
-  const [lastExpanded, setLastExpanded] = useState<RefObject<ImperativePanelHandle> | null>(null);
 
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
@@ -70,11 +69,8 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
   }, [shouldPollDeployments, refetchModelDeployments]);
 
   // Panel refs for imperative control
-  const panelRefs = {
-    savedGardensPanelRef: useRef<ImperativePanelHandle>(null),
-    myGardensPanelRef: useRef<ImperativePanelHandle>(null),
-    functionLibraryPanelRef: useRef<ImperativePanelHandle>(null),
-  };
+  const panelRefs = createPanelRefs(['savedGardensPanelRef', 'myGardensPanelRef', 'functionLibraryPanelRef'] as const);
+  const { handlePanelExpand } = usePanelExpansion(panelRefs);
 
   const savedGardens = savedGardensResponse?.garden_meta || [];
 
@@ -97,24 +93,6 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
     }
   };
 
-  const handlePanelExpand = (selected: RefObject<ImperativePanelHandle>) => {
-    if (selected === lastExpanded) {
-      // evenly resize the panels, return
-      Object.values(panelRefs).forEach(p => p.current?.resize(100 / Object.keys(panelRefs).length));
-      setLastExpanded(null);
-      return;
-    }
-    // expand the selected panel, shrink the others
-    Object.values(panelRefs).forEach(p => {
-      if (p === selected) {
-        p.current?.resize(80);
-        setLastExpanded(p);
-        return;
-      } else {
-        p.current?.resize(10);
-      }
-    });
-  }
 
   // Only show gardens if user is authenticated and has an identity_id
   const filteredGardens = auth.isAuthenticated && userInfo?.identity_id ? gardens || [] : [];

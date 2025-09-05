@@ -30,24 +30,6 @@ export const matchEntityType = (entity: Entity | null): EntityType | null => {
     return null;
 };
 
-// Selection hook return type
-export type SelectionHook = {
-    selectedItems: Set<string>;
-    primarySelection: Entity | null;
-    hasSelection: boolean;
-    hasMultipleSelected: boolean;
-    selectSingle: (entity: Entity) => void;
-    toggleSelection: (entity: Entity) => void;
-    clearSelection: () => void;
-    handleClick: (entity: Entity, event: ClickEvent) => void;
-    isSelected: (entity: Entity) => boolean;
-    isPrimarySelection: (entity: Entity) => boolean;
-    getSelectedEntities: (allEntities: Entity[]) => Entity[];
-};
-
-// Create callback type for components that support creation
-export type CreateCallback<T = Entity> = (item: T) => void;
-
 // Utility functions for entity operations
 export const getEntityId = (entity: Entity): string => {
     const type = matchEntityType(entity);
@@ -91,7 +73,6 @@ export const getFunctionsFromEntity = (entity: Entity): ModalFunction[] => {
     }
 };
 
-// Removed canDropOnTarget - validation is now handled directly in the drag hook
 
 // Type guards
 export const isGarden = (entity: Entity): entity is Garden =>

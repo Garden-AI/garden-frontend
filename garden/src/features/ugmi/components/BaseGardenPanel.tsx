@@ -79,12 +79,12 @@ export const BaseGardenPanel: React.FC<BaseGardenPanelProps> = ({
     });
   };
 
-  const searchComponent = (
-    <GardenPanelHeaderActions
-      filtering={filtering}
-      isLoading={isLoading}
-    />
-  );
+  // Always create the header actions to get the search component
+  // Custom actions can override the actions part, but we always need search
+  const headerActions = GardenPanelHeaderActions({
+    filtering,
+    showCreateButton: false,
+  });
 
   return (
     <div className="flex h-full flex-col">
@@ -94,8 +94,8 @@ export const BaseGardenPanel: React.FC<BaseGardenPanelProps> = ({
         count={filtering.processedGardens.length}
         onDoubleClick={onDoubleClick}
         themeColors={panelConfig.themeColors}
-        actions={typeof customActions === 'function' ? customActions(filtering) : customActions}
-        searchComponent={searchComponent}
+        actions={typeof customActions === 'function' ? customActions(filtering) : customActions || headerActions.actions}
+        searchComponent={headerActions.searchComponent}
         showSearchToggle={true}
       />
 

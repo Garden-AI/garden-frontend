@@ -1,19 +1,17 @@
-import React, { RefObject, useRef, useState } from "react";
+import React from "react";
 import {
   ResizablePanel,
   ResizablePanelGroup,
   ResizableHandle,
 } from "@/components/shadcn/resizable";
-import { ImperativePanelHandle } from "react-resizable-panels";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetUserInfo } from "../../users/api/useGetUserInfo";
-import { Garden, ModalFunction } from "@/types";
-import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { UserInfoPanel } from "./UserInfoPanel";
 import { MetadataPanel } from "./MetadataPanel";
 import { PublishedGardensPanel } from "./PublishedGardensPanel";
 import { useSelection } from "../hooks";
 import { Entity } from "../types";
+import { usePanelExpansion, createPanelRefs } from "../hooks/usePanelExpansion";
 
 type RightSidePanelProps = {
   entity: Entity | null;
@@ -22,35 +20,12 @@ type RightSidePanelProps = {
 };
 
 export const RightSidePanel = ({ entity, onItemSelected, selection }: RightSidePanelProps) => {
-  const [lastExpanded, setLastExpanded] = useState(null);
-
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
 
   // Panel refs for imperative control
-  const panelRefs = {
-    metadataPanelRef: useRef<ImperativePanelHandle>(null),
-    publishedGardensPanelRef: useRef<ImperativePanelHandle>(null),
-  };
-
-  const handlePanelExpand = (selected: RefObject<ImperativePanelHandle>) => {
-    if (selected === lastExpanded) {
-      // evenly space the panels, return
-      Object.entries(panelRefs).forEach(([_, p]) => p.current?.resize(100 / Object.keys(panelRefs).length));
-      setLastExpanded(null);
-      return;
-    }
-    // expand the selected panel, shrink the others
-    Object.entries(panelRefs).forEach(([ref, p]) => {
-      if (p === selected) {
-        p.current?.resize(80);
-        setLastExpanded(p);
-        return;
-      } else {
-        p.current?.resize(10);
-      }
-    });
-  }
+  const panelRefs = createPanelRefs(['metadataPanelRef', 'publishedGardensPanelRef'] as const);
+  const { handlePanelExpand } = usePanelExpansion(panelRefs);
 
   return (
     <ResizablePanel

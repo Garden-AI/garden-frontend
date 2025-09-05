@@ -13,6 +13,10 @@ export { PublishedGardensPanel } from "./PublishedGardensPanel";
 
 // Function Library Components
 export { MyFunctionLibraryView } from "./MyFunctionLibraryView";
+export { CreateFunctionFormWrapper } from "./CreateFunctionFormWrapper";
+
+// Header Actions Components
+export { GenericPanelHeaderActions } from "./GenericPanelHeaderActions";
 
 // Metadata and User Components
 export { MetadataPanel } from "./MetadataPanel";

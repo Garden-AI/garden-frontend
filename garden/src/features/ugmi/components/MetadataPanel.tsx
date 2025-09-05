@@ -8,8 +8,7 @@ import { GardenMetadataSidebar } from "../../gardens/components/GardenMetadataSi
 import { FunctionSidebar } from "../../modal/components/FunctionSidebar";
 import { Garden, ModalFunction } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
-
-type Entity = Garden | ModalFunction | ModelDeployment;
+import { Entity, matchEntityType } from "../types";
 
 type MetadataPanelProps = {
     entity: Entity | null;
@@ -20,13 +19,7 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
     const auth = useGlobusAuth();
 
     // Determine entity type and get fresh data
-    const entityType = (() => {
-        if (entity === null) return;
-        if ("doi" in entity && "modal_functions" in entity) return "garden";
-        if ("originalData" in entity && "status" in entity) return "deployment";
-        if (("function_name" in entity || "title" in entity) && "id" in entity) return "function";
-        return null;
-    })();
+    const entityType = matchEntityType(entity);
 
     // For gardens, fetch fresh data
     const gardenEntity = entityType === "garden" ? (entity as Garden) : null;
