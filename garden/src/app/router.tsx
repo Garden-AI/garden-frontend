@@ -84,7 +84,7 @@ const Router: React.FC = () => {
         <Route element={<SuperuserRoute />}>
           <Route path="metrics" element={<WrappedLazyComponent child={<MetricsDashboard />} />}></Route>
         </Route>
-        <Route path="ugmi" element={<UnifiedManagementInterface />} />
+        <Route path="dashboard" element={<UnifiedManagementInterface />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes >
