@@ -71,7 +71,18 @@ export const savedGardensFilterConfig: GardenFilterConfig[] = [
 
 // Filter configs for Published Gardens panel
 export const publishedGardensFilterConfig: GardenFilterConfig[] = [
-  // Could add filters like "Has Functions", "Popular", etc. if we had that data
+  {
+    label: "Published",
+    key: "published",
+    defaultChecked: true,
+    filterFn: (garden) => !garden.doi_is_draft && !garden.is_archived,
+  },
+  {
+    label: "Archived",
+    key: "archived",
+    defaultChecked: false, // Not shown by default, but users can toggle on
+    filterFn: (garden) => garden.is_archived && !garden.doi_is_draft, // Only archived published gardens
+  },
 ];
 
 // Search field configurations
