@@ -12,6 +12,7 @@ const RootLayout = () => {
   // Background preload frequently used data (can be disabled via env var)
   const enablePreloading = import.meta.env.VITE_ENABLE_BACKGROUND_PRELOADING !== 'false';
   useBackgroundDataPreloader(enablePreloading);
+  useGoogleAnalytics();
 
   return (
     <>
