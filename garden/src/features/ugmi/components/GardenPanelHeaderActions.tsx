@@ -1,5 +1,5 @@
 import React from "react";
-import { GenericPanelHeaderActions } from "./GenericPanelHeaderActions";
+import { BasePanelHeaderActions } from "./BasePanelHeaderActions";
 import { useGardenFiltering } from "../hooks/useGardenFiltering";
 
 interface GardenPanelHeaderActionsProps {
@@ -15,7 +15,7 @@ interface GardenPanelHeaderActionsProps {
 
 export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> = (props) => {
   // Simply delegate to the generic component - they have the same interface
-  return GenericPanelHeaderActions({
+  return BasePanelHeaderActions({
     ...props,
     searchPlaceholder: props.searchPlaceholder || "Search gardens...",
     createDialogTitle: props.createDialogTitle || "Create New Garden",

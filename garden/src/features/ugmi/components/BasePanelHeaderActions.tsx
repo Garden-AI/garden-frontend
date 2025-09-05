@@ -39,7 +39,7 @@ interface GenericFiltering {
   hasActiveFilters: boolean;
 }
 
-interface GenericPanelHeaderActionsProps {
+interface BasePanelHeaderActionsProps {
   filtering: GenericFiltering;
   searchPlaceholder?: string;
   showCreateButton?: boolean;
@@ -50,7 +50,7 @@ interface GenericPanelHeaderActionsProps {
   setIsCreateDialogOpen?: (open: boolean) => void;
 }
 
-export const GenericPanelHeaderActions: React.FC<GenericPanelHeaderActionsProps> = ({
+export const BasePanelHeaderActions: React.FC<BasePanelHeaderActionsProps> = ({
   filtering,
   searchPlaceholder = "Search...",
   showCreateButton = false,

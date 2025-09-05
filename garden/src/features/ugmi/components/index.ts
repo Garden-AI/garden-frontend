@@ -16,7 +16,7 @@ export { MyFunctionLibraryView } from "./MyFunctionLibraryView";
 export { CreateFunctionFormWrapper } from "./CreateFunctionFormWrapper";
 
 // Header Actions Components
-export { GenericPanelHeaderActions } from "./GenericPanelHeaderActions";
+export { BasePanelHeaderActions } from "./BasePanelHeaderActions";
 
 // Metadata and User Components
 export { MetadataPanel } from "./MetadataPanel";

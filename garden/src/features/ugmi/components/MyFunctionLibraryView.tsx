@@ -5,7 +5,7 @@ import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { TreeView } from "./TreeView";
 import { DeploymentTreeNode } from "./DeploymentTreeNode";
 import { PanelHeader } from "./PanelHeader";
-import { GenericPanelHeaderActions } from "./GenericPanelHeaderActions";
+import { BasePanelHeaderActions } from "./BasePanelHeaderActions";
 import { CreateFunctionFormWrapper } from "./CreateFunctionFormWrapper";
 import { useSelection } from "../hooks";
 import { Entity } from "../types";
@@ -70,7 +70,7 @@ export const MyFunctionLibraryView = ({
     />
   );
 
-  const headerActions = GenericPanelHeaderActions({
+  const headerActions = BasePanelHeaderActions({
     filtering,
     searchPlaceholder: "Search my functions...",
     showCreateButton: true,
