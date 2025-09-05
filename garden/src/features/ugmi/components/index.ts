@@ -3,6 +3,9 @@ export { LeftSidePanel } from "./LeftSidePanel";
 export { RightSidePanel } from "./RightSidePanel";
 export { MainContentPanel } from "./MainContentPanel";
 
+// Base Components
+export { BaseGardenPanel } from "./BaseGardenPanel";
+
 // Garden Components
 export { SavedGardensPanel } from "./SavedGardensPanel";
 export { MyGardensPanel } from "./MyGardensPanel";
