@@ -94,36 +94,49 @@ export const BaseGardenPanel: React.FC<BaseGardenPanelProps> = ({
         count={filtering.processedGardens.length}
         onDoubleClick={onDoubleClick}
         themeColors={panelConfig.themeColors}
-        actions={typeof customActions === 'function' ? customActions(filtering) : customActions || headerActions.actions}
-        searchComponent={headerActions.searchComponent}
+        actions={typeof customActions === 'function' ? customActions(filtering) : customActions || headerActions?.actions}
+        searchComponent={headerActions?.searchComponent}
         showSearchToggle={true}
       />
 
       <div className="flex-1 overflow-hidden">
-        <TreeView
-          isLoading={isLoading}
-          isEmpty={filtering.processedGardens.length === 0}
-          emptyStateMessage={filtering.searchTerm || filtering.hasActiveFilters 
-            ? "No gardens match your filters" 
-            : "No gardens found"}
-          droppableProps={droppableProps}
-        >
-          {filtering.processedGardens.map((garden) => {
-            const customProps = customGardenNodeProps?.(garden) || {};
-            return (
-              <GardenTreeNode
-                key={garden.doi}
-                garden={garden}
-                selection={selection!}
-                onSelect={onSelect}
-                isExpanded={expandedGardens.has(garden.doi)}
-                onToggleExpanded={() => handleToggleExpansion(garden.doi)}
-                panelId={droppableProps?.id || "default"}
-                {...customProps}
-              />
-            );
-          })}
-        </TreeView>
+        <div className="flex-1 space-y-1 overflow-y-auto p-2">
+          {isLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-sm text-gray-500">Loading...</div>
+            </div>
+          ) : filtering.processedGardens.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center space-y-4 py-8 text-center">
+              {panelConfig.icon}
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-600">
+                  {filtering.searchTerm || filtering.hasActiveFilters ? "No matches found" : "No gardens found"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {filtering.searchTerm || filtering.hasActiveFilters ? "Try adjusting your search or filters" : "No gardens available"}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <TreeView>
+              {filtering.processedGardens.map((garden) => {
+                const customProps = customGardenNodeProps?.(garden) || {};
+                return (
+                  <GardenTreeNode
+                    key={garden.doi}
+                    garden={garden}
+                    selection={selection!}
+                    onSelect={onSelect}
+                    isExpanded={expandedGardens.has(garden.doi)}
+                    onToggleExpanded={() => handleToggleExpansion(garden.doi)}
+                    panelId={droppableProps?.id || "default"}
+                    {...customProps}
+                  />
+                );
+              })}
+            </TreeView>
+          )}
+        </div>
       </div>
 
       {children}

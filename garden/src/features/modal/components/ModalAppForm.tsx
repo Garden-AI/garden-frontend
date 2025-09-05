@@ -1,6 +1,7 @@
 import React from "react";
 import { Form } from "@/components/shadcn/form";
 import { useModalAppForm, UseModalAppFormOptions } from "@/features/modal/api/useModalAppForm";
+import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 import { FileUploadSection } from "@/features/modal/components/FileUploadSection";
 import { DetectedAppCard } from "@/features/modal/components/DetectedAppCard";
 import { FunctionMetadataEditor } from "@/features/modal/components/FunctionMetadataEditor";
@@ -16,7 +17,7 @@ import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Link } from "react-router-dom";
 
-export interface ModalAppFormProps extends UseModalAppFormOptions {
+export interface ModalAppFormProps extends Omit<UseModalAppFormOptions, 'onDeploymentSuccess'> {
   /**
    * Whether to show the overall progress bar (used in multi-step flows like garden creation)
    * @default false 
@@ -80,11 +81,11 @@ export const ModalAppForm = ({
   } = useModalAppForm({
     ...hookOptions,
     redirectUrl,
-    onDeploymentSuccess: (id: number) => {
-      // Call the immediate callback when deployment starts
-      onDeploymentSuccess?.(id);
+    onDeploymentSuccess: (deployment: ModelDeployment) => {
+      // Call the immediate callback when deployment starts (extract ID from deployment)
+      onDeploymentSuccess?.(deployment.id);
       // Also call onSuccess for backward compatibility and to handle form closing
-      onSuccess?.(id);
+      onSuccess?.(deployment.id);
     }
   });
 

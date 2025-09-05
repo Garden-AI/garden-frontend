@@ -13,13 +13,10 @@ export const CreateFunctionFormWrapper: React.FC<CreateFunctionFormWrapperProps>
   onDeploymentCreated 
 }) => (
   <ModalAppForm
-    onDeploymentSuccess={(deployment: ModelDeployment) => {
-      // Call onDeploymentCreated immediately with the full deployment object
-      // No need to refetch user functions - we get functions directly from deployments
-      onDeploymentCreated?.(deployment);
+    onDeploymentSuccess={(id: number) => {
+      // ModalAppForm passes ID, we'll handle this differently if needed
     }}
     onSuccess={(id: number) => {
-      // This is called when the form wants to close (after deployment starts)
       onSuccess();
     }}
   />

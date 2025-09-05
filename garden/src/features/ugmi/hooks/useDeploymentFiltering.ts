@@ -74,7 +74,7 @@ export const useDeploymentFiltering = (
             }
             // Special handling for nested function search
             if (field === 'name') {
-              const functionMatches = deployment.originalData?.modal_functions?.some(func =>
+              const functionMatches = deployment.originalData?.modal_functions?.some((func: any) =>
                 func.function_name?.toLowerCase().includes(searchLower) ||
                 func.title?.toLowerCase().includes(searchLower) ||
                 func.description?.toLowerCase().includes(searchLower)

@@ -44,7 +44,7 @@ export const functionLibraryFilteringOptions: UseDeploymentFilteringOptions = {
   searchFields: ['name', (deployment) => {
     // Search in function names, titles, and descriptions
     const functions = deployment.originalData?.modal_functions || [];
-    return functions.map(fn => 
+    return functions.map((fn: any) => 
       [fn.function_name, fn.title, fn.description].filter(Boolean).join(' ')
     ).join(' ');
   }],

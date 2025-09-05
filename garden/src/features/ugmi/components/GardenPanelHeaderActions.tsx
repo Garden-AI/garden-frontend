@@ -13,7 +13,7 @@ interface GardenPanelHeaderActionsProps {
   setIsCreateDialogOpen?: (open: boolean) => void;
 }
 
-export const GardenPanelHeaderActions: React.FC<GardenPanelHeaderActionsProps> = (props) => {
+export const GardenPanelHeaderActions = (props: GardenPanelHeaderActionsProps) => {
   // Simply delegate to the generic component - they have the same interface
   return BasePanelHeaderActions({
     ...props,

@@ -89,8 +89,8 @@ export const MyFunctionLibraryView = ({
         count={filtering.processedDeployments.length}
         onDoubleClick={onDoubleClick}
         themeColors={themeColors}
-        actions={headerActions.actions}
-        searchComponent={headerActions.searchComponent}
+        actions={headerActions?.actions}
+        searchComponent={headerActions?.searchComponent}
         showSearchToggle={true}
       />
 

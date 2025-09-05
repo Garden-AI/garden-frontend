@@ -50,7 +50,7 @@ interface BasePanelHeaderActionsProps {
   setIsCreateDialogOpen?: (open: boolean) => void;
 }
 
-export const BasePanelHeaderActions: React.FC<BasePanelHeaderActionsProps> = ({
+export const BasePanelHeaderActions = ({
   filtering,
   searchPlaceholder = "Search...",
   showCreateButton = false,
@@ -59,7 +59,7 @@ export const BasePanelHeaderActions: React.FC<BasePanelHeaderActionsProps> = ({
   onCreateSuccess,
   isCreateDialogOpen = false,
   setIsCreateDialogOpen,
-}) => {
+}: BasePanelHeaderActionsProps) => {
   const {
     searchTerm,
     setSearchTerm,
@@ -101,7 +101,7 @@ export const BasePanelHeaderActions: React.FC<BasePanelHeaderActionsProps> = ({
                 {sortOptions.length > 0 && (
                   <>
                     <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
-                      {sortOptions.map((option) => (
+                      {sortOptions.map((option: any) => (
                         <DropdownMenuRadioItem
                           key={option.value}
                           value={option.value}
@@ -119,7 +119,7 @@ export const BasePanelHeaderActions: React.FC<BasePanelHeaderActionsProps> = ({
                 )}
 
                 {/* Filter options */}
-                {filterConfigs.map((config) => (
+                {filterConfigs.map((config: any) => (
                   <DropdownMenuCheckboxItem
                     key={config.key}
                     checked={filters[config.key]}
@@ -142,7 +142,7 @@ export const BasePanelHeaderActions: React.FC<BasePanelHeaderActionsProps> = ({
                         // Reset sort to default
                         setSortBy(sortOptions[0]?.value || '');
                         // Reset all filters to default values
-                        filterConfigs.forEach(config => {
+                        filterConfigs.forEach((config: any) => {
                           if (filters[config.key] !== config.defaultChecked) {
                             handleFilterToggle(config.key);
                           }

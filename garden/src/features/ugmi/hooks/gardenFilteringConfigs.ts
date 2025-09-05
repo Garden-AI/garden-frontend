@@ -13,16 +13,6 @@ export const commonGardenSortOptions: GardenSortOption[] = [
     value: "title-desc",
     sortFn: (a, b) => (b.title || "").localeCompare(a.title || ""),
   },
-  {
-    label: "Date Created (Newest)",
-    value: "created-desc",
-    sortFn: (a, b) => new Date(b.date_created || 0).getTime() - new Date(a.date_created || 0).getTime(),
-  },
-  {
-    label: "Date Created (Oldest)",
-    value: "created",
-    sortFn: (a, b) => new Date(a.date_created || 0).getTime() - new Date(b.date_created || 0).getTime(),
-  },
 ];
 
 // Filter configs for My Gardens panel
@@ -117,7 +107,7 @@ export const myGardensFilteringOptions = {
   sortOptions: commonGardenSortOptions,
   filterConfigs: myGardensFilterConfig,
   searchFields: commonGardenSearchFields,
-  defaultSort: "created-desc",
+  defaultSort: "title",
 };
 
 export const savedGardensFilteringOptions = {
@@ -131,5 +121,5 @@ export const publishedGardensFilteringOptions = {
   sortOptions: commonGardenSortOptions,
   filterConfigs: publishedGardensFilterConfig,
   searchFields: commonGardenSearchFields,
-  defaultSort: "created-desc",
+  defaultSort: "title",
 };

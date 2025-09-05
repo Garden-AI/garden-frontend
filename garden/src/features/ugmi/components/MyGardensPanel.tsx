@@ -108,7 +108,7 @@ export const MyGardensPanel = ({
       onCreateSuccess: () => { },
       isCreateDialogOpen,
       setIsCreateDialogOpen,
-    }).actions;
+    })?.actions;
 
   const customGardenNodeProps = (garden: Garden) => ({
     onDrop: (items: any[]) => handleAddToGarden(items, garden)
