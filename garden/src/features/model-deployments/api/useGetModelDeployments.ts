@@ -7,7 +7,7 @@ import { components } from "@/types/backend-schema";
 type ModalAppResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
 
 // Helper function to map deploy status to internal status
-const mapDeployStatus = (deployStatus: string | undefined): string => {
+const mapDeployStatus = (deployStatus: string | null | undefined): "deployed" | "undeployed" | "error" => {
     switch (deployStatus) {
         case "done":
             return "deployed";
