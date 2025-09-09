@@ -4,6 +4,8 @@ import { useCreateModalApp, DeployTimeoutError, createOrUpdateModalApp } from ".
 import { ModalAppPatchRequest, ModalFileMetadataResponse } from "@/types";
 import { ApiError } from "../../gardens/utils/garden.utils";
 import { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
+import instance from "@/lib/axios";
 
 export interface ValidationError {
   message: string;
@@ -52,6 +54,7 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
   const [modalMetadata, setModalMetadata] = useState<ExtendedModalFileMetadata | null>(null);
   const [validationError, setValidationError] = useState<ValidationError | null>(null);
   const [deploymentError, setDeploymentError] = useState<DeploymentError | null>(null);
+  const queryClient = useQueryClient();
 
   const { mutateAsync: validateFile, isPending: isValidating } = useValidateModalFile();
   const { mutateAsync: createOrUpdateApp, isPending: isDeploying } = useCreateModalApp();
@@ -128,7 +131,16 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
         owner_identity_id: ownerIdentityId,
       };
 
-      const response = await createOrUpdateApp(appRequest);
+      // Make the initial POST request to start deployment
+      const initialResponse = await instance.post(`/modal-apps/async`, appRequest);
+      const appId = initialResponse.data.id;
+
+      // invalidate cache now that deployment is created
+      queryClient.invalidateQueries({ queryKey: ["modelDeployments"] });
+
+      // Don't start additional polling 
+      // Just return the app ID so the UI can show the deployment immediately
+      const response = { data: { id: appId } };
 
       // Update the stored metadata with the latest version
       if (modalMetadata) {

@@ -10,7 +10,7 @@ import { useUnsaveGarden } from "../api/useUnsaveGarden";
 
 const SaveGardenButton = ({ garden }: { garden: Garden }) => {
   const [hover, setHover] = useState(false);
-  const { mutate: saveGarden, isPending: saveGardenIsPending } = useSaveGarden(garden.doi);
+  const { mutate: saveGarden, isPending: saveGardenIsPending } = useSaveGarden();
   const { mutate: unsaveGarden, isPending: unsaveGardenIsPending } = useUnsaveGarden(garden.doi);
   const { data: user } = useGetUserInfo();
 
@@ -24,7 +24,7 @@ const SaveGardenButton = ({ garden }: { garden: Garden }) => {
     if (isSaved) {
       unsaveGarden();
     } else {
-      saveGarden();
+      saveGarden(garden.doi);
     }
   };
 

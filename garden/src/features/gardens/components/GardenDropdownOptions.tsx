@@ -36,9 +36,13 @@ import { SUPER_USERS } from "@/utils/utils";
 const GardenDropdownMenu = ({
   garden,
   setIsPublishGardenModalOpen,
+  redirectPath,
+  onAfterDelete,
 }: {
   garden: Garden;
   setIsPublishGardenModalOpen: (open: boolean) => void;
+  redirectPath?: string;
+  onAfterDelete?: () => void;
 }) => {
   const auth = useGlobusAuth();
 
@@ -96,6 +100,8 @@ const GardenDropdownMenu = ({
         garden={garden}
         isOpen={isDeleteGardenModalOpen}
         setIsOpen={setIsDeleteGardenModalOpen}
+        redirectPath={redirectPath}
+        onAfterDelete={onAfterDelete}
       />
 
       <ArchiveGardenModal
@@ -141,7 +147,10 @@ export const PublishGardenModal = ({
       });
       setIsOpen(false);
       setInput("");
-      queryClient.invalidateQueries({ queryKey: ["gardens"] });
+      // Invalidate all garden-related queries to ensure UI updates
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "gardens"
+      });
       queryClient.setQueryData(["gardens", doi], (oldData: Garden) => {
         return { ...oldData, doi_is_draft: false, is_archived: false };
       });
@@ -208,10 +217,14 @@ const DeleteGardenModal = ({
   garden,
   isOpen,
   setIsOpen,
+  redirectPath = "/",
+  onAfterDelete,
 }: {
   garden: Garden;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  redirectPath?: string;
+  onAfterDelete?: () => void;
 }) => {
   const queryClient = useQueryClient();
   const [input, setInput] = React.useState("");
@@ -225,10 +238,17 @@ const DeleteGardenModal = ({
       onSuccess: () => {
         setIsOpen(false);
         setInput("");
-        queryClient.invalidateQueries({ queryKey: ["gardens"] });
+        // Invalidate all garden-related queries to ensure UI updates
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === "gardens"
+        });
         queryClient.removeQueries({ queryKey: ["gardens", doi] });
         toast.success("Garden deleted successfully!");
-        navigate("/");
+        if (onAfterDelete) {
+          onAfterDelete();
+        } else {
+          navigate(redirectPath);
+        }
       },
     });
   };
@@ -310,7 +330,10 @@ const ArchiveGardenModal = ({
       });
       setIsOpen(false);
       setInput("");
-      queryClient.invalidateQueries({ queryKey: ["gardens", "search"] });
+      // Invalidate all garden-related queries to ensure UI updates
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "gardens"
+      });
       queryClient.setQueryData(["gardens", doi], (oldData: Garden) => {
         return { ...oldData, is_archived: true };
       });

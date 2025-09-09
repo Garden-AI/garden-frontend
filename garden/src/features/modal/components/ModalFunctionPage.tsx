@@ -83,7 +83,7 @@ const ModalFunctionPage = () => {
   );
 };
 
-const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
+export const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
   modalFunction: ModalFunctionWithOwner;
   gardenDOI?: string;
   ownsThisFunction: boolean;
@@ -118,7 +118,7 @@ const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
   );
 };
 
-const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
+export const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
   const handleUpdate = useCallback(async (updateData: ModalFunction) => {
@@ -143,7 +143,7 @@ const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction:
   );
 };
 
-const ModalFunctionExample = ({ modalFunction, ownsThisFunction, gardenDOI }: { modalFunction: ModalFunction; ownsThisFunction: boolean; gardenDOI?: string; }) => {
+export const ModalFunctionExample = ({ modalFunction, ownsThisFunction, gardenDOI }: { modalFunction: ModalFunction; ownsThisFunction: boolean; gardenDOI?: string; }) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
   const doiExpression = gardenDOI ? `'${gardenDOI}'` : "my_garden_doi"

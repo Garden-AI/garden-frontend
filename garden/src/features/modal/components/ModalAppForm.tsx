@@ -1,6 +1,7 @@
 import React from "react";
 import { Form } from "@/components/shadcn/form";
 import { useModalAppForm, UseModalAppFormOptions } from "@/features/modal/api/useModalAppForm";
+import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 import { FileUploadSection } from "@/features/modal/components/FileUploadSection";
 import { DetectedAppCard } from "@/features/modal/components/DetectedAppCard";
 import { FunctionMetadataEditor } from "@/features/modal/components/FunctionMetadataEditor";
@@ -16,7 +17,7 @@ import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Link } from "react-router-dom";
 
-export interface ModalAppFormProps extends UseModalAppFormOptions {
+export interface ModalAppFormProps extends Omit<UseModalAppFormOptions, 'onDeploymentSuccess'> {
   /**
    * Whether to show the overall progress bar (used in multi-step flows like garden creation)
    * @default false 
@@ -45,6 +46,11 @@ export interface ModalAppFormProps extends UseModalAppFormOptions {
    * @param id The ID of the deployed app
    */
   onSuccess?: (id: number) => void;
+  /**
+   * Function called immediately when deployment starts (before completion)
+   * @param id The ID of the deployment that was started
+   */
+  onDeploymentSuccess?: (id: number) => void;
 }
 
 export const ModalAppForm = ({
@@ -53,6 +59,7 @@ export const ModalAppForm = ({
   viewDeploymentsUrl = "/user",
   redirectUrl,
   onSuccess,
+  onDeploymentSuccess,
   ...hookOptions
 }: ModalAppFormProps) => {
   const {
@@ -74,7 +81,12 @@ export const ModalAppForm = ({
   } = useModalAppForm({
     ...hookOptions,
     redirectUrl,
-    onDeploymentSuccess: onSuccess
+    onDeploymentSuccess: (deployment: ModelDeployment) => {
+      // Call the immediate callback when deployment starts (extract ID from deployment)
+      onDeploymentSuccess?.(deployment.id);
+      // Also call onSuccess for backward compatibility and to handle form closing
+      onSuccess?.(deployment.id);
+    }
   });
 
   // Determine the current step based on state

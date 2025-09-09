@@ -2,15 +2,11 @@ import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
 import Breadcrumb from "@/components/Breadcrumb";
-import GardenDropdownOptions from "@/features/gardens/components/GardenDropdownOptions";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import NotFoundPage from "@/components/NotFoundPage";
 import TombstonePage from "@/components/TombstonePage";
-import SaveGardenButton from "./SaveGardenButton";
-import { PublishGardenModal } from "@/features/gardens/components/GardenDropdownOptions";
 
 import { useGetGarden } from "../api/useGetGarden";
-import { usePatchGarden } from "../api/usePatchGarden";
 import { useGlobusAuth } from "@globus/react-auth-context";
 
 import { MaterialsProvider } from '@/features/materials/contexts/MaterialsContext';
@@ -18,16 +14,12 @@ import { MaterialsProvider } from '@/features/materials/contexts/MaterialsContex
 import { Garden } from "@/types";
 
 import {
-  GardenDescription,
   VisibilityWarning,
   ReviewNotice,
 } from "./garden-page";
-import { GardenTabbedSection } from "./GardenTabbedSection";
 import { GardenMetadataSidebar } from "./GardenMetadataSidebar";
-import { EditableTitle } from "@/components/shared/metadata";
-
 import { SUPER_USERS } from "@/utils/utils";
-import { ShareGardenButton } from "./ShareGardenButton";
+import { GardenHeader, GardenContentView, GardenPublishModal } from "./shared/GardenComponents";
 
 interface GardenContentProps {
   garden: Garden;
@@ -36,7 +28,6 @@ interface GardenContentProps {
 }
 
 const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContentProps) => {
-  const { mutateAsync: patchGarden } = usePatchGarden();
   const isPublished = !garden.is_archived && !garden.doi_is_draft;
   const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
 
@@ -71,37 +62,16 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">
-            <div className="flex justify-between items-start mb-4">
-              <EditableTitle
-                entity={garden}
-                ownsThisEntity={ownsThisGarden}
-                onUpdate={async (updateData) => {
-                  await patchGarden({
-                    doi: garden.doi,
-                    garden: updateData
-                  });
-                }}
-              />
-              <div className="flex items-center">
-                <SaveGardenButton garden={garden} />
-                <ShareGardenButton garden={garden} />
-                <GardenDropdownOptions
-                  garden={garden}
-                  setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
-                />
-              </div>
-            </div>
+            <GardenHeader
+              garden={garden}
+              ownsThisGarden={ownsThisGarden}
+              setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+            />
 
-            <GardenDescription garden={garden} ownsThisGarden={ownsThisGarden} />
-
-            {/* Tabbed Section */}
-            <div className="mt-4">
-              <GardenTabbedSection
-                garden={garden}
-                ownsThisGarden={ownsThisGarden}
-              />
-            </div>
-
+            <GardenContentView
+              garden={garden}
+              ownsThisGarden={ownsThisGarden}
+            />
           </div>
           {/* Metadata Details */}
           <GardenMetadataSidebar
@@ -111,10 +81,10 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
         </div>
       </div>
 
-      <PublishGardenModal
-        isOpen={isPublishGardenModalOpen}
-        setIsOpen={setIsPublishGardenModalOpen}
+      <GardenPublishModal
         garden={garden}
+        isPublishGardenModalOpen={isPublishGardenModalOpen}
+        setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
       />
     </div>
   );

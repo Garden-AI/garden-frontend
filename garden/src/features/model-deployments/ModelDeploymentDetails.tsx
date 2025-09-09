@@ -39,9 +39,11 @@ import { ModalAppForm } from "@/features/modal/components/ModalAppForm";
 
 interface ModelDeploymentDetailsProps {
     entity: ModalAppMetadataResponse | AsyncModalAppMetadataResponse,
+    redirectPath?: string,
+    onAfterDelete?: () => void,
 }
 
-export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) => {
+export const ModelDeploymentDetails = ({ entity, redirectPath = "/user?tab=model-deployments", onAfterDelete }: ModelDeploymentDetailsProps) => {
     // Fetch gardens that use functions from this deployment
     const { data: relatedGardens = [], isLoading: isLoadingGardens } = useGardensUsingFunctions(entity);
     const navigate = useNavigate();
@@ -99,8 +101,12 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
             entity.modal_function_ids.forEach((id) => {
                 queryClient.invalidateQueries({ queryKey: ["modalFunctions", id] });
             });
-            navigate("/user?tab=model-deployments");
             toast(`Deployment Deleted: ${entity.original_app_name || entity.app_name}`);
+            if (onAfterDelete) {
+                onAfterDelete();
+            } else {
+                navigate(redirectPath);
+            }
         } catch (error: any) {
             const errorMessage = error.response?.data?.detail
                 || error.message
@@ -232,11 +238,8 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                 <CardHeader>
                     <CardTitle className="flex items-center text-lg">
                         <LeafIcon className="h-5 w-5 text-green-600 mr-2" />
-                        Gardens Using This Deployment
+                        Gardens Using These Functions
                     </CardTitle>
-                    <CardDescription>
-                        Gardens that utilize functions from this model deployment
-                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     {isLoadingGardens ? (
@@ -259,7 +262,7 @@ export const ModelDeploymentDetails = ({ entity }: ModelDeploymentDetailsProps) 
                     ) : (
                         <div className="flex flex-col items-center justify-center p-6 text-center text-gray-500">
                             <AlertTriangleIcon className="h-8 w-8 mb-3 text-amber-500" />
-                            <p className="mb-1">No gardens using this model yet</p>
+                            <p className="mb-1">No gardens using these functions yet</p>
                         </div>
                     )}
                 </CardContent>

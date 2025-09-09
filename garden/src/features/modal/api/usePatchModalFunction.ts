@@ -46,7 +46,9 @@ export const usePatchModalFunction = () => {
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: ["modalFunctions", data.id] });
       // Invalidate all garden queries since we don't know which gardens contain this function
-      await queryClient.invalidateQueries({ queryKey: ["gardens"] });
+      await queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "gardens"
+      });
     },
   });
 };

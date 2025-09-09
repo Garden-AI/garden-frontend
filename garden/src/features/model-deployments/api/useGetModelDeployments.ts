@@ -6,6 +6,21 @@ import { components } from "@/types/backend-schema";
 
 type ModalAppResponse = components["schemas"]["AsyncModalAppMetadataResponse"];
 
+// Helper function to map deploy status to internal status
+const mapDeployStatus = (deployStatus: string | null | undefined): "deployed" | "undeployed" | "error" => {
+    switch (deployStatus) {
+        case "done":
+            return "deployed";
+        case "error":
+        case "timed_out":
+            return "error";
+        case "pending":
+            return "undeployed";
+        default:
+            return "undeployed";
+    }
+};
+
 const getModelDeployments = async (): Promise<ModelDeployment[]> => {
     const modalAppsResponse = await instance.get<ModalAppResponse[]>(`/modal-apps/`);
     // TODO get GCMU deployments once they exist, combine them with modal apps
@@ -13,20 +28,23 @@ const getModelDeployments = async (): Promise<ModelDeployment[]> => {
         return {
             id: ma.id ?? -1,
             name: ma.original_app_name || ma.app_name,
-            status: ma.deploy_status === "done" ? "deployed" :
-                ma.deploy_status === "error" ? "error" :
-                    ma.deploy_status === "timed_out" ? "error" : "undeployed",
+            status: mapDeployStatus(ma.deploy_status),
             type: "Modal App",
             originalData: ma,
         };
     });
 };
 
-export const useGetModelDeployments = () => {
+export const useGetModelDeployments = (options?: {
+    refetchInterval?: number;
+    enabled?: boolean;
+}) => {
     const auth = useGlobusAuth();
     return useQuery<ModelDeployment[]>({
         queryKey: ["modelDeployments"],
         queryFn: getModelDeployments,
-        enabled: auth.isAuthenticated,
+        enabled: auth.isAuthenticated && (options?.enabled !== false),
+        refetchInterval: options?.refetchInterval,
+        refetchIntervalInBackground: false,
     });
 };
