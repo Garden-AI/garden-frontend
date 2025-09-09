@@ -9,6 +9,7 @@ import RootLayout from "@/components/Layout";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import SuperuserRoute from "@/components/SuperuserRoute";
 import { UnifiedManagementInterface } from "@/features/ugmi/UnifiedManagementInterface";
+import { ComponentPlayground } from "@/components/ComponentPlayground";
 
 const EntrypointTombstonePage = lazy(() => import("@/components/EntrypointTombstonePage"));
 const CreateGardenPage = lazy(() => import("@/features/gardens/components/create/CreateGardenPage"));
@@ -85,6 +86,7 @@ const Router: React.FC = () => {
           <Route path="metrics" element={<WrappedLazyComponent child={<MetricsDashboard />} />}></Route>
         </Route>
         <Route path="dashboard" element={<UnifiedManagementInterface />} />
+        <Route path="playground" element={<ComponentPlayground />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes >
