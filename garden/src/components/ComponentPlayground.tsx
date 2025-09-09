@@ -71,7 +71,7 @@ const GardenTree = ({ gardens, selectedItem, onItemSelected, draggedItems, setDr
     });
   }, [gardens]);
 
-  const hanldeFunctionDrop = (mh: MoveHandler) => {
+  const handleDrop = (mh: MoveHandler) => {
     // Use draggedItems from parent state if available (cross-tree drag)
     const nodesToProcess = draggedItems.length > 0 ? draggedItems : mh.dragNodes;
 
@@ -110,7 +110,7 @@ const GardenTree = ({ gardens, selectedItem, onItemSelected, draggedItems, setDr
       openByDefault={false}
       onSelect={(selectedNodes) => onItemSelected(selectedNodes[0])}
       selection={selectedItem}
-      onMove={hanldeFunctionDrop}
+      onMove={handleDrop}
       onActivate={(node) => {
         if (node.data.id.startsWith('function-')) {
           setDraggedItems([node]);

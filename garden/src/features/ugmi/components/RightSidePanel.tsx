@@ -12,14 +12,16 @@ import { PublishedGardensPanel } from "./PublishedGardensPanel";
 import { useSelection } from "../hooks";
 import { Entity } from "../types";
 import { usePanelExpansion, createPanelRefs } from "../hooks/usePanelExpansion";
+import { DragAndDropState } from "../hooks/useDragDrop";
 
 type RightSidePanelProps = {
   entity: Entity | null;
   onItemSelected?: (entity: Entity) => void;
   selection?: ReturnType<typeof useSelection>;
+  dragAndDrop: DragAndDropState;
 };
 
-export const RightSidePanel = ({ entity, onItemSelected, selection }: RightSidePanelProps) => {
+export const RightSidePanel = ({ entity, onItemSelected, selection, dragAndDrop }: RightSidePanelProps) => {
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
 
@@ -58,6 +60,7 @@ export const RightSidePanel = ({ entity, onItemSelected, selection }: RightSideP
             selectedItem={entity}
             selection={selection}
             onDoubleClick={() => handlePanelExpand(panelRefs.publishedGardensPanelRef)}
+            dragAndDrop={dragAndDrop}
           />
         </ResizablePanel>
       </ResizablePanelGroup>

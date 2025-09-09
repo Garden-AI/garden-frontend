@@ -26,3 +26,11 @@ export { UserInfoPanel } from "./UserInfoPanel";
 export { UnifiedGardenContent } from "./UnifiedGardenContent";
 export { UnifiedFunctionContent } from "./UnifiedFunctionContent";
 
+// Tree Components
+export { GardenTree } from './GardenTree';
+export { Node } from './Node';
+export { GardenNode } from './GardenNode';
+export { FunctionNode } from './FunctionNode';
+export { DeploymentNode } from './DeploymentNode';
+export { UnknownNode } from './UnknownNode';
+

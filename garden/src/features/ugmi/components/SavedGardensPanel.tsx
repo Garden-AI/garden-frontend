@@ -1,11 +1,14 @@
-import React from "react";
-import { useDroppable } from "@dnd-kit/core";
+import React, { useCallback } from "react";
 import { Bookmark } from "lucide-react";
-import { BaseGardenPanel } from "./BaseGardenPanel";
+import { GardenTree } from "./GardenTree";
+import { PanelHeader } from "./PanelHeader";
+import { GardenPanelHeaderActions } from "./GardenPanelHeaderActions";
 import { Garden } from "@/types";
 import { useSelection } from "../hooks";
 import { Entity } from "../types";
+import { useGardenFiltering } from "../hooks/useGardenFiltering";
 import { savedGardensFilteringOptions } from "../hooks/gardenFilteringConfigs";
+import { DragAndDropState } from "../hooks/useDragDrop";
 
 export type SavedGardensPanelProps = {
   savedGardens: Garden[];
@@ -15,6 +18,7 @@ export type SavedGardensPanelProps = {
   selection?: ReturnType<typeof useSelection>;
   isLoading?: boolean;
   onGardenSaved?: (garden: Garden) => void;
+  dragAndDrop: DragAndDropState;
 };
 
 export const SavedGardensPanel = ({
@@ -25,34 +29,15 @@ export const SavedGardensPanel = ({
   selection,
   isLoading = false,
   onGardenSaved,
+  dragAndDrop,
 }: SavedGardensPanelProps) => {
-  // Helper function to save a garden using the existing hook
-  const handleSaveGarden = (garden: Garden) => {
+  const filtering = useGardenFiltering(savedGardens, savedGardensFilteringOptions);
+
+  const handleSaveGarden = useCallback((garden: Garden) => {
     if (onGardenSaved) {
       onGardenSaved(garden);
     }
-  };
-
-  // Create a droppable zone for the entire saved gardens panel for saving gardens
-  const { setNodeRef, isOver } = useDroppable({
-    id: "saved-gardens-panel",
-    data: {
-      onDrop: (draggedItems: any[]) => {
-        // Handle gardens dropped to save them
-        const gardens = draggedItems
-          .filter(item => item.type === 'garden' || item.doi) // Handle both formats  
-          .map(item => item.type === 'garden' ? item.data : item);
-
-        gardens.forEach((garden: Garden) => {
-          handleSaveGarden(garden);
-        });
-      }
-    }
-  });
-
-  const dropZoneClass = isOver
-    ? "h-full w-full bg-amber-100 rounded-lg border-2 border-amber-400 border-dashed transition-all"
-    : "h-full w-full bg-amber-50 rounded-lg transition-all";
+  }, [onGardenSaved]);
 
   const panelConfig = {
     icon: <Bookmark className="h-5 w-5" />,
@@ -65,29 +50,53 @@ export const SavedGardensPanel = ({
     },
   };
 
-  const droppableProps = {
-    id: "saved-gardens-panel",
-    onDrop: (draggedItems: any[]) => {
-      const gardens = draggedItems
-        .filter(item => item.type === 'garden' || item.doi)
-        .map(item => item.type === 'garden' ? item.data : item);
-      gardens.forEach((garden: Garden) => handleSaveGarden(garden));
-    }
-  };
+  const headerActions = GardenPanelHeaderActions({
+    filtering,
+    showCreateButton: false,
+  });
 
   return (
-    <div ref={setNodeRef} className={dropZoneClass}>
-      <BaseGardenPanel
-        gardens={savedGardens}
-        onSelect={onSelect}
-        onDoubleClick={onDoubleClick}
-        selectedItem={selectedItem}
-        selection={selection}
-        isLoading={isLoading}
-        panelConfig={panelConfig}
-        filteringOptions={savedGardensFilteringOptions}
-        droppableProps={droppableProps}
-      />
+    <div className="h-full w-full bg-amber-50 rounded-lg">
+      <div className="flex h-full flex-col">
+        <PanelHeader
+          icon={panelConfig.icon}
+          title={panelConfig.title}
+          count={filtering.processedGardens.length}
+          onDoubleClick={onDoubleClick}
+          themeColors={panelConfig.themeColors}
+          actions={headerActions?.actions}
+          searchComponent={headerActions?.searchComponent}
+          showSearchToggle={true}
+        />
+        
+        <div className="flex-1 overflow-hidden">
+          {isLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-sm text-gray-500">Loading...</div>
+            </div>
+          ) : filtering.processedGardens.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center space-y-4 py-8 text-center">
+              {panelConfig.icon}
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-600">
+                  {filtering.searchTerm || filtering.hasActiveFilters ? "No matches found" : "No gardens found"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {filtering.searchTerm || filtering.hasActiveFilters ? "Try adjusting your search or filters" : "No gardens available"}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <GardenTree
+              gardens={filtering.processedGardens}
+              selectedItem={selectedItem}
+              onItemSelected={onSelect}
+              draggedItems={dragAndDrop.draggedItems}
+              setDraggedItems={dragAndDrop.setDraggedItems}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

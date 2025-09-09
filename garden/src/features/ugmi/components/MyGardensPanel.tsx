@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Sprout } from "lucide-react";
-import { BaseGardenPanel } from "./BaseGardenPanel";
+import { GardenTree } from "./GardenTree";
+import { PanelHeader } from "./PanelHeader";
 import { GardenPanelHeaderActions } from "./GardenPanelHeaderActions";
 import { Garden, ModalFunction } from "@/types";
 import { Entity } from "../types";
@@ -10,15 +11,17 @@ import { useGardenFiltering } from "../hooks/useGardenFiltering";
 import { myGardensFilteringOptions } from "../hooks/gardenFilteringConfigs";
 import { toast } from "sonner";
 import { CreateGardenForm } from "../../gardens/components/create/CreateGardenForm";
+import { DragAndDropState } from "../hooks/useDragDrop";
 
 type MyGardensPanelProps = {
   gardens: Garden[];
-  onSelect?: (entity: Entity, event?: { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean }) => void;
+  onSelect?: (entity: Entity, event?: { ctrlKey?: boolean; metaKey?: boolean }) => void;
   onGardenCreated?: (garden: Garden) => void;
   onDoubleClick?: () => void;
   selectedItem?: Entity | null;
   selection: ReturnType<typeof useSelection>;
   isLoading?: boolean;
+  dragAndDrop: DragAndDropState;
 };
 
 export const MyGardensPanel = ({
@@ -28,12 +31,14 @@ export const MyGardensPanel = ({
   onDoubleClick,
   selectedItem,
   selection,
-  isLoading = false
+  isLoading = false,
+  dragAndDrop
 }: MyGardensPanelProps) => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const patchGardenMutation = usePatchGarden();
+  const filtering = useGardenFiltering(gardens, myGardensFilteringOptions);
 
-  const handleCreateSuccess = (newGarden: Garden) => {
+  const handleCreateSuccess = useCallback((newGarden: Garden) => {
     if (onGardenCreated) {
       onGardenCreated(newGarden);
     }
@@ -41,39 +46,7 @@ export const MyGardensPanel = ({
       onSelect(newGarden);
     }
     setIsCreateDialogOpen(false);
-  };
-
-  const handleAddToGarden = (draggedItems: any[], garden: Garden) => {
-    // Extract functions from dragged items
-    const functions = draggedItems
-      .filter(item => item.type === 'function' || item.function_name) // Handle both formats
-      .map(item => item.type === 'function' ? item.data : item);
-
-    if (functions.length === 0) return;
-
-    // Create updated modal_function_ids array
-    const currentFunctionIds = garden.modal_functions?.map(fn => fn.id) || [];
-    const newFunctionIds = functions.map((fn: ModalFunction) => fn.id);
-
-    // Filter out functions already in the target garden
-    const existingFunctionIds = new Set(currentFunctionIds);
-    const filteredNewIds = newFunctionIds.filter(id => !existingFunctionIds.has(id));
-
-    if (filteredNewIds.length === 0) {
-      const functionNames = functions.map((fn: ModalFunction) => fn.function_name).join(', ');
-      toast.info(`${functionNames} already in "${garden.title}"`);
-      return;
-    }
-
-    const updatedFunctionIds = [...currentFunctionIds, ...filteredNewIds];
-
-    // Update the garden
-    patchGardenMutation.mutate({
-      doi: garden.doi,
-      garden: { modal_function_ids: updatedFunctionIds },
-      successMessage: `Added ${filteredNewIds.length === 1 ? `"${functions[0].function_name}"` : `${filteredNewIds.length} functions`} to "${garden.title}"`
-    });
-  };
+  }, [onGardenCreated, onSelect]);
 
   // Create garden form component wrapper
   const CreateGardenComponent: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
@@ -98,37 +71,62 @@ export const MyGardensPanel = ({
     },
   };
 
-  const customActions = (filtering: ReturnType<typeof useGardenFiltering>) => 
-    GardenPanelHeaderActions({
-      filtering,
-      searchPlaceholder: "Search my gardens...",
-      showCreateButton: true,
-      CreateComponent: CreateGardenComponent,
-      createDialogTitle: "Create New Garden",
-      onCreateSuccess: () => { },
-      isCreateDialogOpen,
-      setIsCreateDialogOpen,
-    })?.actions;
-
-  const customGardenNodeProps = (garden: Garden) => ({
-    onDrop: (items: any[]) => handleAddToGarden(items, garden)
-  });
+  const customActions = GardenPanelHeaderActions({
+    filtering,
+    searchPlaceholder: "Search my gardens...",
+    showCreateButton: true,
+    CreateComponent: CreateGardenComponent,
+    createDialogTitle: "Create New Garden",
+    onCreateSuccess: () => { },
+    isCreateDialogOpen,
+    setIsCreateDialogOpen,
+  })?.actions;
 
   return (
     <div className="h-full bg-emerald-50 rounded-lg">
-      <BaseGardenPanel
-        gardens={gardens}
-        onSelect={onSelect}
-        onDoubleClick={onDoubleClick}
-        selectedItem={selectedItem}
-        selection={selection}
-        isLoading={isLoading}
-        panelConfig={panelConfig}
-        filteringOptions={myGardensFilteringOptions}
-        customActions={customActions}
-        customGardenNodeProps={customGardenNodeProps}
-        droppableProps={{ id: "my-gardens" }}
-      />
+      <div className="flex h-full flex-col">
+        <PanelHeader
+          icon={panelConfig.icon}
+          title={panelConfig.title}
+          count={filtering.processedGardens.length}
+          onDoubleClick={onDoubleClick}
+          themeColors={panelConfig.themeColors}
+          actions={customActions}
+          searchComponent={GardenPanelHeaderActions({
+            filtering,
+            showCreateButton: false,
+          })?.searchComponent}
+          showSearchToggle={true}
+        />
+        
+        <div className="flex-1 overflow-hidden">
+          {isLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-sm text-gray-500">Loading...</div>
+            </div>
+          ) : filtering.processedGardens.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center space-y-4 py-8 text-center">
+              {panelConfig.icon}
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-600">
+                  {filtering.searchTerm || filtering.hasActiveFilters ? "No matches found" : "No gardens found"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {filtering.searchTerm || filtering.hasActiveFilters ? "Try adjusting your search or filters" : "No gardens available"}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <GardenTree
+              gardens={filtering.processedGardens}
+              selectedItem={selectedItem}
+              onItemSelected={onSelect}
+              draggedItems={dragAndDrop.draggedItems}
+              setDraggedItems={dragAndDrop.setDraggedItems}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

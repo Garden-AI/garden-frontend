@@ -18,6 +18,7 @@ import { MyFunctionLibraryView } from "./MyFunctionLibraryView";
 import { Entity } from "../types";
 import { useSelection } from "../hooks";
 import { usePanelExpansion, createPanelRefs } from "../hooks/usePanelExpansion";
+import { DragAndDropState } from "../hooks/useDragDrop";
 
 type LeftSidePanelProps = {
   onItemSelected?: (entity: Entity, event?: { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean }) => void;
@@ -25,9 +26,10 @@ type LeftSidePanelProps = {
   selection: ReturnType<typeof useSelection>;
   onDeploymentCreated?: (deployment: ModelDeployment) => void;
   onGardenSaved?: (garden: Garden) => void;
+  dragAndDrop: DragAndDropState;
 };
 
-export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeploymentCreated, onGardenSaved }: LeftSidePanelProps) => {
+export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeploymentCreated, onGardenSaved, dragAndDrop }: LeftSidePanelProps) => {
 
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
@@ -116,6 +118,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
             onDoubleClick={() => handlePanelExpand(panelRefs.savedGardensPanelRef)}
             isLoading={savedGardensLoading}
             onGardenSaved={onGardenSaved}
+            dragAndDrop={dragAndDrop}
           />
         </ResizablePanel>
 
@@ -134,6 +137,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
             selection={selection}
             onDoubleClick={() => handlePanelExpand(panelRefs.myGardensPanelRef)}
             isLoading={userGardensLoading}
+            dragAndDrop={dragAndDrop}
           />
         </ResizablePanel>
 
