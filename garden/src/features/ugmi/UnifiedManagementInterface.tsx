@@ -8,17 +8,14 @@ import { LeftSidePanel } from "./components/LeftSidePanel";
 import { MainContentPanel } from "./components/MainContentPanel";
 import { RightSidePanel } from "./components/RightSidePanel";
 import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSelection } from "./hooks";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { Entity } from "./types";
-import axios from "@/lib/axios";
-import { useGlobusAuth } from "@globus/react-auth-context";
 
 export const UnifiedManagementInterface = () => {
   const { data: modelDeployments } = useGetModelDeployments();
 
-  const auth = useGlobusAuth();
   const queryClient = useQueryClient();
 
   // Initialize hooks
@@ -42,40 +39,6 @@ export const UnifiedManagementInterface = () => {
     selection.selectSingle(deployment);
   };
 
-  // Create a mutation for saving gardens
-  const saveGardenMutation = useMutation({
-    mutationFn: async ({ doi, uuid }: { doi: string; uuid?: string }) => {
-      if (!uuid) {
-        throw new Error("User not authenticated");
-      }
-      const response = await axios.put(`/users/${uuid}/saved/gardens/${doi}`);
-      return response.data;
-    },
-    onSuccess: (data, { doi }) => {
-      queryClient.setQueryData(["user", "me"], (oldData: unknown) => {
-        if (oldData && typeof oldData === 'object' && 'saved_garden_dois' in oldData) {
-          const userData = oldData as { saved_garden_dois?: string[] };
-          if (!userData.saved_garden_dois?.includes(doi)) {
-            return {
-              ...oldData,
-              saved_garden_dois: [...(userData.saved_garden_dois || []), doi],
-            };
-          }
-        }
-        return oldData;
-      });
-
-      toast.success("Garden saved to your profile. You can view it on your profile page.");
-    },
-    onError: () => {
-      toast.error("Error saving garden");
-    },
-  });
-
-  const handleGardenSaved = (garden: Garden) => {
-    const uuid = auth?.authorization?.user?.sub;
-    saveGardenMutation.mutate({ doi: garden.doi, uuid });
-  };
 
   // Keep selected deployment in sync with fresh data from cache
   useEffect(() => {
@@ -113,7 +76,6 @@ export const UnifiedManagementInterface = () => {
             selectedItem={selection.primarySelection}
             selection={selection}
             onDeploymentCreated={handleDeploymentCreated}
-            onGardenSaved={handleGardenSaved}
           />
           <ResizableHandle
             withHandle

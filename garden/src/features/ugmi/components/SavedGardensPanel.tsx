@@ -6,6 +6,7 @@ import { Garden } from "@/types";
 import { useSelection } from "../hooks";
 import { Entity } from "../types";
 import { savedGardensFilteringOptions } from "../hooks/gardenFilteringConfigs";
+import { useSaveGarden } from "@/features/gardens/api/useSaveGarden";
 
 export type SavedGardensPanelProps = {
   savedGardens: Garden[];
@@ -14,7 +15,6 @@ export type SavedGardensPanelProps = {
   selectedItem?: Entity | null;
   selection?: ReturnType<typeof useSelection>;
   isLoading?: boolean;
-  onGardenSaved?: (garden: Garden) => void;
 };
 
 export const SavedGardensPanel = ({
@@ -24,13 +24,13 @@ export const SavedGardensPanel = ({
   selectedItem,
   selection,
   isLoading = false,
-  onGardenSaved,
 }: SavedGardensPanelProps) => {
-  // Helper function to save a garden using the existing hook
+  // Get the save garden mutation function
+  const { mutate: saveGarden } = useSaveGarden();
+
+  // Helper function to save a garden
   const handleSaveGarden = (garden: Garden) => {
-    if (onGardenSaved) {
-      onGardenSaved(garden);
-    }
+    saveGarden(garden.doi);
   };
 
   // Create a droppable zone for the entire saved gardens panel for saving gardens

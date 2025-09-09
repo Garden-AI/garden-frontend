@@ -21,14 +21,13 @@ const saveGarden = async ({ doi, uuid }: SaveGardenProps): Promise<Garden> => {
   }
 };
 
-export const useSaveGarden = (doi: string) => {
+export const useSaveGarden = () => {
   const auth = useGlobusAuth();
   const uuid = auth?.authorization?.user?.sub;
   const queryClient = useQueryClient();
-  return useMutation<Garden, Error>({
-    mutationKey: ["gardens", "save", doi],
-    mutationFn: () => saveGarden({ doi, uuid }),
-    onSuccess: () => {
+  return useMutation<Garden, Error, string>({
+    mutationFn: (doi: string) => saveGarden({ doi, uuid }),
+    onSuccess: (data, doi) => {
       queryClient.setQueryData(["user", "me"], (oldData: any) => {
         return {
           ...oldData,

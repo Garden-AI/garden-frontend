@@ -24,10 +24,9 @@ type LeftSidePanelProps = {
   selectedItem?: Entity | null;
   selection: ReturnType<typeof useSelection>;
   onDeploymentCreated?: (deployment: ModelDeployment) => void;
-  onGardenSaved?: (garden: Garden) => void;
 };
 
-export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeploymentCreated, onGardenSaved }: LeftSidePanelProps) => {
+export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeploymentCreated }: LeftSidePanelProps) => {
 
   const auth = useGlobusAuth();
   const { data: userInfo } = useGetUserInfo();
@@ -115,7 +114,6 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
             selection={selection}
             onDoubleClick={() => handlePanelExpand(panelRefs.savedGardensPanelRef)}
             isLoading={savedGardensLoading}
-            onGardenSaved={onGardenSaved}
           />
         </ResizablePanel>
 
