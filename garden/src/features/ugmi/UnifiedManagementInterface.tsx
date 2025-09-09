@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ResizablePanelGroup, ResizableHandle } from "@/components/shadcn/resizable";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { toast } from "sonner";
@@ -7,15 +7,12 @@ import { ModelDeployment } from "../model-deployments/ModelDeployments";
 import { LeftSidePanel } from "./components/LeftSidePanel";
 import { MainContentPanel } from "./components/MainContentPanel";
 import { RightSidePanel } from "./components/RightSidePanel";
-import { useGetModelDeployments } from "../model-deployments/api/useGetModelDeployments";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSelection } from "./hooks";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { Entity } from "./types";
 
 export const UnifiedManagementInterface = () => {
-  const { data: modelDeployments } = useGetModelDeployments();
-
   const queryClient = useQueryClient();
 
   // Initialize hooks
@@ -38,26 +35,6 @@ export const UnifiedManagementInterface = () => {
     // Select the new deployment
     selection.selectSingle(deployment);
   };
-
-
-  // Keep selected deployment in sync with fresh data from cache
-  useEffect(() => {
-    const primarySelection = selection.primarySelection;
-    if (primarySelection && 'originalData' in primarySelection) {
-      const deployment = primarySelection as ModelDeployment;
-      if (deployment.originalData?.id) {
-        // If a deployment is selected, find the updated version from the cache
-        const updatedDeployment = modelDeployments?.find(
-          dep => dep.originalData?.id === deployment.originalData?.id
-        );
-
-        // If we found an updated version and it's different, update the selection
-        if (updatedDeployment && updatedDeployment.status !== deployment.status) {
-          selection.selectSingle(updatedDeployment);
-        }
-      }
-    }
-  }, [modelDeployments, selection.primarySelection, selection]);
 
   return (
     <DndContext

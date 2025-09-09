@@ -1,43 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Library } from "lucide-react";
 import { Garden } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
+import { useGetModelDeployments } from "../../model-deployments/api/useGetModelDeployments";
+import { useDeploymentSync } from "../../model-deployments/api/useDeploymentSync";
 import { TreeView } from "./TreeView";
 import { DeploymentTreeNode } from "./DeploymentTreeNode";
 import { PanelHeader } from "./PanelHeader";
 import { BasePanelHeaderActions } from "./BasePanelHeaderActions";
 import { CreateFunctionFormWrapper } from "./CreateFunctionFormWrapper";
 import { useSelection } from "../hooks";
-import { Entity } from "../types";
+import { Entity, isDeployment } from "../types";
 import { useDeploymentFiltering } from "../hooks/useDeploymentFiltering";
 import { functionLibraryFilteringOptions } from "../hooks/deploymentFilteringConfigs";
 
 export type FunctionLibraryViewProps = {
-  modelDeployments: ModelDeployment[];
   gardens: Garden[];
   onSelect?: (entity: Entity) => void;
   onDoubleClick?: () => void;
   onDeploymentCreated?: (deployment: ModelDeployment) => void;
   selectedItem?: Entity | null;
   selection?: ReturnType<typeof useSelection>;
-  isLoading?: boolean;
 };
 
 export const MyFunctionLibraryView = ({
-  modelDeployments,
   gardens,
   onSelect,
   onDoubleClick,
   onDeploymentCreated,
   selectedItem,
   selection,
-  isLoading = false,
 }: FunctionLibraryViewProps) => {
   const [expandedDeployments, setExpandedDeployments] = useState<Set<number>>(new Set());
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   
+  // Fetch model deployments
+  const {
+    data: modelDeployments,
+    isLoading: modelDeploymentsLoading,
+    refetch: refetchModelDeployments
+  } = useGetModelDeployments();
+
+  // Polling logic for pending deployments
+  const shouldPollDeployments = useMemo(() => {
+    return modelDeployments?.some(
+      deployment => deployment.originalData?.deploy_status === "pending"
+    ) ?? false;
+  }, [modelDeployments]);
+
+  useEffect(() => {
+    if (!shouldPollDeployments) return;
+
+    const intervalId = setInterval(() => {
+      refetchModelDeployments();
+    }, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, [shouldPollDeployments, refetchModelDeployments]);
+
+  // Keep selected deployment in sync with fresh data from cache
+  useDeploymentSync(
+    selectedItem && isDeployment(selectedItem) ? selectedItem : null,
+    modelDeployments || [],
+    (updatedDeployment: ModelDeployment) => {
+      if (onSelect) {
+        onSelect(updatedDeployment);
+      }
+    }
+  );
+  
   // Use the deployment filtering hook
-  const filtering = useDeploymentFiltering(modelDeployments, functionLibraryFilteringOptions);
+  const filtering = useDeploymentFiltering(modelDeployments || [], functionLibraryFilteringOptions);
 
   const handleToggleExpansion = (deploymentId: number) => {
     setExpandedDeployments(prev => {
@@ -96,7 +129,7 @@ export const MyFunctionLibraryView = ({
 
       {/* Content */}
       <div className="flex-1 space-y-1 overflow-y-auto p-2">
-        {isLoading ? (
+        {modelDeploymentsLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-sm text-gray-500">Loading...</div>
           </div>
@@ -105,10 +138,10 @@ export const MyFunctionLibraryView = ({
             <Library className="h-12 w-12 text-gray-300" />
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-600">
-                {modelDeployments.length === 0 ? "No Functions Found" : "No matches found"}
+                {(modelDeployments?.length || 0) === 0 ? "No Functions Found" : "No matches found"}
               </p>
               <p className="text-xs text-gray-500">
-                {modelDeployments.length === 0 ? "Deploy a new function to get started" : "Try adjusting your search or filters"}
+                {(modelDeployments?.length || 0) === 0 ? "Deploy a new function to get started" : "Try adjusting your search or filters"}
               </p>
             </div>
           </div>

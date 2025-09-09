@@ -135,10 +135,10 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
       const initialResponse = await instance.post(`/modal-apps/async`, appRequest);
       const appId = initialResponse.data.id;
 
-      // IMMEDIATELY invalidate cache now that deployment is created
+      // invalidate cache now that deployment is created
       queryClient.invalidateQueries({ queryKey: ["modelDeployments"] });
 
-      // Don't start additional polling - the LeftSidePanel already polls for pending deployments
+      // Don't start additional polling 
       // Just return the app ID so the UI can show the deployment immediately
       const response = { data: { id: appId } };
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React from "react";
 
 import {
   ResizablePanel,
@@ -7,7 +7,6 @@ import {
 } from "@/components/shadcn/resizable";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetGardens } from "../../gardens/api/useGetGardens";
-import { useGetModelDeployments } from "../../model-deployments/api/useGetModelDeployments";
 import { useGetUserInfo } from "../../users/api/useGetUserInfo";
 import { useSavedGardens } from "../../users/api/useSavedGardens";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
@@ -45,27 +44,6 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
     isLoading: savedGardensLoading
   } = useSavedGardens(savedGardenDois);
 
-  const {
-    data: modelDeployments,
-    isLoading: modelDeploymentsLoading,
-    refetch: refetchModelDeployments
-  } = useGetModelDeployments();
-
-  const shouldPollDeployments = useMemo(() => {
-    return modelDeployments?.some(
-      deployment => deployment.originalData?.deploy_status === "pending"
-    ) ?? false;
-  }, [modelDeployments]);
-
-  useEffect(() => {
-    if (!shouldPollDeployments) return;
-
-    const intervalId = setInterval(() => {
-      refetchModelDeployments();
-    }, 10000); // Poll every 10 seconds
-
-    return () => clearInterval(intervalId);
-  }, [shouldPollDeployments, refetchModelDeployments]);
 
   // Panel refs for imperative control
   const panelRefs = createPanelRefs(['savedGardensPanelRef', 'myGardensPanelRef', 'functionLibraryPanelRef'] as const);
@@ -143,14 +121,12 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
         {/* My Function Library Panel */}
         <ResizablePanel ref={panelRefs.functionLibraryPanelRef} defaultSize={33} minSize={10} className="p-2">
           <MyFunctionLibraryView
-            modelDeployments={modelDeployments || []}
             gardens={filteredGardens}
             onSelect={onItemSelected}
             selectedItem={selectedItem}
             selection={selection}
             onDoubleClick={() => { handlePanelExpand(panelRefs.functionLibraryPanelRef) }}
             onDeploymentCreated={handleDeploymentCreatedLocal}
-            isLoading={modelDeploymentsLoading}
           />
         </ResizablePanel>
       </ResizablePanelGroup>
