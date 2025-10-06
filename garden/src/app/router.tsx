@@ -25,6 +25,7 @@ const ModalAppUploadPage = lazy(() => import("@/features/modal/components/ModalA
 const BenchmarksPage = lazy(() => import("@/features/benchmarks/BenchmarksPage"));
 const MetricsDashboard = lazy(() => import("@/features/metrics/components/MetricsDashboard"));
 const MLIPPage = lazy(() => import("@/features/mlip-page/MLIPPage"));
+const HpcAdminDashboard = lazy(() => import("@/features/hpc-admin/components/HpcAdminDashboard"));
 
 const WrappedLazyComponent = ({ child }: { child: React.ReactNode }) => {
   return (
@@ -83,6 +84,7 @@ const Router: React.FC = () => {
         <Route path="use-cases/mlips" element={<WrappedLazyComponent child={<MLIPPage />} />} />
         <Route element={<SuperuserRoute />}>
           <Route path="metrics" element={<WrappedLazyComponent child={<MetricsDashboard />} />}></Route>
+          <Route path="admin/hpc" element={<WrappedLazyComponent child={<HpcAdminDashboard />} />}></Route>
         </Route>
         <Route path="dashboard" element={<UnifiedManagementInterface />} />
       </Route>
