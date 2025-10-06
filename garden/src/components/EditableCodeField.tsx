@@ -109,7 +109,7 @@ export const EditableCodeField = ({
         editorViewRef.current = undefined;
       };
     }
-  }, [isEditing, value]);
+  }, [isEditing]); // Removed 'value' from dependencies to prevent re-initialization
 
   // Initialize edit value when editing starts
   useEffect(() => {
