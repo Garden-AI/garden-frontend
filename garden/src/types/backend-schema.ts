@@ -511,6 +511,136 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/hpc/functions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Hpc Functions */
+        get: operations["get_hpc_functions_hpc_functions_get"];
+        put?: never;
+        /** Create Hpc Function */
+        post: operations["create_hpc_function_hpc_functions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hpc/functions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Hpc Function */
+        get: operations["get_hpc_function_hpc_functions__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Hpc Function */
+        patch: operations["update_hpc_function_hpc_functions__id__patch"];
+        trace?: never;
+    };
+    "/hpc/deployments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Hpc Deployments */
+        get: operations["get_hpc_deployments_hpc_deployments_get"];
+        put?: never;
+        /** Create Hpc Deployment */
+        post: operations["create_hpc_deployment_hpc_deployments_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hpc/deployments/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Hpc Deployment */
+        get: operations["get_hpc_deployment_hpc_deployments__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hpc/endpoints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Hpc Endpoints */
+        get: operations["get_hpc_endpoints_hpc_endpoints_get"];
+        put?: never;
+        /** Create Hpc Endpoint */
+        post: operations["create_hpc_endpoint_hpc_endpoints_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hpc/endpoints/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Hpc Endpoint */
+        get: operations["get_hpc_endpoint_hpc_endpoints__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hpc/invocations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Hpc Invocations
+         * @description Get all HPC invocations.
+         */
+        get: operations["get_hpc_invocations_hpc_invocations_get"];
+        put?: never;
+        /**
+         * Create Hpc Invocation
+         * @description Create a new HPC function invocation log entry.
+         */
+        post: operations["create_hpc_invocation_hpc_invocations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -876,6 +1006,8 @@ export interface components {
             entrypoint_ids?: string[];
             /** Modal Function Ids */
             modal_function_ids?: number[];
+            /** Hpc Function Ids */
+            hpc_function_ids?: number[];
             /** Owner Identity Id */
             owner_identity_id?: string | null;
         };
@@ -937,6 +1069,8 @@ export interface components {
             entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
             /** Modal Functions */
             modal_functions?: components["schemas"]["ModalFunctionMetadataResponse"][];
+            /** Hpc Functions */
+            hpc_functions?: components["schemas"]["HpcFunctionMetadataResponse"][];
             /** Marked For Deletion */
             marked_for_deletion: string | null;
             readonly state: components["schemas"]["GardenState"];
@@ -944,6 +1078,8 @@ export interface components {
             readonly entrypoint_ids: string[];
             /** Modal Function Ids */
             readonly modal_function_ids: number[];
+            /** Hpc Function Ids */
+            readonly hpc_function_ids: number[];
         };
         /** GardenPatchRequest */
         GardenPatchRequest: {
@@ -977,6 +1113,8 @@ export interface components {
             entrypoint_ids?: string[] | null;
             /** Modal Function Ids */
             modal_function_ids?: number[] | null;
+            /** Hpc Function Ids */
+            hpc_function_ids?: number[] | null;
         };
         /** GardenSearchFacets */
         GardenSearchFacets: {
@@ -1056,6 +1194,212 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HpcDeploymentCreateRequest */
+        HpcDeploymentCreateRequest: {
+            /** Conda Env Path */
+            conda_env_path?: string | null;
+            /**
+             * Endpoint Ids
+             * @default []
+             */
+            endpoint_ids: number[];
+        };
+        /** HpcDeploymentResponse */
+        HpcDeploymentResponse: {
+            /** Conda Env Path */
+            conda_env_path?: string | null;
+            /** Id */
+            id: number;
+            /**
+             * Endpoint Ids
+             * @default []
+             */
+            endpoint_ids: number[];
+        };
+        /** HpcEndpointCreateRequest */
+        HpcEndpointCreateRequest: {
+            /** Name */
+            name: string;
+            /** Gcmu Id */
+            gcmu_id: string;
+        };
+        /** HpcEndpointResponse */
+        HpcEndpointResponse: {
+            /** Name */
+            name: string;
+            /** Gcmu Id */
+            gcmu_id: string;
+            /** Id */
+            id: number;
+        };
+        /** HpcFunctionCreateRequest */
+        HpcFunctionCreateRequest: {
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Function Text */
+            function_text: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Year */
+            year: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["_ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Function Name */
+            function_name: string;
+            /** Deployment Ids */
+            deployment_ids: number[];
+        };
+        /** HpcFunctionDeploymentInfo */
+        HpcFunctionDeploymentInfo: {
+            /** Deployment Id */
+            deployment_id: number;
+            /** Endpoint Name */
+            endpoint_name: string;
+            /** Endpoint Gcmu Id */
+            endpoint_gcmu_id: string;
+            /** Conda Env Path */
+            conda_env_path: string;
+        };
+        /** HpcFunctionMetadataResponse */
+        HpcFunctionMetadataResponse: {
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Function Text */
+            function_text: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Year */
+            year: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["_ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Id */
+            id: number;
+            /** Function Name */
+            function_name: string;
+            /** Available Deployments */
+            available_deployments?: components["schemas"]["HpcFunctionDeploymentInfo"][];
+            /** Available Endpoints */
+            available_endpoints?: string[];
+            /**
+             * Num Invocations
+             * @default 0
+             */
+            num_invocations: number;
+        };
+        /** HpcFunctionPatchRequest */
+        HpcFunctionPatchRequest: {
+            /** Is Archived */
+            is_archived?: boolean | null;
+            /** Title */
+            title?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Year */
+            year?: string | null;
+            /** Function Text */
+            function_text?: string | null;
+            /** Example Usage */
+            example_usage?: string | null;
+            /** Authors */
+            authors?: string[] | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Test Functions */
+            test_functions?: string[] | null;
+            /** Requirements */
+            requirements?: string[] | null;
+            /** Models */
+            models?: components["schemas"]["_ModelMetadata"][] | null;
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata"][] | null;
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][] | null;
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata"][] | null;
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][] | null;
+            /** Function Name */
+            function_name?: string | null;
+            /** Deployment Ids */
+            deployment_ids?: number[] | null;
+        };
+        /** HpcInvocationCreateRequest */
+        HpcInvocationCreateRequest: {
+            /** Function Id */
+            function_id: number;
+            /** Endpoint Gcmu Id */
+            endpoint_gcmu_id: string;
+            /** Globus Task Id */
+            globus_task_id: string;
+            /** User Endpoint Config */
+            user_endpoint_config?: {
+                [key: string]: unknown;
+            };
+        };
+        /** HpcInvocationResponse */
+        HpcInvocationResponse: {
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Function Id */
+            function_id: number;
+            /** Hpc Endpoint Id */
+            hpc_endpoint_id: number;
+            /** Globus Task Id */
+            globus_task_id: string;
+            /**
+             * Date Invoked
+             * Format: date-time
+             */
+            date_invoked: string;
+            /** User Endpoint Config */
+            user_endpoint_config: {
+                [key: string]: unknown;
+            };
         };
         /** ModalAppCreateRequest */
         ModalAppCreateRequest: {
@@ -2687,6 +3031,368 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModalFileMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_hpc_functions_hpc_functions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcFunctionMetadataResponse"][];
+                };
+            };
+        };
+    };
+    create_hpc_function_hpc_functions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HpcFunctionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcFunctionMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_hpc_function_hpc_functions__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcFunctionMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_hpc_function_hpc_functions__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HpcFunctionPatchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcFunctionMetadataResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_hpc_deployments_hpc_deployments_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcDeploymentResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_hpc_deployment_hpc_deployments_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HpcDeploymentCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcDeploymentResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_hpc_deployment_hpc_deployments__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcDeploymentResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_hpc_endpoints_hpc_endpoints_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcEndpointResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_hpc_endpoint_hpc_endpoints_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HpcEndpointCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcEndpointResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_hpc_endpoint_hpc_endpoints__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcEndpointResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_hpc_invocations_hpc_invocations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcInvocationResponse"][];
+                };
+            };
+        };
+    };
+    create_hpc_invocation_hpc_invocations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HpcInvocationCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HpcInvocationResponse"];
                 };
             };
             /** @description Validation Error */
