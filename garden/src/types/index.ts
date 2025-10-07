@@ -1,6 +1,7 @@
 import type { components } from "./backend-schema";
 
 type Garden = components["schemas"]["GardenMetadataResponse"];
+type GardenMetadataResponse = components["schemas"]["GardenMetadataResponse"];
 type GardenCreateRequest = components["schemas"]["GardenCreateRequest"];
 type GardenCreateResponse = components["schemas"]["GardenMetadataResponse"];
 type GardenPatchRequest = components["schemas"]["GardenPatchRequest"];
@@ -64,8 +65,19 @@ export interface BenchmarkResult {
   result: Record<string, unknown> | null;
 }
 
+type HpcEndpointCreateRequest = components["schemas"]["HpcEndpointCreateRequest"];
+type HpcEndpointResponse = components["schemas"]["HpcEndpointResponse"];
+type HpcDeploymentCreateRequest = components["schemas"]["HpcDeploymentCreateRequest"];
+type HpcDeploymentResponse = components["schemas"]["HpcDeploymentResponse"];
+type HpcFunctionCreateRequest = components["schemas"]["HpcFunctionCreateRequest"];
+type HpcFunctionMetadataResponse = components["schemas"]["HpcFunctionMetadataResponse"];
+type HpcFunctionPatchRequest = components["schemas"]["HpcFunctionPatchRequest"];
+type HpcInvocationCreateRequest = components["schemas"]["HpcInvocationCreateRequest"];
+type HpcInvocationResponse = components["schemas"]["HpcInvocationResponse"];
+
 export type {
   Garden,
+  GardenMetadataResponse,
   GardenCreateRequest,
   GardenCreateResponse,
   GardenPatchRequest,
@@ -96,6 +108,15 @@ export type {
   Model,
   Notebook,
   BenchmarkRequest,
+  HpcEndpointCreateRequest,
+  HpcEndpointResponse,
+  HpcDeploymentCreateRequest,
+  HpcDeploymentResponse,
+  HpcFunctionCreateRequest,
+  HpcFunctionMetadataResponse,
+  HpcFunctionPatchRequest,
+  HpcInvocationCreateRequest,
+  HpcInvocationResponse,
   // BenchmarkResult, // Remove this line to avoid duplicate export
 };
 

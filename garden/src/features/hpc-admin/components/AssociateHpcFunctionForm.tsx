@@ -34,7 +34,7 @@ export const AssociateHpcFunctionForm: React.FC<AssociateHpcFunctionFormProps> =
   onSuccess,
 }) => {
   const { data: hpcFunctions, isLoading: functionsLoading } = useHpcFunctions();
-  const { mutateAsync: updateGarden, isPending } = useUpdateGarden();
+  const { mutateAsync: updateGarden, isPending } = useUpdateGarden(garden.doi);
 
   const form = useForm<AssociateHpcFunctionFormData>({
     resolver: zodResolver(associateHpcFunctionSchema),
@@ -46,10 +46,7 @@ export const AssociateHpcFunctionForm: React.FC<AssociateHpcFunctionFormProps> =
   const onSubmit = async (values: AssociateHpcFunctionFormData) => {
     try {
       await updateGarden({
-        doi: garden.doi,
-        data: {
-          hpc_function_ids: values.hpc_function_ids,
-        },
+        hpc_function_ids: values.hpc_function_ids,
       });
       toast.success("HPC functions associated successfully!");
       onSuccess?.();
