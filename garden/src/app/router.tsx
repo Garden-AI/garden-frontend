@@ -84,7 +84,7 @@ const Router: React.FC = () => {
         <Route path="use-cases/mlips" element={<WrappedLazyComponent child={<MLIPPage />} />} />
         <Route element={<SuperuserRoute />}>
           <Route path="metrics" element={<WrappedLazyComponent child={<MetricsDashboard />} />}></Route>
-          <Route path="admin/hpc" element={<WrappedLazyComponent child={<HpcAdminDashboard />} />}></Route>
+          <Route path="hpc" element={<WrappedLazyComponent child={<HpcAdminDashboard />} />}></Route>
         </Route>
         <Route path="dashboard" element={<UnifiedManagementInterface />} />
       </Route>

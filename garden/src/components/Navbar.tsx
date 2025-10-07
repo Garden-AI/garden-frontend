@@ -125,7 +125,7 @@ const Navbar = () => {
                         </div>
                         <div className="flex flex-row gap-2 hover:text-green hover:underline">
                           <Settings size={18} />
-                          <Link to="/admin/hpc"> HPC Admin </Link>
+                          <Link to="/hpc"> HPC Admin </Link>
                         </div>
                       </>
                     )}
