@@ -40,17 +40,17 @@ export const CreateHpcEndpointForm: React.FC<CreateHpcEndpointFormProps> = ({ on
   const onSubmit = async (values: HpcEndpointFormData) => {
     try {
       await createEndpoint(values);
-      toast.success("HPC endpoint created successfully!");
+      toast.success("HPC endpoint added successfully!");
       form.reset();
       onSuccess?.();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to create HPC endpoint");
+      toast.error(error instanceof Error ? error.message : "Failed to add HPC endpoint");
     }
   };
 
   return (
     <div className="rounded-lg border bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-xl font-bold">Create HPC Endpoint</h2>
+      <h2 className="mb-6 text-xl font-bold">Add HPC Endpoint</h2>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -84,7 +84,7 @@ export const CreateHpcEndpointForm: React.FC<CreateHpcEndpointFormProps> = ({ on
 
           <div className="flex gap-4">
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Creating..." : "Create Endpoint"}
+              {isPending ? "Adding..." : "Add Endpoint"}
             </Button>
             <Button type="button" variant="outline" onClick={() => form.reset()}>
               Reset

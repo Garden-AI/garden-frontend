@@ -44,17 +44,17 @@ export const CreateHpcDeploymentForm: React.FC<CreateHpcDeploymentFormProps> = (
   const onSubmit = async (values: HpcDeploymentFormData) => {
     try {
       await createDeployment(values);
-      toast.success("HPC deployment created successfully!");
+      toast.success("HPC deployment added successfully!");
       form.reset();
       onSuccess?.();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to create HPC deployment");
+      toast.error(error instanceof Error ? error.message : "Failed to add HPC deployment");
     }
   };
 
   return (
     <div className="rounded-lg border bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-xl font-bold">Create HPC Deployment</h2>
+      <h2 className="mb-6 text-xl font-bold">Add HPC Deployment</h2>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -125,7 +125,7 @@ export const CreateHpcDeploymentForm: React.FC<CreateHpcDeploymentFormProps> = (
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    No endpoints available. Create an endpoint first.
+                    No endpoints available. Add an endpoint first.
                   </p>
                 )}
                 <FormMessage />
@@ -135,7 +135,7 @@ export const CreateHpcDeploymentForm: React.FC<CreateHpcDeploymentFormProps> = (
 
           <div className="flex gap-4">
             <Button type="submit" disabled={isPending || endpointsLoading}>
-              {isPending ? "Creating..." : "Create Deployment"}
+              {isPending ? "Adding..." : "Add Deployment"}
             </Button>
             <Button type="button" variant="outline" onClick={() => form.reset()}>
               Reset

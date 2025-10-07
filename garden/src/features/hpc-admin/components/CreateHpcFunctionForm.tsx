@@ -39,8 +39,8 @@ interface CreateHpcFunctionFormProps {
 export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ onSuccess }) => {
   const { mutateAsync: createFunction, isPending } = useCreateHpcFunction();
   const { data: deployments, isLoading: deploymentsLoading } = useHpcDeployments();
-  const [functionCode, setFunctionCode] = useState("# Enter your Python function here\n");
-  const [description, setDescription] = useState("# Enter your markdown description here\n");
+  const [functionCode, setFunctionCode] = useState("");
+  const [description, setDescription] = useState("");
 
   const form = useForm<HpcFunctionFormData>({
     resolver: zodResolver(hpcFunctionSchema),
@@ -79,19 +79,19 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
       };
 
       await createFunction(requestData);
-      toast.success("HPC function created successfully!");
+      toast.success("HPC function added successfully!");
       form.reset();
       setFunctionCode("");
       setDescription("");
       onSuccess?.();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to create HPC function");
+      toast.error(error instanceof Error ? error.message : "Failed to add HPC function");
     }
   };
 
   return (
     <div className="rounded-lg border bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-xl font-bold">Create HPC Function</h2>
+      <h2 className="mb-6 text-xl font-bold">Add HPC Function</h2>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -124,10 +124,10 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
           />
 
           <div className="space-y-1">
-            <FormLabel>Function Code</FormLabel>
+            <FormLabel>Function Source</FormLabel>
             <FormDescription>Python code for the HPC function</FormDescription>
             <EditableCodeField
-              label="Python Code"
+              label="Python"
               language="python"
               fieldName="function_text"
               onSave={async (value) => {
@@ -146,9 +146,8 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
 
           <div className="space-y-1">
             <FormLabel>Description (Optional)</FormLabel>
-            <FormDescription>Markdown description</FormDescription>
             <EditableCodeField
-              label="Markdown Description"
+              label="Markdown"
               language="markdown"
               fieldName="description"
               onSave={async (value) => {
@@ -163,20 +162,6 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
               showSaveButton={false}
             />
           </div>
-
-          <FormField
-            control={form.control}
-            name="year"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Year</FormLabel>
-                <FormControl>
-                  <Input placeholder="2025" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={form.control}
@@ -228,7 +213,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    No deployments available. Create a deployment first.
+                    No deployments available. Add a deployment first.
                   </p>
                 )}
                 <FormMessage />
@@ -238,7 +223,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
 
           <div className="flex gap-4">
             <Button type="submit" disabled={isPending || deploymentsLoading}>
-              {isPending ? "Creating..." : "Create Function"}
+              {isPending ? "Adding..." : "Add Function"}
             </Button>
             <Button type="button" variant="outline" onClick={() => form.reset()}>
               Reset

@@ -31,6 +31,13 @@ const HpcAdminDashboard: React.FC = () => {
         </TabsList>
 
         <TabsContent value="endpoints" className="space-y-6">
+          <div className="rounded-lg border bg-blue-50 p-4">
+            <p className="text-sm text-gray-700">
+              HPC endpoints are Globus Compute multi-user endpoints (MEPs) identified by a
+              human-friendly name and the UUID of the endpoint.
+            </p>
+          </div>
+
           <CreateHpcEndpointForm onSuccess={() => refetchEndpoints()} />
 
           <div className="rounded-lg border bg-white p-6 shadow-sm">
@@ -41,7 +48,7 @@ const HpcAdminDashboard: React.FC = () => {
                   <div key={endpoint.id} className="rounded-md border p-3">
                     <div className="font-medium">{endpoint.name}</div>
                     <div className="text-sm text-muted-foreground">
-                      GCMU ID: {endpoint.gcmu_id}
+                      UUID: {endpoint.gcmu_id}
                     </div>
                   </div>
                 ))}
@@ -53,6 +60,17 @@ const HpcAdminDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="deployments" className="space-y-6">
+          <div className="rounded-lg border bg-blue-50 p-4">
+            <p className="text-sm text-gray-700">
+              Deployments are conda environments with the Python dependencies necessary to run
+              functions. We assume the conda environment already exists on the target endpoint
+              and need the full path to the environment. Since the path may differ across
+              endpoints, create a separate deployment for each endpoint. If the path is
+              identical on different endpoints, you can associate the same deployment with
+              multiple endpoints.
+            </p>
+          </div>
+
           <CreateHpcDeploymentForm onSuccess={() => refetchDeployments()} />
 
           <div className="rounded-lg border bg-white p-6 shadow-sm">
@@ -82,6 +100,15 @@ const HpcAdminDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="functions" className="space-y-6">
+          <div className="rounded-lg border bg-blue-50 p-4">
+            <p className="text-sm text-gray-700">
+              Functions must be callable through Globus Compute—all imports must be in function
+              scope and the function must be serializable. Functions are executed in the context
+              of a deployment and can be associated with multiple deployments if the required
+              dependencies are available on multiple endpoints.
+            </p>
+          </div>
+
           <CreateHpcFunctionForm onSuccess={() => refetchFunctions()} />
 
           <div className="rounded-lg border bg-white p-6 shadow-sm">
