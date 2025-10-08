@@ -1,4 +1,4 @@
-export { default as ModalFunctionManager } from "./ModalFunctionManager";
+export { default as FunctionManager } from "./FunctionManager";
 export { default as GardenDescription } from "./GardenDescription";
 export { default as VisibilityWarning } from "./VisibilityWarning";
 export { default as ReviewNotice } from "./ReviewNotice";

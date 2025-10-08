@@ -23,7 +23,7 @@ import {
 
 import { GardenCreateFormData } from "../../types/garden.types";
 import { tagOptions } from "../../utils/garden.utils";
-import FunctionSelectionTable from "@/features/modal/components/FunctionSelectionTable";
+import FunctionSelectionTable from "@/components/FunctionSelectionTable";
 import { useGetAllModalFunctions } from "@/features/modal/api/useGetAllModalFunctions";
 import { Controller } from "react-hook-form";
 import { toast } from "sonner";

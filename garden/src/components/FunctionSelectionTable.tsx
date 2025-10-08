@@ -12,13 +12,14 @@ import {
 } from "@/components/shadcn/table";
 import { Link } from 'react-router-dom';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { ModalFunction } from '@/types';
+import { Function, ModalFunction } from '@/types';
 import { toast } from 'sonner';
+import { Badge } from '@/components/shadcn/badge';
 
 interface FunctionSelectionTableProps {
-  functions: ModalFunction[] | undefined;
-  selectedFunctionIds?: number[];
-  onSelectionChange: (selectedIds: number[]) => void;
+  functions: Function[] | undefined;
+  selectedFunctionIds?: (string | number)[];
+  onSelectionChange: (selectedIds: (string | number)[]) => void;
   isLoading?: boolean;
   isFetching?: boolean;
   searchQuery?: string;
@@ -27,8 +28,8 @@ interface FunctionSelectionTableProps {
   showClearAllButton?: boolean;
   showSearch?: boolean;
   maxHeight?: string;
-  onFunctionAdded?: (functionId: number, authorIds: string[]) => void;
-  onFunctionRemoved?: (functionId: number) => void;
+  onFunctionAdded?: (functionId: string | number, authorIds: string[]) => void;
+  onFunctionRemoved?: (functionId: string | number) => void;
   className?: string;
   tableClassName?: string;
 }
@@ -50,7 +51,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
   className = "",
   tableClassName = ""
 }) => {
-  const [showFullDescriptionIds, setShowFullDescriptionIds] = useState<number[]>([]);
+  const [showFullDescriptionIds, setShowFullDescriptionIds] = useState<(string | number)[]>([]);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
 
   const filteredFunctions = (functions ?? []).filter((func) => {
@@ -60,7 +61,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
   });
 
   const handleFunctionToggle = useCallback(
-    (functionId: number) => {
+    (functionId: string | number) => {
       const isCurrentlySelected = selectedFunctionIds.includes(functionId);
       const newSelectedIds = isCurrentlySelected
         ? selectedFunctionIds.filter(id => id !== functionId)
@@ -89,7 +90,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
     setIsConfirmClearOpen(false);
   };
 
-  const toggleDescription = (functionId: number) => {
+  const toggleDescription = (functionId: string | number) => {
     setShowFullDescriptionIds((prev) =>
       prev.includes(functionId)
         ? prev.filter((id) => id !== functionId)
@@ -151,6 +152,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
             <TableHeader className="sticky top-0 bg-white z-10">
               <TableRow>
                 <TableHead className="w-1/12"></TableHead>
+                <TableHead className="w-auto">Type</TableHead>
                 <TableHead className="w-1/4">Name</TableHead>
                 <TableHead className="w-1/2">Description</TableHead>
                 <TableHead className="w-1/6 text-center">Actions</TableHead>
@@ -159,7 +161,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">
+                  <TableCell colSpan={5} className="text-center">
                     <div className="flex h-24 items-center justify-center">
                       <LoadingSpinner />
                     </div>
@@ -167,13 +169,13 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                 </TableRow>
               ) : functions?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-gray-500">
-                    No modal functions available
+                  <TableCell colSpan={5} className="text-center text-gray-500">
+                    No functions available
                   </TableCell>
                 </TableRow>
               ) : filteredFunctions?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-gray-500">
+                  <TableCell colSpan={5} className="text-center text-gray-500">
                     No functions match your search.
                   </TableCell>
                 </TableRow>
@@ -183,7 +185,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                     key={func.id}
                     onClick={(e) => {
                       const tag = (e.target as HTMLElement).tagName.toLowerCase();
-                      if (['input', 'button', 'svg', 'path'].includes(tag)) return;
+                      if (['input', 'button', 'svg', 'path', 'a'].includes(tag)) return;
                       handleFunctionToggle(func.id);
                     }}
                     className={`group cursor-pointer transition-all duration-200 ease-in-out rounded-md
@@ -196,8 +198,13 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                         checked={selectedFunctionIds.includes(func.id)}
                         onCheckedChange={() => handleFunctionToggle(func.id)}
                         onPointerDown={(e) => e.stopPropagation()}
-                        value={func.id}
+                        value={String(func.id)}
                       />
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={func.functionType === 'modal' ? 'default' : 'secondary'}>
+                        {func.functionType.toUpperCase()}
+                      </Badge>
                     </TableCell>
                     <TableCell className="w-1/4 truncate whitespace-normal break-words">
                       {func.title || func.function_name}
@@ -221,16 +228,19 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                       </div>
                     </TableCell>
                     <TableCell className="w-1/6 text-center">
-                      <Link
-                        to={`/modal-functions/${func.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="outline" size="sm" type="button">
-                          View
-                          <ExternalLink size={14} className="mb-0.5 ml-1" />
-                        </Button>
-                      </Link>
+                      {func.functionType === 'modal' && (
+                        <Link
+                          to={`/modal-functions/${func.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Button variant="outline" size="sm" type="button">
+                            View
+                            <ExternalLink size={14} className="mb-0.5 ml-1" />
+                          </Button>
+                        </Link>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
