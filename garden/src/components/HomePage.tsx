@@ -15,6 +15,7 @@ import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { Separator } from "@/components/shadcn/separator";
 import GardenBox from "@/features/gardens/components/GardenBox";
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
+import UseCasesSection from "@/components/UseCasesSection";
 import {
   Container,
   Cpu,
@@ -218,6 +219,8 @@ const HomePage = () => {
           </h2>
         </div>
       </div>
+
+      <UseCasesSection />
 
       <div className="bg-green pt-6">
         <div className="mx-auto max-w-5xl px-4 pb-2">
