@@ -212,6 +212,7 @@ export const MLIPGarden: Garden = {
   state: "PUBLISHED",
   entrypoint_ids: [],
   modal_function_ids: functions.map((fn) => fn.id),
+  hpc_function_ids: [],
   modal_functions: functions,
 };
 
