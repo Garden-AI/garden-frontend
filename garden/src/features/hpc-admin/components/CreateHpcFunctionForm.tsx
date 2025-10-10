@@ -18,16 +18,13 @@ import { useCreateHpcFunction } from "../api/useCreateHpcFunction";
 import { useHpcDeployments } from "../api/useHpcDeployments";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { EditableCodeField } from "@/components/EditableCodeField";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
+import { Upload } from "lucide-react";
 
 const hpcFunctionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   function_name: z.string().min(1, "Function name is required"),
-  function_text: z.string().optional(), // Handled separately via state
-  description: z.string().nullable().optional(), // Handled separately via state
-  year: z.string().min(4, "Year is required"),
-  authors: z.array(z.string()).optional(),
-  tags: z.array(z.string()).optional(),
-  deployment_ids: z.array(z.number()).min(1, "At least one deployment is required"),
+  deployment_ids: z.array(z.number()).optional(),
 });
 
 type HpcFunctionFormData = z.infer<typeof hpcFunctionSchema>;
@@ -41,24 +38,55 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
   const { data: deployments, isLoading: deploymentsLoading } = useHpcDeployments();
   const [functionCode, setFunctionCode] = useState("");
   const [description, setDescription] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFile = async (file: File) => {
+    if (file.type === "text/x-python" || file.name.endsWith(".py")) {
+      const text = await file.text();
+      setFunctionCode(text);
+      toast.success(`Loaded ${file.name}`);
+    } else {
+      toast.error("Please upload a Python (.py) file");
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set dragging to false if we're leaving the container entirely
+    if (e.currentTarget === e.target) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      await handleFile(file);
+    }
+  };
 
   const form = useForm<HpcFunctionFormData>({
     resolver: zodResolver(hpcFunctionSchema),
     defaultValues: {
       title: "",
       function_name: "",
-      function_text: "",
-      description: "",
-      year: new Date().getFullYear().toString(),
-      authors: [],
-      tags: [],
       deployment_ids: [],
     },
   });
 
   const onSubmit = async (values: HpcFunctionFormData) => {
-    // Validate function code is not empty
-    if (!functionCode || functionCode.trim() === "") {
+    if (!functionCode.trim()) {
       toast.error("Function code is required");
       return;
     }
@@ -68,7 +96,10 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
         ...values,
         function_text: functionCode,
         description: description || null,
+        year: new Date().getFullYear().toString(),
         is_archived: false,
+        authors: [],
+        tags: [],
         test_functions: [],
         requirements: [],
         models: [],
@@ -126,22 +157,80 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
           <div className="space-y-1">
             <FormLabel>Function Source</FormLabel>
             <FormDescription>Python code for the HPC function</FormDescription>
-            <EditableCodeField
-              label="Python"
-              language="python"
-              fieldName="function_text"
-              onSave={async (value) => {
-                setFunctionCode(value);
-              }}
-              onEdit={(value) => {
-                // Update internal state but don't trigger re-render
-                setFunctionCode(value);
-              }}
-              value={functionCode}
-              ownsThisEntity={true}
-              editing={true}
-              showSaveButton={false}
-            />
+            <Tabs defaultValue="file" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="file">Upload File</TabsTrigger>
+                <TabsTrigger value="text">Text Input</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="file" className="mt-4">
+                <div
+                  className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${
+                    isDragging
+                      ? "border-primary bg-primary/5"
+                      : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">
+                      Drag and drop your Python file here
+                    </p>
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="h-px w-16 bg-border" />
+                      <span className="text-xs text-muted-foreground">or</span>
+                      <div className="h-px w-16 bg-border" />
+                    </div>
+                    <div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                      >
+                        Click to Browse
+                      </Button>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".py"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          await handleFile(file);
+                        }
+                      }}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Supports .py files only
+                    </p>
+                  </div>
+                  {functionCode && (
+                    <div className="mt-4 text-sm text-green-600 font-medium">
+                      ✓ File loaded ({functionCode.length} characters)
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="text" className="mt-4">
+                <EditableCodeField
+                  label="Python"
+                  language="python"
+                  fieldName="function_text"
+                  onEdit={setFunctionCode}
+                  value={functionCode}
+                  ownsThisEntity
+                  editing
+                  showSaveButton={false}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
 
           <div className="space-y-1">
@@ -150,15 +239,10 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
               label="Markdown"
               language="markdown"
               fieldName="description"
-              onSave={async (value) => {
-                setDescription(value);
-              }}
-              onEdit={(value) => {
-                setDescription(value);
-              }}
+              onEdit={setDescription}
               value={description}
-              ownsThisEntity={true}
-              editing={true}
+              ownsThisEntity
+              editing
               showSaveButton={false}
             />
           </div>
@@ -169,9 +253,9 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel>Deployments</FormLabel>
+                  <FormLabel>Deployments (Optional)</FormLabel>
                   <FormDescription>
-                    Select at least one deployment for this function
+                    Select deployments for this function. You can add deployments later if needed.
                   </FormDescription>
                 </div>
                 {deploymentsLoading ? (
@@ -221,14 +305,9 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
             )}
           />
 
-          <div className="flex gap-4">
-            <Button type="submit" disabled={isPending || deploymentsLoading}>
-              {isPending ? "Adding..." : "Add Function"}
-            </Button>
-            <Button type="button" variant="outline" onClick={() => form.reset()}>
-              Reset
-            </Button>
-          </div>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Adding..." : "Add Function"}
+          </Button>
         </form>
       </Form>
     </div>
