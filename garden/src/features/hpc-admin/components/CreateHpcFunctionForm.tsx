@@ -24,7 +24,7 @@ import { Upload } from "lucide-react";
 const hpcFunctionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   function_name: z.string().min(1, "Function name is required"),
-  deployment_ids: z.array(z.number()).optional(),
+  deployment_ids: z.array(z.number()),
 });
 
 type HpcFunctionFormData = z.infer<typeof hpcFunctionSchema>;
@@ -224,6 +224,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
                   language="python"
                   fieldName="function_text"
                   onEdit={setFunctionCode}
+                  onSave={async () => {}}
                   value={functionCode}
                   ownsThisEntity
                   editing
@@ -240,6 +241,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
               language="markdown"
               fieldName="description"
               onEdit={setDescription}
+              onSave={async () => {}}
               value={description}
               ownsThisEntity
               editing
@@ -275,12 +277,12 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
                             >
                               <FormControl>
                                 <Checkbox
-                                  checked={field.value?.includes(deployment.id)}
+                                  checked={field.value.includes(deployment.id)}
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([...field.value, deployment.id])
                                       : field.onChange(
-                                          field.value?.filter((value) => value !== deployment.id)
+                                          field.value.filter((value) => value !== deployment.id)
                                         );
                                   }}
                                 />
