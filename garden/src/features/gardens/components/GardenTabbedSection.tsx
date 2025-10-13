@@ -8,7 +8,7 @@ import ModalFunctionBox from "./ModalFunctionBox";
 import { useDatasetManagement, usePaperManagement, useRepositoryManagement, useNotebookManagement } from '@/features/materials/hooks/useMaterialManagement';
 import { getUniqueItemCount } from "../utils/garden.utils";
 
-import ModalFunctionManager from "./garden-page/ModalFunctionManager";
+import FunctionManager from "./garden-page/FunctionManager";
 
 import {
     AddMaterialWithFunctionSelect,
@@ -117,7 +117,7 @@ export const GardenTabbedSection = ({ garden, ownsThisGarden }: { garden: Garden
                                 </h3>
 
                                 {ownsThisGarden && (
-                                    <ModalFunctionManager
+                                    <FunctionManager
                                         garden={garden}
                                         onSuccess={handleMaterialAdded}
                                     />

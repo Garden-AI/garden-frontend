@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PlusCircle, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { Garden } from '@/types';
+import { Garden, Function, ModalFunction, HpcFunctionMetadataResponse } from '@/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/shadcn/dialog';
 import {
   Table,
@@ -12,138 +12,140 @@ import {
   TableCell,
 } from "@/components/shadcn/table";
 import { toast } from 'sonner';
-// import { useGetUserModalFunctions } from '@/features/modal/api/useGetUserModalFunctions';
 import { useGetAllModalFunctions } from '@/features/modal/api/useGetAllModalFunctions';
 import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { Link, useNavigate } from 'react-router-dom';
-// import LoadingSpinner from '@/components/LoadingSpinner';
 import { useGetModelDeployments } from '@/features/model-deployments/api/useGetModelDeployments';
 import { useGetUserInfo } from '@/features/users/api/useGetUserInfo';
-import FunctionSelectionTable from '@/features/modal/components/FunctionSelectionTable';
+import FunctionSelectionTable from '@/components/FunctionSelectionTable';
+import { useHpcFunctions } from '@/features/hpc-admin/api/useHpcFunctions';
 
-interface ModalFunctionManagerProps {
+interface FunctionManagerProps {
   garden: Garden;
   onSuccess?: () => void;
 }
 
-const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
+const FunctionManager: React.FC<FunctionManagerProps> = ({
   garden,
   onSuccess
 }) => {
   const navigate = useNavigate();
   const { data: currentUser } = useGetUserInfo();
-  const modalAppId = garden.modal_functions?.[0]?.modal_app_id;
 
-  // Get current function IDs to exclude from the selection
-  const currentFunctionIds = garden.modal_functions?.map(f => f.id) || [];
-
-  // State for selected function IDs
-  const [selectedFunctionIds, setSelectedFunctionIds] = useState<number[]>(currentFunctionIds);
-  const [selectedAuthorIds, setSelectedAuthorIds] = useState<Set<string>>(new Set());
+  const [selectedModalIds, setSelectedModalIds] = useState<number[]>([]);
+  const [selectedHpcIds, setSelectedHpcIds] = useState<number[]>([]);
+  const [selectedAuthors, setSelectedAuthors] = useState<Set<string>>(new Set());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeploymentDialogOpen, setIsDeploymentDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Get modal functions - only fetch when dialog is opened
-  const {
-    data: functions,
-    refetch,
-    isFetching,
-    isLoading
-  } = useGetAllModalFunctions();
+  const { data: modalFunctions, isLoading: isLoadingModal, isError: isErrorModal } = useGetAllModalFunctions();
+  const { data: hpcFunctions, isLoading: isLoadingHpc, isError: isErrorHpc } = useHpcFunctions();
 
-  // Sync selected functions
   useEffect(() => {
-    if (isDialogOpen && functions && functions.length > 0) {
-      const syncedIds = garden.modal_functions
-        ?.map(f => f.id)
-        .filter(id => functions.some(func => func.id === id)) || [];
-      setSelectedFunctionIds(syncedIds);
+    if (isErrorModal) {
+      toast.error("Failed to load Modal functions.");
     }
-  }, [isDialogOpen, garden.modal_functions, functions]);
+    if (isErrorHpc) {
+      toast.error("Failed to load HPC functions.");
+    }
+  }, [isErrorModal, isErrorHpc]);
 
-  // Sync model authors
+  const allFunctions = useMemo<Function[]>(() => {
+    const modals: Function[] = (modalFunctions ?? []).map(f => ({ ...f, functionType: 'modal' }));
+    const hpcs: Function[] = (hpcFunctions ?? []).map(f => ({ ...f, functionType: 'hpc' }));
+    return [...modals, ...hpcs];
+  }, [modalFunctions, hpcFunctions]);
+
+  // Helper to create composite keys for selection
+  const toCompositeKey = (type: 'modal' | 'hpc', id: number): string => `${type}-${id}`;
+  const fromCompositeKey = (key: string): { type: 'modal' | 'hpc', id: number } | null => {
+    const match = key.match(/^(modal|hpc)-(\d+)$/);
+    if (!match) return null;
+    return { type: match[1] as 'modal' | 'hpc', id: parseInt(match[2], 10) };
+  };
+
   useEffect(() => {
     if (isDialogOpen) {
-      setSelectedFunctionIds(garden.modal_functions?.map(f => f.id) || []);
+      const initialModalIds = garden.modal_functions?.map(f => f.id) || [];
+      const initialHpcIds = garden.hpc_functions?.map(f => f.id) || [];
+      setSelectedModalIds(initialModalIds);
+      setSelectedHpcIds(initialHpcIds);
 
       const initialAuthorIds = new Set<string>();
-      garden.modal_functions?.forEach(fn => {
-        fn.authors?.forEach(identity_id => {
-          if (identity_id) {
-            initialAuthorIds.add(identity_id);
-          }
-        });
-      });
-
-      setSelectedAuthorIds(initialAuthorIds);
+      garden.modal_functions?.forEach(fn => fn.authors?.forEach(authorName => initialAuthorIds.add(authorName)));
+      garden.hpc_functions?.forEach(fn => fn.authors?.forEach(authorName => initialAuthorIds.add(authorName)));
+      setSelectedAuthors(initialAuthorIds);
     }
-  }, [isDialogOpen, garden.modal_functions]);
+  }, [isDialogOpen, garden]);
 
   const { mutateAsync: patchGarden } = usePatchGarden();
 
   const { data: modelDeployments } = useGetModelDeployments();
 
-  const handleFunctionAdded = (functionId: number, authorIds: string[]) => {
-    setSelectedAuthorIds(prev => {
-      const newSet = new Set(prev);
-      authorIds.forEach(id => {
-        if (id) {
-          newSet.add(id);
+  const handleSelectionChange = (newSelectedIds: (string | number)[]) => {
+    const newModalIds: number[] = [];
+    const newHpcIds: number[] = [];
+    const newAuthors = new Set<string>();
+
+    newSelectedIds.forEach(id => {
+      const compositeKey = typeof id === 'string' ? id : String(id);
+      const parsed = fromCompositeKey(compositeKey);
+      if (parsed) {
+        const func = allFunctions.find(f => f.functionType === parsed.type && f.id === parsed.id);
+        if (func) {
+          if (func.functionType === 'modal') {
+            newModalIds.push(func.id as number);
+          } else {
+            newHpcIds.push(func.id as number);
+          }
+          func.authors?.forEach(authorName => newAuthors.add(authorName));
         }
-      });
-      return newSet;
+      }
     });
+
+    setSelectedModalIds(newModalIds);
+    setSelectedHpcIds(newHpcIds);
+    setSelectedAuthors(newAuthors);
   };
 
-  const handleFunctionRemoved = (functionId: number) => {
-    const removedFunction = garden.modal_functions?.find(f => f.id === functionId);
-    const removedAuthorIds = removedFunction?.authors || [];
-
-    setSelectedAuthorIds(prev => {
-      const updated = new Set(prev);
-      removedAuthorIds.forEach(id => {
-        const stillUsed = garden.modal_functions?.some(f =>
-          f.id!== functionId &&
-          selectedFunctionIds.includes(f.id) &&
-          f.authors?.includes(id)
-        );
-        if (!stillUsed) {
-          updated.delete(id);
-        }
-      });
-      return updated;
-    });
-  };
-
-  // Handle saving functions to the garden
   const handleSave = async () => {
     try {
-      const addedCount = selectedFunctionIds.filter(id => !currentFunctionIds.includes(id)).length;
-      const removedCount = currentFunctionIds.filter(id => !selectedFunctionIds.includes(id)).length;
+      const initialModalIds = garden.modal_functions?.map(f => f.id) || [];
+      const initialHpcIds = garden.hpc_functions?.map(f => f.id) || [];
 
-      let successMessage = "Garden functions updated successfully";
-      if (addedCount > 0 && removedCount > 0) {
-        successMessage = `Added ${addedCount} and removed ${removedCount} functions`;
-      } else if (addedCount > 0) {
-        successMessage = `Added ${addedCount} function${addedCount > 1 ? 's' : ''}`;
-      } else if (removedCount > 0) {
-        successMessage = `Removed ${removedCount} function${removedCount > 1 ? 's' : ''}`;
+      const modalChanged = JSON.stringify(initialModalIds.sort()) !== JSON.stringify(selectedModalIds.sort());
+      const hpcChanged = JSON.stringify(initialHpcIds.sort()) !== JSON.stringify(selectedHpcIds.sort());
+
+      if (!modalChanged && !hpcChanged) {
+        toast.info("No changes to save.");
+        setIsDialogOpen(false);
+        return;
       }
 
-      // Update the garden with the new set of functions
+      const addedModalCount = selectedModalIds.filter(id => !initialModalIds.includes(id)).length;
+      const removedModalCount = initialModalIds.filter(id => !selectedModalIds.includes(id)).length;
+      const addedHpcCount = selectedHpcIds.filter(id => !initialHpcIds.includes(id)).length;
+      const removedHpcCount = initialHpcIds.filter(id => !selectedHpcIds.includes(id)).length;
+
+      let parts: string[] = [];
+      if (addedModalCount > 0) parts.push(`Added ${addedModalCount} modal function(s)`);
+      if (removedModalCount > 0) parts.push(`Removed ${removedModalCount} modal function(s)`);
+      if (addedHpcCount > 0) parts.push(`Added ${addedHpcCount} HPC function(s)`);
+      if (removedHpcCount > 0) parts.push(`Removed ${removedHpcCount} HPC function(s)`);
+      const successMessage = parts.length > 0 ? parts.join(', ') : "Garden functions updated.";
+
       await patchGarden({
         doi: garden.doi,
         garden: {
-          modal_function_ids: selectedFunctionIds,
-          authors: Array.from(selectedAuthorIds),
+          ...(modalChanged && { modal_function_ids: selectedModalIds }),
+          ...(hpcChanged && { hpc_function_ids: selectedHpcIds }),
+          authors: Array.from(selectedAuthors),
         },
         successMessage
       });
 
       setIsDialogOpen(false);
-
-      // Call onSuccess callback if provided
       if (onSuccess) onSuccess();
     } catch (error) {
       toast.error("Failed to update garden functions");
@@ -262,24 +264,24 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
             <DialogTitle>Manage Garden Functions</DialogTitle>
           </DialogHeader>
 
-          <div className="mb-2"> {/* flex items-center justify-between */}
+          <div className="mb-2"> 
             <p className="text-sm text-gray-500">
               Select functions to include in this garden:
             </p>
           </div>
 
           <FunctionSelectionTable
-            functions={functions}
-            selectedFunctionIds={selectedFunctionIds}
-            onSelectionChange={setSelectedFunctionIds}
-            isLoading={isLoading}
-            isFetching={isFetching}
+            functions={allFunctions}
+            selectedFunctionIds={[
+              ...selectedModalIds.map(id => toCompositeKey('modal', id)),
+              ...selectedHpcIds.map(id => toCompositeKey('hpc', id))
+            ]}
+            onSelectionChange={handleSelectionChange}
+            isLoading={isLoadingModal || isLoadingHpc}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             showSelectedChips
             showClearAllButton
-            onFunctionAdded={handleFunctionAdded}
-            onFunctionRemoved={handleFunctionRemoved}
           />
 
           <div className="flex justify-end space-x-2 mt-4">
@@ -297,4 +299,4 @@ const ModalFunctionManager: React.FC<ModalFunctionManagerProps> = ({
   );
 };
 
-export default ModalFunctionManager; 
+export default FunctionManager;
