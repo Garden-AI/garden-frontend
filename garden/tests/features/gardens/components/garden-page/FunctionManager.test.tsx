@@ -1,4 +1,6 @@
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { render } from "@testing-library/react";
@@ -36,7 +38,6 @@ const mockOwner: User = {
   username: "owner",
   name: "Owner User",
   email: "owner@garden.ai",
-  globus_identity: "owner-uuid",
 };
 
 const mockNonOwner: User = {
@@ -44,61 +45,63 @@ const mockNonOwner: User = {
   username: "nonowner",
   name: "Non-Owner User",
   email: "nonowner@garden.ai",
-  globus_identity: "non-owner-uuid",
 };
 
 const mockModalFunctions: ModalFunction[] = [
   {
     id: 1,
     title: "Modal Func 1",
+    function_name: "modal_func_1",
     authors: ["Author One"],
-    container_uuid: "uuid1",
-    created_at: "date",
-    updated_at: "date",
-    doi: "doi1",
     description: "desc 1",
-    short_name: "mf1",
-    public: true,
+    is_archived: false,
+    function_text: "",
+    year: "2025",
+    example_usage: "",
+    modal_app_id: 1,
+    owner: "owner-uuid",
+    owner_identity_id: "owner-uuid",
+    hardware_spec: {},
   },
   {
     id: 2,
     title: "Modal Func 2",
     function_name: "modal_func_2",
     authors: ["Author Two"],
-    container_uuid: "uuid2",
-    created_at: "date",
-    updated_at: "date",
-    doi: "doi2",
     description: "desc 2",
-    short_name: "mf2",
-    public: true,
+    is_archived: false,
+    function_text: "",
+    year: "2025",
+    example_usage: "",
+    modal_app_id: 1,
+    owner: "owner-uuid",
+    owner_identity_id: "owner-uuid",
+    hardware_spec: {},
   },
 ];
 
 const mockHpcFunctions: HpcFunctionMetadataResponse[] = [
   {
-    id: "hpc-func-1-uuid",
+    id: 1,
     title: "HPC Func 1",
     function_name: "hpc_func_1",
     authors: ["Author Three"],
-    created_at: "date",
-    updated_at: "date",
-    doi: "doi3",
     description: "desc 3",
-    short_name: "hpc1",
-    public: true,
+    is_archived: false,
+    function_text: "",
+    year: "2025",
+    num_invocations: 0,
   },
   {
-    id: "hpc-func-2-uuid",
+    id: 2,
     title: "HPC Func 2",
     function_name: "hpc_func_2",
     authors: ["Author One"],
-    created_at: "date",
-    updated_at: "date",
-    doi: "doi4",
     description: "desc 4",
-    short_name: "hpc2",
-    public: true,
+    is_archived: false,
+    function_text: "",
+    year: "2025",
+    num_invocations: 0,
   },
 ];
 
@@ -110,17 +113,22 @@ const mockGarden: Garden = {
   modal_functions: [mockModalFunctions[0]],
   hpc_functions: [mockHpcFunctions[0]],
   description: "A test garden",
-  year: 2025,
+  year: "2025",
   language: "en",
   version: "1.0",
   publisher: "Garden-AI",
   contributors: [],
-  uuid: "garden-uuid",
-  created_at: "date",
-  updated_at: "date",
   entrypoint_ids: [],
   entrypoints: [],
-};
+  doi_is_draft: false,
+  marked_for_deletion: null,
+  state: "PUBLISHED",
+  modal_function_ids: [1],
+  hpc_function_ids: [1],
+  owner: "owner-uuid",
+  id: 1,
+  is_archived: false,
+} as Garden;
 
 const mockPatchGarden = vi.fn();
 
@@ -150,33 +158,33 @@ describe("FunctionManager", () => {
     queryClient.clear();
 
     // Default mocks for happy paths
-    (useGetUserInfo as vi.Mock).mockReturnValue({
+    (useGetUserInfo as Mock).mockReturnValue({
       data: mockOwner,
       isLoading: false,
       isError: false,
     });
-    (useGetAllModalFunctions as vi.Mock).mockReturnValue({
+    (useGetAllModalFunctions as Mock).mockReturnValue({
       data: mockModalFunctions,
       isLoading: false,
       isError: false,
     });
-    (useHpcFunctions as vi.Mock).mockReturnValue({
+    (useHpcFunctions as Mock).mockReturnValue({
       data: mockHpcFunctions,
       isLoading: false,
       isError: false,
     });
-    (usePatchGarden as vi.Mock).mockReturnValue({
+    (usePatchGarden as Mock).mockReturnValue({
       mutateAsync: mockPatchGarden,
       isPending: false,
     });
-    (useGetModelDeployments as vi.Mock).mockReturnValue({
+    (useGetModelDeployments as Mock).mockReturnValue({
       data: [],
       isLoading: false,
       isError: false,
     });
-    (toast.error as vi.Mock) = vi.fn();
-    (toast.info as vi.Mock) = vi.fn();
-    (toast.success as vi.Mock) = vi.fn();
+    (toast.error as Mock) = vi.fn();
+    (toast.info as Mock) = vi.fn();
+    (toast.success as Mock) = vi.fn();
   });
 
   // --- Task 2: Permissions ---
@@ -189,7 +197,7 @@ describe("FunctionManager", () => {
   });
 
   it("should not show the 'Add/Remove Functions' button for a non-owner", () => {
-    (useGetUserInfo as vi.Mock).mockReturnValue({
+    (useGetUserInfo as Mock).mockReturnValue({
       data: mockNonOwner,
       isLoading: false,
       isError: false,
@@ -218,7 +226,7 @@ describe("FunctionManager", () => {
   });
 
   it("should show an error toast if fetching modal functions fails", async () => {
-    (useGetAllModalFunctions as vi.Mock).mockReturnValue({
+    (useGetAllModalFunctions as Mock).mockReturnValue({
       data: undefined,
       isLoading: false,
       isError: true,
@@ -236,11 +244,11 @@ describe("FunctionManager", () => {
   });
 
   it("should show a loading spinner while fetching functions", async () => {
-    (useGetAllModalFunctions as vi.Mock).mockReturnValue({
+    (useGetAllModalFunctions as Mock).mockReturnValue({
       data: undefined,
       isLoading: true,
     });
-    (useHpcFunctions as vi.Mock).mockReturnValue({
+    (useHpcFunctions as Mock).mockReturnValue({
       data: undefined,
       isLoading: true,
     });
@@ -254,7 +262,7 @@ describe("FunctionManager", () => {
   });
 
   it("should show an error toast if fetching HPC functions fails", async () => {
-    (useHpcFunctions as vi.Mock).mockReturnValue({
+    (useHpcFunctions as Mock).mockReturnValue({
       data: undefined,
       isLoading: false,
       isError: true,
@@ -309,7 +317,7 @@ describe("FunctionManager", () => {
         doi: mockGarden.doi,
         garden: expect.objectContaining({
           modal_function_ids: [1, 2],
-          hpc_function_ids: ["hpc-func-1-uuid", "hpc-func-2-uuid"],
+          hpc_function_ids: [1, 2],
         }),
       }));
       const actualAuthors = mockPatchGarden.mock.calls[0][0].garden.authors;

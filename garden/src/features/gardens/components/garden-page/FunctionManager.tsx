@@ -33,13 +33,13 @@ const FunctionManager: React.FC<FunctionManagerProps> = ({
   const { data: currentUser } = useGetUserInfo();
 
   const [selectedModalIds, setSelectedModalIds] = useState<number[]>([]);
-  const [selectedHpcIds, setSelectedHpcIds] = useState<string[]>([]);
+  const [selectedHpcIds, setSelectedHpcIds] = useState<number[]>([]);
   const [selectedAuthors, setSelectedAuthors] = useState<Set<string>>(new Set());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeploymentDialogOpen, setIsDeploymentDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: modalFunctions, isLoading: isLoadingModal, isError: isErrorModal } = useGetAllModalFunctions(isDialogOpen);
+  const { data: modalFunctions, isLoading: isLoadingModal, isError: isErrorModal } = useGetAllModalFunctions();
   const { data: hpcFunctions, isLoading: isLoadingHpc, isError: isErrorHpc } = useHpcFunctions();
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const FunctionManager: React.FC<FunctionManagerProps> = ({
 
   const handleSelectionChange = (newSelectedIds: (string | number)[]) => {
     const newModalIds: number[] = [];
-    const newHpcIds: string[] = [];
+    const newHpcIds: number[] = [];
     const newAuthors = new Set<string>();
 
     newSelectedIds.forEach(id => {
@@ -86,7 +86,7 @@ const FunctionManager: React.FC<FunctionManagerProps> = ({
         if (func.functionType === 'modal') {
           newModalIds.push(func.id as number);
         } else {
-          newHpcIds.push(func.id as string);
+          newHpcIds.push(func.id as number);
         }
         func.authors?.forEach(authorName => newAuthors.add(authorName));
       }

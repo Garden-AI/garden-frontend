@@ -54,8 +54,11 @@ export const CreateGardenFormFields = () => {
 
   const filteredFunctions= useMemo(() => {
     if (!modalFunctions || !Array.isArray(modalFunctions)) return [];
-    if (!modalAppFunctionIds || modalAppFunctionIds.length === 0) return modalFunctions;
-    return modalFunctions.filter((f) => !modalAppFunctionIds.includes(f.id));
+    const functions = !modalAppFunctionIds || modalAppFunctionIds.length === 0
+      ? modalFunctions
+      : modalFunctions.filter((f) => !modalAppFunctionIds.includes(f.id));
+    // Map to Function type with functionType discriminator
+    return functions.map(f => ({ ...f, functionType: 'modal' as const }));
   }, [modalFunctions, modalAppFunctionIds]);
 
   return (
