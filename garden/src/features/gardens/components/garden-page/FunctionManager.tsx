@@ -57,6 +57,14 @@ const FunctionManager: React.FC<FunctionManagerProps> = ({
     return [...modals, ...hpcs];
   }, [modalFunctions, hpcFunctions]);
 
+  // Helper to create composite keys for selection
+  const toCompositeKey = (type: 'modal' | 'hpc', id: number): string => `${type}-${id}`;
+  const fromCompositeKey = (key: string): { type: 'modal' | 'hpc', id: number } | null => {
+    const match = key.match(/^(modal|hpc)-(\d+)$/);
+    if (!match) return null;
+    return { type: match[1] as 'modal' | 'hpc', id: parseInt(match[2], 10) };
+  };
+
   useEffect(() => {
     if (isDialogOpen) {
       const initialModalIds = garden.modal_functions?.map(f => f.id) || [];
@@ -81,14 +89,18 @@ const FunctionManager: React.FC<FunctionManagerProps> = ({
     const newAuthors = new Set<string>();
 
     newSelectedIds.forEach(id => {
-      const func = allFunctions.find(f => f.id === id);
-      if (func) {
-        if (func.functionType === 'modal') {
-          newModalIds.push(func.id as number);
-        } else {
-          newHpcIds.push(func.id as number);
+      const compositeKey = typeof id === 'string' ? id : String(id);
+      const parsed = fromCompositeKey(compositeKey);
+      if (parsed) {
+        const func = allFunctions.find(f => f.functionType === parsed.type && f.id === parsed.id);
+        if (func) {
+          if (func.functionType === 'modal') {
+            newModalIds.push(func.id as number);
+          } else {
+            newHpcIds.push(func.id as number);
+          }
+          func.authors?.forEach(authorName => newAuthors.add(authorName));
         }
-        func.authors?.forEach(authorName => newAuthors.add(authorName));
       }
     });
 
@@ -260,7 +272,10 @@ const FunctionManager: React.FC<FunctionManagerProps> = ({
 
           <FunctionSelectionTable
             functions={allFunctions}
-            selectedFunctionIds={[...selectedModalIds, ...selectedHpcIds]}
+            selectedFunctionIds={[
+              ...selectedModalIds.map(id => toCompositeKey('modal', id)),
+              ...selectedHpcIds.map(id => toCompositeKey('hpc', id))
+            ]}
             onSelectionChange={handleSelectionChange}
             isLoading={isLoadingModal || isLoadingHpc}
             searchQuery={searchQuery}

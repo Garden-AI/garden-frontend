@@ -60,29 +60,32 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
     return queryWords.every((word) => haystack.includes(word));
   });
 
+  // Helper to create composite key from function
+  const getFunctionCompositeKey = (func: Function): string => {
+    return `${func.functionType}-${func.id}`;
+  };
+
   const handleFunctionToggle = useCallback(
-    (functionId: string | number) => {
-      const isCurrentlySelected = selectedFunctionIds.includes(functionId);
+    (func: Function) => {
+      const compositeKey = getFunctionCompositeKey(func);
+      const isCurrentlySelected = selectedFunctionIds.includes(compositeKey);
       const newSelectedIds = isCurrentlySelected
-        ? selectedFunctionIds.filter(id => id !== functionId)
-        : [...selectedFunctionIds, functionId];
+        ? selectedFunctionIds.filter(id => id !== compositeKey)
+        : [...selectedFunctionIds, compositeKey];
 
       onSelectionChange(newSelectedIds);
 
       if (!isCurrentlySelected && onFunctionAdded) {
-        const func = functions?.find(f => f.id === functionId);
-        if (func) {
-          const authorIds = func.authors ?? [];
-          if (authorIds.length === 0) {
-            toast.warning(`Function "${func.title || func.function_name}" has no authors defined`);
-          }
-          onFunctionAdded(functionId, authorIds);
+        const authorIds = func.authors ?? [];
+        if (authorIds.length === 0) {
+          toast.warning(`Function "${func.title || func.function_name}" has no authors defined`);
         }
+        onFunctionAdded(compositeKey, authorIds);
       } else if (isCurrentlySelected && onFunctionRemoved) {
-        onFunctionRemoved(functionId);
+        onFunctionRemoved(compositeKey);
       }
     },
-    [selectedFunctionIds, onSelectionChange, onFunctionAdded, onFunctionRemoved, functions]
+    [selectedFunctionIds, onSelectionChange, onFunctionAdded, onFunctionRemoved]
   );
 
   const handleClearAll = () => {
@@ -103,18 +106,18 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
     <div className={className}>
       {showSelectedChips && selectedFunctionIds.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
-          {selectedFunctionIds.map((id) => {
-            const func = functions?.find(f => f.id === id);
+          {selectedFunctionIds.map((compositeKey) => {
+            const func = functions?.find(f => getFunctionCompositeKey(f) === compositeKey);
             if (!func) return null;
 
             return (
               <div
-                key={id}
+                key={compositeKey}
                 className="flex items-center rounded-full bg-[#e0f3e7] text-sm px-3 py-1 border border-[#b3dbc3]"
               >
                 {func.title || func.function_name}
                 <button
-                  onClick={() => handleFunctionToggle(id)}
+                  onClick={() => handleFunctionToggle(func)}
                   className="ml-2 text-[#2f5d41] hover:text-red-500"
                 >
                   <X className="h-4 w-4" />
@@ -180,25 +183,27 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredFunctions.map((func) => (
+                filteredFunctions.map((func) => {
+                  const compositeKey = getFunctionCompositeKey(func);
+                  return (
                   <TableRow
-                    key={func.id}
+                    key={compositeKey}
                     onClick={(e) => {
                       const tag = (e.target as HTMLElement).tagName.toLowerCase();
                       if (['input', 'button', 'svg', 'path', 'a'].includes(tag)) return;
-                      handleFunctionToggle(func.id);
+                      handleFunctionToggle(func);
                     }}
                     className={`group cursor-pointer transition-all duration-200 ease-in-out rounded-md
-                      ${selectedFunctionIds.includes(func.id)
+                      ${selectedFunctionIds.includes(compositeKey)
                         ? "bg-[#e0f3e7] border-y border-[#5cae4f] shadow-sm"
                         : "hover:bg-[#eef5f1]"}`}
                   >
                     <TableCell className="w-1/12 text-center">
                       <Checkbox
-                        checked={selectedFunctionIds.includes(func.id)}
-                        onCheckedChange={() => handleFunctionToggle(func.id)}
+                        checked={selectedFunctionIds.includes(compositeKey)}
+                        onCheckedChange={() => handleFunctionToggle(func)}
                         onPointerDown={(e) => e.stopPropagation()}
-                        value={String(func.id)}
+                        value={compositeKey}
                       />
                     </TableCell>
                     <TableCell>
@@ -211,18 +216,18 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                     </TableCell>
                     <TableCell className="w-1/2 whitespace-normal break-words text-sm text-gray-700">
                       <div>
-                        <p className={showFullDescriptionIds.includes(func.id) ? '' : 'line-clamp-2'}>
+                        <p className={showFullDescriptionIds.includes(compositeKey) ? '' : 'line-clamp-2'}>
                           {func.description || "No description available"}
                         </p>
                         {func.description && func.description.length > 120 && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              toggleDescription(func.id);
+                              toggleDescription(compositeKey);
                             }}
                             className="mt-1 text-xs text-green hover:underline"
                           >
-                            {showFullDescriptionIds.includes(func.id) ? "Show less" : "Show more"}
+                            {showFullDescriptionIds.includes(compositeKey) ? "Show less" : "Show more"}
                           </button>
                         )}
                       </div>
@@ -243,7 +248,8 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                       )}
                     </TableCell>
                   </TableRow>
-                ))
+                  );
+                })
               )}
             </TableBody>
           </Table>
