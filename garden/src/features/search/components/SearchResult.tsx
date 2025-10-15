@@ -14,7 +14,12 @@ import {
   MarkdownCardContent,
 } from "@/components/shadcn/card";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/shadcn/table";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/shadcn/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
 
 import { BookOpenIcon, CalendarIcon, TagIcon } from "lucide-react";
 import { PersonIcon } from "@radix-ui/react-icons";
@@ -22,34 +27,56 @@ import { PersonIcon } from "@radix-ui/react-icons";
 import SaveGardenButton from "../../gardens/components/SaveGardenButton";
 import { ShareGardenButton } from "../../gardens/components/ShareGardenButton";
 import { Button } from "@/components/shadcn/button";
+import { toast } from "sonner";
 
-export const SearchResult = ({ garden, verbose, showPublishedBanner = true,
-}: { garden: Garden; verbose: boolean; showPublishedBanner?: boolean; }) => {
-  const functions = [...(garden.entrypoints ?? []), ...(garden.modal_functions ?? [])];
+export const SearchResult = ({
+  garden,
+  verbose,
+  showPublishedBanner = true,
+}: {
+  garden: Garden;
+  verbose: boolean;
+  showPublishedBanner?: boolean;
+}) => {
+  const functions = [
+    ...(garden.entrypoints ?? []),
+    ...(garden.modal_functions ?? []),
+    ...(garden.hpc_functions ?? []),
+  ];
   const [showMore, setShowMore] = useState(false);
 
   const handleShowMore = () => {
     setShowMore(!showMore);
-  }
+  };
   return (
-    <Card className={`relative transition-colors hover:shadow-lg ${garden.is_archived ? "bg-gray-100" : "hover:bg-gray-50"}`}>
-      <CardHeader className={`${(showPublishedBanner || garden.is_archived || garden.doi_is_draft) ? "pt-8" : ""}`}>
+    <Card
+      className={`relative transition-colors hover:shadow-lg ${garden.is_archived ? "bg-gray-100" : "hover:bg-gray-50"}`}
+    >
+      <CardHeader
+        className={`${showPublishedBanner || garden.is_archived || garden.doi_is_draft ? "pt-8" : ""}`}
+      >
         {showPublishedBanner && (
-          <div style={{ backgroundColor: "#C2E6CA", color: "#11451F" }}
-            className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
+          <div
+            style={{ backgroundColor: "#C2E6CA", color: "#11451F" }}
+            className="absolute left-0 top-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm"
+          >
             Published
           </div>
         )}
         <div className="flex items-start justify-between space-x-3">
           {garden.is_archived && (
-            <div style={{ backgroundColor: "#D2D1F7", color: "#3C2F67" }}
-              className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
+            <div
+              style={{ backgroundColor: "#D2D1F7", color: "#3C2F67" }}
+              className="absolute left-0 top-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm"
+            >
               Archived
             </div>
           )}
           {garden.doi_is_draft && (
-            <div style={{ backgroundColor: "#DBE9FF", color: "#28487B" }}
-              className="absolute top-0 left-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm">
+            <div
+              style={{ backgroundColor: "#DBE9FF", color: "#28487B" }}
+              className="absolute left-0 top-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm"
+            >
               Draft
             </div>
           )}
@@ -68,8 +95,10 @@ export const SearchResult = ({ garden, verbose, showPublishedBanner = true,
         >
           DOI: {garden.doi}
           {garden.marked_for_deletion && garden.doi_is_draft && (
-            <div style={{ backgroundColor: "#F0C2BD", color: "#411528" }}
-              className="ml-2 inline-block rounded px-2 py-0.5 text-xs font-medium">
+            <div
+              style={{ backgroundColor: "#F0C2BD", color: "#411528" }}
+              className="ml-2 inline-block rounded px-2 py-0.5 text-xs font-medium"
+            >
               Marked for Deletion
             </div>
           )}
@@ -88,14 +117,14 @@ export const SearchResult = ({ garden, verbose, showPublishedBanner = true,
 
       <div className="p-1">
         <MarkdownCardContent
-          className={`m-2 p-2 text-balanced ${(showMore) ? "" : "line-clamp-3"}`}
+          className={`text-balanced m-2 p-2 ${showMore ? "" : "line-clamp-3"}`}
           content={garden.description || "*No description available*"}
         />
         <Button
           onClick={handleShowMore}
-          className="text-black text-xs bg-inherit hover:text-blue-400 hover:bg-inherit hover:underline"
+          className="bg-inherit text-xs text-black hover:bg-inherit hover:text-blue-400 hover:underline"
         >
-          {(showMore) ? "Show Less" : "Show More"}
+          {showMore ? "Show Less" : "Show More"}
         </Button>
       </div>
 
@@ -113,32 +142,52 @@ export const SearchResult = ({ garden, verbose, showPublishedBanner = true,
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {functions?.map((func, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <Link
-                          className="font-semibold"
-                          to={`/modal-functions/${encodeURIComponent(func.id)}`}
-                        >
-                          {func.title}
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <p className="line-clamp-3">{func.description}</p>
-                      </TableCell>
-                      <TableCell>
-                        {func.tags?.map((tag, index) => (
-                          <Badge
-                            key={index}
-                            variant="outline"
-                            className="cursor-default whitespace-nowrap bg-primary font-thin capitalize text-primary-foreground transition-colors hover:bg-primary/70"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {functions?.map((func, index) => {
+                    // Check if this is an HPC function by seeing if it's in the hpc_functions array
+                    const isHpcFunction = garden.hpc_functions?.some((hpc) => hpc.id === func.id);
+
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>
+                          {isHpcFunction ? (
+                            <span
+                              className="cursor-pointer font-semibold text-blue-600 hover:underline"
+                              onClick={() =>
+                                toast.info("HPC Function pages coming soon!", {
+                                  description:
+                                    "Detailed HPC function pages are currently under development.",
+                                  duration: 3000,
+                                })
+                              }
+                            >
+                              {func.title}
+                            </span>
+                          ) : (
+                            <Link
+                              className="font-semibold"
+                              to={`/modal-functions/${encodeURIComponent(func.id)}`}
+                            >
+                              {func.title}
+                            </Link>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <p className="line-clamp-3">{func.description}</p>
+                        </TableCell>
+                        <TableCell>
+                          {func.tags?.map((tag, index) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="cursor-default whitespace-nowrap bg-primary font-thin capitalize text-primary-foreground transition-colors hover:bg-primary/70"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </ScrollArea>
