@@ -1,27 +1,29 @@
 import React from "react";
-import { ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
+import { GardenFunction, isModalFunction, isHpcFunction } from "../types/function.types";
+import { Dataset, Paper, Repository, Notebook, ModalFunction } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { Card, CardContent, CardHeader, CardTitle, MarkdownCardContent } from "@/components/shadcn/card";
-import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle, LucideIcon, FunctionSquare } from "lucide-react";
-import { useModalFunctionMaterials } from "@/features/materials";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/card";
+import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle, LucideIcon, FunctionSquare, TestTube } from "lucide-react";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import CopyButton from "@/components/CopyButton";
 import { Button } from "@/components/shadcn/button";
-import { usePatchModalFunction } from "@/features/functions/modal/api/usePatchModalFunction";
+import { usePatchModalFunction } from "../../modal/api/usePatchModalFunction";
+import { usePatchHpcFunction } from "../../hpc/api/usePatchHpcFunction";
 import { toast } from "sonner";
 
 // Import the modal components
-import { DatasetModal } from "./modals/DatasetModal";
-import { PaperModal } from "./modals/PaperModal";
-import { RepositoryModal } from "./modals/RepositoryModal";
-import { NotebookModal } from "./modals/NotebookModal";
+import { DatasetModal } from "../../../materials/components/modals/DatasetModal";
+import { PaperModal } from "../../../materials/components/modals/PaperModal";
+import { RepositoryModal } from "../../../materials/components/modals/RepositoryModal";
+import { NotebookModal } from "../../../materials/components/modals/NotebookModal";
 
 // Import the card components
-import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from "@/features/materials/components/cards/MaterialCards";
+import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from "../../../materials/components/cards/MaterialCards";
 
 interface AssociatedMaterialsProps {
-  resource: ModalFunction;
+  resource: GardenFunction;
   ownsThisFunction: boolean;
+  doi?: string;
 }
 
 const TabTrigger = ({ icon: Icon, name, value, count }: { icon: LucideIcon, name: string, value: string, count?: number }) => {
@@ -41,22 +43,29 @@ const TabTrigger = ({ icon: Icon, name, value, count }: { icon: LucideIcon, name
   );
 };
 
-const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterialsProps) => {
-  // Get all materials from the modal function
-  const { datasets, papers, repositories, notebooks } = useModalFunctionMaterials(resource);
+const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMaterialsProps) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
+  // TODO: Refactor to avoid calling this hook when not an HPC function
+  const { mutateAsync: patchHpcFunction } = usePatchHpcFunction(isHpcFunction(resource) ? resource.id : -1);
+
+  const datasets = resource.datasets || [];
+  const papers = resource.papers || [];
+  const repositories = resource.repositories || [];
+  const notebooks = resource.notebooks || [];
 
   const handleAddMaterial = async (type: 'datasets' | 'papers' | 'repositories' | 'notebooks', material: Dataset | Paper | Repository | Notebook) => {
     try {
       const currentMaterials = resource[type] || [];
       const updatedMaterials = [...currentMaterials, material];
 
-      await patchModalFunction({
-        id: resource.id,
-        modalFunction: {
-          [type]: updatedMaterials
-        }
-      });
+      if (isModalFunction(resource)) {
+        await patchModalFunction({
+          id: resource.id,
+          modalFunction: { [type]: updatedMaterials }
+        });
+      } else if (isHpcFunction(resource)) {
+        await patchHpcFunction({ [type]: updatedMaterials });
+      }
 
       toast.success(`${type.slice(0, -1)} added successfully`);
     } catch (error) {
@@ -71,12 +80,14 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
       const updatedMaterials = [...currentMaterials];
       updatedMaterials[index] = material;
 
-      await patchModalFunction({
-        id: resource.id,
-        modalFunction: {
-          [type]: updatedMaterials
-        }
-      });
+      if (isModalFunction(resource)) {
+        await patchModalFunction({
+          id: resource.id,
+          modalFunction: { [type]: updatedMaterials }
+        });
+      } else if (isHpcFunction(resource)) {
+        await patchHpcFunction({ [type]: updatedMaterials });
+      }
 
       toast.success(`${type.slice(0, -1)} updated successfully`);
     } catch (error) {
@@ -88,14 +99,16 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
   const handleDeleteMaterial = async (type: 'datasets' | 'papers' | 'repositories' | 'notebooks', index: number) => {
     try {
       const currentMaterials = resource[type] || [];
-      const updatedMaterials = currentMaterials.filter((_, i) => i !== index);
+      const updatedMaterials = currentMaterials.filter((_: any, i: number) => i !== index);
 
-      await patchModalFunction({
-        id: resource.id,
-        modalFunction: {
-          [type]: updatedMaterials
-        }
-      });
+      if (isModalFunction(resource)) {
+        await patchModalFunction({
+          id: resource.id,
+          modalFunction: { [type]: updatedMaterials }
+        });
+      } else if (isHpcFunction(resource)) {
+        await patchHpcFunction({ [type]: updatedMaterials });
+      }
 
       toast.success(`${type.slice(0, -1)} removed successfully`);
     } catch (error) {
@@ -116,11 +129,21 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
             name="Function"
             value="function"
           />
-          <TabTrigger
-            icon={FileTextIcon}
-            name="App Text"
-            value="apptext"
-          />
+          {isModalFunction(resource) && (
+            <TabTrigger
+              icon={FileTextIcon}
+              name="App Text"
+              value="apptext"
+            />
+          )}
+          {isHpcFunction(resource) && resource.test_functions && resource.test_functions.length > 0 && (
+            <TabTrigger
+              icon={TestTube}
+              name="Tests"
+              value="tests"
+              count={resource.test_functions.length}
+            />
+          )}
           <TabTrigger
             icon={DatabaseIcon}
             name="Datasets"
@@ -162,41 +185,61 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
         </TabsContent>
 
         {/* App Text Tab */}
-        <TabsContent value="apptext" className="mt-0 relative p-4">
-          {!resource.file_contents ? (
-            <div className="px-4 py-6 text-center sm:px-6">
-              <FileTextIcon className="mx-auto h-12 w-12 text-gray-400" />
-              <h2 className="mt-2 text-base font-medium text-gray-800">No Full Text Available</h2>
-              <p className="mt-1 text-sm text-gray-600">The complete source code for this modal function is not available.</p>
-            </div>
-          ) : (
-            <Card className="rounded-none bg-white">
-              <CardHeader className="px-4 py-3 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <AppWindowIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-medium text-gray-700">Complete Source Code</span>
+        {isModalFunction(resource) && (
+          <TabsContent value="apptext" className="mt-0 relative p-4">
+            {!resource.file_contents ? (
+              <div className="px-4 py-6 text-center sm:px-6">
+                <FileTextIcon className="mx-auto h-12 w-12 text-gray-400" />
+                <h2 className="mt-2 text-base font-medium text-gray-800">No Full Text Available</h2>
+                <p className="mt-1 text-sm text-gray-600">The complete source code for this modal function is not available.</p>
+              </div>
+            ) : (
+              <Card className="rounded-none bg-white">
+                <CardHeader className="px-4 py-3 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <AppWindowIcon className="h-4 w-4 text-gray-500" />
+                      <span className="text-sm font-medium text-gray-700">Complete Source Code</span>
+                    </div>
+                    <CopyButton
+                      hint="Copy full source"
+                      content={resource.file_contents}
+                      className="text-gray-500 hover:text-gray-700"
+                    />
                   </div>
-                  <CopyButton
-                    hint="Copy full source"
-                    content={resource.file_contents}
-                    className="text-gray-500 hover:text-gray-700"
-                  />
-                </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  Includes all imports, helper functions, and dependencies for this Modal function.
-                </p>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="relative">
-                  <SyntaxHighlighter className="rounded-none text-sm">
-                    {resource.file_contents}
-                  </SyntaxHighlighter>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Includes all imports, helper functions, and dependencies for this Modal function.
+                  </p>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="relative">
+                    <SyntaxHighlighter className="rounded-none text-sm">
+                      {resource.file_contents}
+                    </SyntaxHighlighter>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+        )}
+
+        {/* Tests Tab */}
+        {isHpcFunction(resource) && resource.test_functions && resource.test_functions.length > 0 && (
+            <TabsContent value="tests" className="mt-0 relative p-4">
+                {resource.test_functions.map((testFunc, index) => (
+                    <Card key={index} className="rounded-none bg-white p-4 mb-4">
+                        <CardHeader className="px-6 py-4">
+                            <CardTitle className="text-lg font-bold text-gray-800">
+                                Test Function {index + 1}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="px-6 py-4">
+                            <SyntaxHighlighter>{testFunc}</SyntaxHighlighter>
+                        </CardContent>
+                    </Card>
+                ))}
+            </TabsContent>
+        )}
 
         {/* Datasets Tab */}
         <TabsContent value="datasets" className="mt-0 relative">
@@ -230,8 +273,8 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                         dataset={dataset}
                         isOwner={ownsThisFunction}
                         context={{
-                          parentFunction: resource,
-                          parentDoi: resource.doi || undefined
+                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
+                          parentDoi: doi
                         }}
                         onUpdate={(data) => handleUpdateMaterial('datasets', index, data)}
                         onDelete={() => handleDeleteMaterial('datasets', index)}
@@ -258,7 +301,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                   </h3>
                   {ownsThisFunction && (
                     <PaperModal
-                      context={{ modalFunction: resource }}
+                      context={{ modalFunction: resource as ModalFunction }} // TODO: Refactor MaterialModals to be generic
                       onSave={(data) => handleAddMaterial('papers', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -278,8 +321,8 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                         paper={paper}
                         isOwner={ownsThisFunction}
                         context={{
-                          parentFunction: resource,
-                          parentDoi: resource.doi || undefined
+                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
+                          parentDoi: doi
                         }}
                         onUpdate={(data) => handleUpdateMaterial('papers', index, data)}
                         onDelete={() => handleDeleteMaterial('papers', index)}
@@ -326,8 +369,8 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                         repository={repo}
                         isOwner={ownsThisFunction}
                         context={{
-                          parentFunction: resource,
-                          parentDoi: resource.doi || undefined
+                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
+                          parentDoi: doi
                         }}
                         onUpdate={(data) => handleUpdateMaterial('repositories', index, data)}
                         onDelete={() => handleDeleteMaterial('repositories', index)}
@@ -374,8 +417,8 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
                         notebook={notebook}
                         isOwner={ownsThisFunction}
                         context={{
-                          parentFunction: resource,
-                          parentDoi: resource.doi || undefined
+                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
+                          parentDoi: doi
                         }}
                         onUpdate={async (updatedNotebook) => {
                           await handleUpdateMaterial('notebooks', index, updatedNotebook);

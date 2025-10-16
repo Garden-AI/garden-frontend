@@ -1,6 +1,6 @@
 // Components
 export { default as AddMaterialWithFunctionSelect } from './components/AddMaterialWithFunctionSelect';
-export { default as ModalAssociatedMaterials } from './components/ModalAssociatedMaterials';
+
 export { default as AssociatedMaterials } from './components/AssociatedMaterials';
 export { AssociatedMaterialsGrid } from './components/AssociatedMaterialsGrid';
 export { AssociatedMaterialsSection } from './components/AssociatedMaterialsSection';

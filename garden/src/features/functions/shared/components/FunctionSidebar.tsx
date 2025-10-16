@@ -1,25 +1,31 @@
 import React from 'react';
-import { usePatchModalFunction } from "../api/usePatchModalFunction";
-import { ModalFunction } from "@/types";
+import { GardenFunction, isModalFunction } from "../types/function.types";
+import { usePatchModalFunction } from '../../modal/api/usePatchModalFunction';
 import { FunctionMetadata } from './FunctionMetadata';
 import { FunctionMetrics } from './FunctionMetrics';
 import Metadata from '@/components/shared/metadata/Metadata';
 
 interface FunctionSidebarProps {
-    modalFunction: ModalFunction,
+    gardenFunction: GardenFunction,
     ownsThisFunction: boolean,
 }
 
 export const FunctionSidebar = ({
-    modalFunction,
+    gardenFunction,
     ownsThisFunction,
 }: FunctionSidebarProps) => {
     const { mutate: patchModalFunction } = usePatchModalFunction();
-    const updateFunction = async (updateData: Partial<ModalFunction>) => {
-        await patchModalFunction({
-            id: modalFunction.id,
-            modalFunction: updateData,
-        });
+
+    const updateFunction = async (updateData: Partial<GardenFunction>) => {
+        if (isModalFunction(gardenFunction)) {
+            await patchModalFunction({
+                id: gardenFunction.id,
+                modalFunction: updateData,
+            });
+        } else {
+            // TODO: implement patch for HPC function
+            console.log("Patching HPC function not implemented yet");
+        }
     };
 
     const formatHardwareSpec = (spec: { [key: string]: string } | undefined | null): string[] => {
@@ -43,17 +49,17 @@ export const FunctionSidebar = ({
     return (
         <Metadata
             name={"Function"}
-            entity={modalFunction}
+            entity={gardenFunction}
             ownsThisEntity={ownsThisFunction}
         >
             <FunctionMetadata
-                modalFunction={modalFunction}
+                gardenFunction={gardenFunction}
                 ownsThisFunction={ownsThisFunction}
                 updateFunction={updateFunction}
                 formatHardwareSpec={formatHardwareSpec}
             />
             <FunctionMetrics
-                modalFunction={modalFunction}
+                gardenFunction={gardenFunction}
             />
         </Metadata>
     );

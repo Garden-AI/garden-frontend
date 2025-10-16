@@ -5,8 +5,9 @@ import { SUPER_USERS } from "@/utils/utils";
 import { useGetGarden } from "../../gardens/api/useGetGarden";
 import { useGetModalFunction } from "../../functions/modal/api/useGetModalFunction";
 import { GardenMetadataSidebar } from "../../gardens/components/GardenMetadataSidebar";
-import { FunctionSidebar } from "../../functions/modal/components/FunctionSidebar";
+import { FunctionSidebar } from "../../functions/shared/components/FunctionSidebar";
 import { Garden, ModalFunction } from "@/types";
+import { GardenFunction } from "../../functions/shared/types/function.types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { Entity, matchEntityType } from "../types";
 
@@ -75,13 +76,17 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
     }
 
     if (entityType === "function" && currentModalFunction) {
+        const gardenFunction: GardenFunction = {
+            ...currentModalFunction,
+            functionType: 'modal',
+        };
         return (
             <div 
                 className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 rounded-lg cursor-pointer"
                 onDoubleClick={onDoubleClick}
             >
                 <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
-                    <FunctionSidebar modalFunction={currentModalFunction} ownsThisFunction={ownsEntity} />
+                    <FunctionSidebar gardenFunction={gardenFunction} ownsThisFunction={ownsEntity} />
                 </div>
             </div>
         );

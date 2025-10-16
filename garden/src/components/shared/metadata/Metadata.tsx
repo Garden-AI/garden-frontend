@@ -1,9 +1,10 @@
 import { Garden, ModalFunction } from "@/types";
+import { GardenFunction } from "@/features/functions/shared/types/function.types";
 import { ReactNode } from "react";
 
 interface MetadataProps {
   name: string | undefined
-  entity: Garden | ModalFunction;
+  entity: Garden | ModalFunction | GardenFunction;
   ownsThisEntity: boolean;
   children: ReactNode;
 }

@@ -10,8 +10,9 @@ import {
   TooltipTrigger,
 } from "@/components/shadcn/tooltip";
 import { Garden, ModalFunction } from "@/types";
+import { GardenFunction } from "@/features/functions/shared/types/function.types";
 
-type Entity = Garden | ModalFunction;
+type Entity = Garden | ModalFunction | GardenFunction;
 
 export interface EditableTitleProps {
   entity: Entity;

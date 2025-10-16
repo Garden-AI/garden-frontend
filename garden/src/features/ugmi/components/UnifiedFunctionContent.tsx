@@ -5,8 +5,9 @@ import {
     ModalFunctionBody,
     ModalFunctionExample,
 } from "../../functions/modal/components/ModalFunctionPage";
-import ModalAssociatedMaterials from "../../materials/components/ModalAssociatedMaterials";
+import AssociatedMaterials from "../../functions/shared/components/AssociatedMaterials";
 import { ModalFunction } from "@/types";
+import { GardenFunction } from "../../functions/shared/types/function.types";
 
 type UnifiedFunctionContentProps = {
     modalFunction: ModalFunction;
@@ -20,8 +21,12 @@ export const UnifiedFunctionContent = ({
     // Fetch fresh modal function data to ensure updates are reflected
     const { data: freshModalFunction } = useGetModalFunction(modalFunction.id.toString());
 
-    // Use fresh data if available, fallback to prop
     const currentModalFunction = freshModalFunction || modalFunction;
+
+    const gardenFunction: GardenFunction = {
+        ...currentModalFunction,
+        functionType: 'modal',
+    };
 
     return (
         <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-6">
@@ -34,8 +39,8 @@ export const UnifiedFunctionContent = ({
                 modalFunction={currentModalFunction}
                 ownsThisFunction={ownsThisFunction}
             />
-            <ModalAssociatedMaterials
-                resource={currentModalFunction}
+            <AssociatedMaterials
+                resource={gardenFunction}
                 ownsThisFunction={ownsThisFunction}
             />
         </div>

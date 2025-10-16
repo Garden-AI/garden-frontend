@@ -1,7 +1,8 @@
 import { Garden, ModalFunction } from "@/types";
-import { ModelDeployment } from "../model-deployments/ModelDeployments";
+import { GardenFunction } from "../functions/shared/types/function.types";
+import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 
-export type Entity = Garden | ModalFunction | ModelDeployment;
+export type Entity = Garden | ModalFunction | ModelDeployment | GardenFunction;
 
 export type EntityType = "garden" | "deployment" | "function";
 

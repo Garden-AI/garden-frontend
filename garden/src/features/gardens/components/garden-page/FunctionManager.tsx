@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { PlusCircle, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { Garden, Function, ModalFunction, HpcFunctionMetadataResponse } from '@/types';
+import { Garden, ModalFunction, HpcFunctionMetadataResponse } from '@/types';
+import { GardenFunction as Function } from '@/features/functions/shared/types/function.types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/shadcn/dialog';
 import {
   Table,

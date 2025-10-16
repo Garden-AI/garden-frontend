@@ -75,15 +75,9 @@ type HpcFunctionPatchRequest = components["schemas"]["HpcFunctionPatchRequest"];
 type HpcInvocationCreateRequest = components["schemas"]["HpcInvocationCreateRequest"];
 type HpcInvocationResponse = components["schemas"]["HpcInvocationResponse"];
 
-// Discriminated union for Modal and HPC functions
-type FunctionType = 'modal' | 'hpc';
-type Function =
-  | (ModalFunction & { functionType: 'modal' })
-  | (HpcFunctionMetadataResponse & { functionType: 'hpc' });
+
 
 export type {
-  FunctionType,
-  Function,
   Garden,
   GardenMetadataResponse,
   GardenCreateRequest,

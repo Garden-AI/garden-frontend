@@ -16,11 +16,12 @@ import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 import CopyButton from "@/components/CopyButton";
-import ModalAssociatedMaterials from "@/features/materials/components/ModalAssociatedMaterials";
-import { FunctionSidebar } from "./FunctionSidebar";
+import AssociatedMaterials from "../../shared/components/AssociatedMaterials";
+import { FunctionSidebar } from "../../shared/components/FunctionSidebar";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import { EditableMetadataField, EditableTitle } from "@/components/shared/metadata";
 import { SUPER_USERS } from "@/utils/utils";
+import { GardenFunction } from "../../shared/types/function.types";
 
 // Extend ModalFunction type to include owner_identity_id
 type ModalFunctionWithOwner = ModalFunction & {
@@ -38,6 +39,12 @@ const ModalFunctionPage = () => {
   if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
 
   if (isError || !modalFunction) return <NotFoundPage />;
+
+  // Create a typed GardenFunction object
+  const gardenFunction: GardenFunction = {
+    ...modalFunction,
+    functionType: 'modal',
+  };
 
   // Create breadcrumb items based on whether we navigated from a garden
   const breadcrumbItems = gardenDOI && garden
@@ -67,15 +74,15 @@ const ModalFunctionPage = () => {
           />
           <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
           <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} gardenDOI={gardenDOI} />
-          <ModalAssociatedMaterials
-            resource={modalFunction}
+          <AssociatedMaterials
+            resource={gardenFunction}
             ownsThisFunction={ownsThisFunction}
           />
         </div>
 
         {/* Sidebar */}
         <FunctionSidebar
-          modalFunction={modalFunction}
+          gardenFunction={gardenFunction}
           ownsThisFunction={ownsThisFunction}
         />
       </div>
