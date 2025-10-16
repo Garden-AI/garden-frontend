@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Garden, ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
-import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
+import { usePatchModalFunction } from "@/features/functions/modal/api/usePatchModalFunction";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
 

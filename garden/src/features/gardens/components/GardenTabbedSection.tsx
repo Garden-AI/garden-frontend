@@ -12,7 +12,7 @@ import {
 import { Garden } from "@/types";
 import EntrypointBox from "./EntrypointBox";
 import ModalFunctionBox from "./ModalFunctionBox";
-import HpcFunctionCard from "./HpcFunctionCard";
+import HpcFunctionCard from "@/features/functions/hpc/components/HpcFunctionCard";
 import {
   useDatasetManagement,
   usePaperManagement,

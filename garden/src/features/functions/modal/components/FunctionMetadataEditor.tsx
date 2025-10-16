@@ -5,7 +5,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessa
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/shadcn/accordion";
 import { UseFormReturn } from "react-hook-form";
 import { ModalFileMetadataResponse } from "@/types";
-import { ModalAppFormValues } from "@/features/modal/api/useModalAppForm";
+import { ModalAppFormValues } from "@/features/functions/modal/api/useModalAppForm";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
 // Example usage templates for Modal functions

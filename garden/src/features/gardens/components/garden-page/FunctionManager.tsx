@@ -12,7 +12,7 @@ import {
   TableCell,
 } from "@/components/shadcn/table";
 import { toast } from 'sonner';
-import { useGetAllModalFunctions } from '@/features/modal/api/useGetAllModalFunctions';
+import { useGetAllModalFunctions } from '@/features/functions/modal/api/useGetAllModalFunctions';
 import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetModelDeployments } from '@/features/model-deployments/api/useGetModelDeployments';

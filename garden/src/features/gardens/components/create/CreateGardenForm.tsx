@@ -12,7 +12,7 @@ import { CreateGardenFormFields } from "./CreateGardenFormFields";
 import { GardenCreateRequest, Garden } from "@/types";
 import { ApiError } from "../../utils/garden.utils";
 import { AxiosError } from "axios";
-import { useModalAppMetadata } from "../../../modal/api/useModalAppMetadata";
+import { useModalAppMetadata } from "../../../functions/modal/api/useModalAppMetadata";
 import { useEffect } from "react";
 import { useCreateGarden } from "../../api/useCreateGarden";
 

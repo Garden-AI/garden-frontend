@@ -7,7 +7,7 @@ import { useModalFunctionMaterials } from "@/features/materials";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import CopyButton from "@/components/CopyButton";
 import { Button } from "@/components/shadcn/button";
-import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
+import { usePatchModalFunction } from "@/features/functions/modal/api/usePatchModalFunction";
 import { toast } from "sonner";
 
 // Import the modal components

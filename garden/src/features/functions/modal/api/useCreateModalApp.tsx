@@ -2,7 +2,7 @@ import instance from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosResponse, AxiosError } from "axios";
 import { ModalAppCreateRequest, ModalAppMetadataResponse, ModalAppPatchRequest } from "@/types";
-import { ApiError } from "../../gardens/utils/garden.utils";
+import { ApiError } from "../../../gardens/utils/garden.utils";
 
 export const useCreateModalApp = () => {
   return useMutation<AxiosResponse<ModalAppMetadataResponse>, Error, ModalAppCreateRequest | ModalAppPatchRequest>({

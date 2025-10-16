@@ -1,10 +1,10 @@
 import React from "react";
-import { useGetModalFunction } from "../../modal/api/useGetModalFunction";
+import { useGetModalFunction } from "../../functions/modal/api/useGetModalFunction";
 import {
     ModalFunctionHeader,
     ModalFunctionBody,
     ModalFunctionExample,
-} from "../../modal/components/ModalFunctionPage";
+} from "../../functions/modal/components/ModalFunctionPage";
 import ModalAssociatedMaterials from "../../materials/components/ModalAssociatedMaterials";
 import { ModalFunction } from "@/types";
 

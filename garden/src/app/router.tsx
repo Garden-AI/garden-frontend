@@ -15,13 +15,13 @@ const CreateGardenPage = lazy(() => import("@/features/gardens/components/create
 const GardenPage = lazy(() => import("@/features/gardens/components/GardenPage"));
 const HomePage = lazy(() => import("@/components/HomePage"));
 const LoginPage = lazy(() => import("@/features/auth/components/LoginPage"));
-const ModalFunctionPage = lazy(() => import("@/features/modal/components/ModalFunctionPage"));
+const ModalFunctionPage = lazy(() => import("@/features/functions/modal/components/ModalFunctionPage"));
 const SearchPage = lazy(() => import("@/features/search/components/SearchPage"));
 const TeamsPage = lazy(() => import("@/features/team/components/TeamsPage"));
 const UserProfilePage = lazy(() => import("@/features/users/components/UserProfilePage"));
 const ModelDeploymentPage = lazy(() => import("@/features/model-deployments/ModelDeploymentPage"));
 const CreateModelDeploymentPage = lazy(() => import("@/features/model-deployments/CreateModelDeploymentPage"));
-const ModalAppUploadPage = lazy(() => import("@/features/modal/components/ModalAppUploadPage"));
+const ModalAppUploadPage = lazy(() => import("@/features/functions/modal/components/ModalAppUploadPage"));
 const BenchmarksPage = lazy(() => import("@/features/benchmarks/BenchmarksPage"));
 const MetricsDashboard = lazy(() => import("@/features/metrics/components/MetricsDashboard"));
 const MLIPPage = lazy(() => import("@/features/mlip-page/MLIPPage"));

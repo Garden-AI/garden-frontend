@@ -32,7 +32,7 @@ import { extractArxivId, fetchArxivMetadata } from "../../utils/arxiv";
 import { extractDoiFromUrl, validateDoi, fetchDoiMetadata } from "../../utils/doi";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { usePatchGarden } from "@/features/gardens/api/usePatchGarden";
-import { usePatchModalFunction } from "@/features/modal/api/usePatchModalFunction";
+import { usePatchModalFunction } from "@/features/functions/modal/api/usePatchModalFunction";
 import { MaterialModalProps } from "./MaterialModal";
 
 interface PaperModalProps extends MaterialModalProps {

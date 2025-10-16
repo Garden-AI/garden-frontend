@@ -2,7 +2,7 @@ import React from "react";
 import { CreateGardenForm } from "./CreateGardenForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetGlobusGroups } from "@/features/gardens/api/useGetGlobusGroups";
-import ModalAppUploadPage from "@/features/modal/components/ModalAppUploadPage";
+import ModalAppUploadPage from "@/features/functions/modal/components/ModalAppUploadPage";
 import { OverallProgress } from "@/components/progress/OverallProgress";
 import { useState } from "react";
 import { GlobusGroupError } from "@/features/globus/components/GlobusGroupError";

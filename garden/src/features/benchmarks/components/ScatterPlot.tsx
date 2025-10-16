@@ -28,7 +28,7 @@ import {
   isMatBenchDiscovery,
   hasMatBenchMetrics
 } from '../utils/matbench';
-import { useGetModalFunction } from '@/features/modal/api/useGetModalFunction';
+import { useGetModalFunction } from '@/features/functions/modal/api/useGetModalFunction';
 import { useNavigate } from 'react-router-dom';
 
 interface ScatterPlotProps {

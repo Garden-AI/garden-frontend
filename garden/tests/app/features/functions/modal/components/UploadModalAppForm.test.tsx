@@ -3,8 +3,8 @@ import "@testing-library/jest-dom/vitest";
 import { screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
-import * as useModalAppFormModule from "@/features/modal/api/useModalAppForm";
-import { UploadModalAppForm } from "@/features/modal/components/UploadModalAppForm";
+import * as useModalAppFormModule from "@/features/functions/modal/api/useModalAppForm";
+import { UploadModalAppForm } from "@/features/functions/modal/components/UploadModalAppForm";
 
 import { renderWithProviders } from "@tests/setupTests";
 

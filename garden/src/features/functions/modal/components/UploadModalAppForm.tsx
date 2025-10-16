@@ -1,17 +1,17 @@
 import React from "react";
 import { Form } from "@/components/shadcn/form";
 import { useSearchParams } from "react-router-dom";
-import { useModalAppForm } from "@/features/modal/api/useModalAppForm";
-import { FileUploadSection } from "@/features/modal/components/FileUploadSection";
-import { DetectedAppCard } from "@/features/modal/components/DetectedAppCard";
-import { FunctionMetadataEditor } from "@/features/modal/components/FunctionMetadataEditor";
-import { FormActions } from "@/features/modal/components/FormActions";
-import { DeploymentLoading } from "@/features/modal/components/DeploymentLoading";
-import { DeploymentNotice } from "@/features/modal/components/DeploymentNotice";
-import { ValidationErrorAlert } from "@/features/modal/components/alerts/ValidationErrorAlert";
-import { DeploymentErrorAlert } from "@/features/modal/components/alerts/DeploymentErrorAlert";
+import { useModalAppForm } from "@/features/functions/modal/api/useModalAppForm";
+import { FileUploadSection } from "@/features/functions/modal/components/FileUploadSection";
+import { DetectedAppCard } from "@/features/functions/modal/components/DetectedAppCard";
+import { FunctionMetadataEditor } from "@/features/functions/modal/components/FunctionMetadataEditor";
+import { FormActions } from "@/features/functions/modal/components/FormActions";
+import { DeploymentLoading } from "@/features/functions/modal/components/DeploymentLoading";
+import { DeploymentNotice } from "@/features/functions/modal/components/DeploymentNotice";
+import { ValidationErrorAlert } from "@/features/functions/modal/components/alerts/ValidationErrorAlert";
+import { DeploymentErrorAlert } from "@/features/functions/modal/components/alerts/DeploymentErrorAlert";
 import { OverallProgress } from "@/components/progress/OverallProgress";
-import { ProgressSteps } from "@/features/modal/components/progress/ProgressSteps";
+import { ProgressSteps } from "@/features/functions/modal/components/progress/ProgressSteps";
 
 export const UploadModalAppForm = () => {
   const [, setSearchParams] = useSearchParams();

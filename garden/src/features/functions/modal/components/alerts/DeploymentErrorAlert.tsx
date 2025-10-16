@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/shadcn/alert";
 import { AlertTriangle, ChevronDown, ChevronRight, HelpCircleIcon } from "lucide-react";
-import { DeploymentError } from "@/features/modal/api/useModalAppUpload";
+import { DeploymentError } from "@/features/functions/modal/api/useModalAppUpload";
 import { Button } from "@/components/shadcn/button";
 
 interface DeploymentErrorAlertProps {

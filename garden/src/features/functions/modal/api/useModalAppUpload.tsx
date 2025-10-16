@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useValidateModalFile } from "../../gardens/api/useValidateModalFile";
-import { useCreateModalApp, DeployTimeoutError, createOrUpdateModalApp } from "../../modal/api/useCreateModalApp";
+import { useValidateModalFile } from "../../../gardens/api/useValidateModalFile";
+import { useCreateModalApp, DeployTimeoutError, createOrUpdateModalApp } from "./useCreateModalApp";
 import { ModalAppPatchRequest, ModalFileMetadataResponse } from "@/types";
-import { ApiError } from "../../gardens/utils/garden.utils";
+import { ApiError } from "../../../gardens/utils/garden.utils";
 import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import instance from "@/lib/axios";

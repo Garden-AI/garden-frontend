@@ -1,5 +1,5 @@
 import React from "react";
-import { ModalAppForm } from "../../modal/components/ModalAppForm";
+import { ModalAppForm } from "../../functions/modal/components/ModalAppForm";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { Entity } from "../types";
 
