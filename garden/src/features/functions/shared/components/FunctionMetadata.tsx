@@ -18,8 +18,8 @@ export const FunctionMetadata = ({
     return (
         <>
             <EditableMetadataField
-                label="Function Authors"
-                helpText="Original authors of the function"
+                label="Model Authors"
+                helpText="Original authors of the model"
                 value={gardenFunction.authors}
                 fieldName="authors"
                 entity={gardenFunction}
@@ -28,18 +28,16 @@ export const FunctionMetadata = ({
                 onUpdate={updateFunction}
             />
 
-            {isModalFunction(gardenFunction) && (
-                <EditableMetadataField
-                    label="Gardeners"
-                    helpText="Creator and contributors to this function and related materials"
-                    value={[gardenFunction.owner, ...(gardenFunction.contributors || [])]}
-                    fieldName="contributors" // Note: combines owner and contributors
-                    entity={gardenFunction}
-                    ownsThisEntity={ownsThisFunction}
-                    isArray={true}
-                    onUpdate={updateFunction}
-                />
-            )}
+            <EditableMetadataField
+                label="Gardeners"
+                helpText="Creator and contributors to this function and related materials"
+                value={isModalFunction(gardenFunction) ? [gardenFunction.owner, ...(gardenFunction.contributors || [])] : gardenFunction.contributors || []}
+                fieldName="contributors"
+                entity={gardenFunction}
+                ownsThisEntity={ownsThisFunction}
+                isArray={true}
+                onUpdate={updateFunction}
+            />
 
             <EditableMetadataField
                 label="Year"
@@ -77,16 +75,7 @@ export const FunctionMetadata = ({
 
             {isHpcFunction(gardenFunction) && (
                 <>
-                    <EditableMetadataField
-                        label="Requirements"
-                        helpText="Python dependencies for this function"
-                        value={gardenFunction.requirements}
-                        fieldName="requirements"
-                        entity={gardenFunction}
-                        ownsThisEntity={ownsThisFunction}
-                        isArray={true}
-                        onUpdate={updateFunction}
-                    />
+                    
                     <EditableMetadataField
                         label="Available Endpoints"
                         helpText="Globus Compute endpoints where this function is available"
@@ -97,16 +86,7 @@ export const FunctionMetadata = ({
                         isArray={true}
                         onUpdate={updateFunction}
                     />
-                    <EditableMetadataField
-                        label="Available Deployments"
-                        helpText="Specific deployments of this function"
-                        value={gardenFunction.available_deployments?.map(d => `${d.endpoint_name} (${d.deployment_id})`)}
-                        fieldName="available_deployments"
-                        entity={gardenFunction}
-                        ownsThisEntity={false}
-                        isArray={true}
-                        onUpdate={updateFunction}
-                    />
+                    
                 </>
             )}
         </>

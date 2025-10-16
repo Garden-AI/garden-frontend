@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { HpcFunctionMetadataResponse } from "@/types";
 import {
   Card,
@@ -8,22 +9,25 @@ import {
   MarkdownCardContent,
 } from "@/components/shadcn/card";
 import { FunctionSquare, Tag } from "lucide-react";
-import { toast } from "sonner";
 
 interface HpcFunctionCardProps {
   hpcFunction: HpcFunctionMetadataResponse;
+  gardenDOI?: string;
 }
 
-const HpcFunctionCard = ({ hpcFunction }: HpcFunctionCardProps) => {
+const HpcFunctionCard = ({ hpcFunction, gardenDOI }: HpcFunctionCardProps) => {
+  const navigate = useNavigate();
+
   if (!hpcFunction) {
     return null;
   }
 
   const handleClick = () => {
-    toast.info("HPC Function pages coming soon!", {
-      description: "Detailed HPC function pages are currently under development.",
-      duration: 3000,
-    });
+    if (gardenDOI) {
+      navigate(`/garden/${encodeURIComponent(gardenDOI)}/hpc-functions/${hpcFunction.id}`);
+    } else {
+      navigate(`/hpc-functions/${hpcFunction.id}`);
+    }
   };
 
   return (

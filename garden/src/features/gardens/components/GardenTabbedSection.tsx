@@ -179,7 +179,7 @@ export const GardenTabbedSection = ({
                   />
                 ))}
                 {garden.hpc_functions?.map((hpcFunction, index) => (
-                  <HpcFunctionCard key={index} hpcFunction={hpcFunction} />
+                  <HpcFunctionCard key={index} hpcFunction={hpcFunction} gardenDOI={garden.doi} />
                 ))}
               </div>
             </div>

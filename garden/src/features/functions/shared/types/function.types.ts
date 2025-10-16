@@ -21,6 +21,8 @@ export type TypedModalFunction = ModalFunction & {
 
 export type TypedHpcFunction = HpcFunctionMetadataResponse & {
   functionType: "hpc";
+  example_usage?: string;
+  contributors?: string[];
 };
 
 // Create the discriminated union type

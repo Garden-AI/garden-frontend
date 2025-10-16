@@ -2,6 +2,7 @@ import React from "react";
 import { GardenFunction, isModalFunction, isHpcFunction } from "../types/function.types";
 import { Dataset, Paper, Repository, Notebook, ModalFunction } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
+import clsx from "clsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/card";
 import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle, LucideIcon, FunctionSquare, TestTube } from "lucide-react";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
@@ -123,7 +124,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
         defaultValue="function"
         className="w-full min-h-[400px]"
       >
-        <TabsList className="mb-2 bg-gray-200 p-0.5 grid grid-cols-6">
+        <TabsList className={clsx("mb-2 bg-gray-200 p-0.5 grid", isModalFunction(resource) ? "grid-cols-6" : "grid-cols-5")}>
           <TabTrigger
             icon={FunctionSquare}
             name="Function"
@@ -136,14 +137,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
               value="apptext"
             />
           )}
-          {isHpcFunction(resource) && resource.test_functions && resource.test_functions.length > 0 && (
-            <TabTrigger
-              icon={TestTube}
-              name="Tests"
-              value="tests"
-              count={resource.test_functions.length}
-            />
-          )}
+          
           <TabTrigger
             icon={DatabaseIcon}
             name="Datasets"
@@ -223,23 +217,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
           </TabsContent>
         )}
 
-        {/* Tests Tab */}
-        {isHpcFunction(resource) && resource.test_functions && resource.test_functions.length > 0 && (
-            <TabsContent value="tests" className="mt-0 relative p-4">
-                {resource.test_functions.map((testFunc, index) => (
-                    <Card key={index} className="rounded-none bg-white p-4 mb-4">
-                        <CardHeader className="px-6 py-4">
-                            <CardTitle className="text-lg font-bold text-gray-800">
-                                Test Function {index + 1}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="px-6 py-4">
-                            <SyntaxHighlighter>{testFunc}</SyntaxHighlighter>
-                        </CardContent>
-                    </Card>
-                ))}
-            </TabsContent>
-        )}
+        
 
         {/* Datasets Tab */}
         <TabsContent value="datasets" className="mt-0 relative">

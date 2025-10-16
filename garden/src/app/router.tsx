@@ -16,6 +16,7 @@ const GardenPage = lazy(() => import("@/features/gardens/components/GardenPage")
 const HomePage = lazy(() => import("@/components/HomePage"));
 const LoginPage = lazy(() => import("@/features/auth/components/LoginPage"));
 const ModalFunctionPage = lazy(() => import("@/features/functions/modal/components/ModalFunctionPage"));
+const HpcFunctionPage = lazy(() => import("@/features/functions/hpc/components/HpcFunctionPage"));
 const SearchPage = lazy(() => import("@/features/search/components/SearchPage"));
 const TeamsPage = lazy(() => import("@/features/team/components/TeamsPage"));
 const UserProfilePage = lazy(() => import("@/features/users/components/UserProfilePage"));
@@ -50,6 +51,7 @@ const Router: React.FC = () => {
           </Route>
           <Route path=":doi" element={<WrappedLazyComponent child={<GardenPage />} />} />
           <Route path=":doi/modal-functions/:id" element={<WrappedLazyComponent child={<ModalFunctionPage />} />} />
+          <Route path=":doi/hpc-functions/:id" element={<WrappedLazyComponent child={<HpcFunctionPage />} />} />
         </Route>
 
         {/* Entrypoint Routes - All archived */}
@@ -58,6 +60,11 @@ const Router: React.FC = () => {
         {/* Modal Routes */}
         <Route path="modal-functions">
           <Route path=":id" element={<WrappedLazyComponent child={<ModalFunctionPage />} />} />
+        </Route>
+
+        {/* HPC Routes */}
+        <Route path="hpc-functions">
+          <Route path=":id" element={<WrappedLazyComponent child={<HpcFunctionPage />} />} />
         </Route>
 
         <Route element={<PrivateRoutes />}>
