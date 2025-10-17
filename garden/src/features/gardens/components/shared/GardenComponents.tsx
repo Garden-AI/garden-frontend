@@ -49,9 +49,10 @@ export const GardenHeader = ({ garden, ownsThisGarden, setIsPublishGardenModalOp
 interface GardenContentViewProps {
     garden: Garden;
     ownsThisGarden: boolean;
+    onRefresh: () => Promise<void>;
 }
 
-export const GardenContentView = ({ garden, ownsThisGarden }: GardenContentViewProps) => {
+export const GardenContentView = ({ garden, ownsThisGarden, onRefresh }: GardenContentViewProps) => {
     return (
         <>
             <GardenDescription garden={garden} ownsThisGarden={ownsThisGarden} />
@@ -60,6 +61,7 @@ export const GardenContentView = ({ garden, ownsThisGarden }: GardenContentViewP
                 <GardenTabbedSection
                     garden={garden}
                     ownsThisGarden={ownsThisGarden}
+                    onRefresh={onRefresh}
                 />
             </div>
         </>

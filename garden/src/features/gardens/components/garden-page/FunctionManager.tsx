@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { PlusCircle, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { Garden, Function, ModalFunction, HpcFunctionMetadataResponse } from '@/types';
+import { Garden, ModalFunction, HpcFunctionMetadataResponse } from '@/types';
+import { GardenFunction as Function } from '@/features/functions/shared/types/function.types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/shadcn/dialog';
 import {
   Table,
@@ -12,7 +13,7 @@ import {
   TableCell,
 } from "@/components/shadcn/table";
 import { toast } from 'sonner';
-import { useGetAllModalFunctions } from '@/features/modal/api/useGetAllModalFunctions';
+import { useGetAllModalFunctions } from '@/features/functions/modal/api/useGetAllModalFunctions';
 import { usePatchGarden } from '@/features/gardens/api/usePatchGarden';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetModelDeployments } from '@/features/model-deployments/api/useGetModelDeployments';

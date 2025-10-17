@@ -13,7 +13,7 @@ import { useFormContext } from "react-hook-form";
 import { Link } from "react-router-dom";
 import WithTooltip from "@/components/WithTooltip";
 import { cn } from "@/utils/form.utils";
-import { useGetUserModalFunctions } from "../../modal/api/useGetUserModalFunctions";
+import { useGetUserModalFunctions } from "../../functions/modal/api/useGetUserModalFunctions";
 import { GardenCreateFormData } from "../types/garden.types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 

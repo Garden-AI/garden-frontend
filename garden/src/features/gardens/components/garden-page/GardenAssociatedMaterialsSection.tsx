@@ -1,7 +1,7 @@
 import React from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
-import { Dataset, Paper, Repository, Garden, ModalFunction } from '@/types';
+import { Dataset, Paper, Repository, Garden } from '@/types';
 import { DatasetModal } from '@/features/materials/components/modals/DatasetModal';
 import { PaperModal } from '@/features/materials/components/modals/PaperModal';
 import { RepositoryModal } from '@/features/materials/components/modals/RepositoryModal';
@@ -131,7 +131,7 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
                 isOwner={false}
-                context={{ parentFunction: {} as ModalFunction }}
+                context={{}}
               />
             );
           } else if (fieldName === 'repositories') {
@@ -143,7 +143,7 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
                 isOwner={false}
-                context={{ parentFunction: {} as ModalFunction }}
+                context={{}}
               />
             );
           } else {
@@ -155,7 +155,7 @@ const GardenAssociatedMaterialsSection: React.FC<GardenAssociatedMaterialsSectio
                 onUpdate={(data) => handleUpdateMaterial(index, data)}
                 onDelete={() => handleDeleteMaterial(index)}
                 isOwner={false}
-                context={{ parentFunction: {} as ModalFunction }}
+                context={{}}
               />
             );
           }

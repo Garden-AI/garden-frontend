@@ -12,7 +12,8 @@ import {
 } from "@/components/shadcn/table";
 import { Link } from 'react-router-dom';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { Function, ModalFunction } from '@/types';
+import { ModalFunction } from '@/types';
+import { GardenFunction as Function } from '@/features/functions/shared/types/function.types';
 import { toast } from 'sonner';
 import { Badge } from '@/components/shadcn/badge';
 

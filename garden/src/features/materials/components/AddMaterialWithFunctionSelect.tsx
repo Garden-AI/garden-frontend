@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ScrollArea } from '@/components/shadcn/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/shadcn/tooltip';
 import { toast } from 'sonner';
-import { usePatchModalFunction } from '@/features/modal/api/usePatchModalFunction';
+import { usePatchModalFunction } from '@/features/functions/modal/api/usePatchModalFunction';
 
 interface AddMaterialWithFunctionSelectProps {
   garden: Garden;

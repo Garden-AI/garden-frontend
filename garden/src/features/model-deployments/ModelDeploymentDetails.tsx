@@ -35,7 +35,7 @@ import instance from "@/lib/axios";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/shadcn/dialog";
-import { ModalAppForm } from "@/features/modal/components/ModalAppForm";
+import { ModalAppForm } from "@/features/functions/modal/components/ModalAppForm";
 
 interface ModelDeploymentDetailsProps {
     entity: ModalAppMetadataResponse | AsyncModalAppMetadataResponse,

@@ -125,9 +125,7 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
         title={notebook.title}
         icon={notebookIcon}
         isOwner={isOwner}
-        context={{
-          parentFunction: {} as ModalFunction
-        }}
+        context={{}}
         onEditClick={handleEditClick}
         onEdit={() => handleEdit}
       >

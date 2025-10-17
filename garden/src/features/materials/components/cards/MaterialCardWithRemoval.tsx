@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Garden, ModalFunction } from '@/types';
+import { Garden, ModalFunction, GardenFunction } from '@/types';
 import { useMaterialActions } from '@/features/materials/hooks/useMaterialActions';
 import { RemoveDialog, EditDialog } from './MaterialDialogs';
 import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from '@/features/materials';
@@ -7,7 +7,7 @@ import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from '@/features
 interface MaterialCardWithRemovalProps {
     material: any;
     materialType: 'dataset' | 'paper' | 'repository' | 'notebook';
-    findAffectedFunctions: (doi: string) => ModalFunction[];
+    findAffectedFunctions: (identifier: string) => GardenFunction[];
     ownsThisGarden: boolean;
     onMaterialUpdated: () => Promise<void>;
     onMaterialRemoved: () => Promise<void>;
@@ -59,7 +59,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         key={material.doi}
                         dataset={material}
                         isOwner={ownsThisGarden}
-                        context={{ parentFunction: {} as ModalFunction }}
+                        context={{}}
                         onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />
@@ -70,7 +70,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         key={material.doi || material.title}
                         paper={material}
                         isOwner={ownsThisGarden}
-                        context={{ parentFunction: {} as ModalFunction }}
+                        context={{}}
                         onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />
@@ -81,7 +81,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         key={material.url}
                         repository={material}
                         isOwner={ownsThisGarden}
-                        context={{ parentFunction: {} as ModalFunction }}
+                        context={{}}
                         onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />
@@ -92,7 +92,7 @@ export const MaterialCardWithRemoval: React.FC<MaterialCardWithRemovalProps> = (
                         key={material.url}
                         notebook={material}
                         isOwner={ownsThisGarden}
-                        context={{ parentFunction: {} as ModalFunction }}
+                        context={{}}
                         onUpdate={handleEdit}
                         onDelete={() => prepareFunctionsForRemoval()}
                     />

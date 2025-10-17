@@ -5,6 +5,7 @@ import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import MultipleSelector from "@/components/shadcn/multiple-select";
 import { Garden, ModalFunction } from "@/types";
+import { GardenFunction } from "@/features/functions/shared/types/function.types";
 import { toast } from "sonner";
 import { EditableCodeField } from "@/components/EditableCodeField";
 import TruncatedDescription from "@/components/shared/metadata/TruncatedDescription";
@@ -16,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/shadcn/tooltip";
 
-type Entity = Garden | ModalFunction;
+type Entity = Garden | ModalFunction | GardenFunction;
 
 export interface EditableMetadataFieldProps {
   label: string;

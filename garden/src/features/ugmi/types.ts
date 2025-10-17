@@ -1,7 +1,9 @@
 import { Garden, ModalFunction } from "@/types";
-import { ModelDeployment } from "../model-deployments/ModelDeployments";
+import { components } from "@/types/backend-schema";
+import { GardenFunction } from "../functions/shared/types/function.types";
+import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 
-export type Entity = Garden | ModalFunction | ModelDeployment;
+export type Entity = Garden | ModalFunction | ModelDeployment | GardenFunction;
 
 export type EntityType = "garden" | "deployment" | "function";
 
@@ -63,11 +65,11 @@ export const getFunctionsFromEntity = (entity: Entity): ModalFunction[] => {
     const type = matchEntityType(entity);
     switch (type) {
         case "garden":
-            return (entity as Garden).modal_functions || [];
+            return (entity as Garden).modal_functions?.map(func => ({ ...func, functionType: 'modal' })) || [];
         case "deployment":
-            return (entity as ModelDeployment).originalData?.modal_functions || [];
+            return (entity as ModelDeployment).originalData?.modal_functions?.map((func: components["schemas"]["ModalFunctionMetadataResponse"]) => ({ ...func, functionType: 'modal' })) || [];
         case "function":
-            return [entity as ModalFunction];
+            return [{ ...(entity as ModalFunction), functionType: 'modal' }];
         default:
             return [];
     }

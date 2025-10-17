@@ -12,14 +12,8 @@ import {
 import { Garden } from "@/types";
 import EntrypointBox from "./EntrypointBox";
 import ModalFunctionBox from "./ModalFunctionBox";
-import HpcFunctionCard from "./HpcFunctionCard";
-import {
-  useDatasetManagement,
-  usePaperManagement,
-  useRepositoryManagement,
-  useNotebookManagement,
-} from "@/features/materials/hooks/useMaterialManagement";
-import { getUniqueItemCount } from "../utils/garden.utils";
+import HpcFunctionCard from "@/features/functions/hpc/components/HpcFunctionCard";
+import { useGardenMaterials } from "@/features/materials/hooks/useGardenMaterials";
 
 import FunctionManager from "./garden-page/FunctionManager";
 
@@ -50,55 +44,27 @@ const TabTrigger = ({
   );
 };
 
+interface GardenTabbedSectionProps {
+  garden: Garden;
+  ownsThisGarden: boolean;
+  onRefresh: () => Promise<void>;
+}
+
 export const GardenTabbedSection = ({
   garden,
   ownsThisGarden,
-}: {
-  garden: Garden;
-  ownsThisGarden: boolean;
-}) => {
+  onRefresh,
+}: GardenTabbedSectionProps) => {
   const {
-    materials: datasets,
-    refreshMaterials: refreshDatasets,
-    findFunctionsWithMaterial: findDatasetFunctions,
-  } = useDatasetManagement(garden);
-  const {
-    materials: papers,
-    refreshMaterials: refreshPapers,
-    findFunctionsWithMaterial: findPaperFunctions,
-  } = usePaperManagement(garden);
-  const {
-    materials: repositories,
-    refreshMaterials: refreshRepositories,
-    findFunctionsWithMaterial: findRepositoryFunctions,
-  } = useRepositoryManagement(garden);
-  const {
-    materials: notebooks,
-    refreshMaterials: refreshNotebooks,
-    findFunctionsWithMaterial: findNotebookFunctions,
-  } = useNotebookManagement(garden);
-
-  // Callback to refresh all materials after adding/updating/removing
-  const handleMaterialsChange = useCallback(async () => {
-    await Promise.all([
-      refreshDatasets(),
-      refreshPapers(),
-      refreshRepositories(),
-      refreshNotebooks(),
-    ]);
-  }, [refreshDatasets, refreshPapers, refreshRepositories, refreshNotebooks]);
-
-  const handleMaterialAdded = useCallback(async () => {
-    await handleMaterialsChange();
-  }, [handleMaterialsChange]);
-
-  const handleMaterialUpdated = useCallback(async () => {
-    await handleMaterialsChange();
-  }, [handleMaterialsChange]);
-
-  const handleMaterialRemoved = useCallback(async () => {
-    await handleMaterialsChange();
-  }, [handleMaterialsChange]);
+    datasets,
+    papers,
+    repositories,
+    notebooks,
+    findDatasetsInFunctions,
+    findPapersInFunctions,
+    findRepositoriesInFunctions,
+    findNotebooksInFunctions,
+  } = useGardenMaterials(garden);
 
   return (
     <Tabs
@@ -126,30 +92,10 @@ export const GardenTabbedSection = ({
           name="Functions"
           value="functions"
         />
-        <TabTrigger
-          icon={DatabaseIcon}
-          count={getUniqueItemCount(garden.modal_functions, "datasets")}
-          name="Datasets"
-          value="datasets"
-        />
-        <TabTrigger
-          icon={ScrollTextIcon}
-          count={getUniqueItemCount(garden.modal_functions, "papers")}
-          name="Papers"
-          value="papers"
-        />
-        <TabTrigger
-          icon={CodeIcon}
-          count={getUniqueItemCount(garden.modal_functions, "repositories")}
-          name="Repos"
-          value="repositories"
-        />
-        <TabTrigger
-          icon={BookIcon}
-          count={getUniqueItemCount(garden.modal_functions, "notebooks")}
-          name="Notebooks"
-          value="notebooks"
-        />
+        <TabTrigger icon={DatabaseIcon} count={datasets.length} name="Datasets" value="datasets" />
+        <TabTrigger icon={ScrollTextIcon} count={papers.length} name="Papers" value="papers" />
+        <TabTrigger icon={CodeIcon} count={repositories.length} name="Repos" value="repositories" />
+        <TabTrigger icon={BookIcon} count={notebooks.length} name="Notebooks" value="notebooks" />
       </TabsList>
 
       <TabsContent value="functions" className="relative mt-0">
@@ -163,7 +109,7 @@ export const GardenTabbedSection = ({
                 </h3>
 
                 {ownsThisGarden && (
-                  <FunctionManager garden={garden} onSuccess={handleMaterialAdded} />
+                  <FunctionManager garden={garden} onSuccess={onRefresh} />
                 )}
               </div>
 
@@ -174,12 +120,12 @@ export const GardenTabbedSection = ({
                 {garden.modal_functions?.map((modalFunction, index) => (
                   <ModalFunctionBox
                     key={index}
-                    modalFunction={modalFunction}
+                    modalFunction={{ ...modalFunction, functionType: 'modal' }}
                     gardenDoi={garden.doi}
                   />
                 ))}
                 {garden.hpc_functions?.map((hpcFunction, index) => (
-                  <HpcFunctionCard key={index} hpcFunction={hpcFunction} />
+                  <HpcFunctionCard key={index} hpcFunction={hpcFunction} gardenDOI={garden.doi} />
                 ))}
               </div>
             </div>
@@ -197,11 +143,11 @@ export const GardenTabbedSection = ({
                   Datasets
                 </h3>
 
-                {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
+                {ownsThisGarden && (
                   <AddMaterialWithFunctionSelect
                     garden={garden}
                     materialType="datasets"
-                    onSuccess={handleMaterialAdded}
+                    onSuccess={onRefresh}
                   />
                 )}
               </div>
@@ -213,10 +159,10 @@ export const GardenTabbedSection = ({
                       key={dataset.doi || index}
                       material={dataset}
                       materialType="dataset"
-                      findAffectedFunctions={findDatasetFunctions}
+                      findAffectedFunctions={findDatasetsInFunctions}
                       ownsThisGarden={ownsThisGarden}
-                      onMaterialUpdated={handleMaterialUpdated}
-                      onMaterialRemoved={handleMaterialRemoved}
+                      onMaterialUpdated={onRefresh}
+                      onMaterialRemoved={onRefresh}
                       garden={garden}
                     />
                   ))}
@@ -241,11 +187,11 @@ export const GardenTabbedSection = ({
                   Papers
                 </h3>
 
-                {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
+                {ownsThisGarden && (
                   <AddMaterialWithFunctionSelect
                     garden={garden}
                     materialType="papers"
-                    onSuccess={handleMaterialAdded}
+                    onSuccess={onRefresh}
                   />
                 )}
               </div>
@@ -257,10 +203,10 @@ export const GardenTabbedSection = ({
                       key={paper.doi || paper.title || index}
                       material={paper}
                       materialType="paper"
-                      findAffectedFunctions={findPaperFunctions}
+                      findAffectedFunctions={findPapersInFunctions}
                       ownsThisGarden={ownsThisGarden}
-                      onMaterialUpdated={handleMaterialUpdated}
-                      onMaterialRemoved={handleMaterialRemoved}
+                      onMaterialUpdated={onRefresh}
+                      onMaterialRemoved={onRefresh}
                       garden={garden}
                     />
                   ))}
@@ -285,11 +231,11 @@ export const GardenTabbedSection = ({
                   Code Repositories
                 </h3>
 
-                {ownsThisGarden && (garden.modal_functions?.length ?? 0) > 0 && (
+                {ownsThisGarden && (
                   <AddMaterialWithFunctionSelect
                     garden={garden}
                     materialType="repositories"
-                    onSuccess={handleMaterialAdded}
+                    onSuccess={onRefresh}
                   />
                 )}
               </div>
@@ -301,10 +247,10 @@ export const GardenTabbedSection = ({
                       key={repo.url || index}
                       material={repo}
                       materialType="repository"
-                      findAffectedFunctions={findRepositoryFunctions}
+                      findAffectedFunctions={findRepositoriesInFunctions}
                       ownsThisGarden={ownsThisGarden}
-                      onMaterialUpdated={handleMaterialUpdated}
-                      onMaterialRemoved={handleMaterialRemoved}
+                      onMaterialUpdated={onRefresh}
+                      onMaterialRemoved={onRefresh}
                       garden={garden}
                     />
                   ))}
@@ -333,7 +279,7 @@ export const GardenTabbedSection = ({
                   <AddMaterialWithFunctionSelect
                     garden={garden}
                     materialType="notebooks"
-                    onSuccess={handleMaterialAdded}
+                    onSuccess={onRefresh}
                   />
                 )}
               </div>
@@ -345,10 +291,10 @@ export const GardenTabbedSection = ({
                       key={notebook.url || index}
                       material={notebook}
                       materialType="notebook"
-                      findAffectedFunctions={findNotebookFunctions}
+                      findAffectedFunctions={findNotebooksInFunctions}
                       ownsThisGarden={ownsThisGarden}
-                      onMaterialUpdated={handleMaterialUpdated}
-                      onMaterialRemoved={handleMaterialRemoved}
+                      onMaterialUpdated={onRefresh}
+                      onMaterialRemoved={onRefresh}
                       garden={garden}
                     />
                   ))}

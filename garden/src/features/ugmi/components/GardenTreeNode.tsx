@@ -134,7 +134,7 @@ export const GardenTreeNode: React.FC<GardenTreeNodeProps> = ({
             {garden.modal_functions.map(fn => (
               <FunctionTreeNode
                 key={fn.id}
-                fn={fn}
+                fn={{ ...fn, functionType: 'modal' }}
                 selection={selection}
                 onSelect={onSelect}
               />

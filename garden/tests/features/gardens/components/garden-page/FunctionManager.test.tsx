@@ -18,7 +18,7 @@ import {
 
 // Mock API hooks and libraries
 vi.mock("@/features/users/api/useGetUserInfo");
-vi.mock("@/features/modal/api/useGetAllModalFunctions");
+vi.mock("@/features/functions/modal/api/useGetAllModalFunctions");
 vi.mock("@/features/hpc-admin/api/useHpcFunctions");
 vi.mock("@/features/gardens/api/usePatchGarden");
 vi.mock("@/features/model-deployments/api/useGetModelDeployments");
@@ -26,7 +26,7 @@ vi.mock("sonner");
 
 // Import mocked hooks for type-safe mocking
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
-import { useGetAllModalFunctions } from "@/features/modal/api/useGetAllModalFunctions";
+import { useGetAllModalFunctions } from "@/features/functions/modal/api/useGetAllModalFunctions";
 import { useHpcFunctions } from "@/features/hpc-admin/api/useHpcFunctions";
 import { usePatchGarden } from "@/features/gardens/api/usePatchGarden";
 import { useGetModelDeployments } from "@/features/model-deployments/api/useGetModelDeployments";
@@ -62,6 +62,7 @@ const mockModalFunctions: ModalFunction[] = [
     owner: "owner-uuid",
     owner_identity_id: "owner-uuid",
     hardware_spec: {},
+    functionType: 'modal',
   },
   {
     id: 2,
@@ -77,6 +78,7 @@ const mockModalFunctions: ModalFunction[] = [
     owner: "owner-uuid",
     owner_identity_id: "owner-uuid",
     hardware_spec: {},
+    functionType: 'modal',
   },
 ];
 

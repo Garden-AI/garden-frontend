@@ -16,11 +16,12 @@ const getGarden = async (doi: string): Promise<Garden> => {
   }
 };
 
-export const useGetGarden = (doi: string) => {
+export const useGetGarden = (doi: string, options?: { enabled?: boolean }) => {
   const queryClient = useQueryClient();
   const query = useQuery<Garden, Error>({
     queryKey: ["gardens", doi],
     queryFn: () => getGarden(doi),
+    enabled: options?.enabled !== false, // Default to true unless explicitly set to false
   });
 
   // Cache modal functions when garden data is successfully fetched

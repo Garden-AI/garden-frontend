@@ -20,7 +20,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/shadcn/table"
-import { useGetModalFunction } from "@/features/modal/api/useGetModalFunction";
+import { useGetModalFunction } from "@/features/functions/modal/api/useGetModalFunction";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/shadcn/button";
 import { Checkbox } from "@/components/shadcn/checkbox";

@@ -66,7 +66,7 @@ export const BenchmarkFunctionDialog = ({
         const functionMap = new Map<number, { id: number; name: string }>();
         gardens.forEach((garden) => {
             if (garden.modal_functions) {
-                garden.modal_functions.forEach((func: ModalFunction) => {
+                garden.modal_functions.map(func => ({ ...func, functionType: 'modal' as const })).forEach((func: ModalFunction) => {
                     // Only add if not already in the map
                     if (!functionMap.has(func.id)) {
                         functionMap.set(func.id, {
