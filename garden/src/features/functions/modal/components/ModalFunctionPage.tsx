@@ -24,8 +24,6 @@ import { ownsModalFunction } from "../../shared/utils/ownership.utils";
 const ModalFunctionPage = () => {
   const { id, doi: gardenDOI } = useParams() as { id: string; doi?: string };
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
-
-  // Always call the hook, but disable it when gardenDOI is undefined
   const { data: garden, isLoading: isGardenLoading } = useGetGarden(gardenDOI || "", {
     enabled: !!gardenDOI,
   });
@@ -37,10 +35,8 @@ const ModalFunctionPage = () => {
     auth.isAuthenticated
   );
 
-  // IMPORTANT: Call usePatchModalFunction before any early returns (Rules of Hooks)
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
-  // IMPORTANT: All hooks must be called before any conditional returns
   const handleUpdate = useCallback(async (updateData: Partial<ModalFunction>) => {
     if (modalFunction?.id) {
       await patchModalFunction({
@@ -54,7 +50,6 @@ const ModalFunctionPage = () => {
 
   if (isError || !modalFunction) return <NotFoundPage />;
 
-  // Create a typed GardenFunction object
   const gardenFunction: GardenFunction = {
     ...modalFunction,
     functionType: 'modal',

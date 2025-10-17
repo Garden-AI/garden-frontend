@@ -1,7 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { Garden, Dataset, Paper, Repository, Notebook, GardenFunction, ModalFunction, HpcFunction } from '@/types';
 
-// Helper to deduplicate materials based on DOI or URL
 function deduplicateWithFallback<T extends { doi?: string | null; url?: string | null }>(items: T[]): T[] {
   const seen = new Set<string>();
   const result: T[] = [];
@@ -11,7 +10,7 @@ function deduplicateWithFallback<T extends { doi?: string | null; url?: string |
     if (identifier && !seen.has(identifier)) {
       seen.add(identifier);
       result.push(item);
-    } else if (!identifier && !seen.has(JSON.stringify(item))) { // Fallback for items without DOI/URL
+    } else if (!identifier && !seen.has(JSON.stringify(item))) {
       seen.add(JSON.stringify(item));
       result.push(item);
     }
@@ -100,11 +99,11 @@ export const useGardenMaterials = (garden: Garden) => {
 
   const findRepositoriesInFunctions = useCallback((identifier: string): GardenFunction[] => {
     const modalFns = modalFunctions
-      .filter(fn => fn.repositories?.some(r => r.url === identifier)) // Repositories primarily by URL
+      .filter(fn => fn.repositories?.some(r => r.url === identifier))
       .map(fn => ({ ...fn, functionType: 'modal' as const }));
 
     const hpcFns = hpcFunctions
-      .filter(fn => fn.repositories?.some(r => r.url === identifier)) // Repositories primarily by URL
+      .filter(fn => fn.repositories?.some(r => r.url === identifier))
       .map(fn => ({ ...fn, functionType: 'hpc' as const }));
 
     return [...modalFns, ...hpcFns];
@@ -112,11 +111,11 @@ export const useGardenMaterials = (garden: Garden) => {
 
   const findNotebooksInFunctions = useCallback((identifier: string): GardenFunction[] => {
     const modalFns = modalFunctions
-      .filter(fn => fn.notebooks?.some(n => n.url === identifier)) // Notebooks primarily by URL
+      .filter(fn => fn.notebooks?.some(n => n.url === identifier))
       .map(fn => ({ ...fn, functionType: 'modal' as const }));
 
     const hpcFns = hpcFunctions
-      .filter(fn => fn.notebooks?.some(n => n.url === identifier)) // Notebooks primarily by URL
+      .filter(fn => fn.notebooks?.some(n => n.url === identifier))
       .map(fn => ({ ...fn, functionType: 'hpc' as const }));
 
     return [...modalFns, ...hpcFns];

@@ -15,15 +15,12 @@ export const usePatchHpcFunction = (functionId?: number) => {
       return response.data as HpcFunctionMetadataResponse;
     },
     onMutate: async (newData) => {
-      // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: ["hpc-functions"] });
       await queryClient.cancelQueries({ queryKey: ["hpc-functions", functionId] });
 
-      // Snapshot previous values
       const previousFunctions = queryClient.getQueryData(["hpc-functions"]);
       const previousFunction = queryClient.getQueryData(["hpc-functions", functionId]);
 
-      // Optimistically update function list
       queryClient.setQueryData(["hpc-functions"], (old: HpcFunctionMetadataResponse[] | undefined) => {
         if (!old) return old;
         return old.map((func) =>
@@ -31,7 +28,6 @@ export const usePatchHpcFunction = (functionId?: number) => {
         );
       });
 
-      // Optimistically update single function
       queryClient.setQueryData(["hpc-functions", functionId], (old: HpcFunctionMetadataResponse | undefined) => {
         if (!old) return old;
         return { ...old, ...newData };
@@ -40,7 +36,6 @@ export const usePatchHpcFunction = (functionId?: number) => {
       return { previousFunctions, previousFunction };
     },
     onError: (error, _, context) => {
-      // Rollback on error
       if (context?.previousFunctions) {
         queryClient.setQueryData(["hpc-functions"], context.previousFunctions);
       }
@@ -51,11 +46,9 @@ export const usePatchHpcFunction = (functionId?: number) => {
       toast.error(`Failed to update function: ${error.message}`);
     },
     onSuccess: (updatedFunction) => {
-      // Update cache with server response
       queryClient.setQueryData(["hpc-functions", functionId], updatedFunction);
 
-      // Invalidate and refetch
-      // TODO: This is too broad - invalidates ALL gardens. Make it more surgical if hpcFunction.garden_doi becomes available in HpcFunctionMetadataResponse.
+      // TODO: This invalidates ALL gardens. Make it more surgical when hpcFunction.garden_doi becomes available.
       queryClient.invalidateQueries({ queryKey: ["gardens"] });
 
       toast.success("Function updated successfully");

@@ -24,20 +24,14 @@ import { canEditHpcFunction } from "../../shared/utils/ownership.utils";
 const HpcFunctionPage = () => {
   const { id, doi: gardenDOI } = useParams() as { id: string; doi?: string };
   const { data: hpcFunction, isError, isLoading } = useGetHpcFunction(id);
-
-  // Always call the hook, but disable it when gardenDOI is undefined
   const { data: garden, isLoading: isGardenLoading } = useGetGarden(gardenDOI || "", {
     enabled: !!gardenDOI,
   });
 
   const auth = useGlobusAuth();
   const ownsThisFunction = canEditHpcFunction(auth.authorization?.user?.sub);
-
-  // IMPORTANT: Call usePatchHpcFunction before any early returns (Rules of Hooks)
-  // Use the ID from URL params (converted to number) to keep hook calls consistent across renders
   const { mutateAsync: patchHpcFunction } = usePatchHpcFunction(parseInt(id));
 
-  // IMPORTANT: All hooks must be called before any conditional returns
   const handleUpdate = useCallback(async (updateData: HpcFunctionPatchRequest) => {
     await patchHpcFunction(updateData);
   }, [patchHpcFunction]);
@@ -46,7 +40,6 @@ const HpcFunctionPage = () => {
 
   if (isError || !hpcFunction) return <NotFoundPage />;
 
-  // Create a typed GardenFunction object
   const gardenFunction: GardenFunction = {
     ...hpcFunction,
     functionType: 'hpc',

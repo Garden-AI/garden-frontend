@@ -45,8 +45,6 @@ const TabTrigger = ({ icon: Icon, name, value, count }: { icon: LucideIcon, name
 
 const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterialsProps) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
-  // Note: Hook is always called (React rules of hooks), but with undefined for non-HPC functions.
-  // The hook won't be used for Modal functions due to type guards in handle functions.
   const { mutateAsync: patchHpcFunction } = usePatchHpcFunction(isHpcFunction(resource) ? resource.id : undefined);
 
   const datasets = resource.datasets || [];
@@ -54,7 +52,6 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
   const repositories = resource.repositories || [];
   const notebooks = resource.notebooks || [];
 
-  // Build context based on function type
   const materialContext = isModalFunction(resource)
     ? { modalFunction: resource }
     : isHpcFunction(resource)
@@ -182,7 +179,6 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
           </Card>
         </TabsContent>
 
-        {/* App Text Tab */}
         {isModalFunction(resource) && (
           <TabsContent value="apptext" className="mt-0 relative p-4">
             {!resource.file_contents ? (
@@ -221,9 +217,6 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
           </TabsContent>
         )}
 
-        
-
-        {/* Datasets Tab */}
         <TabsContent value="datasets" className="mt-0 relative">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
@@ -268,7 +261,6 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
           </Card>
         </TabsContent>
 
-        {/* Papers Tab */}
         <TabsContent value="papers" className="mt-0 relative">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
@@ -313,7 +305,6 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
           </Card>
         </TabsContent>
 
-        {/* Repositories Tab */}
         <TabsContent value="repositories" className="mt-0 relative">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
@@ -358,7 +349,6 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
           </Card>
         </TabsContent>
 
-        {/* Notebooks Tab */}
         <TabsContent value="notebooks" className="mt-0 relative">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="pt-6">
