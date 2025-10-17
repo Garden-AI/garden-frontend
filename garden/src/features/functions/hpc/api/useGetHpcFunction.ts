@@ -9,7 +9,7 @@ const getHpcFunction = async (id: string): Promise<HpcFunction> => {
 
 export const useGetHpcFunction = (id: string) => {
   return useQuery<HpcFunction, Error>({
-    queryKey: ["hpc-functions", id],
+    queryKey: ["hpc-functions", parseInt(id)],
     queryFn: () => getHpcFunction(id),
   });
 };
