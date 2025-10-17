@@ -62,6 +62,7 @@ const mockModalFunctions: ModalFunction[] = [
     owner: "owner-uuid",
     owner_identity_id: "owner-uuid",
     hardware_spec: {},
+    functionType: 'modal',
   },
   {
     id: 2,
@@ -77,6 +78,7 @@ const mockModalFunctions: ModalFunction[] = [
     owner: "owner-uuid",
     owner_identity_id: "owner-uuid",
     hardware_spec: {},
+    functionType: 'modal',
   },
 ];
 

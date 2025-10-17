@@ -7,34 +7,38 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import { useGetGarden } from "@/features/gardens/api/useGetGarden";
 
 import NotFoundPage from "@/components/NotFoundPage";
-
-import { Separator } from "@/components/shadcn/separator";
 import Breadcrumb from "@/components/Breadcrumb";
 
-import { LinkIcon } from "lucide-react";
 import { ModalFunction } from "@/types";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
-import CopyButton from "@/components/CopyButton";
 import AssociatedMaterials from "../../shared/components/AssociatedMaterials";
 import { FunctionSidebar } from "../../shared/components/FunctionSidebar";
-import { EditableCodeField } from "@/components/EditableCodeField";
-import { EditableMetadataField, EditableTitle } from "@/components/shared/metadata";
-import { SUPER_USERS } from "@/utils/utils";
+import { FunctionHeader } from "../../shared/components/FunctionHeader";
+import { FunctionBody } from "../../shared/components/FunctionBody";
+import { FunctionExample } from "../../shared/components/FunctionExample";
 import { GardenFunction } from "../../shared/types/function.types";
-
-// Extend ModalFunction type to include owner_identity_id
-type ModalFunctionWithOwner = ModalFunction & {
-  owner_identity_id: string;
-};
+import { generateFunctionBreadcrumbs } from "../../shared/utils/breadcrumb.utils";
+import { ownsModalFunction } from "../../shared/utils/ownership.utils";
 
 const ModalFunctionPage = () => {
   const { id, doi: gardenDOI } = useParams() as { id: string; doi?: string };
   const { data: modalFunction, isError, isLoading } = useGetModalFunction(id);
-  const { data: garden, isLoading: isGardenLoading } = gardenDOI ? useGetGarden(gardenDOI) : { data: undefined, isLoading: false };
+
+  // Always call the hook, but disable it when gardenDOI is undefined
+  const { data: garden, isLoading: isGardenLoading } = useGetGarden(gardenDOI || "", {
+    enabled: !!gardenDOI,
+  });
+
   const auth = useGlobusAuth();
-  const isSuperUser = SUPER_USERS.includes(auth.authorization?.user?.sub);
-  const ownsThisFunction = auth.isAuthenticated && (modalFunction?.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
+  const ownsThisFunction = ownsModalFunction(
+    auth.authorization?.user?.sub,
+    modalFunction?.owner_identity_id,
+    auth.isAuthenticated
+  );
+
+  // IMPORTANT: Call usePatchModalFunction before any early returns (Rules of Hooks)
+  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
   if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
 
@@ -46,34 +50,50 @@ const ModalFunctionPage = () => {
     functionType: 'modal',
   };
 
-  // Create breadcrumb items based on whether we navigated from a garden
-  const breadcrumbItems = gardenDOI && garden
-    ? [
-      { label: "Home", link: "/" },
-      { label: garden.title, link: `/garden/${encodeURIComponent(gardenDOI)}` },
-      { label: modalFunction.title }
-    ]
-    : [
-      { label: "Home", link: "/" },
-      { label: modalFunction.title }
-    ];
+  const breadcrumbItems = generateFunctionBreadcrumbs(modalFunction.title, gardenDOI, garden);
+
+  const handleUpdate = useCallback(async (updateData: Partial<ModalFunction>) => {
+    await patchModalFunction({
+      id: modalFunction.id,
+      modalFunction: updateData
+    });
+  }, [patchModalFunction, modalFunction.id]);
+
+  const generateDefaultExample = (functionName: string, gardenDOI?: string) => {
+    const doiExpression = gardenDOI ? `'${gardenDOI}'` : "my_garden_doi";
+    return `from garden_ai import GardenClient
+client = GardenClient()
+my_garden = client.get_garden(${doiExpression})
+
+input = ['Data Here']
+return my_garden.${functionName}(input)`;
+  };
 
   return (
     <div className="container mb-6 max-w-7xl mx-auto px-4 md:px-6 pt-6 font-display">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content */}
         <div className="lg:w-2/3">
-          <Breadcrumb
-            className="mb-3"
-            crumbs={breadcrumbItems}
-          />
-          <ModalFunctionHeader
-            modalFunction={modalFunction as ModalFunctionWithOwner}
+          <Breadcrumb className="mb-3" crumbs={breadcrumbItems} />
+          <FunctionHeader
+            functionData={modalFunction}
+            functionType="modal"
             gardenDOI={gardenDOI}
             ownsThisFunction={ownsThisFunction}
+            onUpdate={handleUpdate}
           />
-          <ModalFunctionBody modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} />
-          <ModalFunctionExample modalFunction={modalFunction} ownsThisFunction={ownsThisFunction} gardenDOI={gardenDOI} />
+          <FunctionBody
+            functionData={modalFunction}
+            ownsThisFunction={ownsThisFunction}
+            onUpdate={handleUpdate}
+          />
+          <FunctionExample
+            functionData={modalFunction}
+            ownsThisFunction={ownsThisFunction}
+            onUpdate={handleUpdate}
+            generateDefaultExample={generateDefaultExample}
+            gardenDOI={gardenDOI}
+          />
           <AssociatedMaterials
             resource={gardenFunction}
             ownsThisFunction={ownsThisFunction}
@@ -87,102 +107,6 @@ const ModalFunctionPage = () => {
         />
       </div>
     </div>
-  );
-};
-
-export const ModalFunctionHeader = ({ modalFunction, gardenDOI, ownsThisFunction }: {
-  modalFunction: ModalFunctionWithOwner;
-  gardenDOI?: string;
-  ownsThisFunction: boolean;
-}) => {
-  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
-
-  const handleUpdate = useCallback(async (updateData: ModalFunction) => {
-    await patchModalFunction({
-      id: modalFunction.id,
-      modalFunction: updateData
-    });
-  }, [patchModalFunction, modalFunction.id]);
-
-  return (
-    <div className="mb-3 flex items-center justify-between gap-2">
-      <EditableTitle
-        entity={modalFunction}
-        ownsThisEntity={ownsThisFunction}
-        onUpdate={handleUpdate}
-      />
-      <div className="flex items-center gap-2">
-        <CopyButton
-          icon={<LinkIcon className="h-4 w-4" />}
-          content={gardenDOI
-            ? `${window.location.origin}/garden/${encodeURIComponent(gardenDOI)}/modal-functions/${modalFunction.id}`
-            : `${window.location.origin}/modal-functions/${modalFunction.id}`}
-          hint="Copy Link"
-          className="border-none bg-transparent"
-        />
-      </div>
-    </div>
-  );
-};
-
-export const ModalFunctionBody = ({ modalFunction, ownsThisFunction }: { modalFunction: ModalFunction; ownsThisFunction: boolean }) => {
-  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
-
-  const handleUpdate = useCallback(async (updateData: ModalFunction) => {
-    await patchModalFunction({
-      id: modalFunction.id,
-      modalFunction: updateData,
-    });
-  }, [patchModalFunction, modalFunction.id]);
-
-  return (
-    <div className="space-y-3 py-2">
-      <EditableMetadataField
-        label="Description"
-        value={modalFunction.description || ""}
-        fieldName="description"
-        entity={modalFunction}
-        ownsThisEntity={ownsThisFunction}
-        onUpdate={handleUpdate}
-      />
-      <Separator className="my-3" />
-    </div>
-  );
-};
-
-export const ModalFunctionExample = ({ modalFunction, ownsThisFunction, gardenDOI }: { modalFunction: ModalFunction; ownsThisFunction: boolean; gardenDOI?: string; }) => {
-  const { mutateAsync: patchModalFunction } = usePatchModalFunction();
-
-  const doiExpression = gardenDOI ? `'${gardenDOI}'` : "my_garden_doi"
-
-  // Create example text with fallback to default placeholder
-  const defaultExample = `from garden_ai import GardenClient
-client = GardenClient()
-my_garden = client.get_garden(${doiExpression})
-
-input = ['Data Here']
-return my_garden.${modalFunction.function_name}(input)`;
-
-  const handleSave = useCallback(async (newValue: string) => {
-    await patchModalFunction({
-      id: modalFunction.id,
-      modalFunction: {
-        example_usage: newValue
-      }
-    });
-  }, [patchModalFunction, modalFunction.id]);
-
-  return (
-    <EditableCodeField
-      label="Example Usage"
-      value={modalFunction.example_usage || defaultExample}
-      fieldName="example_usage"
-      onSave={handleSave}
-      ownsThisEntity={ownsThisFunction}
-      language="python"
-      editing={false}
-      showSaveButton={true}
-    />
   );
 };
 

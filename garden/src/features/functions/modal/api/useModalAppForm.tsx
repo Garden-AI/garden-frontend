@@ -299,9 +299,7 @@ export const useModalAppForm = ({
         setIsDeploymentComplete(true);
       }
 
-      if (toUpdate) {
-        console.log("UPDATED!!");
-      } else {
+      if (!toUpdate) {
         // Handle redirection based on redirectUrl or default behavior
         if (redirectUrl) {
           // Replace :id placeholder with actual app ID

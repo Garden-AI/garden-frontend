@@ -1,6 +1,5 @@
 import React from "react";
 import { useGetGarden } from "../../gardens/api/useGetGarden";
-import { MaterialsProvider } from "../../materials/contexts/MaterialsContext";
 import TombstonePage from "@/components/TombstonePage";
 import {
     GardenHeader,
@@ -42,26 +41,24 @@ export const UnifiedGardenContent = ({
     }
 
     return (
-        <MaterialsProvider garden={currentGarden} refetchGarden={memoizedRefetch}>
-            <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-6">
-                <div className="mb-6">
-                    <GardenHeader
-                        garden={currentGarden}
-                        ownsThisGarden={ownsThisGarden}
-                        setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
-                        onAfterDelete={onAfterDelete}
-                    />
-
-                    <GardenContentView garden={currentGarden} ownsThisGarden={ownsThisGarden} />
-                </div>
-
-                <GardenPublishModal
+        <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-6">
+            <div className="mb-6">
+                <GardenHeader
                     garden={currentGarden}
-                    isPublishGardenModalOpen={isPublishGardenModalOpen}
+                    ownsThisGarden={ownsThisGarden}
                     setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+                    onAfterDelete={onAfterDelete}
                 />
+
+                <GardenContentView garden={currentGarden} ownsThisGarden={ownsThisGarden} onRefresh={memoizedRefetch} />
             </div>
-        </MaterialsProvider>
+
+            <GardenPublishModal
+                garden={currentGarden}
+                isPublishGardenModalOpen={isPublishGardenModalOpen}
+                setIsPublishGardenModalOpen={setIsPublishGardenModalOpen}
+            />
+        </div>
     );
 };
 

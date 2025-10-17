@@ -19,6 +19,7 @@ type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 interface ModalFunction extends BaseModalFunction {
   already_has_material?: boolean;
   contributors?: string[];
+  functionType: 'modal'; // Add discriminator
 }
 
 type ModalFunctionPatchRequest = components["schemas"]["ModalFunctionPatchRequest"] & {
@@ -75,7 +76,8 @@ type HpcFunctionPatchRequest = components["schemas"]["HpcFunctionPatchRequest"];
 type HpcInvocationCreateRequest = components["schemas"]["HpcInvocationCreateRequest"];
 type HpcInvocationResponse = components["schemas"]["HpcInvocationResponse"];
 
-
+type HpcFunction = HpcFunctionMetadataResponse & { functionType: 'hpc' };
+type GardenFunction = ModalFunction | HpcFunction;
 
 export type {
   Garden,
@@ -119,6 +121,9 @@ export type {
   HpcFunctionPatchRequest,
   HpcInvocationCreateRequest,
   HpcInvocationResponse,
+  HpcFunction,
+  GardenFunction,
   // BenchmarkResult, // Remove this line to avoid duplicate export
 };
+
 

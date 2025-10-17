@@ -43,6 +43,7 @@ const batchRelax: ModalFunction = {
   owner_identity_id: "",
   hardware_spec: {},
   num_invocations: 0,
+  functionType: 'modal',
 };
 
 const getJobStatusDescription = `
@@ -78,6 +79,7 @@ const getJobStatus: ModalFunction = {
   owner_identity_id: "",
   hardware_spec: {},
   num_invocations: 0,
+  functionType: 'modal',
 };
 
 const getResultsDescription = `
@@ -115,6 +117,7 @@ const getResults: ModalFunction = {
   owner_identity_id: "",
   hardware_spec: {},
   num_invocations: 0,
+  functionType: 'modal',
 };
 
 const functions: ModalFunction[] = [

@@ -1,10 +1,10 @@
 import React from "react";
 import { GardenFunction, isModalFunction, isHpcFunction } from "../types/function.types";
-import { Dataset, Paper, Repository, Notebook, ModalFunction } from "@/types";
+import { Dataset, Paper, Repository, Notebook } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import clsx from "clsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/card";
-import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle, LucideIcon, FunctionSquare, TestTube } from "lucide-react";
+import { DatabaseIcon, BookIcon, CodeIcon, ScrollTextIcon, FileTextIcon, AppWindowIcon, PlusCircle, LucideIcon, FunctionSquare } from "lucide-react";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import CopyButton from "@/components/CopyButton";
 import { Button } from "@/components/shadcn/button";
@@ -24,7 +24,6 @@ import { DatasetCard, PaperCard, RepositoryCard, NotebookCard } from "../../../m
 interface AssociatedMaterialsProps {
   resource: GardenFunction;
   ownsThisFunction: boolean;
-  doi?: string;
 }
 
 const TabTrigger = ({ icon: Icon, name, value, count }: { icon: LucideIcon, name: string, value: string, count?: number }) => {
@@ -44,15 +43,23 @@ const TabTrigger = ({ icon: Icon, name, value, count }: { icon: LucideIcon, name
   );
 };
 
-const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMaterialsProps) => {
+const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterialsProps) => {
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
-  // TODO: Refactor to avoid calling this hook when not an HPC function
-  const { mutateAsync: patchHpcFunction } = usePatchHpcFunction(isHpcFunction(resource) ? resource.id : -1);
+  // Note: Hook is always called (React rules of hooks), but with undefined for non-HPC functions.
+  // The hook won't be used for Modal functions due to type guards in handle functions.
+  const { mutateAsync: patchHpcFunction } = usePatchHpcFunction(isHpcFunction(resource) ? resource.id : undefined);
 
   const datasets = resource.datasets || [];
   const papers = resource.papers || [];
   const repositories = resource.repositories || [];
   const notebooks = resource.notebooks || [];
+
+  // Build context based on function type
+  const materialContext = isModalFunction(resource)
+    ? { modalFunction: resource }
+    : isHpcFunction(resource)
+    ? { hpcFunction: resource }
+    : {};
 
   const handleAddMaterial = async (type: 'datasets' | 'papers' | 'repositories' | 'notebooks', material: Dataset | Paper | Repository | Notebook) => {
     try {
@@ -69,9 +76,8 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
       }
 
       toast.success(`${type.slice(0, -1)} added successfully`);
-    } catch (error) {
+    } catch {
       toast.error(`Failed to add ${type.slice(0, -1)}`);
-      console.error('Error adding material:', error);
     }
   };
 
@@ -91,16 +97,15 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
       }
 
       toast.success(`${type.slice(0, -1)} updated successfully`);
-    } catch (error) {
+    } catch {
       toast.error(`Failed to update ${type.slice(0, -1)}`);
-      console.error('Error updating material:', error);
     }
   };
 
   const handleDeleteMaterial = async (type: 'datasets' | 'papers' | 'repositories' | 'notebooks', index: number) => {
     try {
       const currentMaterials = resource[type] || [];
-      const updatedMaterials = currentMaterials.filter((_: any, i: number) => i !== index);
+      const updatedMaterials = currentMaterials.filter((_: Dataset | Paper | Repository | Notebook, i: number) => i !== index);
 
       if (isModalFunction(resource)) {
         await patchModalFunction({
@@ -112,9 +117,8 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
       }
 
       toast.success(`${type.slice(0, -1)} removed successfully`);
-    } catch (error) {
+    } catch {
       toast.error(`Failed to remove ${type.slice(0, -1)}`);
-      console.error('Error removing material:', error);
     }
   };
 
@@ -231,7 +235,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                   </h3>
                   {ownsThisFunction && (
                     <DatasetModal
-                      context={{}}
+                      context={materialContext}
                       onSave={(data) => handleAddMaterial('datasets', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -250,10 +254,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                         key={dataset.doi || index}
                         dataset={dataset}
                         isOwner={ownsThisFunction}
-                        context={{
-                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
-                          parentDoi: doi
-                        }}
+                        context={materialContext}
                         onUpdate={(data) => handleUpdateMaterial('datasets', index, data)}
                         onDelete={() => handleDeleteMaterial('datasets', index)}
                       />
@@ -279,7 +280,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                   </h3>
                   {ownsThisFunction && (
                     <PaperModal
-                      context={{ modalFunction: resource as ModalFunction }} // TODO: Refactor MaterialModals to be generic
+                      context={materialContext}
                       onSave={(data) => handleAddMaterial('papers', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -298,10 +299,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                         key={paper.doi || paper.title || index}
                         paper={paper}
                         isOwner={ownsThisFunction}
-                        context={{
-                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
-                          parentDoi: doi
-                        }}
+                        context={materialContext}
                         onUpdate={(data) => handleUpdateMaterial('papers', index, data)}
                         onDelete={() => handleDeleteMaterial('papers', index)}
                       />
@@ -327,7 +325,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                   </h3>
                   {ownsThisFunction && (
                     <RepositoryModal
-                      context={{}}
+                      context={materialContext}
                       onSave={(data) => handleAddMaterial('repositories', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -346,10 +344,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                         key={repo.url || index}
                         repository={repo}
                         isOwner={ownsThisFunction}
-                        context={{
-                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
-                          parentDoi: doi
-                        }}
+                        context={materialContext}
                         onUpdate={(data) => handleUpdateMaterial('repositories', index, data)}
                         onDelete={() => handleDeleteMaterial('repositories', index)}
                       />
@@ -375,7 +370,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                   </h3>
                   {ownsThisFunction && (
                     <NotebookModal
-                      context={{}}
+                      context={materialContext}
                       onSave={(data) => handleAddMaterial('notebooks', data)}
                       trigger={
                         <Button type="button" variant="outline">
@@ -394,10 +389,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction, doi }: AssociatedMate
                         key={notebook.url || index}
                         notebook={notebook}
                         isOwner={ownsThisFunction}
-                        context={{
-                          parentFunction: resource as ModalFunction, // TODO: Refactor MaterialCards to be generic
-                          parentDoi: doi
-                        }}
+                        context={materialContext}
                         onUpdate={async (updatedNotebook) => {
                           await handleUpdateMaterial('notebooks', index, updatedNotebook);
                         }}

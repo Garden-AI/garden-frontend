@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { Edit2, Trash2 } from "lucide-react";
-import { ModalFunction } from '@/types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,12 +13,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/shadcn/alert-dialog";
+import { MaterialModalContext } from '../modals/MaterialModal';
 
-// Define the context interface that represents where this material is being used
-export interface MaterialContext {
-  parentFunction: ModalFunction;
-  parentDoi?: string;
-}
+// Re-export MaterialModalContext as MaterialContext for backward compatibility
+export type MaterialContext = MaterialModalContext;
 
 export interface BaseMaterialCardProps {
   material: any;

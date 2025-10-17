@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Garden, ModalFunction, Dataset, Paper, Repository, Notebook } from "@/types";
+import { Garden, ModalFunction, Dataset, Paper, Repository, Notebook, GardenFunction } from "@/types";
 import { usePatchModalFunction } from "@/features/functions/modal/api/usePatchModalFunction";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
@@ -29,7 +29,7 @@ const getMaterialCollection = (func: ModalFunction, materialType: string): any[]
 export interface UseMaterialActionsOptions<T extends MaterialType> {
   material: T;
   garden: Garden;
-  findAffectedFunctions?: (doi: string) => ModalFunction[];
+  findAffectedFunctions?: (identifier: string) => GardenFunction[];
   onUpdate?: () => Promise<void>;
   materialType: "paper" | "dataset" | "repository" | "notebook";
 }
@@ -98,6 +98,7 @@ export function useMaterialActions<T extends MaterialType>({
       const allEligibleFunctions = allFunctions.map((func) => ({
         ...func,
         already_has_material: functionIdsWithMaterial.has(func.id),
+        functionType: 'modal' as const,
       }));
 
       setEditAffectedFunctions(allEligibleFunctions);
@@ -366,7 +367,7 @@ export function useMaterialActions<T extends MaterialType>({
       });
     });
 
-    return functionsWithMaterial;
+    return functionsWithMaterial.map(func => ({ ...func, functionType: 'modal' as const }));
   };
 
   const prepareFunctionsForRemoval = async () => {

@@ -3,11 +3,14 @@ import axios from "@/lib/axios";
 import { HpcFunctionPatchRequest, HpcFunctionMetadataResponse } from "@/types";
 import { toast } from "sonner";
 
-export const usePatchHpcFunction = (functionId: number) => {
+export const usePatchHpcFunction = (functionId?: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data: HpcFunctionPatchRequest) => {
+      if (functionId === undefined) {
+        throw new Error("Cannot patch HPC function without valid ID");
+      }
       const response = await axios.patch(`/hpc/functions/${functionId}`, data);
       return response.data as HpcFunctionMetadataResponse;
     },
@@ -52,7 +55,8 @@ export const usePatchHpcFunction = (functionId: number) => {
       queryClient.setQueryData(["hpc-functions", functionId], updatedFunction);
 
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["hpc-functions"] });
+      // TODO: This is too broad - invalidates ALL gardens. Make it more surgical if hpcFunction.garden_doi becomes available in HpcFunctionMetadataResponse.
+      queryClient.invalidateQueries({ queryKey: ["gardens"] });
 
       toast.success("Function updated successfully");
     },

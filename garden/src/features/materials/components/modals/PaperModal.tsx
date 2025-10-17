@@ -235,6 +235,7 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
           }
         });
       }
+      // Note: HPC functions don't currently support authors field, so we skip it
     }
     onSave({
       ...data,
@@ -345,14 +346,14 @@ const PaperModal = ({ edit, onSave, initialData, trigger, context }: PaperModalP
 
 
             <DialogFooter>
-              {((context.garden) || (context.modalFunction)) && (
+              {((context.garden) || (context.modalFunction) || (context.hpcFunction)) && (
                 <div className="flex flex-row items-center space-x-3 space-y-0">
                   <Checkbox
                     checked={addAuthorsToEntity}
                     onCheckedChange={(checked) => setAddAuthorsToEntity(checked === true)}
                   />
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Add authors to {(context.garden) ? "Garden" : (context.modalFunction) ? "Function" : ""}</FormLabel>
+                    <FormLabel>Add authors to {(context.garden) ? "Garden" : (context.modalFunction || context.hpcFunction) ? "Function" : ""}</FormLabel>
                   </div>
                 </div>
               )}

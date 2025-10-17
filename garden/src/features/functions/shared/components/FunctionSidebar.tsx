@@ -1,9 +1,11 @@
 import React from 'react';
-import { GardenFunction, isModalFunction } from "../types/function.types";
+import { GardenFunction, isModalFunction, isHpcFunction } from "../types/function.types";
 import { usePatchModalFunction } from '../../modal/api/usePatchModalFunction';
+import { usePatchHpcFunction } from '../../hpc/api/usePatchHpcFunction';
 import { FunctionMetadata } from './FunctionMetadata';
 import { FunctionMetrics } from './FunctionMetrics';
 import Metadata from '@/components/shared/metadata/Metadata';
+import { formatHardwareSpec } from '../utils/hardware.utils';
 
 interface FunctionSidebarProps {
     gardenFunction: GardenFunction,
@@ -15,6 +17,9 @@ export const FunctionSidebar = ({
     ownsThisFunction,
 }: FunctionSidebarProps) => {
     const { mutate: patchModalFunction } = usePatchModalFunction();
+    const { mutateAsync: patchHpcFunction } = usePatchHpcFunction(
+        isHpcFunction(gardenFunction) ? gardenFunction.id : undefined
+    );
 
     const updateFunction = async (updateData: Partial<GardenFunction>) => {
         if (isModalFunction(gardenFunction)) {
@@ -22,28 +27,9 @@ export const FunctionSidebar = ({
                 id: gardenFunction.id,
                 modalFunction: updateData,
             });
-        } else {
-            // TODO: implement patch for HPC function
-            console.log("Patching HPC function not implemented yet");
+        } else if (isHpcFunction(gardenFunction)) {
+            await patchHpcFunction(updateData);
         }
-    };
-
-    const formatHardwareSpec = (spec: { [key: string]: string } | undefined | null): string[] => {
-        if (!spec) {
-            return [];
-        }
-        return Object.entries(spec).map(([key, value]) => {
-            let displayKey = key;
-            if (key.toLowerCase() === 'gpus' || key.toLowerCase() === 'cpu') {
-                displayKey = key.toUpperCase();
-            } else if (key.toLowerCase() === 'memory') {
-                displayKey = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
-            }
-            if (!value) {
-                value = "Not Specified";
-            }
-            return `${displayKey}: ${value}`;
-        });
     };
 
     return (

@@ -9,8 +9,6 @@ import TombstonePage from "@/components/TombstonePage";
 import { useGetGarden } from "../api/useGetGarden";
 import { useGlobusAuth } from "@globus/react-auth-context";
 
-import { MaterialsProvider } from '@/features/materials/contexts/MaterialsContext';
-
 import { Garden } from "@/types";
 
 import {
@@ -25,9 +23,10 @@ interface GardenContentProps {
   garden: Garden;
   ownsThisGarden: boolean;
   isNewlyCreated: boolean;
+  onRefresh: () => Promise<void>;
 }
 
-const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContentProps) => {
+const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, onRefresh }: GardenContentProps) => {
   const isPublished = !garden.is_archived && !garden.doi_is_draft;
   const [isPublishGardenModalOpen, setIsPublishGardenModalOpen] = React.useState(false);
 
@@ -71,6 +70,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated }: GardenContent
             <GardenContentView
               garden={garden}
               ownsThisGarden={ownsThisGarden}
+              onRefresh={onRefresh}
             />
           </div>
           {/* Metadata Details */}
@@ -117,13 +117,12 @@ const GardenPage = () => {
   const ownsThisGarden = auth?.isAuthenticated && (garden.owner_identity_id === auth?.authorization?.user?.sub || isSuperUser);
 
   return (
-    <MaterialsProvider garden={garden} refetchGarden={memoizedRefetch}>
-      <GardenContent
-        garden={garden}
-        ownsThisGarden={ownsThisGarden}
-        isNewlyCreated={isNewlyCreated}
-      />
-    </MaterialsProvider>
+    <GardenContent
+      garden={garden}
+      ownsThisGarden={ownsThisGarden}
+      isNewlyCreated={isNewlyCreated}
+      onRefresh={memoizedRefetch}
+    />
   );
 };
 
