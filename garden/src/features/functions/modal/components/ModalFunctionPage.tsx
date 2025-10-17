@@ -40,6 +40,16 @@ const ModalFunctionPage = () => {
   // IMPORTANT: Call usePatchModalFunction before any early returns (Rules of Hooks)
   const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
+  // IMPORTANT: All hooks must be called before any conditional returns
+  const handleUpdate = useCallback(async (updateData: Partial<ModalFunction>) => {
+    if (modalFunction?.id) {
+      await patchModalFunction({
+        id: modalFunction.id,
+        modalFunction: updateData
+      });
+    }
+  }, [patchModalFunction, modalFunction?.id]);
+
   if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
 
   if (isError || !modalFunction) return <NotFoundPage />;
@@ -51,13 +61,6 @@ const ModalFunctionPage = () => {
   };
 
   const breadcrumbItems = generateFunctionBreadcrumbs(modalFunction.title, gardenDOI, garden);
-
-  const handleUpdate = useCallback(async (updateData: Partial<ModalFunction>) => {
-    await patchModalFunction({
-      id: modalFunction.id,
-      modalFunction: updateData
-    });
-  }, [patchModalFunction, modalFunction.id]);
 
   const generateDefaultExample = (functionName: string, gardenDOI?: string) => {
     const doiExpression = gardenDOI ? `'${gardenDOI}'` : "my_garden_doi";

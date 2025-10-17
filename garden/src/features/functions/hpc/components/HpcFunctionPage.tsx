@@ -37,6 +37,11 @@ const HpcFunctionPage = () => {
   // Use the ID from URL params (converted to number) to keep hook calls consistent across renders
   const { mutateAsync: patchHpcFunction } = usePatchHpcFunction(parseInt(id));
 
+  // IMPORTANT: All hooks must be called before any conditional returns
+  const handleUpdate = useCallback(async (updateData: HpcFunctionPatchRequest) => {
+    await patchHpcFunction(updateData);
+  }, [patchHpcFunction]);
+
   if (isLoading || (gardenDOI && isGardenLoading)) return <LoadingOverlay />;
 
   if (isError || !hpcFunction) return <NotFoundPage />;
@@ -48,10 +53,6 @@ const HpcFunctionPage = () => {
   };
 
   const breadcrumbItems = generateFunctionBreadcrumbs(hpcFunction.title, gardenDOI, garden);
-
-  const handleUpdate = useCallback(async (updateData: HpcFunctionPatchRequest) => {
-    await patchHpcFunction(updateData);
-  }, [patchHpcFunction]);
 
   const generateDefaultExample = (functionName: string, gardenDOI?: string) => {
     const doiExpression = gardenDOI ? `'${gardenDOI}'` : "my_garden_doi";
