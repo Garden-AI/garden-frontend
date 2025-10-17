@@ -145,23 +145,16 @@ export const SearchResult = ({
                   {functions?.map((func, index) => {
                     // Check if this is an HPC function by seeing if it's in the hpc_functions array
                     const isHpcFunction = garden.hpc_functions?.some((hpc) => hpc.id === func.id);
-
                     return (
                       <TableRow key={index}>
                         <TableCell>
                           {isHpcFunction ? (
-                            <span
-                              className="cursor-pointer font-semibold text-blue-600 hover:underline"
-                              onClick={() =>
-                                toast.info("HPC Function pages coming soon!", {
-                                  description:
-                                    "Detailed HPC function pages are currently under development.",
-                                  duration: 3000,
-                                })
-                              }
+                            <Link
+                              className="font-semibold"
+                              to={`/hpc-functions/${encodeURIComponent(func.id)}`}
                             >
                               {func.title}
-                            </span>
+                            </Link>
                           ) : (
                             <Link
                               className="font-semibold"
