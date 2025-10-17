@@ -2,18 +2,13 @@ import React, { useState } from "react";
 import { CreateHpcEndpointForm } from "./CreateHpcEndpointForm";
 import { CreateHpcDeploymentForm } from "./CreateHpcDeploymentForm";
 import { CreateHpcFunctionForm } from "./CreateHpcFunctionForm";
-import { EditHpcFunctionModal } from "./EditHpcFunctionModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { Button } from "@/components/shadcn/button";
 import { useHpcEndpoints } from "../api/useHpcEndpoints";
 import { useHpcDeployments } from "../api/useHpcDeployments";
 import { useHpcFunctions } from "../api/useHpcFunctions";
-import { HpcFunctionMetadataResponse } from "@/types";
-import { Pencil } from "lucide-react";
 
 const HpcAdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("endpoints");
-  const [editingFunction, setEditingFunction] = useState<HpcFunctionMetadataResponse | null>(null);
 
   const { data: endpoints, refetch: refetchEndpoints } = useHpcEndpoints();
   const { data: deployments, refetch: refetchDeployments } = useHpcDeployments();
@@ -105,6 +100,15 @@ const HpcAdminDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="functions" className="space-y-6">
+          <div className="rounded-lg border bg-blue-50 p-4">
+            <p className="text-sm text-gray-700">
+              Functions must be callable through Globus Compute—all imports must be in function
+              scope and the function must be serializable. Functions are executed in the context
+              of a deployment and can be associated with multiple deployments if the required
+              dependencies are available on multiple endpoints.
+            </p>
+          </div>
+
           <CreateHpcFunctionForm onSuccess={() => refetchFunctions()} />
 
           <div className="rounded-lg border bg-white p-6 shadow-sm">
@@ -113,31 +117,18 @@ const HpcAdminDashboard: React.FC = () => {
               <div className="space-y-3">
                 {functions.map((func) => (
                   <div key={func.id} className="rounded-md border p-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="font-medium">{func.title}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {func.function_name}
-                        </div>
-                        {func.description && (
-                          <div className="mt-1 text-sm">{func.description}</div>
-                        )}
-                        {func.available_deployments && func.available_deployments.length > 0 && (
-                          <div className="mt-2 text-xs text-muted-foreground">
-                            Deployments: {func.available_deployments.length}
-                          </div>
-                        )}
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditingFunction(func)}
-                        className="flex-shrink-0"
-                      >
-                        <Pencil className="h-4 w-4 mr-2" />
-                        Edit
-                      </Button>
+                    <div className="font-medium">{func.title}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {func.function_name}
                     </div>
+                    {func.description && (
+                      <div className="mt-1 text-sm">{func.description}</div>
+                    )}
+                    {func.available_deployments && func.available_deployments.length > 0 && (
+                      <div className="mt-2 text-xs text-muted-foreground">
+                        Deployments: {func.available_deployments.length}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -147,14 +138,6 @@ const HpcAdminDashboard: React.FC = () => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {editingFunction && (
-        <EditHpcFunctionModal
-          isOpen={!!editingFunction}
-          onClose={() => setEditingFunction(null)}
-          hpcFunction={editingFunction}
-        />
-      )}
     </div>
   );
 };
