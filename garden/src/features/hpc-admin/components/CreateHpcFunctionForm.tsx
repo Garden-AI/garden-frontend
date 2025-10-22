@@ -5,7 +5,6 @@ import { z } from "zod";
 import { toast } from "sonner";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -15,19 +14,24 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
 import { useCreateHpcFunction } from "../api/useCreateHpcFunction";
-import { useHpcDeployments } from "../api/useHpcDeployments";
 import { Checkbox } from "@/components/shadcn/checkbox";
-import { EditableCodeField } from "@/components/EditableCodeField";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
-import { Upload } from "lucide-react";
+import { Upload, Code, FileCode } from "lucide-react";
+import { parseHpcFunctions, functionNameToTitle } from "../utils/parseHpcFunctions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/shadcn/accordion";
+import { Textarea } from "@/components/shadcn/textarea";
+import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 
-const hpcFunctionSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  function_name: z.string().min(1, "Function name is required"),
-  deployment_ids: z.array(z.number()),
-});
+const hpcFunctionSchema = z.object({});
 
 type HpcFunctionFormData = z.infer<typeof hpcFunctionSchema>;
+
+interface SelectedFunction {
+  functionName: string;
+  title: string;
+  description: string;
+  selected: boolean;
+}
 
 interface CreateHpcFunctionFormProps {
   onSuccess?: () => void;
@@ -35,17 +39,35 @@ interface CreateHpcFunctionFormProps {
 
 export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ onSuccess }) => {
   const { mutateAsync: createFunction, isPending } = useCreateHpcFunction();
-  const { data: deployments, isLoading: deploymentsLoading } = useHpcDeployments();
   const [functionCode, setFunctionCode] = useState("");
-  const [description, setDescription] = useState("");
+  const [uploadedFileName, setUploadedFileName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [parsedFunctions, setParsedFunctions] = useState<SelectedFunction[]>([]);
 
   const handleFile = async (file: File) => {
     if (file.type === "text/x-python" || file.name.endsWith(".py")) {
       const text = await file.text();
       setFunctionCode(text);
-      toast.success(`Loaded ${file.name}`);
+      setUploadedFileName(file.name);
+
+      // Parse functions from the uploaded code
+      const functions = parseHpcFunctions(text);
+
+      if (functions.length === 0) {
+        toast.warning(`Loaded ${file.name}, but no @hog.function() decorated functions found`);
+        setParsedFunctions([]);
+      } else {
+        // Create SelectedFunction objects with auto-generated titles
+        const selectedFunctions: SelectedFunction[] = functions.map(fn => ({
+          functionName: fn.name,
+          title: functionNameToTitle(fn.name),
+          description: "",
+          selected: true, // Select all by default
+        }));
+        setParsedFunctions(selectedFunctions);
+        toast.success(`Loaded ${file.name} - found ${functions.length} function${functions.length > 1 ? 's' : ''}`);
+      }
     } else {
       toast.error("Please upload a Python (.py) file");
     }
@@ -78,11 +100,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
 
   const form = useForm<HpcFunctionFormData>({
     resolver: zodResolver(hpcFunctionSchema),
-    defaultValues: {
-      title: "",
-      function_name: "",
-      deployment_ids: [],
-    },
+    defaultValues: {},
   });
 
   const onSubmit = async (values: HpcFunctionFormData) => {
@@ -91,224 +109,235 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
       return;
     }
 
-    try {
-      const requestData = {
-        ...values,
-        function_text: functionCode,
-        description: description || null,
-        year: new Date().getFullYear().toString(),
-        is_archived: false,
-        authors: [],
-        tags: [],
-        test_functions: [],
-        requirements: [],
-        models: [],
-        repositories: [],
-        papers: [],
-        datasets: [],
-        notebooks: [],
-      };
+    // Get selected functions
+    const selectedFunctions = parsedFunctions.filter(fn => fn.selected);
 
-      await createFunction(requestData);
-      toast.success("HPC function added successfully!");
+    if (selectedFunctions.length === 0) {
+      toast.error("Please select at least one function to create");
+      return;
+    }
+
+    try {
+      // Create each selected function
+      const createPromises = selectedFunctions.map(fn => {
+        const requestData = {
+          title: fn.title,
+          function_name: fn.functionName,
+          deployment_ids: [],
+          function_text: functionCode,
+          description: fn.description.trim() || null,
+          year: new Date().getFullYear().toString(),
+          is_archived: false,
+          authors: [],
+          tags: [],
+          test_functions: [],
+          requirements: [],
+          models: [],
+          repositories: [],
+          papers: [],
+          datasets: [],
+          notebooks: [],
+        };
+        return createFunction(requestData);
+      });
+
+      await Promise.all(createPromises);
+
+      const count = selectedFunctions.length;
+      toast.success(`Successfully created ${count} HPC function${count > 1 ? 's' : ''}!`);
+
+      // Reset form
       form.reset();
       setFunctionCode("");
-      setDescription("");
+      setUploadedFileName("");
+      setParsedFunctions([]);
       onSuccess?.();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to add HPC function");
+      toast.error(error instanceof Error ? error.message : "Failed to create HPC functions");
     }
   };
 
   return (
     <div className="rounded-lg border bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-xl font-bold">Add HPC Function</h2>
+      <h2 className="mb-6 text-xl font-bold">Add HPC Functions</h2>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input placeholder="Function title" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="function_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Function Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="my_hpc_function" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <div className="space-y-1">
-            <FormLabel>Function Source</FormLabel>
-            <FormDescription>Python code for the HPC function</FormDescription>
-            <Tabs defaultValue="file" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="file">Upload File</TabsTrigger>
-                <TabsTrigger value="text">Text Input</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="file" className="mt-4">
-                <div
-                  className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${
-                    isDragging
-                      ? "border-primary bg-primary/5"
-                      : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">
-                      Drag and drop your Python file here
-                    </p>
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="h-px w-16 bg-border" />
-                      <span className="text-xs text-muted-foreground">or</span>
-                      <div className="h-px w-16 bg-border" />
-                    </div>
-                    <div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                      >
-                        Click to Browse
-                      </Button>
-                    </div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".py"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          await handleFile(file);
-                        }
-                      }}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Supports .py files only
-                    </p>
-                  </div>
-                  {functionCode && (
-                    <div className="mt-4 text-sm text-green-600 font-medium">
-                      ✓ File loaded ({functionCode.length} characters)
-                    </div>
-                  )}
+            <FormLabel>Upload groundhog-hpc Script</FormLabel>
+            <FormDescription>Upload a Python file containing @hog.function() decorated functions</FormDescription>
+            <div
+              className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${
+                isDragging
+                  ? "border-primary bg-primary/5"
+                  : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <div className="space-y-3">
+                <p className="text-sm font-medium">
+                  Drag and drop your Python file here
+                </p>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-px w-16 bg-border" />
+                  <span className="text-xs text-muted-foreground">or</span>
+                  <div className="h-px w-16 bg-border" />
                 </div>
-              </TabsContent>
-
-              <TabsContent value="text" className="mt-4">
-                <EditableCodeField
-                  label="Python"
-                  language="python"
-                  fieldName="function_text"
-                  onEdit={setFunctionCode}
-                  onSave={async () => {}}
-                  value={functionCode}
-                  ownsThisEntity
-                  editing
-                  showSaveButton={false}
+                <div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                  >
+                    Click to Browse
+                  </Button>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".py"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      await handleFile(file);
+                    }
+                  }}
                 />
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          <div className="space-y-1">
-            <FormLabel>Description (Optional)</FormLabel>
-            <EditableCodeField
-              label="Markdown"
-              language="markdown"
-              fieldName="description"
-              onEdit={setDescription}
-              onSave={async () => {}}
-              value={description}
-              ownsThisEntity
-              editing
-              showSaveButton={false}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="deployment_ids"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel>Deployments (Optional)</FormLabel>
-                  <FormDescription>
-                    Select deployments for this function. You can add deployments later if needed.
-                  </FormDescription>
+                <p className="text-xs text-muted-foreground">
+                  Supports .py files only
+                </p>
+              </div>
+              {functionCode && (
+                <div className="mt-4 text-sm text-green-600 font-medium">
+                  ✓ File loaded ({functionCode.length} characters)
                 </div>
-                {deploymentsLoading ? (
-                  <p className="text-sm text-muted-foreground">Loading deployments...</p>
-                ) : deployments && deployments.length > 0 ? (
-                  <div className="space-y-2">
-                    {deployments.map((deployment) => (
-                      <FormField
-                        key={deployment.id}
-                        control={form.control}
-                        name="deployment_ids"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={deployment.id}
-                              className="flex flex-row items-start space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value.includes(deployment.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, deployment.id])
-                                      : field.onChange(
-                                          field.value.filter((value) => value !== deployment.id)
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Deployment {deployment.id}
-                                {deployment.conda_env_path && ` - ${deployment.conda_env_path}`}
-                              </FormLabel>
-                            </FormItem>
-                          );
-                        }}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    No deployments available. Add a deployment first.
-                  </p>
-                )}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              )}
+            </div>
+          </div>
 
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Adding..." : "Add Function"}
+          {/* Display uploaded code - Collapsible */}
+          {functionCode && (
+            <Card className="bg-gray-50">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="source-code" className="border-none">
+                  <AccordionTrigger className="px-4 hover:bg-gray-100">
+                    <div className="flex items-center gap-2">
+                      <FileCode className="h-5 w-5" />
+                      <span className="font-medium">Uploaded Script</span>
+                      {uploadedFileName && (
+                        <span className="text-sm text-muted-foreground">({uploadedFileName})</span>
+                      )}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="max-h-96 overflow-auto rounded border bg-white">
+                      <SyntaxHighlighter language="python">
+                        {functionCode}
+                      </SyntaxHighlighter>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </Card>
+          )}
+
+          {/* Parsed Functions Section */}
+          {parsedFunctions.length > 0 && (
+            <div className="rounded-lg border">
+              <div className="border-b bg-gray-50 p-4">
+                <h3 className="text-lg font-semibold">Edit Function Details</h3>
+                <p className="text-sm text-gray-600">
+                  Found {parsedFunctions.length} @hog.function() decorated function{parsedFunctions.length > 1 ? 's' : ''}.
+                  Select and customize the functions you want to create.
+                </p>
+              </div>
+              <div className="p-4">
+                <Accordion type="multiple" className="w-full">
+                  {parsedFunctions.map((fn, index) => (
+                    <AccordionItem key={fn.functionName} value={`func-${index}`}>
+                      <AccordionTrigger className="px-4 hover:bg-gray-50">
+                        <div className="flex items-center gap-3 w-full">
+                          <Checkbox
+                            checked={fn.selected}
+                            onCheckedChange={(checked) => {
+                              const updated = [...parsedFunctions];
+                              updated[index].selected = !!checked;
+                              setParsedFunctions(updated);
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <Code className="h-4 w-4" />
+                          <span className="font-mono">{fn.functionName}</span>
+                          {!fn.selected && (
+                            <span className="ml-auto text-xs text-muted-foreground">(Deselected)</span>
+                          )}
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 px-4 pt-4">
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium">Function Name</label>
+                          <code className="block rounded bg-muted px-3 py-2 text-sm font-mono">
+                            {fn.functionName}
+                          </code>
+                          <p className="text-xs text-muted-foreground">
+                            The Python function name (read-only)
+                          </p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium">Title *</label>
+                          <Input
+                            value={fn.title}
+                            onChange={(e) => {
+                              const updated = [...parsedFunctions];
+                              updated[index].title = e.target.value;
+                              setParsedFunctions(updated);
+                            }}
+                            placeholder="Function title"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            A descriptive title for your function
+                          </p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium">Description (Optional)</label>
+                          <Textarea
+                            value={fn.description}
+                            onChange={(e) => {
+                              const updated = [...parsedFunctions];
+                              updated[index].description = e.target.value;
+                              setParsedFunctions(updated);
+                            }}
+                            placeholder="Describe what this function does..."
+                            className="min-h-[100px]"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Explain what your function does and how it should be used
+                          </p>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            disabled={isPending || parsedFunctions.filter(fn => fn.selected).length === 0}
+          >
+            {isPending
+              ? `Creating ${parsedFunctions.filter(fn => fn.selected).length} function${parsedFunctions.filter(fn => fn.selected).length !== 1 ? 's' : ''}...`
+              : parsedFunctions.filter(fn => fn.selected).length > 0
+                ? `Create ${parsedFunctions.filter(fn => fn.selected).length} Function${parsedFunctions.filter(fn => fn.selected).length !== 1 ? 's' : ''}`
+                : 'Create Functions'}
           </Button>
         </form>
       </Form>

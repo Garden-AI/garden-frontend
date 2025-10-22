@@ -12,7 +12,7 @@ const HpcAdminDashboard: React.FC = () => {
 
   const { data: endpoints, refetch: refetchEndpoints } = useHpcEndpoints();
   const { data: deployments, refetch: refetchDeployments } = useHpcDeployments();
-  const { data: functions, refetch: refetchFunctions } = useHpcFunctions();
+  const { refetch: refetchFunctions } = useHpcFunctions();
 
   return (
     <div className="container mx-auto py-8">
@@ -110,32 +110,6 @@ const HpcAdminDashboard: React.FC = () => {
           </div>
 
           <CreateHpcFunctionForm onSuccess={() => refetchFunctions()} />
-
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-semibold">Existing Functions</h3>
-            {functions && functions.length > 0 ? (
-              <div className="space-y-3">
-                {functions.map((func) => (
-                  <div key={func.id} className="rounded-md border p-4">
-                    <div className="font-medium">{func.title}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {func.function_name}
-                    </div>
-                    {func.description && (
-                      <div className="mt-1 text-sm">{func.description}</div>
-                    )}
-                    {func.available_deployments && func.available_deployments.length > 0 && (
-                      <div className="mt-2 text-xs text-muted-foreground">
-                        Deployments: {func.available_deployments.length}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">No functions created yet.</p>
-            )}
-          </div>
         </TabsContent>
       </Tabs>
     </div>
