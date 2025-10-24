@@ -99,7 +99,7 @@ export const DeploymentTreeNode: React.FC<DeploymentTreeNodeProps> = ({
           {functions.map((func: ModalFunction, index: number) => (
             <FunctionTreeNode
               key={func.function_name || index}
-              fn={func}
+              fn={{ ...func, functionType: 'modal' }}
               selection={selection!}
               onSelect={onSelect}
             />
