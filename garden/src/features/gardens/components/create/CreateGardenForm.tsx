@@ -24,11 +24,16 @@ import { useCreateGarden } from "../../api/useCreateGarden";
  */
 interface CreateGardenFormProps {
   modalAppId?: string | null;
-  /** 
-   * When true, allows the user to upload a modal app file. 
+  hpcFunctionIds?: number[];
+  /**
+   * When true, allows the user to upload a modal app file.
    * When false (default), the modal app upload fields are hidden.
    */
   hasModalApp?: boolean;
+  /**
+   * When true, indicates HPC functions were uploaded
+   */
+  hasHpcFunctions?: boolean;
   /** Callback for tracking form submission state */
   onFormStateChange?: (isSubmitting: boolean) => void;
   /** Callback fired when garden is successfully created */
@@ -37,6 +42,7 @@ interface CreateGardenFormProps {
 
 export const CreateGardenForm = ({
   modalAppId,
+  hpcFunctionIds,
   onFormStateChange,
   onSuccess
 }: CreateGardenFormProps) => {
@@ -109,6 +115,12 @@ export const CreateGardenForm = ({
         // Remove duplicates if any
         gardenCreateRequest.modal_function_ids = [...new Set(gardenCreateRequest.modal_function_ids)];
       }
+
+      if (hpcFunctionIds && hpcFunctionIds.length > 0) {
+        // Add the uploaded HPC function IDs to the garden
+        gardenCreateRequest.hpc_function_ids = hpcFunctionIds;
+      }
+
       const garden = await createGarden(gardenCreateRequest);
       // TODO: remove this once the backend route hanldes DOI creation
       if (!garden.doi) {

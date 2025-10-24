@@ -6,15 +6,17 @@ interface OverallProgressProps {
   currentPhase: number;
   isCompleted?: boolean;
   isSubmitting?: boolean;
+  functionType?: 'modal' | 'hpc';
 }
 
 export const OverallProgress = ({
   currentPhase,
   isCompleted = false,
-  isSubmitting = false
+  isSubmitting = false,
+  functionType = 'modal'
 }: OverallProgressProps) => {
   const phases = [
-    { number: 1, label: "Deploy Modal App" },
+    { number: 1, label: functionType === 'hpc' ? "Upload HPC Functions" : "Deploy Modal App" },
     { number: 2, label: "Create Garden" }
   ];
 

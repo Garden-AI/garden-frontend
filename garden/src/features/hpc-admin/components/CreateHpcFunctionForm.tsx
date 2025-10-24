@@ -34,7 +34,7 @@ interface SelectedFunction {
 }
 
 interface CreateHpcFunctionFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (createdFunctionIds?: number[]) => void;
 }
 
 export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ onSuccess }) => {
@@ -141,7 +141,8 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
         return createFunction(requestData);
       });
 
-      await Promise.all(createPromises);
+      const results = await Promise.all(createPromises);
+      const createdIds = results.map(result => result.id);
 
       const count = selectedFunctions.length;
       toast.success(`Successfully created ${count} HPC function${count > 1 ? 's' : ''}!`);
@@ -151,7 +152,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
       setFunctionCode("");
       setUploadedFileName("");
       setParsedFunctions([]);
-      onSuccess?.();
+      onSuccess?.(createdIds);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create HPC functions");
     }
