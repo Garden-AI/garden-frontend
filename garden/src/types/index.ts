@@ -68,8 +68,7 @@ export interface BenchmarkResult {
 
 type HpcEndpointCreateRequest = components["schemas"]["HpcEndpointCreateRequest"];
 type HpcEndpointResponse = components["schemas"]["HpcEndpointResponse"];
-type HpcDeploymentCreateRequest = components["schemas"]["HpcDeploymentCreateRequest"];
-type HpcDeploymentResponse = components["schemas"]["HpcDeploymentResponse"];
+type HpcEndpointInfo = components["schemas"]["HpcEndpointInfo"];
 type HpcFunctionCreateRequest = components["schemas"]["HpcFunctionCreateRequest"];
 type HpcFunctionMetadataResponse = components["schemas"]["HpcFunctionMetadataResponse"];
 type HpcFunctionPatchRequest = components["schemas"]["HpcFunctionPatchRequest"];
@@ -114,8 +113,7 @@ export type {
   BenchmarkRequest,
   HpcEndpointCreateRequest,
   HpcEndpointResponse,
-  HpcDeploymentCreateRequest,
-  HpcDeploymentResponse,
+  HpcEndpointInfo,
   HpcFunctionCreateRequest,
   HpcFunctionMetadataResponse,
   HpcFunctionPatchRequest,

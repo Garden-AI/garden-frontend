@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Sprout } from "lucide-react";
 import { BaseGardenPanel } from "./BaseGardenPanel";
 import { GardenPanelHeaderActions } from "./GardenPanelHeaderActions";
-import { Garden, ModalFunction } from "@/types";
-import { Entity } from "../types";
+import { Garden, ModalFunction, HpcFunction, GardenPatchRequest } from "@/types";
+import { Entity, isHpcFunction } from "../types";
 import { useSelection } from "../hooks";
 import { usePatchGarden } from "../../gardens/api/usePatchGarden";
 import { useGardenFiltering } from "../hooks/useGardenFiltering";
@@ -46,32 +46,39 @@ export const MyGardensPanel = ({
   const handleAddToGarden = (draggedItems: any[], garden: Garden) => {
     // Extract functions from dragged items
     const functions = draggedItems
-      .filter(item => item.type === 'function' || item.function_name) // Handle both formats
+      .filter(item => item.type === 'function' || item.function_name)
       .map(item => item.type === 'function' ? item.data : item);
 
     if (functions.length === 0) return;
 
-    // Create updated modal_function_ids array
-    const currentFunctionIds = garden.modal_functions?.map(fn => fn.id) || [];
-    const newFunctionIds = functions.map((fn: ModalFunction) => fn.id);
+    // Determine if we're adding HPC or Modal functions (check first function)
+    const isHpc = isHpcFunction(functions[0]);
 
-    // Filter out functions already in the target garden
-    const existingFunctionIds = new Set(currentFunctionIds);
-    const filteredNewIds = newFunctionIds.filter(id => !existingFunctionIds.has(id));
+    const currentIds = isHpc
+      ? garden.hpc_functions?.map(fn => fn.id) || []
+      : garden.modal_functions?.map(fn => fn.id) || [];
+
+    const newIds = functions.map((fn: ModalFunction | HpcFunction) => fn.id);
+    const existingIds = new Set(currentIds);
+    const filteredNewIds = newIds.filter(id => !existingIds.has(id));
 
     if (filteredNewIds.length === 0) {
-      const functionNames = functions.map((fn: ModalFunction) => fn.function_name).join(', ');
+      const functionNames = functions.map((fn: ModalFunction | HpcFunction) => fn.function_name || fn.title).join(', ');
       toast.info(`${functionNames} already in "${garden.title}"`);
       return;
     }
 
-    const updatedFunctionIds = [...currentFunctionIds, ...filteredNewIds];
+    const updatedIds = [...currentIds, ...filteredNewIds];
 
-    // Update the garden
+    // Only send the array we're actually updating
+    const patchRequest: GardenPatchRequest = isHpc
+      ? { hpc_function_ids: updatedIds }
+      : { modal_function_ids: updatedIds };
+
     patchGardenMutation.mutate({
       doi: garden.doi,
-      garden: { modal_function_ids: updatedFunctionIds },
-      successMessage: `Added ${filteredNewIds.length === 1 ? `"${functions[0].function_name}"` : `${filteredNewIds.length} functions`} to "${garden.title}"`
+      garden: patchRequest,
+      successMessage: `Added ${filteredNewIds.length === 1 ? `"${functions[0].function_name || functions[0].title}"` : `${filteredNewIds.length} functions`} to "${garden.title}"`
     });
   };
 
