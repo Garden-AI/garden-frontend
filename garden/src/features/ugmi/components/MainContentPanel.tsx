@@ -46,6 +46,7 @@ export const MainContentPanel = ({ entity, onAfterDelete }: MainContentPanelProp
             <UnifiedHpcFunctionContent
               hpcFunction={entity as HpcFunction}
               ownsThisFunction={ownsEntity}
+              onDeleteSuccess={onAfterDelete}
             />
           ) : entityType === "garden" ? (
             <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} onAfterDelete={onAfterDelete} />
