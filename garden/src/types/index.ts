@@ -15,8 +15,8 @@ type ModalAppPatchRequest = components["schemas"]["ModalAppPatchRequest"]
 type ModalAppMetadataResponse = components["schemas"]["ModalAppMetadataResponse"];
 type BaseModalFunction = components["schemas"]["ModalFunctionMetadataResponse"];
 
-// Extended interface for UI-specific properties
-interface ModalFunction extends BaseModalFunction {
+// Extended type for UI-specific properties
+type ModalFunction = BaseModalFunction & {
   already_has_material?: boolean;
   contributors?: string[];
   functionType: 'modal'; // Add discriminator

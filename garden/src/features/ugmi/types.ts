@@ -96,7 +96,7 @@ export const isDeployment = (entity: Entity): entity is ModelDeployment =>
     matchEntityType(entity) === "deployment";
 
 export const isFunction = (entity: Entity): entity is ModalFunction =>
-    matchEntityType(entity) === "function";
+    matchEntityType(entity) === "modal-function";
 
 export const isHpcFunction = (entity: Entity): entity is HpcFunction =>
     "functionType" in entity && entity.functionType === "hpc";
