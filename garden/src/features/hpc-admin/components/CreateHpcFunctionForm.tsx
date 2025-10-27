@@ -123,7 +123,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
         const requestData = {
           title: fn.title,
           function_name: fn.functionName,
-          deployment_ids: [],
+          endpoint_ids: [],
           function_text: functionCode,
           description: fn.description.trim() || null,
           year: new Date().getFullYear().toString(),
@@ -237,7 +237,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
                   </AccordionTrigger>
                   <AccordionContent className="px-4 pb-4">
                     <div className="max-h-96 overflow-auto rounded border bg-white">
-                      <SyntaxHighlighter language="python">
+                      <SyntaxHighlighter>
                         {functionCode}
                       </SyntaxHighlighter>
                     </div>
