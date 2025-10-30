@@ -37,30 +37,26 @@ const restrictToHorizontalAxis: Modifier = ({ transform }) => {
 
 const getEntityIcon = (entity: Entity) => {
     const type = matchEntityType(entity);
-    switch (type) {
-        case "garden":
-            return Sprout;
-        case "function":
-            return Library;
-        case "deployment":
-            return Package;
-        default:
-            return Library;
+    if (type === "garden") {
+        return Sprout;
+    } else if (type === "modal-function" || type === "hpc-function") {
+        return Library;
+    } else if (type === "deployment") {
+        return Package;
     }
+    return Library;
 };
 
 const getEntityName = (entity: Entity): string => {
     const type = matchEntityType(entity);
-    switch (type) {
-        case "garden":
-            return (entity as Garden).title || "Untitled Garden";
-        case "function":
-            return (entity as ModalFunction).function_name || "Untitled Function";
-        case "deployment":
-            return (entity as ModelDeployment).name || "Untitled Deployment";
-        default:
-            return "Unknown";
+    if (type === "garden") {
+        return (entity as Garden).title || "Untitled Garden";
+    } else if (type === "modal-function" || type === "hpc-function") {
+        return (entity as ModalFunction).function_name || "Untitled Function";
+    } else if (type === "deployment") {
+        return (entity as ModelDeployment).name || "Untitled Deployment";
     }
+    return "Unknown";
 };
 
 interface SortableTabProps {
