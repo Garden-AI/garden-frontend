@@ -4,9 +4,10 @@ import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import { useGetGarden } from "../../gardens/api/useGetGarden";
 import { useGetModalFunction } from "../../functions/modal/api/useGetModalFunction";
+import { useGetHpcFunction } from "../../functions/hpc/api/useGetHpcFunction";
 import { GardenMetadataSidebar } from "../../gardens/components/GardenMetadataSidebar";
 import { FunctionSidebar } from "../../functions/shared/components/FunctionSidebar";
-import { Garden, ModalFunction } from "@/types";
+import { Garden, ModalFunction, HpcFunction } from "@/types";
 import { GardenFunction } from "../../functions/shared/types/function.types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { Entity, matchEntityType } from "../types";
@@ -27,10 +28,15 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
     const { data: freshGarden } = useGetGarden(gardenEntity?.doi || "");
     const currentGarden = gardenEntity && (freshGarden || gardenEntity);
 
-    // For functions, fetch fresh data
-    const functionEntity = entityType === "function" ? (entity as ModalFunction) : null;
-    const { data: freshModalFunction } = useGetModalFunction(functionEntity?.id.toString() || "");
-    const currentModalFunction = functionEntity && (freshModalFunction || functionEntity);
+    // For modal functions, fetch fresh data
+    const modalFunctionEntity = entityType === "modal-function" ? (entity as ModalFunction) : null;
+    const { data: freshModalFunction } = useGetModalFunction(modalFunctionEntity?.id.toString() || "");
+    const currentModalFunction = modalFunctionEntity && (freshModalFunction || modalFunctionEntity);
+
+    // For HPC functions, fetch fresh data
+    const hpcFunctionEntity = entityType === "hpc-function" ? (entity as HpcFunction) : null;
+    const { data: freshHpcFunction } = useGetHpcFunction(hpcFunctionEntity?.id.toString() || "");
+    const currentHpcFunction = hpcFunctionEntity && (freshHpcFunction || hpcFunctionEntity);
 
     // Check ownership
     const isSuperUser = SUPER_USERS.includes(auth?.authorization?.user?.sub);
@@ -75,13 +81,30 @@ export const MetadataPanel = ({ entity, onDoubleClick }: MetadataPanelProps) => 
         );
     }
 
-    if (entityType === "function" && currentModalFunction) {
+    if (entityType === "modal-function" && currentModalFunction) {
         const gardenFunction: GardenFunction = {
             ...currentModalFunction,
             functionType: 'modal',
         };
         return (
-            <div 
+            <div
+                className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 rounded-lg cursor-pointer"
+                onDoubleClick={onDoubleClick}
+            >
+                <div className="w-full [&>*]:!w-full [&>*]:!max-w-full">
+                    <FunctionSidebar gardenFunction={gardenFunction} ownsThisFunction={ownsEntity} />
+                </div>
+            </div>
+        );
+    }
+
+    if (entityType === "hpc-function" && currentHpcFunction) {
+        const gardenFunction: GardenFunction = {
+            ...currentHpcFunction,
+            functionType: 'hpc',
+        };
+        return (
+            <div
                 className="h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent p-3 bg-slate-50 rounded-lg cursor-pointer"
                 onDoubleClick={onDoubleClick}
             >

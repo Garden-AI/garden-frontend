@@ -16,14 +16,15 @@ export const useGetModalFunction = (id: string) => {
     queryKey: ["modalFunctions", Number(id)],
     queryFn: async () => {
       const response = await axios.get(`/modal-functions/${id}`);
-      const modalFunction = response.data as ModalFunction;
+      const modalFunction = response.data;
 
       // Get the parent modal app to get ownership information
       const modalAppResponse = await axios.get(`/modal-apps/${modalFunction.modal_app_id}`);
       return {
         ...modalFunction,
         owner_identity_id: modalAppResponse.data.owner_identity_id,
-      };
+        functionType: 'modal' as const, // Add discriminator
+      } as ModalFunction;
     },
   });
 };

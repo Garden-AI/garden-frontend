@@ -129,17 +129,36 @@ export const GardenTreeNode: React.FC<GardenTreeNodeProps> = ({
           onSelect={handleSelect}
         />
 
-        {isExpanded && garden.modal_functions && garden.modal_functions.length > 0 && (
-          <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
-            {garden.modal_functions.map(fn => (
-              <FunctionTreeNode
-                key={fn.id}
-                fn={{ ...fn, functionType: 'modal' }}
-                selection={selection}
-                onSelect={onSelect}
-              />
-            ))}
-          </div>
+        {isExpanded && (
+          <>
+            {/* Modal Functions */}
+            {garden.modal_functions && garden.modal_functions.length > 0 && (
+              <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
+                {garden.modal_functions.map(fn => (
+                  <FunctionTreeNode
+                    key={`modal-${fn.id}`}
+                    fn={{ ...fn, functionType: 'modal' }}
+                    selection={selection}
+                    onSelect={onSelect}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* HPC Functions */}
+            {garden.hpc_functions && garden.hpc_functions.length > 0 && (
+              <div className="ml-7 mt-1 space-y-1 border-l border-gray-200 pl-3">
+                {garden.hpc_functions.map(fn => (
+                  <FunctionTreeNode
+                    key={`hpc-${fn.id}`}
+                    fn={{ ...fn, functionType: 'hpc' }}
+                    selection={selection}
+                    onSelect={onSelect}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </TreeNode>

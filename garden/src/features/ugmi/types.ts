@@ -1,11 +1,11 @@
-import { Garden, ModalFunction } from "@/types";
+import { Garden, ModalFunction, HpcFunction } from "@/types";
 import { components } from "@/types/backend-schema";
 import { GardenFunction } from "../functions/shared/types/function.types";
 import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 
-export type Entity = Garden | ModalFunction | ModelDeployment | GardenFunction;
+export type Entity = Garden | ModalFunction | ModelDeployment | GardenFunction | HpcFunction;
 
-export type EntityType = "garden" | "deployment" | "function";
+export type EntityType = "garden" | "deployment" | "modal-function" | "hpc-function";
 
 // Click event type for UI interactions
 export type ClickEvent = { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean };
@@ -23,9 +23,14 @@ export const matchEntityType = (entity: Entity | null): EntityType | null => {
         return "deployment";
     }
 
-    // Check if it's a ModalFunction (has function_name or title, and id)
-    if (("function_name" in entity || "title" in entity) && "id" in entity) {
-        return "function";
+    // Check functionType discriminator for functions
+    if ("functionType" in entity) {
+        if (entity.functionType === "hpc") {
+            return "hpc-function";
+        }
+        if (entity.functionType === "modal") {
+            return "modal-function";
+        }
     }
 
     // Fallback - shouldn't happen
@@ -40,8 +45,10 @@ export const getEntityId = (entity: Entity): string => {
             return `garden-${(entity as Garden).doi}`;
         case "deployment":
             return `deployment-${(entity as ModelDeployment).originalData?.id || 'unknown'}`;
-        case "function":
-            return `function-${(entity as ModalFunction).id}`;
+        case "modal-function":
+            return `modal-function-${(entity as ModalFunction).id}`;
+        case "hpc-function":
+            return `hpc-function-${(entity as HpcFunction).id}`;
         default:
             return "unknown";
     }
@@ -54,8 +61,10 @@ export const getEntityDisplayName = (entity: Entity): string => {
             return (entity as Garden).title;
         case "deployment":
             return (entity as ModelDeployment).name;
-        case "function":
-            return (entity as ModalFunction).function_name || "Unknown Function";
+        case "modal-function":
+            return (entity as ModalFunction).function_name || (entity as ModalFunction).title || "Unknown Function";
+        case "hpc-function":
+            return (entity as HpcFunction).title || (entity as HpcFunction).function_name || "Unknown Function";
         default:
             return "Unknown Entity";
     }
@@ -68,8 +77,11 @@ export const getFunctionsFromEntity = (entity: Entity): ModalFunction[] => {
             return (entity as Garden).modal_functions?.map(func => ({ ...func, functionType: 'modal' })) || [];
         case "deployment":
             return (entity as ModelDeployment).originalData?.modal_functions?.map((func: components["schemas"]["ModalFunctionMetadataResponse"]) => ({ ...func, functionType: 'modal' })) || [];
-        case "function":
+        case "modal-function":
             return [{ ...(entity as ModalFunction), functionType: 'modal' }];
+        case "hpc-function":
+            // HPC functions don't have modal functions
+            return [];
         default:
             return [];
     }
@@ -84,4 +96,10 @@ export const isDeployment = (entity: Entity): entity is ModelDeployment =>
     matchEntityType(entity) === "deployment";
 
 export const isFunction = (entity: Entity): entity is ModalFunction =>
-    matchEntityType(entity) === "function";
+    matchEntityType(entity) === "modal-function";
+
+export const isHpcFunction = (entity: Entity): entity is HpcFunction =>
+    "functionType" in entity && entity.functionType === "hpc";
+
+export const isModalFunction = (entity: Entity): entity is ModalFunction =>
+    "functionType" in entity && entity.functionType === "modal";

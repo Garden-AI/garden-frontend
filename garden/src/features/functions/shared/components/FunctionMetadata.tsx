@@ -75,18 +75,18 @@ export const FunctionMetadata = ({
 
             {isHpcFunction(gardenFunction) && (
                 <>
-                    
+
                     <EditableMetadataField
                         label="Available Endpoints"
                         helpText="Globus Compute endpoints where this function is available"
-                        value={gardenFunction.available_endpoints}
+                        value={gardenFunction.available_endpoints?.map(e => e.name) || []}
                         fieldName="available_endpoints"
                         entity={gardenFunction}
                         ownsThisEntity={false}
                         isArray={true}
                         onUpdate={updateFunction}
                     />
-                    
+
                 </>
             )}
         </>

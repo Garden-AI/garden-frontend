@@ -548,63 +548,14 @@ export interface paths {
          *     - Must be function owner OR super user
          *     - Function must have a draft DOI (doi_is_draft=True)
          *     - Function must not be in any gardens
-         *     - If function has invocation history, deletion will be blocked
+         *
+         *     Note: Invocation logs will be preserved with function_id set to NULL.
          */
         delete: operations["delete_hpc_function_hpc_functions__id__delete"];
         options?: never;
         head?: never;
         /** Update Hpc Function */
         patch: operations["update_hpc_function_hpc_functions__id__patch"];
-        trace?: never;
-    };
-    "/hpc/deployments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Hpc Deployments */
-        get: operations["get_hpc_deployments_hpc_deployments_get"];
-        put?: never;
-        /** Create Hpc Deployment */
-        post: operations["create_hpc_deployment_hpc_deployments_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hpc/deployments/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Hpc Deployment */
-        get: operations["get_hpc_deployment_hpc_deployments__id__get"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete Hpc Deployment
-         * @description Delete an HPC deployment (admin-only).
-         *
-         *     Requirements:
-         *     - Must be super user
-         *     - Deployment must not be used by any functions
-         *     - If deployment has invocation history, deletion will be blocked
-         */
-        delete: operations["delete_hpc_deployment_hpc_deployments__id__delete"];
-        options?: never;
-        head?: never;
-        /**
-         * Update Hpc Deployment
-         * @description Update an HPC deployment (admin-only).
-         *
-         *     Supports updating conda_env_path, user_endpoint_config, and endpoint associations.
-         */
-        patch: operations["update_hpc_deployment_hpc_deployments__id__patch"];
         trace?: never;
     };
     "/hpc/endpoints": {
@@ -642,8 +593,9 @@ export interface paths {
          *
          *     Requirements:
          *     - Must be super user
-         *     - Endpoint must not be used by any deployments
-         *     - If endpoint has invocation history, deletion will be blocked
+         *     - Endpoint must not be used by any functions
+         *
+         *     Note: Invocation logs will be preserved with hpc_endpoint_id set to NULL.
          */
         delete: operations["delete_hpc_endpoint_hpc_endpoints__id__delete"];
         options?: never;
@@ -651,8 +603,6 @@ export interface paths {
         /**
          * Update Hpc Endpoint
          * @description Update an HPC endpoint (admin-only).
-         *
-         *     Note: gcmu_id is immutable and cannot be changed after creation.
          */
         patch: operations["update_hpc_endpoint_hpc_endpoints__id__patch"];
         trace?: never;
@@ -1235,57 +1185,33 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** HpcDeploymentCreateRequest */
-        HpcDeploymentCreateRequest: {
-            /** Conda Env Path */
-            conda_env_path?: string | null;
-            /**
-             * Endpoint Ids
-             * @default []
-             */
-            endpoint_ids: number[];
-        };
-        /** HpcDeploymentPatchRequest */
-        HpcDeploymentPatchRequest: {
-            /** Conda Env Path */
-            conda_env_path?: string | null;
-            /** User Endpoint Config */
-            user_endpoint_config?: {
-                [key: string]: unknown;
-            } | null;
-            /** Endpoint Ids */
-            endpoint_ids?: number[] | null;
-        };
-        /** HpcDeploymentResponse */
-        HpcDeploymentResponse: {
-            /** Conda Env Path */
-            conda_env_path?: string | null;
-            /** Id */
-            id: number;
-            /**
-             * Endpoint Ids
-             * @default []
-             */
-            endpoint_ids: number[];
-        };
         /** HpcEndpointCreateRequest */
         HpcEndpointCreateRequest: {
             /** Name */
             name: string;
             /** Gcmu Id */
-            gcmu_id: string;
+            gcmu_id?: string | null;
+        };
+        /** HpcEndpointInfo */
+        HpcEndpointInfo: {
+            /** Name */
+            name: string;
+            /** Gcmu Id */
+            gcmu_id: string | null;
         };
         /** HpcEndpointPatchRequest */
         HpcEndpointPatchRequest: {
             /** Name */
             name?: string | null;
+            /** Gcmu Id */
+            gcmu_id?: string | null;
         };
         /** HpcEndpointResponse */
         HpcEndpointResponse: {
             /** Name */
             name: string;
             /** Gcmu Id */
-            gcmu_id: string;
+            gcmu_id?: string | null;
             /** Id */
             id: number;
         };
@@ -1324,19 +1250,8 @@ export interface components {
             notebooks?: components["schemas"]["_NotebookMetadata"][];
             /** Function Name */
             function_name: string;
-            /** Deployment Ids */
-            deployment_ids: number[];
-        };
-        /** HpcFunctionDeploymentInfo */
-        HpcFunctionDeploymentInfo: {
-            /** Deployment Id */
-            deployment_id: number;
-            /** Endpoint Name */
-            endpoint_name: string;
-            /** Endpoint Gcmu Id */
-            endpoint_gcmu_id: string;
-            /** Conda Env Path */
-            conda_env_path: string;
+            /** Endpoint Ids */
+            endpoint_ids: number[];
         };
         /** HpcFunctionMetadataResponse */
         HpcFunctionMetadataResponse: {
@@ -1375,10 +1290,8 @@ export interface components {
             id: number;
             /** Function Name */
             function_name: string;
-            /** Available Deployments */
-            available_deployments?: components["schemas"]["HpcFunctionDeploymentInfo"][];
             /** Available Endpoints */
-            available_endpoints?: string[];
+            available_endpoints?: components["schemas"]["HpcEndpointInfo"][];
             /**
              * Num Invocations
              * @default 0
@@ -1419,8 +1332,8 @@ export interface components {
             notebooks?: components["schemas"]["_NotebookMetadata"][] | null;
             /** Function Name */
             function_name?: string | null;
-            /** Deployment Ids */
-            deployment_ids?: number[] | null;
+            /** Endpoint Ids */
+            endpoint_ids?: number[] | null;
         };
         /** HpcInvocationCreateRequest */
         HpcInvocationCreateRequest: {
@@ -3237,167 +3150,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HpcFunctionMetadataResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_hpc_deployments_hpc_deployments_get: {
-        parameters: {
-            query?: {
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HpcDeploymentResponse"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    create_hpc_deployment_hpc_deployments_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["HpcDeploymentCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HpcDeploymentResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_hpc_deployment_hpc_deployments__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HpcDeploymentResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_hpc_deployment_hpc_deployments__id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    update_hpc_deployment_hpc_deployments__id__patch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["HpcDeploymentPatchRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HpcDeploymentResponse"];
                 };
             };
             /** @description Validation Error */

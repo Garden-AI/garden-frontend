@@ -3,10 +3,11 @@ import { ResizablePanel } from "@/components/shadcn/resizable";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import { ModelDeploymentDetails } from "../../model-deployments/ModelDeploymentDetails";
-import { Garden, ModalFunction } from "@/types";
+import { Garden, ModalFunction, HpcFunction } from "@/types";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { UnifiedGardenContent } from "./UnifiedGardenContent";
 import { UnifiedFunctionContent } from "./UnifiedFunctionContent";
+import { UnifiedHpcFunctionContent } from "./UnifiedHpcFunctionContent";
 import { Entity, matchEntityType } from "../types";
 
 type MainContentPanelProps = {
@@ -36,10 +37,16 @@ export const MainContentPanel = ({ entity, onAfterDelete }: MainContentPanelProp
         </div>
       ) : (
         <div className="scrollbar-thin scrollbar-track-transparent h-full overflow-y-auto">
-          {entityType === "function" ? (
+          {entityType === "modal-function" ? (
             <UnifiedFunctionContent
               modalFunction={entity as ModalFunction}
               ownsThisFunction={ownsEntity}
+            />
+          ) : entityType === "hpc-function" ? (
+            <UnifiedHpcFunctionContent
+              hpcFunction={entity as HpcFunction}
+              ownsThisFunction={ownsEntity}
+              onDeleteSuccess={onAfterDelete}
             />
           ) : entityType === "garden" ? (
             <UnifiedGardenContent garden={entity as Garden} ownsThisGarden={ownsEntity} onAfterDelete={onAfterDelete} />

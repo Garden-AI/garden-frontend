@@ -49,7 +49,6 @@ export const usePatchHpcFunction = (functionId?: number) => {
       queryClient.setQueryData(["hpc-functions", functionId], updatedFunction);
       queryClient.invalidateQueries({ queryKey: ["hpc-functions", functionId] });
 
-      // TODO: This invalidates ALL gardens. Make it more surgical when hpcFunction.garden_doi becomes available.
       queryClient.invalidateQueries({ queryKey: ["gardens"] });
 
       toast.success("Function updated successfully");

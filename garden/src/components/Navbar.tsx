@@ -75,7 +75,7 @@ const Navbar = () => {
               <TooltipTrigger asChild>
                 <button
                   className="flex gap-1 p-2 hover:bg-gray-100 rounded"
-                  onClick={() => { navigate('/garden/create?deploy=modal-app') }}
+                  onClick={() => { navigate('/garden/create') }}
                 >
                   <Plus size={24} className="hover:text-green" />
                 </button>
