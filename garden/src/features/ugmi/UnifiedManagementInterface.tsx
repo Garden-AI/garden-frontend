@@ -1,5 +1,5 @@
 import React from "react";
-import { ResizablePanelGroup, ResizableHandle } from "@/components/shadcn/resizable";
+import { ResizablePanelGroup, ResizableHandle, ResizablePanel } from "@/components/shadcn/resizable";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { toast } from "sonner";
 import { Garden } from "@/types";
@@ -7,19 +7,23 @@ import { ModelDeployment } from "../model-deployments/ModelDeployments";
 import { LeftSidePanel } from "./components/LeftSidePanel";
 import { MainContentPanel } from "./components/MainContentPanel";
 import { RightSidePanel } from "./components/RightSidePanel";
+import { OpenTabsBar } from "./components/OpenTabsBar";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSelection } from "./hooks";
+import { useTabManager } from "./hooks/useTabManager";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { Entity } from "./types";
 
 export const UnifiedManagementInterface = () => {
   const queryClient = useQueryClient();
 
-  // Initialize hooks
   const selection = useSelection();
+  const tabs = useTabManager();
   const dragAndDrop = useDragDrop();
 
   const handleItemSelected = (entity: Entity, event?: { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean }) => {
+    tabs.openTab(entity);
+    
     if (event) {
       selection.handleClick(entity, event);
     } else {
@@ -28,13 +32,41 @@ export const UnifiedManagementInterface = () => {
   };
 
   const handleAfterDelete = () => {
+    if (selection.primarySelection) {
+      const entityId = tabs.openTabs.find(tab => 
+        tab.entity === selection.primarySelection
+      )?.id;
+      
+      if (entityId) {
+        tabs.closeTab(entityId);
+      }
+    }
+    
     selection.clearSelection();
   };
 
   const handleDeploymentCreated = (deployment: ModelDeployment) => {
-    // Select the new deployment
+    tabs.openTab(deployment);
     selection.selectSingle(deployment);
   };
+
+  const handleTabClick = (tabId: string) => {
+    tabs.setActiveTab(tabId);
+    const tabEntity = tabs.openTabs.find(tab => tab.id === tabId)?.entity;
+    if (tabEntity) {
+      selection.selectSingle(tabEntity);
+    }
+  };
+
+  const handleTabClose = (tabId: string) => {
+    tabs.closeTab(tabId);
+    
+    if (tabs.openTabs.length === 1) {
+      selection.clearSelection();
+    }
+  };
+
+  const displayEntity = tabs.getActiveEntity();
 
   return (
     <DndContext
@@ -58,20 +90,30 @@ export const UnifiedManagementInterface = () => {
             withHandle
             className="w-1 bg-slate-200 transition-colors hover:bg-slate-300"
           />
-          <MainContentPanel entity={selection.primarySelection} onAfterDelete={handleAfterDelete} />
+          
+          <ResizablePanel minSize={25} defaultSize={40} className="flex flex-col bg-white">
+            <OpenTabsBar
+              tabs={tabs.openTabs}
+              activeTabId={tabs.activeTabId}
+              onTabClick={handleTabClick}
+              onTabClose={handleTabClose}
+              onReorder={tabs.reorderTabs}
+            />
+            <MainContentPanel entity={displayEntity} onAfterDelete={handleAfterDelete} />
+          </ResizablePanel>
+          
           <ResizableHandle
             withHandle
             className="w-1 bg-slate-200 transition-colors hover:bg-slate-300"
           />
           <RightSidePanel
-            entity={selection.primarySelection}
+            entity={displayEntity}
             onItemSelected={handleItemSelected}
             selection={selection}
           />
         </ResizablePanelGroup>
       </div>
 
-      {/* Floating Drop Indicator */}
       {dragAndDrop.isDragging && dragAndDrop.activeDropTarget && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
           <div className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 font-medium">

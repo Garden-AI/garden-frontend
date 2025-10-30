@@ -1,5 +1,4 @@
 import React from "react";
-import { ResizablePanel } from "@/components/shadcn/resizable";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import { SUPER_USERS } from "@/utils/utils";
 import { ModelDeploymentDetails } from "../../model-deployments/ModelDeploymentDetails";
@@ -26,8 +25,8 @@ export const MainContentPanel = ({ entity, onAfterDelete }: MainContentPanelProp
       isSuperUser);
 
   return (
-    <ResizablePanel minSize={25} defaultSize={40} className="flex flex-col bg-white">
-      {entityType === null ? (
+    <div className="flex flex-col flex-1 bg-white">
+      {entityType === null || entity === null ? (
         <div className="flex h-full items-center justify-center">
           <div className="space-y-2 text-center">
             <div className="text-4xl">🌿</div>
@@ -55,7 +54,6 @@ export const MainContentPanel = ({ entity, onAfterDelete }: MainContentPanelProp
           )}
         </div>
       )}
-    </ResizablePanel>
+    </div>
   );
 };
-
