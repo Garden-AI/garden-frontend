@@ -16,16 +16,30 @@ export function useDragDrop() {
 
   const handleDragStart = useCallback((event: any) => {
     const { active } = event;
+    
+    if (active.data.current?.type === 'tab') {
+      return;
+    }
+    
     setDraggedItems([active.data.current]);
   }, []);
 
   const handleDragOver = useCallback((event: any) => {
-    const { over } = event;
+    const { over, active } = event;
+    
+    if (active.data.current?.type === 'tab') {
+      return;
+    }
+    
     setActiveDropTarget(over?.id || null);
   }, []);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { over, active } = event;
+    
+    if (active.data.current?.type === 'tab') {
+      return;
+    }
     
     if (over && over.data.current?.onDrop && active.data.current) {
       over.data.current.onDrop([active.data.current]);
