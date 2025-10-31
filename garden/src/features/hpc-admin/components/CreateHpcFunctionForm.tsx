@@ -195,7 +195,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
         const requestData = {
           title: fn.title,
           function_name: fn.functionName,
-          endpoint_ids: [],
+          endpoint_ids: selectedEndpointIds,
           function_text: functionCode,
           description: fn.description.trim() || null,
           year: new Date().getFullYear().toString(),
@@ -224,6 +224,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
       setFunctionCode("");
       setUploadedFileName("");
       setParsedFunctions([]);
+      setSelectedEndpointIds([]);
       onSuccess?.(createdIds);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create HPC functions");
