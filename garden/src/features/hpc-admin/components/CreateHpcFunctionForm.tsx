@@ -21,6 +21,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/ca
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/shadcn/accordion";
 import { Textarea } from "@/components/shadcn/textarea";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/shadcn/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/shadcn/command";
+import { Badge } from "@/components/shadcn/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/shadcn/alert-dialog";
+import { ChevronsUpDown, Plus, X, Trash2 } from "lucide-react";
+import { CreateHpcEndpointDialog } from "./CreateHpcEndpointDialog";
+import { useHpcEndpoints } from "../api/useHpcEndpoints";
+import { useDeleteHpcEndpoint } from "../api/useDeleteHpcEndpoint";
+import { HpcEndpointResponse } from "@/types";
 
 const hpcFunctionSchema = z.object({});
 
@@ -44,6 +72,50 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [parsedFunctions, setParsedFunctions] = useState<SelectedFunction[]>([]);
+
+  const [selectedEndpointIds, setSelectedEndpointIds] = useState<number[]>([]);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [endpointToDelete, setEndpointToDelete] = useState<HpcEndpointResponse | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const { data: endpoints, isLoading: endpointsLoading } = useHpcEndpoints();
+  const { mutate: deleteEndpoint } = useDeleteHpcEndpoint();
+
+  const toggleEndpoint = (id: number) => {
+    setSelectedEndpointIds((prev) =>
+      prev.includes(id) ? prev.filter((eid) => eid !== id) : [...prev, id]
+    );
+  };
+
+  const removeEndpoint = (id: number) => {
+    setSelectedEndpointIds((prev) => prev.filter((eid) => eid !== id));
+  };
+
+  const handleEndpointCreated = (endpoint: HpcEndpointResponse) => {
+    setSelectedEndpointIds((prev) => [...prev, endpoint.id]);
+  };
+
+  const handleDeleteClick = (endpoint: HpcEndpointResponse) => {
+    setEndpointToDelete(endpoint);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (endpointToDelete) {
+      deleteEndpoint(endpointToDelete.id, {
+        onSuccess: () => {
+          // Remove from selection if currently selected
+          removeEndpoint(endpointToDelete.id);
+          setDeleteDialogOpen(false);
+          setEndpointToDelete(null);
+        },
+      });
+    }
+  };
+
+  const selectedEndpoints = endpoints?.filter((ep) =>
+    selectedEndpointIds.includes(ep.id)
+  ) || [];
 
   const handleFile = async (file: File) => {
     if (file.type === "text/x-python" || file.name.endsWith(".py")) {
