@@ -589,10 +589,10 @@ export interface paths {
         post?: never;
         /**
          * Delete Hpc Endpoint
-         * @description Delete an HPC endpoint (admin-only).
+         * @description Delete an HPC endpoint (owner or admin only).
          *
          *     Requirements:
-         *     - Must be super user
+         *     - Must be owner or super user
          *     - Endpoint must not be used by any functions
          *
          *     Note: Invocation logs will be preserved with hpc_endpoint_id set to NULL.
@@ -602,7 +602,7 @@ export interface paths {
         head?: never;
         /**
          * Update Hpc Endpoint
-         * @description Update an HPC endpoint (admin-only).
+         * @description Update an HPC endpoint (owner or admin only).
          */
         patch: operations["update_hpc_endpoint_hpc_endpoints__id__patch"];
         trace?: never;
@@ -1214,6 +1214,13 @@ export interface components {
             gcmu_id?: string | null;
             /** Id */
             id: number;
+            /** Owner */
+            owner: string;
+            /**
+             * Owner Identity Id
+             * Format: uuid
+             */
+            owner_identity_id: string;
         };
         /** HpcFunctionCreateRequest */
         HpcFunctionCreateRequest: {

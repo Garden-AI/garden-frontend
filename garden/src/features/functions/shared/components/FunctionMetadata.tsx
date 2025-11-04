@@ -1,6 +1,7 @@
 import React from 'react';
 import { GardenFunction, isModalFunction, isHpcFunction } from "../types/function.types";
 import { EditableMetadataField } from '@/components/shared/metadata';
+import EditableEndpointsField from '@/components/shared/metadata/EditableEndpointsField';
 
 interface FunctionMetadataProps {
     gardenFunction: GardenFunction;
@@ -74,20 +75,13 @@ export const FunctionMetadata = ({
             )}
 
             {isHpcFunction(gardenFunction) && (
-                <>
-
-                    <EditableMetadataField
-                        label="Available Endpoints"
-                        helpText="Globus Compute endpoints where this function is available"
-                        value={gardenFunction.available_endpoints?.map(e => e.name) || []}
-                        fieldName="available_endpoints"
-                        entity={gardenFunction}
-                        ownsThisEntity={false}
-                        isArray={true}
-                        onUpdate={updateFunction}
-                    />
-
-                </>
+                <EditableEndpointsField
+                    label="Available Endpoints"
+                    helpText="Globus Compute endpoints where this function is available"
+                    availableEndpoints={gardenFunction.available_endpoints}
+                    ownsThisEntity={ownsThisFunction}
+                    onUpdate={updateFunction as any}
+                />
             )}
         </>
     );
