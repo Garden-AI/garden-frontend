@@ -10,8 +10,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/shadcn/tooltip";
-import { HpcEndpointSelector } from "@/features/hpc-admin/components/HpcEndpointSelector";
-import { useHpcEndpoints } from "@/features/hpc-admin/api/useHpcEndpoints";
+import { HpcEndpointSelector } from "@/features/functions/hpc/components/HpcEndpointSelector";
+import { useHpcEndpoints } from "@/features/functions/hpc/api/useHpcEndpoints";
 import { Badge } from "@/components/shadcn/badge";
 
 export interface EditableEndpointsFieldProps {

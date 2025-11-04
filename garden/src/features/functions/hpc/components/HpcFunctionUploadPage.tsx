@@ -1,5 +1,5 @@
 import React from "react";
-import { CreateHpcFunctionForm } from "@/features/hpc-admin/components/CreateHpcFunctionForm";
+import { CreateHpcFunctionForm } from "./CreateHpcFunctionForm";
 
 interface HpcFunctionUploadPageProps {
   onSuccess?: (ids: number[]) => void;

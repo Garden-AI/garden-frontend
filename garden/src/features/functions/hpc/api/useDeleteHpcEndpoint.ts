@@ -14,8 +14,8 @@ export const useDeleteHpcEndpoint = () => {
       queryClient.invalidateQueries({ queryKey: ["hpc-endpoints"] });
       toast.success("Endpoint deleted successfully");
     },
-    onError: (error: AxiosError) => {
-      const detail = error.response?.data?.detail as string | undefined;
+    onError: (error: AxiosError<{ detail?: string }>) => {
+      const detail = error.response?.data?.detail;
       toast.error(
         detail || "Cannot delete endpoint - it may be in use by existing functions"
       );

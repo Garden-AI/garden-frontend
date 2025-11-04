@@ -124,10 +124,6 @@ const Navbar = () => {
                           <BarChart3 size={18} />
                           <Link to="/metrics"> Metrics Dashboard </Link>
                         </div>
-                        <div className="flex flex-row gap-2 hover:text-green hover:underline">
-                          <Settings size={18} />
-                          <Link to="/hpc"> HPC Admin </Link>
-                        </div>
                       </>
                     )}
                     <div

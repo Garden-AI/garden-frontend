@@ -18,7 +18,7 @@ import { HpcEndpointResponse } from "@/types";
 
 const hpcEndpointSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  gcmu_id: z.string().min(1, "Globus Compute endpoint ID is required"),
+  gcmu_id: z.string().min(0),
 });
 
 type HpcEndpointFormData = z.infer<typeof hpcEndpointSchema>;
