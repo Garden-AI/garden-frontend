@@ -19,7 +19,7 @@ import {
 // Mock API hooks and libraries
 vi.mock("@/features/users/api/useGetUserInfo");
 vi.mock("@/features/functions/modal/api/useGetAllModalFunctions");
-vi.mock("@/features/hpc-admin/api/useHpcFunctions");
+vi.mock("@/features/functions/hpc/api/useHpcFunctions");
 vi.mock("@/features/gardens/api/usePatchGarden");
 vi.mock("@/features/model-deployments/api/useGetModelDeployments");
 vi.mock("sonner");
