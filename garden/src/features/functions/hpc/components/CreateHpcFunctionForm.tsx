@@ -22,6 +22,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Textarea } from "@/components/shadcn/textarea";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import { HpcEndpointSelector } from "./HpcEndpointSelector";
+import MultipleSelector, { Option } from "@/components/shadcn/multiple-select";
 
 const hpcFunctionSchema = z.object({});
 
@@ -32,6 +33,9 @@ interface SelectedFunction {
   title: string;
   description: string;
   selected: boolean;
+  authors: string[];
+  contributors: string[];
+  tags: string[];
 }
 
 interface CreateHpcFunctionFormProps {
@@ -66,6 +70,9 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
           title: functionNameToTitle(fn.name),
           description: "",
           selected: true, // Select all by default
+          authors: [],
+          contributors: [],
+          tags: [],
         }));
         setParsedFunctions(selectedFunctions);
         toast.success(`Loaded ${file.name} - found ${functions.length} function${functions.length > 1 ? 's' : ''}`);
@@ -130,8 +137,8 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
           description: fn.description.trim() || null,
           year: new Date().getFullYear().toString(),
           is_archived: false,
-          authors: [],
-          tags: [],
+          authors: fn.authors,
+          tags: fn.tags,
           test_functions: [],
           requirements: [],
           models: [],
@@ -171,11 +178,10 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
             <FormLabel>Upload groundhog-hpc Script</FormLabel>
             <FormDescription>Upload a Python file containing @hog.function() decorated functions</FormDescription>
             <div
-              className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${
-                isDragging
-                  ? "border-primary bg-primary/5"
-                  : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
-              }`}
+              className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${isDragging
+                ? "border-primary bg-primary/5"
+                : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+                }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
@@ -290,7 +296,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
                           )}
                         </div>
                       </AccordionTrigger>
-                      <AccordionContent className="space-y-4 px-4 pt-4">
+                      <AccordionContent className="space-y-6 px-4 pt-4">
                         <div className="space-y-1">
                           <label className="text-sm font-medium">Function Name</label>
                           <code className="block rounded bg-muted px-3 py-2 text-sm font-mono">
@@ -331,6 +337,57 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
                           />
                           <p className="text-xs text-muted-foreground">
                             Explain what your function does and how it should be used
+                          </p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium">Model Authors</label>
+                          <MultipleSelector
+                            value={fn.authors.map(a => ({ value: a, label: a }))}
+                            onChange={(options: Option[]) => {
+                              const updated = [...parsedFunctions];
+                              updated[index].authors = options.map(o => o.value);
+                              setParsedFunctions(updated);
+                            }}
+                            placeholder="Add Model Authors"
+                            creatable
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            The main researchers involved in producing this model
+                          </p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium">Gardeners (Contributors)</label>
+                          <MultipleSelector
+                            value={fn.contributors.map(c => ({ value: c, label: c }))}
+                            onChange={(options: Option[]) => {
+                              const updated = [...parsedFunctions];
+                              updated[index].contributors = options.map(o => o.value);
+                              setParsedFunctions(updated);
+                            }}
+                            placeholder="Add Gardeners"
+                            creatable
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Acknowledge contributors to the development of this function
+                          </p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium">Tags</label>
+                          <MultipleSelector
+                            value={fn.tags.map(t => ({ value: t, label: t }))}
+                            onChange={(options: Option[]) => {
+                              const updated = [...parsedFunctions];
+                              updated[index].tags = options.map(o => o.value);
+                              setParsedFunctions(updated);
+                            }}
+                            placeholder="Add tags"
+                            creatable
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Tags help users discover your function
                           </p>
                         </div>
                       </AccordionContent>
