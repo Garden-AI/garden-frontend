@@ -19,7 +19,6 @@ const ModalFunctionPage = lazy(() => import("@/features/functions/modal/componen
 const HpcFunctionPage = lazy(() => import("@/features/functions/hpc/components/HpcFunctionPage"));
 const SearchPage = lazy(() => import("@/features/search/components/SearchPage"));
 const TeamsPage = lazy(() => import("@/features/team/components/TeamsPage"));
-const UserProfilePage = lazy(() => import("@/features/users/components/UserProfilePage"));
 const ModelDeploymentPage = lazy(() => import("@/features/model-deployments/ModelDeploymentPage"));
 const CreateModelDeploymentPage = lazy(() => import("@/features/model-deployments/CreateModelDeploymentPage"));
 const ModalAppUploadPage = lazy(() => import("@/features/functions/modal/components/ModalAppUploadPage"));
@@ -86,7 +85,6 @@ const Router: React.FC = () => {
         {/* Misc Routes */}
         <Route path="team" element={<WrappedLazyComponent child={<TeamsPage />} />} />
         <Route path="login" element={<WrappedLazyComponent child={<LoginPage />} />} />
-        <Route path="user" element={<WrappedLazyComponent child={<UserProfilePage />} />} />
         <Route path="benchmarks" element={<WrappedLazyComponent child={<BenchmarksPage />} />} />
         <Route path="use-cases/mlips" element={<WrappedLazyComponent child={<MLIPPage />} />} />
         <Route element={<SuperuserRoute />}>
