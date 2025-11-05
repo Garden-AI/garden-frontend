@@ -90,10 +90,17 @@ const SearchFilters = ({
               const buckets = showAllFacets[facet.name]
                 ? facet.values
                 : facet.values.slice(0, 7);
+              const formatFacetName = (name: string) => {
+                // Special case for HPC
+                if (name === "hpc_endpoints") return "HPC Endpoints";
+                // Default: capitalize and replace underscores with spaces
+                return name.split("_").join(" ");
+              };
+
               return (
                 <AccordionItem key={facet.name} value={facet.name}>
                   <AccordionTrigger>
-                    <Label className="capitalize">{facet.name.split("_").join(" ")}</Label>
+                    <Label className="capitalize">{formatFacetName(facet.name)}</Label>
                   </AccordionTrigger>
                   <AccordionContent className="pl-2 max-h-48 overflow-y-auto pr-2">
                       {buckets.map((bucket, index) => (

@@ -8,7 +8,7 @@ import {
 import { Garden, GardenSearchRequest } from "@/types";
 
 type SortOrder = "asc" | "desc" | "relevance" | null;
-const filterKeys = ["tags", "model_authors", "gardeners", "year", "function_type"];
+const filterKeys = ["tags", "model_authors", "gardeners", "year", "function_type", "hpc_endpoints"];
 
 interface GardenSearchResult {
   total: number;
@@ -79,32 +79,44 @@ export const useSearchResults = (): SearchResultsState => {
   const gardens: Garden[] = useMemo(() => {
     const allGardens = transformSearchResultToGardens(searchResult);
 
-    // Apply client-side function type filter
-    const functionTypeFilters = selectedFilters["function_type"];
-    if (!functionTypeFilters || functionTypeFilters.length === 0) {
-      return allGardens;
-    }
-
+    // Apply client-side filters
     return allGardens.filter((garden) => {
-      const hasModal = functionTypeFilters.includes("modal");
-      const hasHpc = functionTypeFilters.includes("hpc");
+      // Function type filter
+      const functionTypeFilters = selectedFilters["function_type"];
+      if (functionTypeFilters && functionTypeFilters.length > 0) {
+        const hasModal = functionTypeFilters.includes("modal");
+        const hasHpc = functionTypeFilters.includes("hpc");
 
-      // If both are selected, show gardens with either type
-      if (hasModal && hasHpc) {
-        return (
-          (garden.modal_function_ids && garden.modal_function_ids.length > 0) ||
-          (garden.hpc_function_ids && garden.hpc_function_ids.length > 0)
-        );
+        // If both are selected, show gardens with either type
+        if (hasModal && hasHpc) {
+          const matchesFunctionType =
+            (garden.modal_function_ids && garden.modal_function_ids.length > 0) ||
+            (garden.hpc_function_ids && garden.hpc_function_ids.length > 0);
+          if (!matchesFunctionType) return false;
+        } else if (hasModal) {
+          // Only modal is selected
+          if (!garden.modal_function_ids || garden.modal_function_ids.length === 0) {
+            return false;
+          }
+        } else if (hasHpc) {
+          // Only hpc is selected
+          if (!garden.hpc_function_ids || garden.hpc_function_ids.length === 0) {
+            return false;
+          }
+        }
       }
 
-      // If only modal is selected
-      if (hasModal) {
-        return garden.modal_function_ids && garden.modal_function_ids.length > 0;
-      }
-
-      // If only hpc is selected
-      if (hasHpc) {
-        return garden.hpc_function_ids && garden.hpc_function_ids.length > 0;
+      // HPC endpoints filter
+      const endpointFilters = selectedFilters["hpc_endpoints"];
+      if (endpointFilters && endpointFilters.length > 0 && garden.hpc_functions) {
+        // Check if any HPC function has any of the selected endpoints
+        const hasMatchingEndpoint = garden.hpc_functions.some((hpcFunc) => {
+          if (!hpcFunc.available_endpoints) return false;
+          return hpcFunc.available_endpoints.some((endpoint) =>
+            endpointFilters.includes(endpoint.name)
+          );
+        });
+        if (!hasMatchingEndpoint) return false;
       }
 
       return true;
@@ -184,7 +196,7 @@ export const useSearchResults = (): SearchResultsState => {
       return b.count - a.count;
     };
 
-    return Object.entries(searchResult.facets).map(
+    const backendFacets = Object.entries(searchResult.facets).map(
       ([name, values]: [string, Record<string, number>]) => ({
         name,
         values: Object.entries(values)
@@ -192,7 +204,39 @@ export const useSearchResults = (): SearchResultsState => {
           .sort((a, b) => facetComparator(a, b, name)),
       }),
     );
-  }, [searchResult]);
+
+    // Generate endpoint facet from HPC functions in gardens
+    const endpointCounts: Record<string, number> = {};
+    gardens.forEach((garden) => {
+      if (garden.hpc_functions) {
+        const gardenEndpoints = new Set<string>();
+        garden.hpc_functions.forEach((hpcFunc) => {
+          if (hpcFunc.available_endpoints) {
+            hpcFunc.available_endpoints.forEach((endpoint) => {
+              gardenEndpoints.add(endpoint.name);
+            });
+          }
+        });
+        // Count each endpoint once per garden
+        gardenEndpoints.forEach((endpointName) => {
+          endpointCounts[endpointName] = (endpointCounts[endpointName] || 0) + 1;
+        });
+      }
+    });
+
+    // Add endpoint facet if there are any endpoints
+    if (Object.keys(endpointCounts).length > 0) {
+      const endpointFacet = {
+        name: "hpc_endpoints",
+        values: Object.entries(endpointCounts)
+          .map(([value, count]) => ({ value, count }))
+          .sort((a, b) => facetComparator(a, b, "hpc_endpoints")),
+      };
+      return [...backendFacets, endpointFacet];
+    }
+
+    return backendFacets;
+  }, [searchResult, gardens, selectedFilters]);
 
   return {
     searchResult: {
