@@ -10,6 +10,12 @@ import { Label } from "@/components/shadcn/label";
 import { Button } from "@/components/shadcn/button";
 import { GardenSearchResult } from "../hooks/useSearchResults";
 import { useState } from "react";
+import {
+  updateFilterValue,
+  updateFunctionTypeFilter as updateFunctionTypeFilterHelper,
+  getDefaultFilterState,
+  formatFacetName,
+} from "../utils/filterUpdateHelpers";
 
 const SearchFilters = ({
   searchResult,
@@ -23,28 +29,19 @@ const SearchFilters = ({
   const [showAllFacets, setShowAllFacets] = useState<Record<string, boolean>>({});
 
   const updateFilter = (facet: string, bucket: string, isChecked: boolean) => {
-    const selected = selectedFilters[facet] || [];
-    const updated = isChecked ? [...selected, bucket] : selected.filter((b: any) => b !== bucket);
-    setSelectedFilters({ ...selectedFilters, [facet]: updated });
+    const updated = updateFilterValue(selectedFilters, facet, bucket, isChecked);
+    setSelectedFilters(updated);
   };
 
   const updateFunctionTypeFilter = (functionType: string, isChecked: boolean) => {
-    const selected = selectedFilters["function_type"] || [];
-
-    // Prevent deselecting if it's the only one selected
-    if (!isChecked && selected.length === 1 && selected.includes(functionType)) {
-      return;
+    const updated = updateFunctionTypeFilterHelper(selectedFilters, functionType, isChecked);
+    if (updated) {
+      setSelectedFilters(updated);
     }
-
-    const updated = isChecked
-      ? [...selected, functionType]
-      : selected.filter((type) => type !== functionType);
-    setSelectedFilters({ ...selectedFilters, function_type: updated });
   };
 
   const clearFilters = () => {
-    // Reset to default state with both function types selected
-    setSelectedFilters({ function_type: ["modal", "hpc"] });
+    setSelectedFilters(getDefaultFilterState());
   };
 
   const facets = searchResult.facets;
@@ -90,12 +87,6 @@ const SearchFilters = ({
               const buckets = showAllFacets[facet.name]
                 ? facet.values
                 : facet.values.slice(0, 7);
-              const formatFacetName = (name: string) => {
-                // Special case for HPC
-                if (name === "hpc_endpoints") return "HPC Endpoints";
-                // Default: capitalize and replace underscores with spaces
-                return name.split("_").join(" ");
-              };
 
               return (
                 <AccordionItem key={facet.name} value={facet.name}>

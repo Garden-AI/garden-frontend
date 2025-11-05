@@ -6,6 +6,8 @@ import {
   transformSearchResultToGardens,
 } from "@/features/search/api/useSearchGardens";
 import { Garden, GardenSearchRequest } from "@/types";
+import { applyClientSideFilters } from "../utils/filterHelpers";
+import { processFacets, type Facet } from "../utils/facetHelpers";
 
 type SortOrder = "asc" | "desc" | "relevance" | null;
 const filterKeys = ["tags", "model_authors", "gardeners", "year", "function_type", "hpc_endpoints"];
@@ -15,13 +17,7 @@ interface GardenSearchResult {
   hasNextPage: boolean;
   gardens: Garden[];
   totalPages: number;
-  facets: Array<{
-    name: string;
-    values: Array<{
-      value: string;
-      count: number;
-    }>;
-  }>;
+  facets: Facet[];
 }
 
 interface SearchResultsState {
@@ -78,49 +74,7 @@ export const useSearchResults = (): SearchResultsState => {
 
   const gardens: Garden[] = useMemo(() => {
     const allGardens = transformSearchResultToGardens(searchResult);
-
-    // Apply client-side filters
-    return allGardens.filter((garden) => {
-      // Function type filter
-      const functionTypeFilters = selectedFilters["function_type"];
-      if (functionTypeFilters && functionTypeFilters.length > 0) {
-        const hasModal = functionTypeFilters.includes("modal");
-        const hasHpc = functionTypeFilters.includes("hpc");
-
-        // If both are selected, show gardens with either type
-        if (hasModal && hasHpc) {
-          const matchesFunctionType =
-            (garden.modal_function_ids && garden.modal_function_ids.length > 0) ||
-            (garden.hpc_function_ids && garden.hpc_function_ids.length > 0);
-          if (!matchesFunctionType) return false;
-        } else if (hasModal) {
-          // Only modal is selected
-          if (!garden.modal_function_ids || garden.modal_function_ids.length === 0) {
-            return false;
-          }
-        } else if (hasHpc) {
-          // Only hpc is selected
-          if (!garden.hpc_function_ids || garden.hpc_function_ids.length === 0) {
-            return false;
-          }
-        }
-      }
-
-      // HPC endpoints filter
-      const endpointFilters = selectedFilters["hpc_endpoints"];
-      if (endpointFilters && endpointFilters.length > 0 && garden.hpc_functions) {
-        // Check if any HPC function has any of the selected endpoints
-        const hasMatchingEndpoint = garden.hpc_functions.some((hpcFunc) => {
-          if (!hpcFunc.available_endpoints) return false;
-          return hpcFunc.available_endpoints.some((endpoint) =>
-            endpointFilters.includes(endpoint.name)
-          );
-        });
-        if (!hasMatchingEndpoint) return false;
-      }
-
-      return true;
-    });
+    return applyClientSideFilters(allGardens, selectedFilters);
   }, [searchResult, selectedFilters]);
 
   const totalPages: number = useMemo(
@@ -176,66 +130,7 @@ export const useSearchResults = (): SearchResultsState => {
 
   const facets = useMemo(() => {
     if (!searchResult?.facets) return [];
-
-    const facetComparator = (
-      a: { value: string; count: number },
-      b: { value: string; count: number },
-      name: string,
-    ) => {
-      const filterIsAppliedToA = selectedFilters[name]?.includes(a.value);
-      const filterIsAppliedToB = selectedFilters[name]?.includes(b.value);
-
-      // If the filter is applied to A but not B, A should rank higher, and vice versa
-      if (filterIsAppliedToA && !filterIsAppliedToB) {
-        return -1;
-      }
-      if (!filterIsAppliedToA && filterIsAppliedToB) {
-        return 1;
-      }
-      // If the filter is applied to both, the one with the higher count should rank higher
-      return b.count - a.count;
-    };
-
-    const backendFacets = Object.entries(searchResult.facets).map(
-      ([name, values]: [string, Record<string, number>]) => ({
-        name,
-        values: Object.entries(values)
-          .map(([value, count]: [string, number]) => ({ value, count }))
-          .sort((a, b) => facetComparator(a, b, name)),
-      }),
-    );
-
-    // Generate endpoint facet from HPC functions in gardens
-    const endpointCounts: Record<string, number> = {};
-    gardens.forEach((garden) => {
-      if (garden.hpc_functions) {
-        const gardenEndpoints = new Set<string>();
-        garden.hpc_functions.forEach((hpcFunc) => {
-          if (hpcFunc.available_endpoints) {
-            hpcFunc.available_endpoints.forEach((endpoint) => {
-              gardenEndpoints.add(endpoint.name);
-            });
-          }
-        });
-        // Count each endpoint once per garden
-        gardenEndpoints.forEach((endpointName) => {
-          endpointCounts[endpointName] = (endpointCounts[endpointName] || 0) + 1;
-        });
-      }
-    });
-
-    // Add endpoint facet if there are any endpoints
-    if (Object.keys(endpointCounts).length > 0) {
-      const endpointFacet = {
-        name: "hpc_endpoints",
-        values: Object.entries(endpointCounts)
-          .map(([value, count]) => ({ value, count }))
-          .sort((a, b) => facetComparator(a, b, "hpc_endpoints")),
-      };
-      return [...backendFacets, endpointFacet];
-    }
-
-    return backendFacets;
+    return processFacets(searchResult.facets, gardens, selectedFilters);
   }, [searchResult, gardens, selectedFilters]);
 
   return {
