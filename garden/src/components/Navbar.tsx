@@ -116,7 +116,7 @@ const Navbar = () => {
                     <Separator />
                     <div className="flex flex-row gap-2 hover:text-green hover:underline">
                       <User size={18} />
-                      <Link to="/user"> Your Profile </Link>
+                      <Link to="/dashboard"> My Dashboard </Link>
                     </div>
                     {isSuperUser && (
                       <>
