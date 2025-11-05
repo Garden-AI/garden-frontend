@@ -8,7 +8,7 @@ import {
 import { Garden, GardenSearchRequest } from "@/types";
 
 type SortOrder = "asc" | "desc" | "relevance" | null;
-const filterKeys = ["tags", "model_authors", "gardeners", "year"];
+const filterKeys = ["tags", "model_authors", "gardeners", "year", "function_type"];
 
 interface GardenSearchResult {
   total: number;
@@ -60,6 +60,12 @@ export const useSearchResults = (): SearchResultsState => {
         filters[key] = value.split(",");
       }
     });
+
+    // Default to both function types if not specified
+    if (!filters["function_type"]) {
+      filters["function_type"] = ["modal", "hpc"];
+    }
+
     return filters;
   }, [searchParams]);
 
@@ -70,14 +76,44 @@ export const useSearchResults = (): SearchResultsState => {
 
   const { data: searchResult, isLoading, isFetching, isError } = useSearchGardens(searchRequest);
 
-  const gardens: Garden[] = useMemo(
-    () => transformSearchResultToGardens(searchResult),
-    [searchResult],
-  );
+  const gardens: Garden[] = useMemo(() => {
+    const allGardens = transformSearchResultToGardens(searchResult);
+
+    // Apply client-side function type filter
+    const functionTypeFilters = selectedFilters["function_type"];
+    if (!functionTypeFilters || functionTypeFilters.length === 0) {
+      return allGardens;
+    }
+
+    return allGardens.filter((garden) => {
+      const hasModal = functionTypeFilters.includes("modal");
+      const hasHpc = functionTypeFilters.includes("hpc");
+
+      // If both are selected, show gardens with either type
+      if (hasModal && hasHpc) {
+        return (
+          (garden.modal_function_ids && garden.modal_function_ids.length > 0) ||
+          (garden.hpc_function_ids && garden.hpc_function_ids.length > 0)
+        );
+      }
+
+      // If only modal is selected
+      if (hasModal) {
+        return garden.modal_function_ids && garden.modal_function_ids.length > 0;
+      }
+
+      // If only hpc is selected
+      if (hasHpc) {
+        return garden.hpc_function_ids && garden.hpc_function_ids.length > 0;
+      }
+
+      return true;
+    });
+  }, [searchResult, selectedFilters]);
 
   const totalPages: number = useMemo(
-    () => Math.ceil((searchResult?.total || 0) / Number(resultsPerPage)),
-    [searchResult?.total, resultsPerPage],
+    () => Math.ceil(gardens.length / Number(resultsPerPage)),
+    [gardens.length, resultsPerPage],
   );
 
   const updateSearchParams = useCallback(
@@ -160,7 +196,7 @@ export const useSearchResults = (): SearchResultsState => {
 
   return {
     searchResult: {
-      total: searchResult?.total || 0,
+      total: gardens.length,
       hasNextPage: page < totalPages,
       gardens,
       totalPages,

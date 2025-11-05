@@ -28,12 +28,26 @@ const SearchFilters = ({
     setSelectedFilters({ ...selectedFilters, [facet]: updated });
   };
 
+  const updateFunctionTypeFilter = (functionType: string, isChecked: boolean) => {
+    const selected = selectedFilters["function_type"] || [];
+
+    // Prevent deselecting if it's the only one selected
+    if (!isChecked && selected.length === 1 && selected.includes(functionType)) {
+      return;
+    }
+
+    const updated = isChecked
+      ? [...selected, functionType]
+      : selected.filter((type) => type !== functionType);
+    setSelectedFilters({ ...selectedFilters, function_type: updated });
+  };
+
   const clearFilters = () => {
-    setSelectedFilters({});
+    // Reset to default state with both function types selected
+    setSelectedFilters({ function_type: ["modal", "hpc"] });
   };
 
   const facets = searchResult.facets;
-  if (!facets.length) return null;
 
   return (
     <div className="sticky top-16 max-h-[80vh] overflow-y-auto rounded-lg border shadow-md bg-white p-4 space-y-4">
@@ -41,7 +55,37 @@ const SearchFilters = ({
             <Filter className="mr-2 h-5 w-5" />
             Filters
           </h3>
-          <Accordion type="multiple" className="px-2" defaultValue={facets.map((f) => f.name)}>
+          <Accordion type="multiple" className="px-2" defaultValue={[...facets.map((f) => f.name), "function_type"]}>
+            {/* Function Type Filter */}
+            <AccordionItem value="function_type">
+              <AccordionTrigger>
+                <Label>Function Type</Label>
+              </AccordionTrigger>
+              <AccordionContent className="pl-2 pr-2">
+                <div className="mb-2 flex items-center gap-2">
+                  <Checkbox
+                    id="function-type-modal"
+                    checked={selectedFilters["function_type"]?.includes("modal") || false}
+                    onCheckedChange={(checked) =>
+                      updateFunctionTypeFilter("modal", checked as boolean)
+                    }
+                  />
+                  <Label htmlFor="function-type-modal">Modal Functions</Label>
+                </div>
+                <div className="mb-2 flex items-center gap-2">
+                  <Checkbox
+                    id="function-type-hpc"
+                    checked={selectedFilters["function_type"]?.includes("hpc") || false}
+                    onCheckedChange={(checked) =>
+                      updateFunctionTypeFilter("hpc", checked as boolean)
+                    }
+                  />
+                  <Label htmlFor="function-type-hpc">HPC Functions</Label>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Dynamic Facets from Backend */}
             {facets.map((facet) => {
               const buckets = showAllFacets[facet.name]
                 ? facet.values
