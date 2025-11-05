@@ -10,6 +10,12 @@ import { Label } from "@/components/shadcn/label";
 import { Button } from "@/components/shadcn/button";
 import { GardenSearchResult } from "../hooks/useSearchResults";
 import { useState } from "react";
+import {
+  updateFilterValue,
+  updateFunctionTypeFilter as updateFunctionTypeFilterHelper,
+  getDefaultFilterState,
+  formatFacetName,
+} from "../utils/filterUpdateHelpers";
 
 const SearchFilters = ({
   searchResult,
@@ -23,17 +29,22 @@ const SearchFilters = ({
   const [showAllFacets, setShowAllFacets] = useState<Record<string, boolean>>({});
 
   const updateFilter = (facet: string, bucket: string, isChecked: boolean) => {
-    const selected = selectedFilters[facet] || [];
-    const updated = isChecked ? [...selected, bucket] : selected.filter((b: any) => b !== bucket);
-    setSelectedFilters({ ...selectedFilters, [facet]: updated });
+    const updated = updateFilterValue(selectedFilters, facet, bucket, isChecked);
+    setSelectedFilters(updated);
+  };
+
+  const updateFunctionTypeFilter = (functionType: string, isChecked: boolean) => {
+    const updated = updateFunctionTypeFilterHelper(selectedFilters, functionType, isChecked);
+    if (updated) {
+      setSelectedFilters(updated);
+    }
   };
 
   const clearFilters = () => {
-    setSelectedFilters({});
+    setSelectedFilters(getDefaultFilterState());
   };
 
   const facets = searchResult.facets;
-  if (!facets.length) return null;
 
   return (
     <div className="sticky top-16 max-h-[80vh] overflow-y-auto rounded-lg border shadow-md bg-white p-4 space-y-4">
@@ -41,15 +52,46 @@ const SearchFilters = ({
             <Filter className="mr-2 h-5 w-5" />
             Filters
           </h3>
-          <Accordion type="multiple" className="px-2" defaultValue={facets.map((f) => f.name)}>
+          <Accordion type="multiple" className="px-2" defaultValue={[...facets.map((f) => f.name), "function_type"]}>
+            {/* Function Type Filter */}
+            <AccordionItem value="function_type">
+              <AccordionTrigger>
+                <Label>Function Type</Label>
+              </AccordionTrigger>
+              <AccordionContent className="pl-2 pr-2">
+                <div className="mb-2 flex items-center gap-2">
+                  <Checkbox
+                    id="function-type-modal"
+                    checked={selectedFilters["function_type"]?.includes("modal") || false}
+                    onCheckedChange={(checked) =>
+                      updateFunctionTypeFilter("modal", checked as boolean)
+                    }
+                  />
+                  <Label htmlFor="function-type-modal">Modal Functions</Label>
+                </div>
+                <div className="mb-2 flex items-center gap-2">
+                  <Checkbox
+                    id="function-type-hpc"
+                    checked={selectedFilters["function_type"]?.includes("hpc") || false}
+                    onCheckedChange={(checked) =>
+                      updateFunctionTypeFilter("hpc", checked as boolean)
+                    }
+                  />
+                  <Label htmlFor="function-type-hpc">HPC Functions</Label>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Dynamic Facets from Backend */}
             {facets.map((facet) => {
               const buckets = showAllFacets[facet.name]
                 ? facet.values
                 : facet.values.slice(0, 7);
+
               return (
                 <AccordionItem key={facet.name} value={facet.name}>
                   <AccordionTrigger>
-                    <Label className="capitalize">{facet.name.split("_").join(" ")}</Label>
+                    <Label className="capitalize">{formatFacetName(facet.name)}</Label>
                   </AccordionTrigger>
                   <AccordionContent className="pl-2 max-h-48 overflow-y-auto pr-2">
                       {buckets.map((bucket, index) => (

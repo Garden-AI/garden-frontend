@@ -6,22 +6,18 @@ import {
   transformSearchResultToGardens,
 } from "@/features/search/api/useSearchGardens";
 import { Garden, GardenSearchRequest } from "@/types";
+import { applyClientSideFilters } from "../utils/filterHelpers";
+import { processFacets, type Facet } from "../utils/facetHelpers";
 
 type SortOrder = "asc" | "desc" | "relevance" | null;
-const filterKeys = ["tags", "model_authors", "gardeners", "year"];
+const filterKeys = ["tags", "model_authors", "gardeners", "year", "function_type", "hpc_endpoints"];
 
 interface GardenSearchResult {
   total: number;
   hasNextPage: boolean;
   gardens: Garden[];
   totalPages: number;
-  facets: Array<{
-    name: string;
-    values: Array<{
-      value: string;
-      count: number;
-    }>;
-  }>;
+  facets: Facet[];
 }
 
 interface SearchResultsState {
@@ -60,6 +56,12 @@ export const useSearchResults = (): SearchResultsState => {
         filters[key] = value.split(",");
       }
     });
+
+    // Default to both function types if not specified
+    if (!filters["function_type"]) {
+      filters["function_type"] = ["modal", "hpc"];
+    }
+
     return filters;
   }, [searchParams]);
 
@@ -70,14 +72,14 @@ export const useSearchResults = (): SearchResultsState => {
 
   const { data: searchResult, isLoading, isFetching, isError } = useSearchGardens(searchRequest);
 
-  const gardens: Garden[] = useMemo(
-    () => transformSearchResultToGardens(searchResult),
-    [searchResult],
-  );
+  const gardens: Garden[] = useMemo(() => {
+    const allGardens = transformSearchResultToGardens(searchResult);
+    return applyClientSideFilters(allGardens, selectedFilters);
+  }, [searchResult, selectedFilters]);
 
   const totalPages: number = useMemo(
-    () => Math.ceil((searchResult?.total || 0) / Number(resultsPerPage)),
-    [searchResult?.total, resultsPerPage],
+    () => Math.ceil(gardens.length / Number(resultsPerPage)),
+    [gardens.length, resultsPerPage],
   );
 
   const updateSearchParams = useCallback(
@@ -128,39 +130,12 @@ export const useSearchResults = (): SearchResultsState => {
 
   const facets = useMemo(() => {
     if (!searchResult?.facets) return [];
-
-    const facetComparator = (
-      a: { value: string; count: number },
-      b: { value: string; count: number },
-      name: string,
-    ) => {
-      const filterIsAppliedToA = selectedFilters[name]?.includes(a.value);
-      const filterIsAppliedToB = selectedFilters[name]?.includes(b.value);
-
-      // If the filter is applied to A but not B, A should rank higher, and vice versa
-      if (filterIsAppliedToA && !filterIsAppliedToB) {
-        return -1;
-      }
-      if (!filterIsAppliedToA && filterIsAppliedToB) {
-        return 1;
-      }
-      // If the filter is applied to both, the one with the higher count should rank higher
-      return b.count - a.count;
-    };
-
-    return Object.entries(searchResult.facets).map(
-      ([name, values]: [string, Record<string, number>]) => ({
-        name,
-        values: Object.entries(values)
-          .map(([value, count]: [string, number]) => ({ value, count }))
-          .sort((a, b) => facetComparator(a, b, name)),
-      }),
-    );
-  }, [searchResult]);
+    return processFacets(searchResult.facets, gardens, selectedFilters);
+  }, [searchResult, gardens, selectedFilters]);
 
   return {
     searchResult: {
-      total: searchResult?.total || 0,
+      total: gardens.length,
       hasNextPage: page < totalPages,
       gardens,
       totalPages,
