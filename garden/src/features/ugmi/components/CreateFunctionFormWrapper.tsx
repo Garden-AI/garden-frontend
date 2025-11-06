@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ModalAppForm } from "../../functions/modal/components/ModalAppForm";
-import { CreateHpcFunctionForm } from "../../hpc-admin/components/CreateHpcFunctionForm";
+import { CreateHpcFunctionForm } from "../../functions/hpc/components/CreateHpcFunctionForm";
 import { ModelDeployment } from "../../model-deployments/ModelDeployments";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shadcn/tabs";
 import { Cloud, Cpu } from "lucide-react";

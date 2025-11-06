@@ -14,16 +14,17 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
 import { useCreateHpcEndpoint } from "../api/useCreateHpcEndpoint";
+import { HpcEndpointResponse } from "@/types";
 
 const hpcEndpointSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  gcmu_id: z.string().min(1, "Globus Compute endpoint ID is required"),
+  gcmu_id: z.string().min(0),
 });
 
 type HpcEndpointFormData = z.infer<typeof hpcEndpointSchema>;
 
 interface CreateHpcEndpointFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (endpoint?: HpcEndpointResponse) => void;
 }
 
 export const CreateHpcEndpointForm: React.FC<CreateHpcEndpointFormProps> = ({ onSuccess }) => {
@@ -39,10 +40,10 @@ export const CreateHpcEndpointForm: React.FC<CreateHpcEndpointFormProps> = ({ on
 
   const onSubmit = async (values: HpcEndpointFormData) => {
     try {
-      await createEndpoint(values);
+      const createdEndpoint = await createEndpoint(values);
       toast.success("HPC endpoint added successfully!");
       form.reset();
-      onSuccess?.();
+      onSuccess?.(createdEndpoint);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to add HPC endpoint");
     }

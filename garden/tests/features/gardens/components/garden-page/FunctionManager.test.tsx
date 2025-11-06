@@ -19,7 +19,7 @@ import {
 // Mock API hooks and libraries
 vi.mock("@/features/users/api/useGetUserInfo");
 vi.mock("@/features/functions/modal/api/useGetAllModalFunctions");
-vi.mock("@/features/hpc-admin/api/useHpcFunctions");
+vi.mock("@/features/functions/hpc/api/useHpcFunctions");
 vi.mock("@/features/gardens/api/usePatchGarden");
 vi.mock("@/features/model-deployments/api/useGetModelDeployments");
 vi.mock("sonner");
@@ -27,7 +27,7 @@ vi.mock("sonner");
 // Import mocked hooks for type-safe mocking
 import { useGetUserInfo } from "@/features/users/api/useGetUserInfo";
 import { useGetAllModalFunctions } from "@/features/functions/modal/api/useGetAllModalFunctions";
-import { useHpcFunctions } from "@/features/hpc-admin/api/useHpcFunctions";
+import { useHpcFunctions } from "@/features/functions/hpc/api/useHpcFunctions";
 import { usePatchGarden } from "@/features/gardens/api/usePatchGarden";
 import { useGetModelDeployments } from "@/features/model-deployments/api/useGetModelDeployments";
 
@@ -305,7 +305,7 @@ describe("FunctionManager", () => {
       // Check "Modal Func 2"
       const modal2Row = screen.getByRole("row", { name: /modal func 2/i });
       fireEvent.click(within(modal2Row).getByRole("checkbox"));
-      
+
       // Check "HPC Func 2"
       const hpc2Row = screen.getByRole("row", { name: /hpc func 2/i });
       fireEvent.click(within(hpc2Row).getByRole("checkbox"));

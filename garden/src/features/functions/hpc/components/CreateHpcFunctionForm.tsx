@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/ca
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/shadcn/accordion";
 import { Textarea } from "@/components/shadcn/textarea";
 import SyntaxHighlighter from "@/components/SyntaxHighlighter";
+import { HpcEndpointSelector } from "./HpcEndpointSelector";
 
 const hpcFunctionSchema = z.object({});
 
@@ -44,6 +45,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [parsedFunctions, setParsedFunctions] = useState<SelectedFunction[]>([]);
+  const [selectedEndpointIds, setSelectedEndpointIds] = useState<number[]>([]);
 
   const handleFile = async (file: File) => {
     if (file.type === "text/x-python" || file.name.endsWith(".py")) {
@@ -123,7 +125,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
         const requestData = {
           title: fn.title,
           function_name: fn.functionName,
-          endpoint_ids: [],
+          endpoint_ids: selectedEndpointIds,
           function_text: functionCode,
           description: fn.description.trim() || null,
           year: new Date().getFullYear().toString(),
@@ -152,6 +154,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
       setFunctionCode("");
       setUploadedFileName("");
       setParsedFunctions([]);
+      setSelectedEndpointIds([]);
       onSuccess?.(createdIds);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create HPC functions");
@@ -220,6 +223,14 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
               )}
             </div>
           </div>
+
+          {/* Endpoint Selection Section */}
+          {functionCode && (
+            <HpcEndpointSelector
+              selectedEndpointIds={selectedEndpointIds}
+              onEndpointIdsChange={setSelectedEndpointIds}
+            />
+          )}
 
           {/* Display uploaded code - Collapsible */}
           {functionCode && (

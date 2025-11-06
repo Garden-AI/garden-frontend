@@ -19,7 +19,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useGetModelDeployments } from '@/features/model-deployments/api/useGetModelDeployments';
 import { useGetUserInfo } from '@/features/users/api/useGetUserInfo';
 import FunctionSelectionTable from '@/components/FunctionSelectionTable';
-import { useHpcFunctions } from '@/features/hpc-admin/api/useHpcFunctions';
+import { useHpcFunctions } from '@/features/functions/hpc/api/useHpcFunctions';
 
 interface FunctionManagerProps {
   garden: Garden;
