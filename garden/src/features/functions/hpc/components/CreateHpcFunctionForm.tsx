@@ -177,57 +177,94 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
           <div className="space-y-1">
             <FormLabel>Upload groundhog-hpc Script</FormLabel>
             <FormDescription>Upload a Python file containing @hog.function() decorated functions</FormDescription>
-            <div
-              className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${isDragging
-                ? "border-primary bg-primary/5"
-                : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
-                }`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <div className="space-y-3">
-                <p className="text-sm font-medium">
-                  Drag and drop your Python file here
-                </p>
-                <div className="flex items-center justify-center gap-2">
-                  <div className="h-px w-16 bg-border" />
-                  <span className="text-xs text-muted-foreground">or</span>
-                  <div className="h-px w-16 bg-border" />
+
+            {!functionCode ? (
+              <div
+                className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${isDragging
+                  ? "border-primary bg-primary/5"
+                  : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+                  }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <div className="space-y-3">
+                  <p className="text-sm font-medium">
+                    Drag and drop your Python file here
+                  </p>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="h-px w-16 bg-border" />
+                    <span className="text-xs text-muted-foreground">or</span>
+                    <div className="h-px w-16 bg-border" />
+                  </div>
+                  <div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                    >
+                      Click to Browse
+                    </Button>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".py"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        await handleFile(file);
+                      }
+                    }}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Supports .py files only
+                  </p>
                 </div>
-                <div>
+              </div>
+            ) : (
+              <Card className="bg-green-50 border-green-200">
+                <CardContent className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                      <FileCode className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm text-green-900">
+                        {uploadedFileName || "Python script loaded"}
+                      </p>
+                      <p className="text-xs text-green-700">
+                        {functionCode.length.toLocaleString()} characters • {parsedFunctions.length} function{parsedFunctions.length !== 1 ? 's' : ''} found
+                      </p>
+                    </div>
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="shrink-0"
                   >
-                    Click to Browse
+                    Change File
                   </Button>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".py"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      await handleFile(file);
-                    }
-                  }}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Supports .py files only
-                </p>
-              </div>
-              {functionCode && (
-                <div className="mt-4 text-sm text-green-600 font-medium">
-                  ✓ File loaded ({functionCode.length} characters)
-                </div>
-              )}
-            </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".py"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        await handleFile(file);
+                      }
+                    }}
+                  />
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Endpoint Selection Section */}
