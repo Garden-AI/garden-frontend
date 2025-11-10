@@ -100,7 +100,7 @@ export const BaseGardenPanel: React.FC<BaseGardenPanelProps> = ({
       />
 
       <div className="flex-1 overflow-hidden">
-        <div className="flex-1 space-y-1 overflow-y-auto p-2">
+        <div className="h-full space-y-1 overflow-y-auto p-2">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-sm text-gray-500">Loading...</div>

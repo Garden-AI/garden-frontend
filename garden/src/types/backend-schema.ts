@@ -2333,7 +2333,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GardenMetadataResponse"][];
+                    "application/json": components["schemas"]["GardenSearchMetadataResponse"][];
                 };
             };
             /** @description Validation Error */

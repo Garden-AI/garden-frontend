@@ -52,7 +52,7 @@ const getEntityName = (entity: Entity): string => {
     if (type === "garden") {
         return (entity as Garden).title || "Untitled Garden";
     } else if (type === "modal-function" || type === "hpc-function") {
-        return (entity as ModalFunction).function_name || "Untitled Function";
+        return (entity as ModalFunction).function_name || (entity as ModalFunction).title || "Untitled Function";
     } else if (type === "deployment") {
         return (entity as ModelDeployment).name || "Untitled Deployment";
     }

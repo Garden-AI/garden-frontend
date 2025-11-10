@@ -37,10 +37,11 @@ const FunctionDisplay: React.FC<{
       : "group flex items-center rounded-md border border-transparent transition-all duration-150 hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm";
   }
 
-  // Get display name - HPC functions use title, Modal functions use function_name
+  // Get display name - use title for all functions (search results don't include function_name)
+  // Full metadata will have function_name, but search results only have title
   const displayName = isHpc
-    ? (fn as HpcFunction).title || fn.function_name
-    : (fn as ModalFunction).function_name;
+    ? (fn as HpcFunction).title || (fn as HpcFunction).function_name
+    : (fn as ModalFunction).title;
 
   return (
     <div

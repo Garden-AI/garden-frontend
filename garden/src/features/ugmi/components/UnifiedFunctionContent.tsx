@@ -7,6 +7,7 @@ import { FunctionExample } from "../../functions/shared/components/FunctionExamp
 import AssociatedMaterials from "../../functions/shared/components/AssociatedMaterials";
 import { ModalFunction } from "@/types";
 import { GardenFunction } from "../../functions/shared/types/function.types";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 type UnifiedFunctionContentProps = {
     modalFunction: ModalFunction;
@@ -17,23 +18,34 @@ export const UnifiedFunctionContent = ({
     modalFunction,
     ownsThisFunction,
 }: UnifiedFunctionContentProps) => {
-    // Fetch fresh modal function data to ensure updates are reflected
-    const { data: freshModalFunction } = useGetModalFunction(modalFunction.id.toString());
+    // Fetch full modal function metadata (search results are incomplete)
+    const { data: freshModalFunction, isLoading } = useGetModalFunction(modalFunction.id.toString());
     const { mutateAsync: patchModalFunction } = usePatchModalFunction();
 
-    const currentModalFunction = freshModalFunction || modalFunction;
+    // Define callback before early return to avoid hook order issues
+    const handleUpdate = useCallback(async (updateData: Partial<ModalFunction>) => {
+        if (!freshModalFunction) return;
+        await patchModalFunction({
+            id: freshModalFunction.id,
+            modalFunction: updateData
+        });
+    }, [patchModalFunction, freshModalFunction]);
+
+    // Wait for full metadata before rendering
+    if (isLoading || !freshModalFunction) {
+        return (
+            <div className="flex h-full items-center justify-center">
+                <LoadingSpinner />
+            </div>
+        );
+    }
+
+    const currentModalFunction = freshModalFunction;
 
     const gardenFunction: GardenFunction = {
         ...currentModalFunction,
         functionType: 'modal',
     };
-
-    const handleUpdate = useCallback(async (updateData: Partial<ModalFunction>) => {
-        await patchModalFunction({
-            id: currentModalFunction.id,
-            modalFunction: updateData
-        });
-    }, [patchModalFunction, currentModalFunction.id]);
 
     const generateDefaultExample = (functionName: string) => {
         return `from garden_ai import GardenClient

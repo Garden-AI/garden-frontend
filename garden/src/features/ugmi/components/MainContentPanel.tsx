@@ -25,7 +25,7 @@ export const MainContentPanel = ({ entity, onAfterDelete }: MainContentPanelProp
       isSuperUser);
 
   return (
-    <div className="flex flex-col flex-1 bg-white">
+    <div className="flex flex-col flex-1 bg-white overflow-hidden">
       {entityType === null || entity === null ? (
         <div className="flex h-full items-center justify-center">
           <div className="space-y-2 text-center">
@@ -35,7 +35,7 @@ export const MainContentPanel = ({ entity, onAfterDelete }: MainContentPanelProp
           </div>
         </div>
       ) : (
-        <div className="scrollbar-thin scrollbar-track-transparent h-full overflow-y-auto">
+        <div className="scrollbar-thin scrollbar-track-transparent flex-1 overflow-y-auto">
           {entityType === "modal-function" ? (
             <UnifiedFunctionContent
               modalFunction={entity as ModalFunction}

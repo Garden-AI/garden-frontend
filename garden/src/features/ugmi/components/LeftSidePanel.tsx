@@ -36,6 +36,8 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
     refetch: refetchGardens
   } = useGetGardens({
     owner_uuid: userInfo?.identity_id,
+  }, {
+    enabled: !!userInfo?.identity_id,
   });
 
   const savedGardenDois = userInfo?.saved_garden_dois || [];
