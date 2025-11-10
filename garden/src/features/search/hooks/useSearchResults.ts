@@ -6,11 +6,10 @@ import {
   transformSearchResultToGardens,
 } from "@/features/search/api/useSearchGardens";
 import { Garden, GardenSearchRequest } from "@/types";
-import { applyClientSideFilters } from "../utils/filterHelpers";
 import { processFacets, type Facet } from "../utils/facetHelpers";
 
 type SortOrder = "asc" | "desc" | "relevance" | null;
-const filterKeys = ["tags", "model_authors", "gardeners", "year", "function_type", "hpc_endpoints"];
+const filterKeys = ["tags", "model_authors", "gardeners", "year", "function_type", "hpc_endpoint"];
 
 interface GardenSearchResult {
   total: number;
@@ -56,12 +55,6 @@ export const useSearchResults = (): SearchResultsState => {
         filters[key] = value.split(",");
       }
     });
-
-    // Default to both function types if not specified
-    if (!filters["function_type"]) {
-      filters["function_type"] = ["modal", "hpc"];
-    }
-
     return filters;
   }, [searchParams]);
 
@@ -73,13 +66,13 @@ export const useSearchResults = (): SearchResultsState => {
   const { data: searchResult, isLoading, isFetching, isError } = useSearchGardens(searchRequest);
 
   const gardens: Garden[] = useMemo(() => {
-    const allGardens = transformSearchResultToGardens(searchResult);
-    return applyClientSideFilters(allGardens, selectedFilters);
-  }, [searchResult, selectedFilters]);
+    return transformSearchResultToGardens(searchResult);
+  }, [searchResult]);
 
+  const total: number = searchResult?.total ?? 0;
   const totalPages: number = useMemo(
-    () => Math.ceil(gardens.length / Number(resultsPerPage)),
-    [gardens.length, resultsPerPage],
+    () => Math.ceil(total / Number(resultsPerPage)),
+    [total, resultsPerPage],
   );
 
   const updateSearchParams = useCallback(
@@ -121,7 +114,12 @@ export const useSearchResults = (): SearchResultsState => {
     (newFilters: Record<string, string[]>) => {
       const updates: Record<string, string | null> = {};
       filterKeys.forEach((key) => {
-        updates[key] = newFilters[key]?.join(",") || null;
+        const value = newFilters[key];
+        if (value && value.length > 0) {
+          updates[key] = value.join(",");
+        } else {
+          updates[key] = null;
+        }
       });
       updateSearchParams({ ...updates, page: 1 });
     },
@@ -130,12 +128,12 @@ export const useSearchResults = (): SearchResultsState => {
 
   const facets = useMemo(() => {
     if (!searchResult?.facets) return [];
-    return processFacets(searchResult.facets, gardens, selectedFilters);
-  }, [searchResult, gardens, selectedFilters]);
+    return processFacets(searchResult.facets, selectedFilters);
+  }, [searchResult, selectedFilters]);
 
   return {
     searchResult: {
-      total: gardens.length,
+      total,
       hasNextPage: page < totalPages,
       gardens,
       totalPages,

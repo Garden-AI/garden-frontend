@@ -49,7 +49,7 @@ export const transformSearchResultToGardens = (searchResult?: GardenSearchRespon
 };
 
 export const transformSearchParamsToSearchRequest = (searchParams: URLSearchParams): any => {
-  const filterKeys = ["year", "model_authors", "gardeners", "tags"];
+  const filterKeys = ["year", "model_authors", "gardeners", "tags", "function_type", "hpc_endpoints"];
   const userFilters: GardenSearchFilter[] =
     filterKeys
       .filter((key) => searchParams.has(key))
