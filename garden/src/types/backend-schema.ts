@@ -780,8 +780,6 @@ export interface components {
              * @default false
              */
             is_archived: boolean;
-            /** Function Text */
-            function_text: string;
             /** Title */
             title: string;
             /** Description */
@@ -806,6 +804,8 @@ export interface components {
             datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Notebooks */
             notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Function Text */
+            function_text: string;
             /** Doi */
             doi: string;
             /** Doi Is Draft */
@@ -841,8 +841,6 @@ export interface components {
              * @default false
              */
             is_archived: boolean;
-            /** Function Text */
-            function_text: string;
             /** Title */
             title: string;
             /** Description */
@@ -867,6 +865,8 @@ export interface components {
             datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Notebooks */
             notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Function Text */
+            function_text: string;
             /** Doi */
             doi: string;
             /** Doi Is Draft */
@@ -1145,6 +1145,76 @@ export interface components {
              */
             operation: ("AND" | "OR") | null;
         };
+        /** GardenSearchMetadataResponse */
+        GardenSearchMetadataResponse: {
+            /** Title */
+            title: string;
+            /** Authors */
+            authors?: string[];
+            /** Contributors */
+            contributors?: string[];
+            /** Doi */
+            doi: string;
+            /**
+             * Doi Is Draft
+             * @default true
+             */
+            doi_is_draft: boolean;
+            /** Description */
+            description: string | null;
+            /**
+             * Publisher
+             * @default Garden-AI
+             */
+            publisher: string;
+            /** Year */
+            year?: string;
+            /**
+             * Language
+             * @default en
+             */
+            language: string;
+            /** Tags */
+            tags?: string[];
+            /**
+             * Version
+             * @default 0.0.1
+             */
+            version: string;
+            /** Entrypoint Aliases */
+            entrypoint_aliases?: {
+                [key: string]: string;
+            };
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Owner */
+            owner: string;
+            /**
+             * Owner Identity Id
+             * Format: uuid
+             */
+            owner_identity_id: string;
+            /** Id */
+            id: number;
+            /** Entrypoints */
+            entrypoints?: components["schemas"]["EntrypointMetadataResponse"][];
+            /** Modal Functions */
+            modal_functions?: components["schemas"]["ModalFunctionSearchResult"][];
+            /** Hpc Functions */
+            hpc_functions?: components["schemas"]["HpcFunctionSearchResult"][];
+            /** Marked For Deletion */
+            marked_for_deletion: string | null;
+            readonly state: components["schemas"]["GardenState"];
+            /** Entrypoint Ids */
+            readonly entrypoint_ids: string[];
+            /** Modal Function Ids */
+            readonly modal_function_ids: number[];
+            /** Hpc Function Ids */
+            readonly hpc_function_ids: number[];
+        };
         /** GardenSearchRequest */
         GardenSearchRequest: {
             /** Q */
@@ -1173,7 +1243,7 @@ export interface components {
             /** Offset */
             offset: number;
             /** Garden Meta */
-            garden_meta: components["schemas"]["GardenMetadataResponse"][];
+            garden_meta: components["schemas"]["GardenSearchMetadataResponse"][];
             facets: components["schemas"]["GardenSearchFacets"];
         };
         /** GardenSearchSort */
@@ -1234,8 +1304,6 @@ export interface components {
              * @default false
              */
             is_archived: boolean;
-            /** Function Text */
-            function_text: string;
             /** Title */
             title: string;
             /** Description */
@@ -1260,6 +1328,8 @@ export interface components {
             datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Notebooks */
             notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Function Text */
+            function_text: string;
             /** Function Name */
             function_name: string;
             /** Endpoint Ids */
@@ -1272,8 +1342,6 @@ export interface components {
              * @default false
              */
             is_archived: boolean;
-            /** Function Text */
-            function_text: string;
             /** Title */
             title: string;
             /** Description */
@@ -1298,6 +1366,8 @@ export interface components {
             datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Notebooks */
             notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Function Text */
+            function_text: string;
             /** Id */
             id: number;
             /** Function Name */
@@ -1346,6 +1416,49 @@ export interface components {
             function_name?: string | null;
             /** Endpoint Ids */
             endpoint_ids?: number[] | null;
+        };
+        /** HpcFunctionSearchResult */
+        HpcFunctionSearchResult: {
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Year */
+            year: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["_ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Id */
+            id: number;
+            /** Function Name */
+            function_name: string;
+            /** Available Endpoints */
+            available_endpoints?: components["schemas"]["HpcEndpointInfo"][];
+            /**
+             * Num Invocations
+             * @default 0
+             */
+            num_invocations: number;
         };
         /** HpcInvocationCreateRequest */
         HpcInvocationCreateRequest: {
@@ -1485,8 +1598,6 @@ export interface components {
              * @default false
              */
             is_archived: boolean;
-            /** Function Text */
-            function_text: string;
             /** Title */
             title: string;
             /** Description */
@@ -1511,10 +1622,10 @@ export interface components {
             datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Notebooks */
             notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Function Text */
+            function_text: string;
             /** Function Name */
             function_name: string;
-            /** File Contents */
-            file_contents?: string | null;
             /** Doi */
             doi?: string | null;
             /** Conda Requirements */
@@ -1524,6 +1635,8 @@ export interface components {
              * @default
              */
             example_usage: string;
+            /** File Contents */
+            file_contents?: string | null;
         };
         /** ModalFunctionMetadataResponse */
         ModalFunctionMetadataResponse: {
@@ -1532,8 +1645,6 @@ export interface components {
              * @default false
              */
             is_archived: boolean;
-            /** Function Text */
-            function_text: string;
             /** Title */
             title: string;
             /** Description */
@@ -1558,10 +1669,10 @@ export interface components {
             datasets?: components["schemas"]["_DatasetMetadata"][];
             /** Notebooks */
             notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /** Function Text */
+            function_text: string;
             /** Function Name */
             function_name: string;
-            /** File Contents */
-            file_contents?: string | null;
             /** Doi */
             doi?: string | null;
             /** Conda Requirements */
@@ -1571,6 +1682,8 @@ export interface components {
              * @default
              */
             example_usage: string;
+            /** File Contents */
+            file_contents?: string | null;
             /**
              * Id
              * @description The unique identifier for the modal function
@@ -1634,6 +1747,64 @@ export interface components {
             doi?: string | null;
             /** Function Name */
             function_name?: string | null;
+        };
+        /** ModalFunctionSearchResult */
+        ModalFunctionSearchResult: {
+            /**
+             * Is Archived
+             * @default false
+             */
+            is_archived: boolean;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Year */
+            year: string;
+            /** Authors */
+            authors?: string[];
+            /** Tags */
+            tags?: string[];
+            /** Test Functions */
+            test_functions?: string[];
+            /** Requirements */
+            requirements?: string[];
+            /** Models */
+            models?: components["schemas"]["_ModelMetadata"][];
+            /** Repositories */
+            repositories?: components["schemas"]["_RepositoryMetadata"][];
+            /** Papers */
+            papers?: components["schemas"]["_PaperMetadata"][];
+            /** Datasets */
+            datasets?: components["schemas"]["_DatasetMetadata"][];
+            /** Notebooks */
+            notebooks?: components["schemas"]["_NotebookMetadata"][];
+            /**
+             * Id
+             * @description The unique identifier for the modal function
+             */
+            id: number;
+            /** Modal App Id */
+            modal_app_id: number;
+            /**
+             * Owner
+             * @default
+             */
+            owner: string;
+            /**
+             * Owner Identity Id
+             * Format: uuid
+             */
+            owner_identity_id: string;
+            /** Hardware Spec */
+            hardware_spec: {
+                [key: string]: unknown;
+            };
+            /**
+             * Num Invocations
+             * @description The number of times this function has been invoked
+             */
+            num_invocations?: number;
         };
         /** ModalInvocationOutputsResponse */
         ModalInvocationOutputsResponse: {
@@ -2162,7 +2333,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GardenMetadataResponse"][];
+                    "application/json": components["schemas"]["GardenSearchMetadataResponse"][];
                 };
             };
             /** @description Validation Error */

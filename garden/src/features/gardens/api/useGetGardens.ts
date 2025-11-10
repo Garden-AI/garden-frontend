@@ -18,29 +18,27 @@ const getGardens = async (params: GetGardensParams): Promise<Garden[]> => {
   try {
     const response = await axios.get(`/gardens`, { params });
     return response.data;
-  } catch (error) {
-    throw new Error("Error fetching garden by DOI");
+  } catch {
+    throw new Error("Error fetching gardens");
   }
 };
 
-export const useGetGardens = (params: GetGardensParams) => {
+export const useGetGardens = (params: GetGardensParams, options?: { enabled?: boolean }) => {
   const queryClient = useQueryClient();
   const query = useQuery<Garden[], Error>({
     queryKey: ["gardens", params],
     queryFn: () => getGardens(params),
+    enabled: options?.enabled !== false, // Default to true unless explicitly set to false
   });
 
-  // Cache gardens and modal functions when gardens are successfully fetched
+  // Cache gardens when they are successfully fetched
   React.useEffect(() => {
     if (query.data) {
       query.data.forEach((garden) => {
         queryClient.setQueryData(["gardens", garden.doi], garden);
-        // gardens currently contain their associated function metadata,
-        // cache them so we can avoid sending requests for functions
-        // we have already seen.
-        garden.modal_functions?.forEach((fn) => {
-          queryClient.setQueryData(["modalFunctions", fn.id], fn);
-        });
+        // NOTE: We do NOT cache modal_functions here because garden search results
+        // contain ModalFunctionSearchResult which lacks function_text, file_contents, etc.
+        // Components should fetch full metadata via useGetModalFunction when needed.
       });
     }
   }, [query.data, queryClient]);

@@ -166,7 +166,7 @@ export const MyFunctionLibraryView = ({
       />
 
       {/* Content */}
-      <div className="flex-1 space-y-1 overflow-y-auto p-2">
+      <div className="h-[calc(100%-4rem)] space-y-1 overflow-y-auto p-2">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-sm text-gray-500">Loading...</div>
