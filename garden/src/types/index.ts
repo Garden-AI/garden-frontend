@@ -54,6 +54,7 @@ type GardenSearchFacets = components["schemas"]["GardenSearchFacets"];
 type GardenSearchFilter = Omit<components["schemas"]["GardenSearchFilter"], 'operation'> & {
   operation?: components["schemas"]["GardenSearchFilter"]['operation'];
 };
+type GardenSearchMetadataResponse = components["schemas"]["GardenSearchMetadataResponse"];
 
 type BenchmarkRequest = components["schemas"]["BenchmarkRequest"];
 
@@ -99,6 +100,7 @@ export type {
   GardenSearchResponse,
   GardenSearchFacets,
   GardenSearchFilter,
+  GardenSearchMetadataResponse,
   AsyncModalAppMetadataResponse,
   AsyncModalJobStatus,
   ModalFileMetadataRequest,

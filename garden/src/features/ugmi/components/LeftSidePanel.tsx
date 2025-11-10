@@ -51,7 +51,7 @@ export const LeftSidePanel = ({ onItemSelected, selectedItem, selection, onDeplo
   const panelRefs = createPanelRefs(['savedGardensPanelRef', 'myGardensPanelRef', 'functionLibraryPanelRef'] as const);
   const { handlePanelExpand } = usePanelExpansion(panelRefs);
 
-  const savedGardens = savedGardensResponse?.garden_meta || [];
+  const savedGardens = (savedGardensResponse?.garden_meta || []) as Garden[];
 
   const handleGardenCreated = () => {
     refetchGardens();

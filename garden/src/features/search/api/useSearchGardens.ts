@@ -1,6 +1,6 @@
 import React from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Garden, GardenSearchFilter, GardenSearchRequest, GardenSearchResponse } from "@/types";
+import { Garden, GardenSearchFilter, GardenSearchRequest, GardenSearchResponse, GardenSearchMetadataResponse } from "@/types";
 import axios from "@/lib/axios";
 
 const searchGardens = async (searchOptions: GardenSearchRequest): Promise<GardenSearchResponse> => {
@@ -33,7 +33,7 @@ export const useSearchGardens = (searchOptions: GardenSearchRequest, options?: {
 };
 
 export const transformSearchResultToGardens = (searchResult?: GardenSearchResponse): Garden[] => {
-  return searchResult?.garden_meta || [];
+  return (searchResult?.garden_meta || []) as Garden[];
 };
 
 export const transformSearchParamsToSearchRequest = (searchParams: URLSearchParams): any => {
