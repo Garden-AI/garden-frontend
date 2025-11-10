@@ -29,18 +29,6 @@ export const useSearchGardens = (searchOptions: GardenSearchRequest, options?: {
     enabled: options?.enabled,
   });
 
-  // Cache gardens and modal functions when search results are successfully fetched
-  React.useEffect(() => {
-    if (query.data?.garden_meta) {
-      query.data.garden_meta.forEach((garden) => {
-        queryClient.setQueryData(["gardens", garden.doi], garden);
-        garden.modal_functions?.forEach((fn) => {
-          queryClient.setQueryData(["modalFunctions", fn.id], fn);
-        });
-      });
-    }
-  }, [query.data, queryClient]);
-
   return query;
 };
 
