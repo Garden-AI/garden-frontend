@@ -1124,6 +1124,14 @@ export interface components {
             year?: {
                 [key: string]: number;
             };
+            /** Function Type */
+            function_type?: {
+                [key: string]: number;
+            };
+            /** Hpc Endpoint */
+            hpc_endpoint?: {
+                [key: string]: number;
+            };
         };
         /** GardenSearchFilter */
         GardenSearchFilter: {
@@ -1215,12 +1223,9 @@ export interface components {
             /** Id */
             id: number;
             /** Owner */
-            owner: string;
-            /**
-             * Owner Identity Id
-             * Format: uuid
-             */
-            owner_identity_id: string;
+            owner?: string | null;
+            /** Owner Identity Id */
+            owner_identity_id?: string | null;
         };
         /** HpcFunctionCreateRequest */
         HpcFunctionCreateRequest: {

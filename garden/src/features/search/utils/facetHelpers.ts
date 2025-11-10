@@ -1,5 +1,3 @@
-import { Garden } from "@/types";
-
 export interface FacetValue {
   value: string;
   count: number;
@@ -34,56 +32,13 @@ export const createFacetComparator = (
 };
 
 /**
- * Generate HPC endpoint facet from gardens
- */
-export const generateEndpointFacet = (
-  gardens: Garden[],
-  selectedFilters: Record<string, string[]>
-): Facet | null => {
-  const endpointCounts: Record<string, number> = {};
-
-  gardens.forEach((garden) => {
-    if (garden.hpc_functions) {
-      const gardenEndpoints = new Set<string>();
-      garden.hpc_functions.forEach((hpcFunc) => {
-        if (hpcFunc.available_endpoints) {
-          hpcFunc.available_endpoints.forEach((endpoint) => {
-            gardenEndpoints.add(endpoint.name);
-          });
-        }
-      });
-      // Count each endpoint once per garden
-      gardenEndpoints.forEach((endpointName) => {
-        endpointCounts[endpointName] = (endpointCounts[endpointName] || 0) + 1;
-      });
-    }
-  });
-
-  // Return null if there are no endpoints
-  if (Object.keys(endpointCounts).length === 0) {
-    return null;
-  }
-
-  const comparator = createFacetComparator(selectedFilters, "hpc_endpoints");
-
-  return {
-    name: "hpc_endpoints",
-    values: Object.entries(endpointCounts)
-      .map(([value, count]) => ({ value, count }))
-      .sort(comparator),
-  };
-};
-
-/**
- * Transform backend facets and add client-side facets
+ * Transform backend facets into the format expected by the UI
  */
 export const processFacets = (
   backendFacets: Record<string, Record<string, number>>,
-  gardens: Garden[],
   selectedFilters: Record<string, string[]>
 ): Facet[] => {
-  // Process backend facets
-  const processedBackendFacets = Object.entries(backendFacets).map(
+  return Object.entries(backendFacets).map(
     ([name, values]: [string, Record<string, number>]) => {
       const comparator = createFacetComparator(selectedFilters, name);
       return {
@@ -94,12 +49,4 @@ export const processFacets = (
       };
     }
   );
-
-  // Generate endpoint facet
-  const endpointFacet = generateEndpointFacet(gardens, selectedFilters);
-
-  // Add endpoint facet if it exists
-  return endpointFacet
-    ? [...processedBackendFacets, endpointFacet]
-    : processedBackendFacets;
 };
