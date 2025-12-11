@@ -249,36 +249,16 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Benchmark Metadata
-         * @description Get metadata about available benchmarks
+         * Get Benchmark Results
+         * @description Get all benchmark results.
          */
-        get: operations["get_benchmark_metadata_benchmarks_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/benchmarks/{benchmark_id}/{task_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Results For Benchmark Task
-         * @description Return a list of results for the benchmark
-         */
-        get: operations["get_results_for_benchmark_task_benchmarks__benchmark_id___task_id__get"];
+        get: operations["get_benchmark_results_benchmarks_get"];
         put?: never;
         /**
-         * Run Benchmark
-         * @description Request a new run of the benchmark
+         * Create Benchmark Result
+         * @description Create a new benchmark result (Super Users only).
          */
-        post: operations["run_benchmark_benchmarks__benchmark_id___task_id__post"];
+        post: operations["create_benchmark_result_benchmarks_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -717,45 +697,34 @@ export interface components {
          * @enum {string}
          */
         AsyncModalJobStatus: "pending" | "done" | "error" | "timed_out";
-        /** BenchmarkMetadata */
-        BenchmarkMetadata: {
-            /** Id */
-            id: number;
-            /** Name */
-            name: string;
-            /** Description */
-            description?: string | null;
-            /** Tasks */
-            tasks: components["schemas"]["BenchmarkTaskMetadata"][];
-        };
-        /** BenchmarkRequest */
-        BenchmarkRequest: {
-            /** Function Id */
-            function_id: number;
-        };
-        /** BenchmarkResult */
-        BenchmarkResult: {
-            status: components["schemas"]["AsyncModalJobStatus"];
-            /** Error */
-            error?: string | null;
-            /** Benchmark Id */
-            benchmark_id: number;
-            /** Task Id */
-            task_id: number;
-            /** Function Id */
-            function_id: number;
-            /** Date Invoked */
-            date_invoked?: string | null;
-            /** Result */
-            result?: {
+        /** BenchmarkResultCreate */
+        BenchmarkResultCreate: {
+            /** Benchmark Name */
+            benchmark_name: string;
+            /** Benchmark Task Name */
+            benchmark_task_name: string;
+            /** Metrics */
+            metrics: {
                 [key: string]: unknown;
-            } | null;
+            };
         };
-        /** BenchmarkTaskMetadata */
-        BenchmarkTaskMetadata: {
+        /** BenchmarkResultResponse */
+        BenchmarkResultResponse: {
+            /** Benchmark Name */
+            benchmark_name: string;
+            /** Benchmark Task Name */
+            benchmark_task_name: string;
+            /** Metrics */
+            metrics: {
+                [key: string]: unknown;
+            };
             /** Id */
             id: number;
-            function: components["schemas"]["ModalFunctionMetadataResponse"];
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
         };
         /** ECRPushCredentials */
         ECRPushCredentials: {
@@ -2658,7 +2627,7 @@ export interface operations {
             };
         };
     };
-    get_benchmark_metadata_benchmarks_get: {
+    get_benchmark_results_benchmarks_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2673,68 +2642,31 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BenchmarkMetadata"][];
+                    "application/json": components["schemas"]["BenchmarkResultResponse"][];
                 };
             };
         };
     };
-    get_results_for_benchmark_task_benchmarks__benchmark_id___task_id__get: {
-        parameters: {
-            query?: {
-                include_failed?: boolean;
-            };
-            header?: never;
-            path: {
-                benchmark_id: number;
-                task_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BenchmarkResult"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    run_benchmark_benchmarks__benchmark_id___task_id__post: {
+    create_benchmark_result_benchmarks_post: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                benchmark_id: number;
-                task_id: number;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["BenchmarkRequest"];
+                "application/json": components["schemas"]["BenchmarkResultCreate"];
             };
         };
         responses: {
             /** @description Successful Response */
-            200: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BenchmarkResult"];
+                    "application/json": components["schemas"]["BenchmarkResultResponse"];
                 };
             };
             /** @description Validation Error */
