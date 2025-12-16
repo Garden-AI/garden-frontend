@@ -56,3 +56,25 @@ export const getColorForValue = (value: number, betterIs: 'higher' | 'lower' = '
     // Return rgba color with appropriate transparency
     return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
 };
+
+// Metric category themes for consistent coloring across UI
+export const METRIC_CATEGORY_THEMES: Record<string, string> = {
+    // Hardware - Slate/Blue
+    'device_type': 'border-slate-400/50 bg-slate-50/50 dark:bg-slate-900/50',
+    'num_gpus': 'border-slate-400/50 bg-slate-50/50 dark:bg-slate-900/50',
+    'gpu_names': 'border-slate-400/50 bg-slate-50/50 dark:bg-slate-900/50',
+
+    // Timing/Performance - Green
+    'total_seconds': 'border-green-400/50 bg-green-50/50 dark:bg-green-900/50',
+    'throughput_per_second': 'border-green-400/50 bg-green-50/50 dark:bg-green-900/50',
+    'num_workers': 'border-green-400/50 bg-green-50/50 dark:bg-green-900/50',
+
+    // Cost - Amber
+    'total_gpu_hours': 'border-amber-400/50 bg-amber-50/50 dark:bg-amber-900/50',
+    'estimated_cost_usd': 'border-amber-400/50 bg-amber-50/50 dark:bg-amber-900/50',
+    'estimated_cost_per_1000_structures_usd': 'border-amber-400/50 bg-amber-50/50 dark:bg-amber-900/50',
+
+    // Dataset - Purple
+    'num_structures_processed': 'border-purple-400/50 bg-purple-50/50 dark:bg-purple-900/50',
+    'num_structures_total': 'border-purple-400/50 bg-purple-50/50 dark:bg-purple-900/50',
+};

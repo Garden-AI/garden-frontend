@@ -72,6 +72,17 @@ export const BenchmarksPage = () => {
         return Array.from(names);
     }, [selectedResults]);
 
+    // Pre-calculate counts for sidebar to avoid O(N*M) in render
+    const benchmarkCounts = useMemo(() => {
+        const counts: Record<string, number> = {};
+        benchmarkResults.forEach(r => {
+            if (r.benchmark_name) {
+                counts[r.benchmark_name] = (counts[r.benchmark_name] || 0) + 1;
+            }
+        });
+        return counts;
+    }, [benchmarkResults]);
+
     return (
         <div className="flex h-full relative">
             {/* Mobile Menu Button */}
@@ -97,7 +108,7 @@ export const BenchmarksPage = () => {
                 benchmarkNames={benchmarkNames}
                 selectedBenchmarkName={selectedBenchmarkName}
                 setSelectedBenchmarkName={setSelectedBenchmarkName}
-                benchmarkResults={benchmarkResults}
+                benchmarkCounts={benchmarkCounts}
                 isLoading={isLoading}
                 mobileSidebarOpen={mobileSidebarOpen}
                 setMobileSidebarOpen={setMobileSidebarOpen}

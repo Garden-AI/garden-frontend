@@ -2,13 +2,12 @@ import React from "react";
 import { Loader2, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { cn } from "@/utils/form.utils";
-import { BenchmarkResult } from "../api/useGetBenchmarks";
 
 interface BenchmarksSidebarProps {
     benchmarkNames: string[];
     selectedBenchmarkName: string | null;
     setSelectedBenchmarkName: (name: string) => void;
-    benchmarkResults: BenchmarkResult[];
+    benchmarkCounts: Record<string, number>;
     isLoading: boolean;
     mobileSidebarOpen: boolean;
     setMobileSidebarOpen: (open: boolean) => void;
@@ -20,7 +19,7 @@ export const BenchmarksSidebar = ({
     benchmarkNames,
     selectedBenchmarkName,
     setSelectedBenchmarkName,
-    benchmarkResults,
+    benchmarkCounts,
     isLoading,
     mobileSidebarOpen,
     setMobileSidebarOpen,
@@ -80,7 +79,7 @@ export const BenchmarksSidebar = ({
                         </div>
                     ) : (
                         benchmarkNames.map((name) => {
-                            const count = benchmarkResults.filter(r => r.benchmark_name === name).length;
+                            const count = benchmarkCounts[name] || 0;
                             return (
                                 <div
                                     key={name}

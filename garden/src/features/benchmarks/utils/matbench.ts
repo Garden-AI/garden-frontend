@@ -679,6 +679,12 @@ export const transformResultsForDisplay = (
   });
 };
 
+export const ENVIRONMENT_METRIC_KEYS = [
+  'device_type', 'num_gpus', 'total_seconds', 'throughput_per_second',
+  'total_gpu_hours', 'estimated_cost_usd', 'estimated_cost_per_1000_structures_usd',
+  'num_structures_processed', 'num_structures_total', 'num_workers', 'gpu_names'
+];
+
 /**
  * Extract unique metric keys from transformed display data.
  * Excludes metadata fields to only return actual benchmark metrics.
@@ -686,9 +692,7 @@ export const transformResultsForDisplay = (
 export const getDisplayMetricKeys = (displayData: Record<string, unknown>[]): string[] => {
   const metadataKeys = [
     'id', 'benchmark_name', 'benchmark_task_name', 'timestamp', 'model_name', 'model_packages',
-    'device_type', 'num_gpus', 'gpu_names',
-    'total_seconds', 'throughput_per_second', 'num_workers',
-    'total_gpu_hours', 'estimated_cost_usd', 'estimated_cost_per_1000_structures_usd'
+    ...ENVIRONMENT_METRIC_KEYS
   ];
 
   const keys = new Set<string>();
