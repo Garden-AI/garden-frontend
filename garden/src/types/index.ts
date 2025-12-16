@@ -56,16 +56,7 @@ type GardenSearchFilter = Omit<components["schemas"]["GardenSearchFilter"], 'ope
 };
 type GardenSearchMetadataResponse = components["schemas"]["GardenSearchMetadataResponse"];
 
-type BenchmarkRequest = components["schemas"]["BenchmarkRequest"];
-
-// Export BenchmarkResult as defined interface instead of re-exporting it
-export interface BenchmarkResult {
-  id: number;
-  function_id: number;
-  date_invoked: string;
-  status: "pending" | "done" | "failed";
-  result: Record<string, unknown> | null;
-}
+// Note: Benchmark types are now managed in src/features/benchmarks/
 
 type HpcEndpointCreateRequest = components["schemas"]["HpcEndpointCreateRequest"];
 type HpcEndpointResponse = components["schemas"]["HpcEndpointResponse"];
@@ -112,7 +103,6 @@ export type {
   ModalInvocationOutputsResponse,
   Model,
   Notebook,
-  BenchmarkRequest,
   HpcEndpointCreateRequest,
   HpcEndpointResponse,
   HpcEndpointInfo,

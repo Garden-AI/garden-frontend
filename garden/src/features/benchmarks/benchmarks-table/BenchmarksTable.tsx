@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ArrowUp, ArrowDown, ArrowUpDown, ChevronDown, EyeOff } from "lucide-react";
 
 import {
@@ -7,6 +7,7 @@ import {
     getCoreRowModel,
     getSortedRowModel,
     SortingState,
+    RowSelectionState,
     useReactTable,
     VisibilityState,
     ColumnResizeMode
@@ -20,8 +21,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/shadcn/table"
-import { useGetModalFunction } from "@/features/functions/modal/api/useGetModalFunction";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/shadcn/button";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import {
@@ -32,12 +31,12 @@ import {
     DropdownMenuItem,
 } from "@/components/shadcn/dropdown-menu";
 import { MetricDisplay, MetricHeader } from "../components/MetricDisplay";
-import { 
-    MATBENCH_METRICS, 
-    formatMetricValue, 
+import {
+    MATBENCH_METRICS,
+    formatMetricValue,
     getPerformanceTier,
     isMatBenchDiscovery,
-    hasMatBenchMetrics 
+    hasMatBenchMetrics
 } from "../utils/matbench";
 
 interface BenchmarksTableProps<TData, TValue> {
@@ -46,17 +45,20 @@ interface BenchmarksTableProps<TData, TValue> {
     generateColumns?: boolean
     benchmarkName?: string
     compact?: boolean
+    rowSelection?: RowSelectionState
+    setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
 }
 
 // Default column sizes
-const DEFAULT_COLUMN_SIZE = 100;
-const FUNCTION_COLUMN_SIZE = 180;
-const DATE_COLUMN_SIZE = 120;
+const DEFAULT_COLUMN_SIZE = 80;
+const MODEL_COLUMN_SIZE = 200;
+const TASK_COLUMN_SIZE = 150;
+const DATE_COLUMN_SIZE = 100;
 
 // Helper function to generate a red-yellow-green background color based on value and metric direction
 const getColorForValue = (value: number, betterIs: 'higher' | 'lower' = 'higher'): string => {
     let normalizedValue = value;
-    
+
     // For "lower is better" metrics, we need to invert the color logic
     if (betterIs === 'lower') {
         // For lower-is-better metrics, smaller values should be green
@@ -119,61 +121,125 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
 
     // Get all unique keys from all data objects
     const allKeys = new Set<string>();
+    // Only exclude true metadata that shouldn't be displayed as columns
+    // Include cost/performance metrics for comparison across models
+    const reservedKeys = [
+        'id', 'benchmark_name', 'benchmark_task_name', 'timestamp', 'model_name', 'model_packages',
+        'gpu_names', 'num_workers'
+    ];
+
+    // Cost and performance keys that should be displayed as columns
+    const costPerformanceKeys = [
+        'device_type', 'num_gpus', 'total_seconds', 'throughput_per_second',
+        'total_gpu_hours', 'estimated_cost_usd', 'estimated_cost_per_1000_structures_usd'
+    ];
+
     data.forEach(item => {
         Object.keys(item).forEach(key => {
-            // Exclude function_id and date_invoked since we'll handle them separately
-            if (key !== "function_id" && key !== "date_invoked") {
+            // Include cost/performance keys and exclude only true metadata
+            if (!reservedKeys.includes(key)) {
                 allKeys.add(key);
             }
         });
     });
 
-    // Convert to array and sort - prioritize primary metrics for MatBench
+    // Convert to array and organize - prioritize benchmark metrics, then cost/performance
     let keys = Array.from(allKeys);
+
+    // Separate benchmark metrics from cost/performance metrics
+    const benchmarkMetrics = keys.filter(k => !costPerformanceKeys.includes(k));
+    const includedCostPerformance = keys.filter(k => costPerformanceKeys.includes(k));
+
     if (isMatBench) {
         const primaryMetrics = ['F1', 'DAF', 'Accuracy', 'f1_score', 'daf', 'accuracy'];
-        const otherKeys = keys.filter(k => !primaryMetrics.includes(k)).sort();
-        keys = [...primaryMetrics.filter(k => keys.includes(k)), ...otherKeys];
+        const otherBenchmarkKeys = benchmarkMetrics.filter(k => !primaryMetrics.includes(k)).sort();
+        keys = [
+            ...primaryMetrics.filter(k => benchmarkMetrics.includes(k)),
+            ...otherBenchmarkKeys,
+            ...includedCostPerformance
+        ];
     } else {
-        keys = keys.sort();
+        keys = [...benchmarkMetrics.sort(), ...includedCostPerformance];
     }
 
-    // Define function column first
-    const functionColumn = {
-        accessorKey: "function_id",
-        header: "Function",
+    // Check if data has model_name field
+    const hasModelName = data.some(item => 'model_name' in item && item.model_name);
+
+    // Define model/task column first (using benchmark_task_name or model_name as identifier)
+    const modelColumn = {
+        accessorKey: hasModelName ? "model_name" : "benchmark_task_name",
+        header: hasModelName ? "Model" : "Task",
         enableSorting: true,
-        enableHiding: false, // Don't allow hiding the function column
+        enableHiding: false, // Don't allow hiding the model column
         enableResizing: true,
-        size: FUNCTION_COLUMN_SIZE,
+        size: hasModelName ? MODEL_COLUMN_SIZE : TASK_COLUMN_SIZE,
         cell: ({ row }) => {
-            const functionId = String(row.getValue("function_id"));
-            return <FunctionNameCell functionId={functionId} />;
+            const value = hasModelName
+                ? row.getValue("model_name")
+                : row.getValue("benchmark_task_name");
+            return (
+                <div className="font-semibold text-primary truncate" title={String(value)}>
+                    {String(value) || "Unknown"}
+                </div>
+            );
         }
     } as ColumnDef<TData, TValue>;
 
-    // Define date column second
+    // Define date/timestamp column second
     const dateColumn = {
-        accessorKey: "date_invoked",
+        accessorKey: "timestamp",
         header: "Date",
         enableSorting: true,
         enableHiding: true,
         enableResizing: true,
         size: DATE_COLUMN_SIZE,
         cell: ({ row }) => {
-            const dateInvoked = row.getValue("date_invoked");
+            const timestamp = row.getValue("timestamp");
             // If date is not available, return empty string
-            if (!dateInvoked) return "";
+            if (!timestamp) return "";
 
             // Format as yyyy-mm-dd
             try {
-                const date = new Date(dateInvoked as string);
+                const date = new Date(timestamp as string);
                 return date.toISOString().split('T')[0]; // Get yyyy-mm-dd part
             } catch {
-                return String(dateInvoked); // Return original value if parsing fails
+                return String(timestamp); // Return original value if parsing fails
             }
         }
     } as ColumnDef<TData, TValue>;
+
+    // Helper to format cost/performance values
+    const formatCostPerformanceValue = (key: string, value: unknown): React.ReactNode => {
+        if (value === undefined || value === null) return '—';
+
+        const numValue = typeof value === 'number' ? value : parseFloat(String(value));
+        if (isNaN(numValue)) return String(value);
+
+        switch (key) {
+            case 'estimated_cost_usd':
+                return <span className="font-mono text-amber-600 dark:text-amber-400">${numValue.toFixed(4)}</span>;
+            case 'estimated_cost_per_1000_structures_usd':
+                return <span className="font-mono text-amber-600 dark:text-amber-400">${numValue.toFixed(2)}/1K</span>;
+            case 'total_gpu_hours':
+                return <span className="font-mono">{numValue.toFixed(4)}h</span>;
+            case 'total_seconds':
+                if (numValue < 60) return <span className="font-mono">{numValue.toFixed(1)}s</span>;
+                if (numValue < 3600) return <span className="font-mono">{(numValue / 60).toFixed(1)}m</span>;
+                return <span className="font-mono">{(numValue / 3600).toFixed(2)}h</span>;
+            case 'throughput_per_second':
+                return <span className="font-mono text-green-600 dark:text-green-400">{numValue.toFixed(3)}/s</span>;
+            case 'device_type':
+                const icon = String(value).toLowerCase() === 'cuda' ? '🎮' :
+                    String(value).toLowerCase() === 'mps' ? '🍎' : '💻';
+                return <span>{icon} {String(value).toUpperCase()}</span>;
+            case 'num_gpus':
+                return <span>{numValue} GPU{numValue !== 1 ? 's' : ''}</span>;
+            default:
+                return numValue.toFixed(3);
+        }
+    };
+
+
 
     // Create column definitions for other fields
     const dynamic_columns = keys.map(key => ({
@@ -189,7 +255,22 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
                     />
                 );
             }
-            return key; // Use the exact key name as the header for non-MatBench
+            // Ensure we use the friendly name from MATBENCH_METRICS if available, otherwise formatted key
+            const metricInfo = MATBENCH_METRICS[key];
+            if (metricInfo) {
+                // If it's a known metric (even cost/performance ones are now in MATBENCH_METRICS), use MetricHeader or name
+                // For simple text columns without special sorting, just return text
+                if (!metricInfo.isPrimaryMetric && !isMatBench && !costPerformanceKeys.includes(key)) {
+                    return metricInfo.name;
+                }
+            }
+
+            // For all metrics (both MatBench and Cost/Performance), use MetricHeader if possible for consistent look
+            // But MetricHeader interacts with sort.
+
+            // Standardize: If it's in MATBENCH_METRICS, use its name.
+            const displayName = metricInfo ? metricInfo.name : key;
+            return displayName;
         },
         enableSorting: true,
         enableHiding: true,
@@ -197,12 +278,20 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
         size: DEFAULT_COLUMN_SIZE,
         cell: ({ row }) => {
             const value = row.getValue(key);
-            
+
+            // Handle cost/performance columns
+            if (costPerformanceKeys.includes(key)) {
+                return formatCostPerformanceValue(key, value);
+            }
+
             if (isMatBench && MATBENCH_METRICS[key]) {
                 // Get F1 score and DAF for performance tier calculation (try both cases)
-                const f1Score = getNumericValue(row.getValue('F1')) || getNumericValue(row.getValue('f1_score'));
-                const daf = getNumericValue(row.getValue('DAF')) || getNumericValue(row.getValue('daf'));
-                
+                // Safely access values from the original data object instead of row.getValue()
+                // because row.getValue() throws if the column doesn't exist (e.g. in regression tasks without F1)
+                const originalData = row.original as Record<string, unknown>;
+                const f1Score = getNumericValue(originalData['F1']) || getNumericValue(originalData['f1_score']);
+                const daf = getNumericValue(originalData['DAF']) || getNumericValue(originalData['daf']);
+
                 return (
                     <MetricDisplay
                         metricKey={key}
@@ -232,7 +321,7 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
             }
             // Other values
             else {
-                displayValue = String(value);
+                displayValue = (value === undefined || value === null) ? 'N/A' : String(value);
             }
 
             return displayValue;
@@ -246,40 +335,19 @@ export const generateColumnsFromData = <TData extends Record<string, unknown>, T
         }
     })) as ColumnDef<TData, TValue>[];
 
-    return [functionColumn, dateColumn, ...dynamic_columns];
+    return [modelColumn, dateColumn, ...dynamic_columns];
 };
 
 // Helper function to extract numeric values
 const getNumericValue = (value: unknown): number | null => {
     if (typeof value === 'number') {
-        return value;
+        return isNaN(value) ? null : value;
     }
     if (value && typeof value === 'object' && 'parsedValue' in value) {
         const parsedValue = (value as { parsedValue: unknown }).parsedValue;
-        return typeof parsedValue === 'number' ? parsedValue : null;
+        return typeof parsedValue === 'number' && !isNaN(parsedValue) ? parsedValue : null;
     }
     return null;
-};
-
-// Component to fetch and display function name
-const FunctionNameCell = ({ functionId }: { functionId: string }) => {
-    const { data, isLoading, error } = useGetModalFunction(functionId);
-
-    if (isLoading) return <span className="text-muted-foreground text-sm">Loading...</span>;
-    if (error) return <span className="text-destructive text-sm">Error loading function</span>;
-
-    return (
-        <div className="flex flex-col">
-            <Link 
-                to={`/modal-functions/${functionId}`} 
-                className="font-semibold text-primary hover:text-primary/80 transition-colors truncate"
-                title={data?.title || "Unknown Function"}
-            >
-                {data?.title || "Unknown Function"}
-            </Link>
-            <span className="text-xs text-muted-foreground">ID: {functionId}</span>
-        </div>
-    );
 };
 
 // Define column metadata type
@@ -313,7 +381,7 @@ const getNumericValueForColoring = (
 
     // Determine direction based on metric type
     let betterIs: 'higher' | 'lower' = 'higher'; // default
-    
+
     if (isMatBench && MATBENCH_METRICS[column.id]) {
         betterIs = MATBENCH_METRICS[column.id].betterIs;
     }
@@ -326,25 +394,69 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
     data,
     benchmarkName,
     compact = false,
+    rowSelection,
+    setRowSelection,
 }: BenchmarksTableProps<TData, TValue>) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [internalRowSelection, setInternalRowSelection] = useState<RowSelectionState>({});
+
+    const finalRowSelection = rowSelection ?? internalRowSelection;
+    const finalSetRowSelection = setRowSelection ?? setInternalRowSelection;
+
     const columnResizeMode: ColumnResizeMode = 'onChange';
-    
+
     // Determine if this is MatBench data for coloring purposes
     const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
 
+    // Initial columns
+    const baseColumns = useMemo(() =>
+        columns || generateColumnsFromData(data, benchmarkName),
+        [columns, data, benchmarkName]
+    );
+
+    // Add select column
+    const tableColumns = useMemo(() => {
+        const selectColumn: ColumnDef<TData, TValue> = {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                    className="translate-y-[2px] border-slate-300 dark:border-slate-600"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                    className="translate-y-[2px] border-slate-300 dark:border-slate-600"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+            size: 60,
+        };
+
+        return [selectColumn, ...baseColumns];
+    }, [baseColumns]);
+
     const table = useReactTable({
         data,
-        columns: columns || generateColumnsFromData(data, benchmarkName),
+        columns: tableColumns,
         getCoreRowModel: getCoreRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: finalSetRowSelection,
+        enableRowSelection: true,
         columnResizeMode,
         state: {
             sorting,
             columnVisibility,
+            rowSelection: finalRowSelection,
         },
     });
 
@@ -432,92 +544,92 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
             </div>
             <div className={`rounded-lg border border-border/50 overflow-hidden shadow-sm ${compact ? 'flex-1 min-h-0' : 'w-full'}`}>
                 <div className="overflow-x-auto">
-                <Table className="w-full" style={{ width: table.getCenterTotalSize() }}>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => (
-                                    <TableHead
-                                        key={header.id}
-                                        className={`whitespace-nowrap relative font-semibold ${compact ? 'px-3 py-2 text-xs' : 'px-4 py-3'}`}
-                                        style={{ width: header.getSize() }}
-                                    >
-                                        {header.column.getCanSort() ? (
-                                            <div
-                                                className="flex items-center gap-1 cursor-pointer select-none"
-                                                onClick={header.column.getToggleSortingHandler()}
-                                            >
-                                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                                {header.column.getIsSorted() === "asc" ? (
-                                                    <ArrowUp className="h-4 w-4" />
-                                                ) : header.column.getIsSorted() === "desc" ? (
-                                                    <ArrowDown className="h-4 w-4" />
-                                                ) : (
-                                                    <ArrowUpDown className="h-4 w-4 opacity-50" />
-                                                )}
-                                            </div>
-                                        ) : (
-                                            flexRender(header.column.columnDef.header, header.getContext())
-                                        )}
-                                        {header.column.getCanResize() && (
-                                            <div
-                                                onMouseDown={header.getResizeHandler()}
-                                                onTouchStart={header.getResizeHandler()}
-                                                className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none hover:bg-primary/60 transition-colors ${header.column.getIsResizing() ? 'bg-primary' : 'bg-border'
-                                                    }`}
-                                            />
-                                        )}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows.length > 0 ? (
-                            table.getRowModel().rows.map((row, rowIndex) => (
-                                <TableRow 
-                                    key={row.id}
-                                    className={`hover:bg-muted/30 transition-colors ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/20'}`}
-                                >
-                                    {row.getVisibleCells().map((cell) => {
-                                        const value = cell.getValue();
-                                        const style: React.CSSProperties = {
-                                            width: cell.column.getSize()
-                                        };
-
-                                        // Get numeric value and direction for coloring
-                                        const coloringInfo = getNumericValueForColoring(value, cell.column, isMatBench);
-
-                                        // Apply background color for numeric values with better opacity
-                                        if (coloringInfo !== null && coloringInfo.value >= 0) {
-                                            const baseColor = getColorForValue(coloringInfo.value, coloringInfo.betterIs);
-                                            // Reduce opacity for better readability
-                                            style.backgroundColor = baseColor.replace('0.3)', '0.15)');
-                                        }
-
-                                        return (
-                                            <TableCell
-                                                key={cell.id}
-                                                className={`font-medium transition-colors ${compact ? 'px-3 py-2.5 text-xs' : 'px-4 py-3'}`}
-                                                style={style}
-                                            >
-                                                <div className="flex items-center">
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    <Table className="w-full" style={{ width: table.getCenterTotalSize() }}>
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => (
+                                        <TableHead
+                                            key={header.id}
+                                            className={`whitespace-nowrap relative font-semibold ${compact ? 'px-3 py-2 text-xs' : header.id === 'select' ? 'px-2 py-3' : 'px-4 py-3'}`}
+                                            style={{ width: header.getSize() }}
+                                        >
+                                            {header.column.getCanSort() ? (
+                                                <div
+                                                    className="flex items-center gap-1 cursor-pointer select-none"
+                                                    onClick={header.column.getToggleSortingHandler()}
+                                                >
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {header.column.getIsSorted() === "asc" ? (
+                                                        <ArrowUp className="h-4 w-4" />
+                                                    ) : header.column.getIsSorted() === "desc" ? (
+                                                        <ArrowDown className="h-4 w-4" />
+                                                    ) : (
+                                                        <ArrowUpDown className="h-4 w-4 opacity-50" />
+                                                    )}
                                                 </div>
-                                            </TableCell>
-                                        );
-                                    })}
+                                            ) : (
+                                                flexRender(header.column.columnDef.header, header.getContext())
+                                            )}
+                                            {header.column.getCanResize() && (
+                                                <div
+                                                    onMouseDown={header.getResizeHandler()}
+                                                    onTouchStart={header.getResizeHandler()}
+                                                    className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none hover:bg-primary/60 transition-colors ${header.column.getIsResizing() ? 'bg-primary' : 'bg-border'
+                                                        }`}
+                                                />
+                                            )}
+                                        </TableHead>
+                                    ))}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columnCount} className={`h-24 text-center text-muted-foreground ${compact ? 'text-xs' : ''}`}>
-                                    No results available.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows.length > 0 ? (
+                                table.getRowModel().rows.map((row, rowIndex) => (
+                                    <TableRow
+                                        key={row.id}
+                                        className={`hover:bg-muted/30 transition-colors ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/20'}`}
+                                    >
+                                        {row.getVisibleCells().map((cell) => {
+                                            const value = cell.getValue();
+                                            const style: React.CSSProperties = {
+                                                width: cell.column.getSize()
+                                            };
+
+                                            // Get numeric value and direction for coloring
+                                            const coloringInfo = getNumericValueForColoring(value, cell.column, isMatBench);
+
+                                            // Apply background color for numeric values with better opacity
+                                            if (coloringInfo !== null && coloringInfo.value >= 0) {
+                                                const baseColor = getColorForValue(coloringInfo.value, coloringInfo.betterIs);
+                                                // Reduce opacity for better readability
+                                                style.backgroundColor = baseColor.replace('0.3)', '0.15)');
+                                            }
+
+                                            return (
+                                                <TableCell
+                                                    key={cell.id}
+                                                    className={`font-medium transition-colors ${compact ? 'px-3 py-2.5 text-xs' : 'px-4 py-3'}`}
+                                                    style={style}
+                                                >
+                                                    <div className="flex items-center">
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </div>
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={columnCount} className={`h-24 text-center text-muted-foreground ${compact ? 'text-xs' : ''}`}>
+                                        No results available.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
         </div>

@@ -1,18 +1,18 @@
 import React from 'react';
 import { Info, TrendingUp, TrendingDown } from 'lucide-react';
 import { Badge } from '@/components/shadcn/badge';
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
 } from '@/components/shadcn/tooltip';
-import { 
-  MATBENCH_METRICS, 
-  formatMetricValue, 
+import {
+  MATBENCH_METRICS,
+  formatMetricValue,
   getPerformanceTier,
   getPracticalImpact,
-  type MetricInfo 
+  type MetricInfo
 } from '../utils/matbench';
 
 interface MetricDisplayProps {
@@ -35,7 +35,7 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
   compact = false,
 }) => {
   const metric = MATBENCH_METRICS[metricKey];
-  
+
   if (!metric) {
     return <span>{String(value)}</span>;
   }
@@ -85,7 +85,7 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
           {formattedValue}
           {metric.unit && ` ${metric.unit}`}
         </span>
-        
+
         {metric.isPrimaryMetric && (
           <Badge variant="secondary" className="text-xs">
             Key Metric
@@ -118,8 +118,8 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
       </div>
 
       {performanceTier && (
-        <Badge 
-          variant="outline" 
+        <Badge
+          variant="outline"
           className={`text-xs ${performanceTier.color}`}
         >
           {performanceTier.description}
@@ -149,7 +149,7 @@ export const MetricHeader: React.FC<MetricHeaderProps> = ({
   sortDirection,
 }) => {
   const metric = MATBENCH_METRICS[metricKey];
-  
+
   if (!metric) {
     return <span>{metricKey}</span>;
   }
@@ -160,14 +160,10 @@ export const MetricHeader: React.FC<MetricHeaderProps> = ({
   const content = (
     <div className="flex items-center gap-1">
       <span className={metric.isPrimaryMetric ? 'font-semibold' : ''}>
-        {metricKey}
+        {metric?.name || metricKey}
       </span>
       <TrendIcon className={`h-3 w-3 ${trendColor}`} />
-      {metric.isPrimaryMetric && (
-        <Badge variant="secondary" className="text-xs ml-1">
-          Key
-        </Badge>
-      )}
+
     </div>
   );
 
