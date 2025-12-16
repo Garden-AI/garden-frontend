@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
+import { Link } from 'react-router-dom';
 import { isMatBenchDiscovery, hasMatBenchMetrics, MATBENCH_METRICS } from '../utils/matbench';
 import { MetricDisplay, MetricHeader } from '../components/MetricDisplay';
 import { getColorForValue } from '../utils/formatting';
@@ -163,9 +164,25 @@ export const useBenchmarkColumns = <TData extends Record<string, unknown>, TValu
                 const value = hasModelName
                     ? row.getValue("model_name")
                     : row.getValue("benchmark_task_name");
+
+                const gardenDoi = row.original.garden_doi;
+                const displayValue = String(value) || "Unknown";
+
+                if (gardenDoi) {
+                    return (
+                        <Link
+                            to={`/garden/${gardenDoi}`}
+                            className="font-semibold text-primary truncate hover:underline cursor-pointer block"
+                            title={`${displayValue} (Click to view Garden)`}
+                        >
+                            {displayValue}
+                        </Link>
+                    );
+                }
+
                 return (
-                    <div className="font-semibold text-primary truncate" title={String(value)}>
-                        {String(value) || "Unknown"}
+                    <div className="font-semibold text-primary truncate" title={displayValue}>
+                        {displayValue}
                     </div>
                 );
             }

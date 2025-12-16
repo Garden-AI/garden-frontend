@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ScatterChart,
   Scatter,
@@ -95,6 +96,13 @@ const getModelName = (item: Record<string, unknown>): string => {
 export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, compact = false }) => {
   const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
   const availableMetrics = getAvailableMetrics(data);
+  const navigate = useNavigate();
+
+  const handleModelClick = (item: any) => {
+    if (item.garden_doi) {
+      navigate(`/garden/${item.garden_doi}`);
+    }
+  };
 
   // Default to F1 vs DAF for MatBench, or first two metrics for others
   const defaultXMetric = isMatBench ?
@@ -121,6 +129,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
         x: xValue,
         y: yValue,
         modelName: getModelName(item),
+        garden_doi: (item as any).garden_doi,
         ...item, // Include all original data for tooltip
       };
     }).filter(Boolean);
@@ -204,11 +213,16 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
             content={({ active, payload }) => {
               if (!active || !payload?.length) return null;
 
-              const data = payload[0].payload;
+              const data = payload[0].payload as any; // Cast payload to any
               return (
                 <div className="rounded-lg border bg-background p-3 shadow-md">
-                  <div className="font-medium mb-2">
+                  <div className="font-medium mb-2 flex items-center gap-2">
                     {data.modelName}
+                    {data.garden_doi && (
+                      <span className="text-[10px] text-blue-500 font-normal border border-blue-200 bg-blue-50 px-1 rounded">
+                        View Garden
+                      </span>
+                    )}
                   </div>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between gap-4">
@@ -229,6 +243,11 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
                         </span>
                       </div>
                     )}
+                    {data.garden_doi && (
+                      <div className="mt-1 text-[10px] text-muted-foreground italic">
+                        Click point to view
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -242,6 +261,8 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
               <Cell
                 key={`cell-${index}`}
                 fill={getPointColor(entry, isMatBench)}
+                className={(entry as any).garden_doi ? "cursor-pointer hover:opacity-80" : ""}
+                onClick={() => handleModelClick(entry)}
               />
             ))}
           </Scatter>

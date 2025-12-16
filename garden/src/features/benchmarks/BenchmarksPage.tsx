@@ -20,6 +20,7 @@ import {
     filterByBenchmarkName,
     transformResultsForDisplay,
     extractMetricKeys,
+    getBenchmarkDisplayName,
 } from "./utils/matbench";
 
 export const BenchmarksPage = () => {
@@ -128,7 +129,7 @@ export const BenchmarksPage = () => {
                             {/* Header Section */}
                             <div className="mb-6 space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h1 className="text-2xl font-bold">{selectedBenchmarkName}</h1>
+                                    <h1 className="text-2xl font-bold">{getBenchmarkDisplayName(selectedBenchmarkName)}</h1>
                                     <div className="text-sm text-muted-foreground">
                                         {selectedResults.length} result{selectedResults.length !== 1 ? 's' : ''}
                                         {taskNames.length > 0 && (

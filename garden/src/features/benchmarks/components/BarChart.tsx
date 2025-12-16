@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     BarChart as RechartsBarChart,
     Bar,
@@ -97,6 +98,13 @@ const getBarColor = (item: any, metric: string, isMatBench: boolean): string => 
 export const BarChartComponent: React.FC<BarChartProps> = ({ data, benchmarkName, compact = false }) => {
     const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
     const availableMetrics = getAvailableMetrics(data);
+    const navigate = useNavigate();
+
+    const handleModelClick = (item: any) => {
+        if (item.garden_doi) {
+            navigate(`/garden/${item.garden_doi}`);
+        }
+    };
 
     // Default to F1 or first metric
     const defaultMetric = isMatBench ?
@@ -116,7 +124,8 @@ export const BarChartComponent: React.FC<BarChartProps> = ({ data, benchmarkName
             return {
                 name: getModelName(item, index),
                 value: val,
-                ...item // keep original for tooltip/color logic
+                garden_doi: (item as any).garden_doi as string | undefined, // Explicitly pass garden_doi
+                ...item
             };
         }).filter(Boolean)
             .sort((a, b) => {
@@ -178,27 +187,68 @@ export const BarChartComponent: React.FC<BarChartProps> = ({ data, benchmarkName
                         dataKey="name"
                         type="category"
                         width={120}
-                        tick={{ fontSize: 11 }}
+                        tick={({ x, y, payload }) => {
+                            // Find the original item to check for garden_doi
+                            const item = chartData[payload.index];
+                            const isClickable = item && item.garden_doi;
+
+                            return (
+                                <g transform={`translate(${x},${y})`}>
+                                    <text
+                                        x={0}
+                                        y={0}
+                                        dy={4}
+                                        textAnchor="end"
+                                        fill="currentColor"
+                                        className={`text-[11px] ${isClickable ? 'fill-primary font-medium hover:underline cursor-pointer' : 'fill-muted-foreground'}`}
+                                        onClick={() => isClickable && handleModelClick(item)}
+                                    >
+                                        {payload.value && String(payload.value).length > 20
+                                            ? String(payload.value).substring(0, 20) + '...'
+                                            : payload.value}
+                                        {isClickable && <title>Click to view Garden</title>}
+                                    </text>
+                                </g>
+                            );
+                        }}
                         interval={0}
                     />
                     <ChartTooltip
                         content={({ active, payload }) => {
                             if (!active || !payload?.length) return null;
-                            const data = payload[0].payload;
+
+                            const data = payload[0].payload as any;
                             return (
                                 <div className="rounded-lg border bg-background p-3 shadow-md">
-                                    <div className="font-medium mb-2">{data.name}</div>
+                                    <div className="font-medium mb-2">
+                                        {data.name}
+                                        {data.garden_doi && (
+                                            <span className="ml-2 text-[10px] text-blue-500 font-normal border border-blue-200 bg-blue-50 px-1 rounded">
+                                                Clickable
+                                            </span>
+                                        )}
+                                    </div>
                                     <div className="flex justify-between gap-4 text-sm">
                                         <span className="text-muted-foreground">{MATBENCH_METRICS[metric]?.name || metric}:</span>
                                         <span className="font-mono">{formatMetricValue(data.value, metric)}</span>
                                     </div>
+                                    {data.garden_doi && (
+                                        <div className="mt-2 text-[10px] text-muted-foreground italic">
+                                            Click bar or label to view Garden
+                                        </div>
+                                    )}
                                 </div>
                             );
                         }}
                     />
                     <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                         {chartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={getBarColor(entry, metric, isMatBench)} />
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={getBarColor(entry, metric, isMatBench)}
+                                className={(entry as any).garden_doi ? "cursor-pointer hover:opacity-80 transition-opacity" : ""}
+                                onClick={() => handleModelClick(entry)}
+                            />
                         ))}
                     </Bar>
                 </RechartsBarChart>

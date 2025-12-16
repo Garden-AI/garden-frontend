@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     LineChart,
     Line,
@@ -98,6 +99,13 @@ export const ParallelCoordinatesPlot: React.FC<ParallelCoordinatesProps> = ({
 }) => {
     const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
     const availableMetrics = getAvailableMetrics(data);
+    const navigate = useNavigate();
+
+    const handleModelClick = (item: any) => {
+        if (item.garden_doi) {
+            navigate(`/garden/${item.garden_doi}`);
+        }
+    };
 
     // Defaults
     const defaultMetrics = isMatBench ?
@@ -313,7 +321,33 @@ export const ParallelCoordinatesPlot: React.FC<ParallelCoordinatesProps> = ({
                             }}
                         />
 
-                        <Legend wrapperStyle={{ paddingTop: '10px' }} />
+                        <Legend
+                            wrapperStyle={{ paddingTop: '10px' }}
+                            content={(props) => (
+                                <div className="flex flex-wrap justify-center gap-4 mt-4">
+                                    {props.payload?.map((entry, index) => {
+                                        const item = limitedData[index];
+                                        const isClickable = item && (item as any).garden_doi;
+                                        return (
+                                            <div
+                                                key={index}
+                                                className={`flex items-center gap-2 px-2 py-1 rounded ${isClickable ? 'cursor-pointer hover:bg-muted/50' : ''}`}
+                                                onClick={() => isClickable && handleModelClick(item)}
+                                                title={isClickable ? "Click to view Garden" : undefined}
+                                            >
+                                                <div
+                                                    className="w-3 h-3 rounded-full"
+                                                    style={{ backgroundColor: entry.color }}
+                                                />
+                                                <span className={`text-sm ${isClickable ? 'text-blue-600 hover:underline' : 'text-foreground'}`}>
+                                                    {entry.value}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        />
 
                         {limitedData.map((item, idx) => {
                             const key = `model_${idx}`;
@@ -331,6 +365,8 @@ export const ParallelCoordinatesPlot: React.FC<ParallelCoordinatesProps> = ({
                                     activeDot={{ r: 6 }}
                                     name={modelName}
                                     connectNulls
+                                    className={(item as any).garden_doi ? "cursor-pointer hover:stroke-width-4" : ""}
+                                    onClick={() => handleModelClick(item)}
                                 />
                             );
                         })}

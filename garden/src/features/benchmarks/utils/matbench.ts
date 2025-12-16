@@ -370,6 +370,25 @@ export const MATBENCH_METRICS: Record<string, MetricInfo> = {
   },
 };
 
+// Helper to get display name for benchmark
+export const getBenchmarkDisplayName = (benchmarkName: string): string => {
+  // Check exact match in definitions
+  if (MATBENCH_BENCHMARKS[benchmarkName]) {
+    return MATBENCH_BENCHMARKS[benchmarkName].name;
+  }
+
+  // Check for common variations (underscore vs hyphen)
+  const normalized = benchmarkName.replace(/_/g, '-');
+  if (MATBENCH_BENCHMARKS[normalized]) {
+    return MATBENCH_BENCHMARKS[normalized].name;
+  }
+
+  // Fallback: Title Case
+  return benchmarkName
+    .replace(/[_-]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+};
+
 // MatBench Discovery benchmark definitions
 export const MATBENCH_BENCHMARKS: Record<string, BenchmarkInfo> = {
   'matbench-discovery': {
@@ -628,10 +647,16 @@ export const transformResultsForDisplay = (
     const benchmarkInfo = (metricsBlob._benchmark_info as Record<string, unknown>) || {};
 
     // Get model name from nested structure
-    const modelName = modelInfo.model_name as string ||
+    let modelName = modelInfo.model_name as string ||
       benchmarkInfo.task_name as string ||
       result.benchmark_task_name ||
       'Unknown Model';
+
+    // Append variant if available
+    const modelVariant = modelInfo.variant as string;
+    if (modelVariant) {
+      modelName = `${modelName} (${modelVariant})`;
+    }
 
     // Get task name
     const taskName = benchmarkInfo.task_name as string || result.benchmark_task_name || '';
@@ -672,6 +697,8 @@ export const transformResultsForDisplay = (
       // Dataset metadata
       // num_structures_total: datasetInfo.num_structures_total,
       // num_structures_processed: datasetInfo.num_structures_processed,
+      // Garden DOI for linking
+      garden_doi: runMetadata.garden_doi,
       // Flatten actual metrics at the top level
       ...actualMetrics,
       ...flatMetrics,

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Radar,
   RadarChart,
@@ -115,6 +116,13 @@ const getModelName = (item: Record<string, unknown>, index: number): string => {
 export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmarkName, compact = false, overrideLimit = false }) => {
   const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);
   const availableMetrics = getAvailableMetrics(data);
+  const navigate = useNavigate();
+
+  const handleModelClick = (item: any) => {
+    if (item.garden_doi) {
+      navigate(`/garden/${item.garden_doi}`);
+    }
+  };
 
   // Default metrics - prioritize key MatBench metrics
   const defaultMetrics = isMatBench ?
@@ -293,6 +301,8 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
                   fill={color}
                   fillOpacity={0.1}
                   strokeWidth={2}
+                  className={(item as any).garden_doi ? "cursor-pointer hover:opacity-80" : ""}
+                  onClick={() => handleModelClick(item)}
                 />
               );
             })}
@@ -328,20 +338,26 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
             <Legend
               content={(props) => (
                 <div className="flex flex-wrap justify-center gap-4 mt-4">
-                  {props.payload?.map((entry, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 px-2 py-1 rounded"
-                    >
+                  {props.payload?.map((entry, index) => {
+                    const item = limitedData[index];
+                    const isClickable = item && (item as any).garden_doi;
+                    return (
                       <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: entry.color }}
-                      />
-                      <span className="text-sm text-foreground">
-                        {entry.value}
-                      </span>
-                    </div>
-                  ))}
+                        key={index}
+                        className={`flex items-center gap-2 px-2 py-1 rounded ${isClickable ? 'cursor-pointer hover:bg-muted/50' : ''}`}
+                        onClick={() => isClickable && handleModelClick(item)}
+                        title={isClickable ? "Click to view Garden" : undefined}
+                      >
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span className={`text-sm ${isClickable ? 'text-blue-600 hover:underline' : 'text-foreground'}`}>
+                          {entry.value}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             />

@@ -50,7 +50,7 @@ export const VisualizationSelector: React.FC<VisualizationSelectorProps> = ({
   className
 }) => {
   return (
-    <div className={cn("flex items-center gap-1 p-1 bg-muted rounded-lg", className)}>
+    <div className={cn("flex flex-wrap items-center gap-1 p-1 bg-muted rounded-lg", className)}>
       {visualizationOptions.map((option) => {
         const Icon = option.icon;
         const isSelected = selectedType === option.type;

@@ -2,6 +2,7 @@ import React from "react";
 import { Loader2, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { cn } from "@/utils/form.utils";
+import { getBenchmarkDisplayName } from "../utils/matbench";
 
 interface BenchmarksSidebarProps {
     benchmarkNames: string[];
@@ -94,7 +95,7 @@ export const BenchmarksSidebar = ({
                                         setMobileSidebarOpen(false);
                                     }}
                                 >
-                                    <div className="font-medium truncate">{name}</div>
+                                    <div className="font-medium truncate">{getBenchmarkDisplayName(name)}</div>
                                     {selectedBenchmarkName === name && (
                                         <div className="text-xs mt-1 text-primary-foreground/80">
                                             {count} result{count !== 1 ? 's' : ''}
