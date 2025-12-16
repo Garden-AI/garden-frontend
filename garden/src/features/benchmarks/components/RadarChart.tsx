@@ -72,14 +72,10 @@ const normalizeValue = (value: number, metric: string, allValues: number[]): num
 
   if (min === max) return 50; // If all values are the same
 
-  let normalized;
-  if (metricInfo?.betterIs === 'lower') {
-    // For "lower is better" metrics, invert the scale
-    normalized = ((max - value) / (max - min)) * 100;
-  } else {
-    // For "higher is better" metrics
-    normalized = ((value - min) / (max - min)) * 100;
-  }
+  // Standard linear normalization: (value - min) / (max - min) * 100
+  // Note: For "lower is better" metrics (Cost), this means "Good" (low cost) is near the center (0).
+  // "Bad" (high cost) is near the edge (100).
+  const normalized = ((value - min) / (max - min)) * 100;
 
   return Math.round(normalized);
 };
@@ -355,7 +351,8 @@ export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmark
 
       <div className="space-y-1">
         <div className="text-xs text-muted-foreground text-center">
-          Values are normalized to 0-100 scale for comparison. Higher values indicate better performance.
+          Chart shows normalized relative values (0-100% of range). <br />
+          <b>Note:</b> For cost/error metrics, lower values (near center) are better. For accuracy/score metrics, higher values (near edge) are better.
         </div>
       </div>
     </div>

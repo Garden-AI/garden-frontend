@@ -3,6 +3,8 @@ import { RowSelectionState } from "@tanstack/react-table";
 import { BenchmarksTable } from '../benchmarks-table/BenchmarksTable';
 import { ScatterPlot } from './ScatterPlot';
 import { RadarChartComponent } from './RadarChart';
+import { BarChartComponent } from './BarChart';
+import { ParallelCoordinatesPlot } from './ParallelCoordinatesPlot';
 import { VisualizationSelector, type VisualizationType } from './VisualizationSelector';
 import { Button } from '@/components/shadcn/button';
 import { Columns2, Columns } from 'lucide-react';
@@ -69,6 +71,18 @@ export const TaskVisualization: React.FC<TaskVisualizationProps> = ({
           benchmarkName={benchmarkName}
           compact={isCompact}
           overrideLimit={isSelectionActive}
+        />;
+      case 'bar':
+        return <BarChartComponent
+          data={chartData}
+          benchmarkName={benchmarkName}
+          compact={isCompact}
+        />;
+      case 'parallel':
+        return <ParallelCoordinatesPlot
+          data={chartData}
+          benchmarkName={benchmarkName}
+          compact={isCompact}
         />;
       case 'table':
       default:

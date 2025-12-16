@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BarChart3, ScatterChart as Scatter, RadarIcon as Radar, Table } from 'lucide-react';
+import { BarChart3, ScatterChart as Scatter, RadarIcon as Radar, Table, Kanban } from 'lucide-react';
 import { Button } from '@/components/shadcn/button';
 import { cn } from '@/utils/form.utils';
 
-export type VisualizationType = 'table' | 'scatter' | 'radar';
+export type VisualizationType = 'table' | 'scatter' | 'radar' | 'bar' | 'parallel';
 
 interface VisualizationSelectorProps {
   selectedType: VisualizationType;
@@ -25,10 +25,22 @@ const visualizationOptions = [
     description: 'Compare two metrics'
   },
   {
+    type: 'bar' as const,
+    label: 'Bar Chart',
+    icon: BarChart3,
+    description: 'Rank models by metric'
+  },
+  {
     type: 'radar' as const,
     label: 'Radar Chart',
     icon: Radar,
     description: 'Multi-metric comparison'
+  },
+  {
+    type: 'parallel' as const,
+    label: 'Parallel Coordinates',
+    icon: Kanban, // Using Kanban (columns) or similar as a proxy for parallel coords icon since Lucide might not have exact one
+    description: 'Compare profiles across metrics'
   }
 ];
 
@@ -42,7 +54,7 @@ export const VisualizationSelector: React.FC<VisualizationSelectorProps> = ({
       {visualizationOptions.map((option) => {
         const Icon = option.icon;
         const isSelected = selectedType === option.type;
-        
+
         return (
           <Button
             key={option.type}
@@ -51,8 +63,8 @@ export const VisualizationSelector: React.FC<VisualizationSelectorProps> = ({
             onClick={() => onTypeChange(option.type)}
             className={cn(
               "flex items-center gap-1.5 transition-all",
-              isSelected 
-                ? "bg-background text-foreground shadow-sm" 
+              isSelected
+                ? "bg-background text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             )}
             title={option.description}
