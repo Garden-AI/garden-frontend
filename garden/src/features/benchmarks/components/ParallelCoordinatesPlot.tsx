@@ -21,7 +21,8 @@ import {
     MATBENCH_METRICS,
     isMatBenchDiscovery,
     hasMatBenchMetrics,
-    formatMetricValue
+    formatMetricValue,
+    EXCLUDED_METRIC_KEYS
 } from '../utils/matbench';
 
 interface ParallelCoordinatesProps {
@@ -44,7 +45,7 @@ const getNumericValue = (value: unknown): number | null => {
 const getAvailableMetrics = (data: Record<string, unknown>[]): string[] => {
     if (!data.length) return [];
     const reservedKeys = ['id', 'benchmark_name', 'benchmark_task_name', 'timestamp', 'model_name',
-        'device_type', 'num_gpus', 'total_seconds', 'throughput_per_second'];
+        ...EXCLUDED_METRIC_KEYS];
     const numericKeys = new Set<string>();
     data.forEach(item => {
         Object.keys(item).forEach(key => {

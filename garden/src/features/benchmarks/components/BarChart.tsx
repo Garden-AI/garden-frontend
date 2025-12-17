@@ -22,53 +22,23 @@ import {
 } from '@/components/shadcn/select';
 import {
     MATBENCH_METRICS,
-    formatMetricValue,
     getPerformanceTier,
     isMatBenchDiscovery,
     hasMatBenchMetrics
 } from '../utils/matbench';
+import {
+    getNumericValue,
+    getAvailableMetrics,
+    getModelName,
+    getModelColor
+} from '../utils/charts';
+import { formatMetricValue } from '../utils/formatting';
 
 interface BarChartProps {
     data: Record<string, unknown>[];
     benchmarkName?: string;
     compact?: boolean;
 }
-
-// Helper function to extract numeric value
-const getNumericValue = (value: unknown): number | null => {
-    if (typeof value === 'number') return value;
-    if (value && typeof value === 'object' && 'parsedValue' in value) {
-        const parsedValue = (value as { parsedValue: unknown }).parsedValue;
-        return typeof parsedValue === 'number' ? parsedValue : null;
-    }
-    return null;
-};
-
-// Get available numeric metrics
-const getAvailableMetrics = (data: Record<string, unknown>[]): string[] => {
-    if (!data.length) return [];
-
-    const reservedKeys = ['id', 'benchmark_name', 'benchmark_task_name', 'timestamp', 'model_name'];
-    const numericKeys = new Set<string>();
-    data.forEach(item => {
-        Object.keys(item).forEach(key => {
-            if (!reservedKeys.includes(key)) {
-                const value = getNumericValue(item[key]);
-                if (value !== null) {
-                    numericKeys.add(key);
-                }
-            }
-        });
-    });
-
-    return Array.from(numericKeys).sort();
-};
-
-const getModelName = (item: Record<string, unknown>, index: number): string => {
-    if (item.model_name) return String(item.model_name);
-    if (item.benchmark_task_name) return String(item.benchmark_task_name);
-    return `Model #${index + 1}`;
-};
 
 // Generate colors based on performance tier
 const getBarColor = (item: any, metric: string, isMatBench: boolean): string => {

@@ -22,6 +22,14 @@ import {
   isMatBenchDiscovery,
   hasMatBenchMetrics
 } from '../utils/matbench';
+import {
+  getNumericValue,
+  getAvailableMetrics,
+  getModelName,
+  normalizeValue,
+  stringToColorIndex
+} from '../utils/charts';
+import { MODEL_COLORS } from '../utils/constants';
 
 interface RadarChartProps {
   data: Record<string, unknown>[];
@@ -29,89 +37,6 @@ interface RadarChartProps {
   compact?: boolean;
   overrideLimit?: boolean;
 }
-
-// Helper function to extract numeric value
-// Helper function to extract numeric value
-const getNumericValue = (value: unknown): number | null => {
-  if (typeof value === 'number') {
-    return isNaN(value) ? null : value;
-  }
-  if (value && typeof value === 'object' && 'parsedValue' in value) {
-    const parsedValue = (value as { parsedValue: unknown }).parsedValue;
-    return typeof parsedValue === 'number' && !isNaN(parsedValue) ? parsedValue : null;
-  }
-  return null;
-};
-
-// Get available numeric metrics
-const getAvailableMetrics = (data: Record<string, unknown>[]): string[] => {
-  if (!data.length) return [];
-
-  // Reserved keys that shouldn't be available as metrics
-  const reservedKeys = ['id', 'benchmark_name', 'benchmark_task_name', 'timestamp', 'model_name',
-    'device_type', 'num_gpus', 'total_seconds', 'throughput_per_second'];
-  const numericKeys = new Set<string>();
-  data.forEach(item => {
-    Object.keys(item).forEach(key => {
-      if (!reservedKeys.includes(key)) {
-        const value = getNumericValue(item[key]);
-        if (value !== null) {
-          numericKeys.add(key);
-        }
-      }
-    });
-  });
-
-  return Array.from(numericKeys).sort();
-};
-
-// Normalize values to 0-100 scale for radar chart
-const normalizeValue = (value: number, metric: string, allValues: number[]): number => {
-  const metricInfo = MATBENCH_METRICS[metric];
-  const min = Math.min(...allValues);
-  const max = Math.max(...allValues);
-
-  if (min === max) return 50; // If all values are the same
-
-  // Standard linear normalization: (value - min) / (max - min) * 100
-  // Note: For "lower is better" metrics (Cost), this means "Good" (low cost) is near the center (0).
-  // "Bad" (high cost) is near the edge (100).
-  const normalized = ((value - min) / (max - min)) * 100;
-
-  return Math.round(normalized);
-};
-
-// Deterministically map a string to a color index
-const stringToColorIndex = (str: string, max: number): number => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash) % max;
-};
-
-// Generate colors for different models
-const MODEL_COLORS = [
-  '#2563eb', // blue-600
-  '#dc2626', // red-600
-  '#16a34a', // green-600
-  '#9333ea', // purple-600
-  '#f97316', // orange-500
-  '#14b8a6', // teal-500
-  '#db2777', // pink-600
-  '#ca8a04', // yellow-600
-  '#4f46e5', // indigo-600
-  '#84cc16', // lime-500
-  '#c026d3', // fuchsia-600
-  '#475569', // slate-600
-];
-
-// Get model name from data item
-const getModelName = (item: Record<string, unknown>, index: number): string => {
-  if (item.model_name) return String(item.model_name);
-  if (item.benchmark_task_name) return String(item.benchmark_task_name);
-  return `Model #${index + 1}`;
-};
 
 export const RadarChartComponent: React.FC<RadarChartProps> = ({ data, benchmarkName, compact = false, overrideLimit = false }) => {
   const isMatBench = (benchmarkName && isMatBenchDiscovery(benchmarkName)) || hasMatBenchMetrics(data);

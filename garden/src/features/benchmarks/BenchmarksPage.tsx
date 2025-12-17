@@ -132,11 +132,6 @@ export const BenchmarksPage = () => {
                                     <h1 className="text-2xl font-bold">{getBenchmarkDisplayName(selectedBenchmarkName)}</h1>
                                     <div className="text-sm text-muted-foreground">
                                         {selectedResults.length} result{selectedResults.length !== 1 ? 's' : ''}
-                                        {taskNames.length > 0 && (
-                                            <span className="ml-2">
-                                                ({taskNames.length} task{taskNames.length !== 1 ? 's' : ''})
-                                            </span>
-                                        )}
                                     </div>
                                 </div>
 

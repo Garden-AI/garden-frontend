@@ -203,38 +203,43 @@ export const BenchmarksTable = <TData extends Record<string, unknown>, TValue>({
             </div>
             <div className={`rounded-lg border border-border/50 overflow-hidden shadow-sm ${compact ? 'flex-1 min-h-0' : 'w-full'}`}>
                 <div className="overflow-x-auto">
-                    <Table className="w-full" style={{ width: table.getCenterTotalSize() }}>
+                    <Table className="w-full table-fixed" style={{ width: table.getCenterTotalSize() }}>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => (
                                         <TableHead
                                             key={header.id}
-                                            className={`whitespace-nowrap relative font-semibold ${compact ? 'px-3 py-2 text-xs' : header.id === 'select' ? 'px-2 py-3' : 'px-4 py-3'}`}
+                                            className={`truncate relative font-semibold ${compact ? 'px-3 py-2 text-xs' : header.id === 'select' ? 'px-2 py-3' : 'px-4 py-3'}`}
                                             style={{ width: header.getSize() }}
+                                            title={typeof header.column.columnDef.header === 'string' ? header.column.columnDef.header : undefined}
                                         >
                                             {header.column.getCanSort() ? (
                                                 <div
-                                                    className="flex items-center gap-1 cursor-pointer select-none"
+                                                    className="flex items-center gap-1 cursor-pointer select-none overflow-hidden"
                                                     onClick={header.column.getToggleSortingHandler()}
                                                 >
-                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    <span className="truncate">
+                                                        {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    </span>
                                                     {header.column.getIsSorted() === "asc" ? (
-                                                        <ArrowUp className="h-4 w-4" />
+                                                        <ArrowUp className="h-4 w-4 flex-shrink-0" />
                                                     ) : header.column.getIsSorted() === "desc" ? (
-                                                        <ArrowDown className="h-4 w-4" />
+                                                        <ArrowDown className="h-4 w-4 flex-shrink-0" />
                                                     ) : (
-                                                        <ArrowUpDown className="h-4 w-4 opacity-50" />
+                                                        <ArrowUpDown className="h-4 w-4 opacity-50 flex-shrink-0" />
                                                     )}
                                                 </div>
                                             ) : (
-                                                flexRender(header.column.columnDef.header, header.getContext())
+                                                <div className="truncate">
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                </div>
                                             )}
                                             {header.column.getCanResize() && (
                                                 <div
                                                     onMouseDown={header.getResizeHandler()}
                                                     onTouchStart={header.getResizeHandler()}
-                                                    className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none hover:bg-primary/60 transition-colors ${header.column.getIsResizing() ? 'bg-primary' : 'bg-border'
+                                                    className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none hover:bg-primary/60 transition-colors z-10 ${header.column.getIsResizing() ? 'bg-primary' : 'bg-border/50'
                                                         }`}
                                                 />
                                             )}

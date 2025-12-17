@@ -22,48 +22,22 @@ import {
 } from '@/components/shadcn/select';
 import {
   MATBENCH_METRICS,
-  formatMetricValue,
   getPerformanceTier,
   isMatBenchDiscovery,
   hasMatBenchMetrics
 } from '../utils/matbench';
+import {
+  getNumericValue,
+  getAvailableMetrics,
+  getModelName
+} from '../utils/charts';
+import { formatMetricValue } from '../utils/formatting';
 
 interface ScatterPlotProps {
   data: Record<string, unknown>[];
   benchmarkName?: string;
   compact?: boolean;
 }
-
-// Helper function to extract numeric value from complex objects
-const getNumericValue = (value: unknown): number | null => {
-  if (typeof value === 'number') return value;
-  if (value && typeof value === 'object' && 'parsedValue' in value) {
-    const parsedValue = (value as { parsedValue: unknown }).parsedValue;
-    return typeof parsedValue === 'number' ? parsedValue : null;
-  }
-  return null;
-};
-
-// Get available numeric metrics from the data
-const getAvailableMetrics = (data: Record<string, unknown>[]): string[] => {
-  if (!data.length) return [];
-
-  // Reserved keys that shouldn't be available as metrics
-  const reservedKeys = ['id', 'benchmark_name', 'benchmark_task_name', 'timestamp', 'model_name'];
-  const numericKeys = new Set<string>();
-  data.forEach(item => {
-    Object.keys(item).forEach(key => {
-      if (!reservedKeys.includes(key)) {
-        const value = getNumericValue(item[key]);
-        if (value !== null) {
-          numericKeys.add(key);
-        }
-      }
-    });
-  });
-
-  return Array.from(numericKeys).sort();
-};
 
 // Generate colors based on performance tier for MatBench data
 const getPointColor = (point: any, isMatBench: boolean): string => {
@@ -84,13 +58,6 @@ const getPointColor = (point: any, isMatBench: boolean): string => {
   }
 
   return 'hsl(var(--primary))';
-};
-
-// Get the model/task name from data
-const getModelName = (item: Record<string, unknown>): string => {
-  if (item.model_name) return String(item.model_name);
-  if (item.benchmark_task_name) return String(item.benchmark_task_name);
-  return `Entry #${item.id || 'Unknown'}`;
 };
 
 export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, compact = false }) => {
@@ -119,7 +86,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
   const scatterData = useMemo(() => {
     if (!xMetric || !yMetric) return [];
 
-    return data.map((item) => {
+    return data.map((item, index) => {
       const xValue = getNumericValue(item[xMetric]);
       const yValue = getNumericValue(item[yMetric]);
 
@@ -128,7 +95,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({ data, benchmarkName, c
       return {
         x: xValue,
         y: yValue,
-        modelName: getModelName(item),
+        modelName: getModelName(item, index),
         garden_doi: (item as any).garden_doi,
         ...item, // Include all original data for tooltip
       };

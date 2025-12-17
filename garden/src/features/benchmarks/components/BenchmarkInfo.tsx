@@ -35,7 +35,7 @@ export const BenchmarkInfo: React.FC<BenchmarkInfoProps> = ({
             <BookOpen className="h-5 w-5 text-muted-foreground" />
             <h2 className="text-xl font-semibold">About This Benchmark</h2>
           </div>
-          
+
           {purpose && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Target className="h-4 w-4" />
@@ -45,10 +45,10 @@ export const BenchmarkInfo: React.FC<BenchmarkInfoProps> = ({
         </div>
 
         {learnMoreUrl && (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            asChild 
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
             className="flex items-center gap-1"
           >
             <a href={learnMoreUrl} target="_blank" rel="noopener noreferrer">
@@ -88,11 +88,6 @@ export const BenchmarkInfo: React.FC<BenchmarkInfoProps> = ({
 
           {/* Metadata */}
           <div className="flex items-center gap-4 text-sm text-muted-foreground pt-2 border-t">
-            {taskCount && (
-              <span>
-                <strong>{taskCount}</strong> evaluation tasks
-              </span>
-            )}
             {lastUpdated && (
               <span>
                 Last updated: {new Date(lastUpdated).toLocaleDateString()}
@@ -113,8 +108,8 @@ export const BenchmarkInfo: React.FC<BenchmarkInfoProps> = ({
                 Why This Matters for Materials Science
               </h4>
               <p className="text-sm text-green-800">
-                Finding new materials traditionally takes decades of lab work. These AI models can 
-                pre-screen millions of potential materials in days, helping scientists focus their 
+                Finding new materials traditionally takes decades of lab work. These AI models can
+                pre-screen millions of potential materials in days, helping scientists focus their
                 efforts on the most promising candidates for solar panels, batteries, and other technologies.
               </p>
             </div>

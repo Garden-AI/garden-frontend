@@ -9,11 +9,11 @@ import {
 } from '@/components/shadcn/tooltip';
 import {
   MATBENCH_METRICS,
-  formatMetricValue,
   getPerformanceTier,
-  getPracticalImpact,
-  type MetricInfo
+  getPracticalImpact
 } from '../utils/matbench';
+import { MetricInfo } from '../types/benchmarks.types';
+import { formatMetricValue } from '../utils/formatting';
 
 interface MetricDisplayProps {
   metricKey: string;
@@ -54,16 +54,16 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
           <TooltipTrigger asChild>
             <span className="font-medium cursor-help">
               {formattedValue}
-              {metric.unit && ` ${metric.unit}`}
             </span>
           </TooltipTrigger>
-          <TooltipContent side="top" className="max-w-xs">
-            <div className="space-y-1">
-              <div className="font-medium flex items-center gap-1">
+          <TooltipContent side="top" className="max-w-[min(90vw,24rem)]">
+            <div className="flex flex-col gap-1">
+              <div className="font-medium flex items-center gap-1 flex-wrap">
                 {metric.name}
-                <TrendIcon className={`h-3 w-3 ${trendColor}`} />
+                {metric.unit && <span className="text-muted-foreground ml-1 font-normal">({metric.unit})</span>}
+                <TrendIcon className={`h-3 w-3 ${trendColor} flex-shrink-0`} />
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground whitespace-normal break-words leading-relaxed">
                 {metric.description}
               </p>
               {metric.betterIs && (
@@ -83,7 +83,6 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
       <div className="flex items-center gap-2">
         <span className="font-medium">
           {formattedValue}
-          {metric.unit && ` ${metric.unit}`}
         </span>
 
         {metric.isPrimaryMetric && (
@@ -97,20 +96,19 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
             <TooltipTrigger asChild>
               <Info className="h-4 w-4 text-muted-foreground cursor-help" />
             </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
-              <div className="space-y-1">
-                <div className="font-medium flex items-center gap-1">
+            <TooltipContent side="top" className="max-w-[min(90vw,24rem)]">
+              <div className="flex flex-col gap-1">
+                <div className="font-medium flex items-center gap-1 flex-wrap">
                   {metric.name}
-                  <TrendIcon className={`h-3 w-3 ${trendColor}`} />
+                  {metric.unit && <span className="text-muted-foreground ml-1 font-normal">({metric.unit})</span>}
+                  <TrendIcon className={`h-3 w-3 ${trendColor} flex-shrink-0`} />
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground whitespace-normal break-words leading-relaxed">
                   {metric.description}
                 </p>
-                {metric.betterIs && (
-                  <p className="text-xs font-medium">
-                    Better is {metric.betterIs}
-                  </p>
-                )}
+                <p className="text-xs font-medium">
+                  {metric.betterIs === 'higher' ? 'Better is higher' : 'Better is lower'}
+                </p>
               </div>
             </TooltipContent>
           </Tooltip>
@@ -182,9 +180,13 @@ export const MetricHeader: React.FC<MetricHeaderProps> = ({
             {content}
           </div>
         </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-xs">
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">
+        <TooltipContent side="top" className="max-w-[min(90vw,24rem)]">
+          <div className="flex flex-col gap-1">
+            <div className="font-medium flex items-center gap-1 flex-wrap">
+              {metric.name}
+              <TrendIcon className={`h-3 w-3 ${trendColor} flex-shrink-0`} />
+            </div>
+            <p className="text-xs text-muted-foreground whitespace-normal break-words leading-relaxed">
               {metric.description}
             </p>
             <p className="text-xs font-medium">

@@ -1,15 +1,30 @@
 import React, { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Link } from 'react-router-dom';
-import { isMatBenchDiscovery, hasMatBenchMetrics, MATBENCH_METRICS } from '../utils/matbench';
+import { isMatBenchDiscovery, hasMatBenchMetrics, MATBENCH_METRICS, EXCLUDED_METRIC_KEYS } from '../utils/matbench';
 import { MetricDisplay, MetricHeader } from '../components/MetricDisplay';
 import { getColorForValue } from '../utils/formatting';
 
 // Default column sizes
-const DEFAULT_COLUMN_SIZE = 80;
-const MODEL_COLUMN_SIZE = 200;
-const TASK_COLUMN_SIZE = 150;
-const DATE_COLUMN_SIZE = 100;
+const DEFAULT_COLUMN_SIZE = 120;
+const MODEL_COLUMN_SIZE = 220;
+const TASK_COLUMN_SIZE = 160;
+const DATE_COLUMN_SIZE = 110;
+
+// Specific column sizes for known metrics
+const METRIC_COLUMN_SIZES: Record<string, number> = {
+    'estimated_cost_usd': 140,
+    'estimated_cost_per_1000_structures_usd': 180,
+    'throughput_per_second': 170,
+    'total_gpu_hours': 130,
+    'total_seconds': 120,
+    'device_type': 100,
+    'num_gpus': 100,
+    'F1': 100,
+    'DAF': 100,
+    'f1_score': 100,
+    'daf': 100
+};
 
 // Helper function to extract numeric values
 const getNumericValue = (value: unknown): number | null => {
@@ -111,7 +126,7 @@ export const useBenchmarkColumns = <TData extends Record<string, unknown>, TValu
         // Only exclude true metadata that shouldn't be displayed as columns
         const reservedKeys = [
             'id', 'benchmark_name', 'benchmark_task_name', 'timestamp', 'model_name', 'model_packages',
-            'gpu_names', 'num_workers'
+            ...EXCLUDED_METRIC_KEYS
         ];
 
         // Cost and performance keys that should be displayed as columns
@@ -247,7 +262,7 @@ export const useBenchmarkColumns = <TData extends Record<string, unknown>, TValu
             enableSorting: true,
             enableHiding: true,
             enableResizing: true,
-            size: DEFAULT_COLUMN_SIZE,
+            size: METRIC_COLUMN_SIZES[key] || DEFAULT_COLUMN_SIZE,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             cell: ({ row }: any) => {
                 const value = row.getValue(key);

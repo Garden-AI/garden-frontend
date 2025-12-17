@@ -6,36 +6,9 @@ import {
     Timer,
     DollarSign,
     Zap,
-    Database,
     Monitor
 } from 'lucide-react';
-
-interface RunMetadata {
-    // Model info
-    model_name?: string;
-    model_packages?: string[];
-
-    // Hardware info
-    device_type?: string;
-    num_gpus?: number;
-    gpu_names?: string[];
-    gpu_memory_gb?: number | null;
-
-    // Timing info
-    total_seconds?: number;
-    throughput_per_second?: number;
-    num_workers?: number;
-
-    // Cost info
-    gpu_hourly_rate_usd?: number;
-    total_gpu_hours?: number;
-    estimated_cost_usd?: number;
-    estimated_cost_per_1000_structures_usd?: number;
-
-    // Dataset info
-    num_structures_total?: number;
-    num_structures_processed?: number;
-}
+import { RunMetadata } from '../types/benchmarks.types';
 
 interface RunMetadataCardProps {
     metadata: RunMetadata;
@@ -76,7 +49,6 @@ export const RunMetadataCard: React.FC<RunMetadataCardProps> = ({ metadata, comp
     const hasHardwareInfo = metadata.device_type || metadata.num_gpus || metadata.gpu_names;
     const hasTimingInfo = metadata.total_seconds !== undefined || metadata.throughput_per_second !== undefined;
     const hasCostInfo = metadata.estimated_cost_usd !== undefined || metadata.total_gpu_hours !== undefined;
-    const hasDatasetInfo = metadata.num_structures_total !== undefined || metadata.num_structures_processed !== undefined;
 
     if (!hasHardwareInfo && !hasTimingInfo && !hasCostInfo) {
         return null;
@@ -212,34 +184,6 @@ export const RunMetadataCard: React.FC<RunMetadataCardProps> = ({ metadata, comp
                 </Card>
             )}
 
-            {/* Dataset Card */}
-            {hasDatasetInfo && (
-                <Card className="bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900 dark:to-violet-800">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium flex items-center gap-2">
-                            <Database className="h-4 w-4 text-purple-500" />
-                            Dataset
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        {metadata.num_structures_processed !== undefined && (
-                            <div>
-                                <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">
-                                    {metadata.num_structures_processed.toLocaleString()}
-                                </div>
-                                <div className="text-xs text-muted-foreground">Structures processed</div>
-                            </div>
-                        )}
-                        {metadata.num_structures_total !== undefined &&
-                            metadata.num_structures_processed !== undefined &&
-                            metadata.num_structures_total !== metadata.num_structures_processed && (
-                                <div className="text-xs text-muted-foreground">
-                                    of {metadata.num_structures_total.toLocaleString()} total
-                                </div>
-                            )}
-                    </CardContent>
-                </Card>
-            )}
         </div>
     );
 };

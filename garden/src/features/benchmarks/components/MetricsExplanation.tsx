@@ -8,7 +8,7 @@ import {
 } from "@/components/shadcn/accordion";
 import { Card } from "@/components/shadcn/card";
 import { cn } from "@/utils/form.utils";
-import { inferMetricInfo, ENVIRONMENT_METRIC_KEYS } from "../utils/matbench";
+import { inferMetricInfo, ENVIRONMENT_METRIC_KEYS, EXCLUDED_METRIC_KEYS } from "../utils/matbench";
 import { METRIC_CATEGORY_THEMES } from "../utils/formatting";
 
 interface MetricsExplanationProps {
@@ -26,9 +26,7 @@ const MetricCard = ({ metricKey }: { metricKey: string }) => {
             <div className="space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <h4 className="font-medium flex flex-wrap items-center gap-2 mr-2">
-                        <span className="font-bold text-primary">{metricKey}</span>
-                        <span className="text-muted-foreground">-</span>
-                        <span>{info.name}</span>
+                        <span className="font-bold text-primary">{info.name}</span>
                         {info.isPrimaryMetric && (
                             <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded whitespace-nowrap">
                                 Key Metric
@@ -78,7 +76,7 @@ export const MetricsExplanation = ({ allMetricKeys }: MetricsExplanationProps) =
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {allMetricKeys.filter(key =>
-                                !ENVIRONMENT_METRIC_KEYS.includes(key)
+                                !ENVIRONMENT_METRIC_KEYS.includes(key) && !EXCLUDED_METRIC_KEYS.includes(key)
                             ).map(key => (
                                 <MetricCard key={key} metricKey={key} />
                             ))}
@@ -101,8 +99,7 @@ export const MetricsExplanation = ({ allMetricKeys }: MetricsExplanationProps) =
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {ENVIRONMENT_METRIC_KEYS.filter(key =>
-                                ['device_type', 'num_gpus', 'total_seconds', 'throughput_per_second',
-                                    'total_gpu_hours', 'estimated_cost_usd', 'estimated_cost_per_1000_structures_usd'].includes(key)
+                                !EXCLUDED_METRIC_KEYS.includes(key)
                             ).map(key => (
                                 <MetricCard key={key} metricKey={key} />
                             ))}

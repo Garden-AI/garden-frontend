@@ -78,3 +78,37 @@ export const METRIC_CATEGORY_THEMES: Record<string, string> = {
     'num_structures_processed': 'border-purple-400/50 bg-purple-50/50 dark:bg-purple-900/50',
     'num_structures_total': 'border-purple-400/50 bg-purple-50/50 dark:bg-purple-900/50',
 };
+
+import { MATBENCH_METRICS } from "./constants";
+
+// Format metric value for display
+export const formatMetricValue = (value: unknown, metricKey: string): string => {
+    if (value === undefined || value === null) return 'N/A';
+
+    const metric = MATBENCH_METRICS[metricKey];
+    if (!metric) return String(value);
+
+    let numValue: number;
+
+    // Handle complex objects with parsedValue
+    if (value && typeof value === 'object' && 'parsedValue' in value) {
+        numValue = (value as { parsedValue: number }).parsedValue;
+    } else if (typeof value === 'number') {
+        numValue = value;
+    } else {
+        return String(value);
+    }
+
+    if (isNaN(numValue)) return 'N/A';
+
+    switch (metric.format) {
+        case 'percentage':
+            return `${(numValue * 100).toFixed(metric.decimalPlaces || 1)}%`;
+        case 'integer':
+            return numValue.toFixed(0);
+        case 'decimal':
+            return numValue.toFixed(metric.decimalPlaces || 3);
+        default:
+            return numValue.toFixed(3);
+    }
+};
