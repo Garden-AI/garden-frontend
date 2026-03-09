@@ -11,6 +11,7 @@ import { ModalFileMetadataResponse } from "@/types";
 import { ValidationError, DeploymentError } from "./useModalAppUpload";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
+import { AxiosError } from "axios";
 import { ModelDeployment } from "@/features/model-deployments/ModelDeployments";
 
 export const modalAppFormSchema = z.object({
@@ -79,9 +80,6 @@ export const useModalAppForm = ({
     validateModalFile,
     deployModalApp,
     updateModalApp,
-    isValidating: useModalAppUploadIsValidating,
-    validationError: useModalAppUploadValidationError,
-    deploymentError: useModalAppUploadDeploymentError,
     clearErrors
   } = useModalAppUpload();
 
@@ -118,29 +116,21 @@ export const useModalAppForm = ({
       // Automatically validate the file after loading
       const metadata = await validateModalFile(fileContents);
 
-      if (metadata) {
-        setIsValidated(true);
-        // Initialize the modal_functions field with the validated metadata
-        const functions = metadata.modal_functions || [];
-        form.setValue("modal.modal_functions", functions);
-        setModalMetadata(metadata);
-        toast.success("Modal file validated successfully");
-      } else {
-        // If validateModalFile returns null but didn't throw an error,
-        // check if useModalAppUpload has a validation error
-        if (useModalAppUploadValidationError) {
-          setValidationError(useModalAppUploadValidationError);
-        } else {
-          setValidationError({
-            message: "File validation failed. Please check your file and try again.",
-            isApiError: false
-          });
-        }
-        toast.error("File validation failed");
-      }
+      setIsValidated(true);
+      // Initialize the modal_functions field with the validated metadata
+      const functions = metadata.modal_functions || [];
+      form.setValue("modal.modal_functions", functions);
+      setModalMetadata(metadata);
+      toast.success("Modal file validated successfully");
     } catch (error) {
-      if (useModalAppUploadValidationError) {
-        setValidationError(useModalAppUploadValidationError);
+      // Handle AxiosError by extracting detail and suggested_fix from response
+      if (error instanceof AxiosError) {
+        const apiError = ApiError.fromAxiosError(error);
+        setValidationError({
+          message: apiError.message,
+          suggestedFix: apiError.suggestedFix,
+          isApiError: true
+        });
       } else if (error instanceof ApiError) {
         setValidationError({
           message: error.message,
@@ -328,9 +318,16 @@ export const useModalAppForm = ({
         }
       }
     } catch (error: unknown) {
-      // Get the properly formatted error from useModalAppUpload
-      if (useModalAppUploadDeploymentError) {
-        setDeploymentError(useModalAppUploadDeploymentError);
+      // Handle AxiosError by extracting detail and suggested_fix from response
+      if (error instanceof AxiosError) {
+        const apiError = ApiError.fromAxiosError(error);
+        setDeploymentError({
+          message: apiError.message,
+          suggestedFix: apiError.suggestedFix,
+          deploymentOutput: apiError.deploymentOutput,
+          isTimeout: false,
+          isApiError: true
+        });
       } else if (error instanceof ApiError) {
         setDeploymentError({
           message: error.message,
