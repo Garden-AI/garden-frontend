@@ -35,7 +35,7 @@ interface ExtendedModalFileMetadata extends ModalFileMetadataResponse {
 }
 
 export interface UseModalAppUploadReturn {
-  validateModalFile: (fileContents: string) => Promise<ModalFileMetadataResponse | null>;
+  validateModalFile: (fileContents: string) => Promise<ModalFileMetadataResponse>;
   deployModalApp: (fileContents: string, modalMetadata: ModalFileMetadataResponse, ownerIdentityId?: string) => Promise<number | undefined>;
   updateModalApp: (fileContents: string, appId: number) => Promise<number | undefined>;
   modalMetadata: ExtendedModalFileMetadata | null;
@@ -101,7 +101,7 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
     throw error;
   };
 
-  const validateModalFile = async (fileContents: string): Promise<ModalFileMetadataResponse | null> => {
+  const validateModalFile = async (fileContents: string): Promise<ModalFileMetadataResponse> => {
     setValidationError(null);
 
     try {
@@ -109,10 +109,10 @@ export const useModalAppUpload = (): UseModalAppUploadReturn => {
       setModalMetadata(metadata);
       return metadata;
     } catch (error) {
-      setValidationError({
-        ...processError(error),
-      });
-      return null;
+      const processed = processError(error);
+      setValidationError(processed);
+      // Re-throw so caller can also handle it (avoids stale closure issues)
+      throw error;
     }
   };
 

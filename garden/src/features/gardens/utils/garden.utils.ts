@@ -95,16 +95,19 @@ export class ApiError extends Error {
       deployment_output?: string,
     }
 
-    const raw_data: ModalException = error.response?.data as ModalException;
-    const responseData = {
+    const raw_data = error.response?.data as ModalException | undefined;
+
+    // Handle case where there's no response data
+    if (!raw_data) {
+      return new ApiError(error.message || 'Unknown API Error');
+    }
+
+    const responseData: ApiErrorInfo = {
       detail: raw_data.detail,
       suggestedFix: raw_data.suggested_fix,
       deploymentOutput: raw_data.deployment_output,
-    } as ApiErrorInfo;
+    };
     let message = 'Unknown API Error';
-    if (!responseData) {
-      return new ApiError(error.message || message);
-    }
 
     let suggestedFix = responseData.suggestedFix;
     const deploymentOutput = responseData.deploymentOutput;
