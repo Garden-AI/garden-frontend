@@ -37,7 +37,7 @@ const TruncatedList = ({
       {shouldTruncate && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="inline-flex items-center bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs px-2 py-0.5 rounded transition-colors"
+          className="inline-flex items-center bg-teal/10 text-teal hover:bg-teal/20 text-xs px-2 py-0.5 rounded transition-colors"
         >
           {showAll ? 'Show Less' : `Show All (${hiddenCount} more)`}
         </button>

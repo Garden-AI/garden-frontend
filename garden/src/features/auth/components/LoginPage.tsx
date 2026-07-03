@@ -25,7 +25,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50">
       <p className="mb-8 text-xl text-gray-600">You must login to continue.</p>
       <Button className={buttonVariants({ variant: "default" })} onClick={handleLogin}>
         Login

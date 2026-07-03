@@ -54,7 +54,7 @@ const AssociatedMaterials = ({ resource }: { resource: Entrypoint | ModalFunctio
                       href={paper.url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline truncate max-w-[200px]"
+                      className="text-teal hover:underline truncate max-w-[200px]"
                     >
                       {paper.url}
                     </a>

@@ -37,7 +37,7 @@ const HpcFunctionCard = ({ hpcFunction, gardenDOI }: HpcFunctionCardProps) => {
     >
       <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-white to-gray-50 pb-2 pt-5">
         <div className="flex items-center gap-3">
-          <div className="flex-shrink-0 rounded-lg bg-blue-600/10 p-2 text-blue-600">
+          <div className="flex-shrink-0 rounded-lg bg-teal/10 p-2 text-teal">
             <FunctionSquare className="h-4 w-4" />
           </div>
           <CardTitle className="text-lg font-medium tracking-tight text-gray-800">

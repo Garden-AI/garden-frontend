@@ -149,7 +149,7 @@ export const EditableCodeField = ({
                 size="icon"
                 onClick={() => setIsEditing(true)}
                 className="h-6 w-6">
-                <EditIcon className="text-green hover:text-dark-green h-3.5 w-3.5" />
+                <EditIcon className="text-teal hover:text-deepTeal h-3.5 w-3.5" />
               </Button>
             )}
           </div>

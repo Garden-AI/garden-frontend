@@ -96,7 +96,7 @@ const EditableTags = ({ garden, ownsThisGarden }: EditableTagsProps) => {
           <Button 
             size="sm" 
             onClick={handleSave}
-            className="h-7 text-xs bg-blue-600 hover:bg-blue-700"
+            className="h-7 text-xs bg-teal hover:bg-deepTeal"
           >
             <SaveIcon className="h-3.5 w-3.5 mr-1" /> Save
           </Button>
@@ -121,7 +121,7 @@ const EditableTags = ({ garden, ownsThisGarden }: EditableTagsProps) => {
               <TooltipTrigger asChild>
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-green hover:text-darkgreen"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-teal hover:text-deepTeal"
                   aria-label="Edit tags"
                 >
                   <EditIcon className="h-3.5 w-3.5" />

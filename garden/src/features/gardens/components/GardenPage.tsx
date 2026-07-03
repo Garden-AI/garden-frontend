@@ -57,7 +57,7 @@ const GardenContent = ({ garden, ownsThisGarden, isNewlyCreated, onRefresh }: Ga
       )}
 
       {/* Hero Metadata Section */}
-      <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-6 mb-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Title, Description & Core Metadata */}
           <div className="lg:w-2/3">

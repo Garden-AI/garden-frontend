@@ -34,7 +34,7 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
     >
       <CardHeader className="pt-5 pb-2 bg-gradient-to-r from-white to-gray-50 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="text-green-500 bg-green-50 p-2 rounded-lg flex-shrink-0">
+          <div className="text-teal bg-teal/10 p-2 rounded-lg flex-shrink-0">
             <Code className="h-4 w-4" />
           </div>
           <CardTitle className="font-medium text-lg text-gray-800 tracking-tight">
@@ -75,7 +75,7 @@ const EntrypointBox = ({ entrypoint }: { entrypoint: Entrypoint }) => {
             <Button
               variant="ghost" 
               size="sm"
-              className="text-xs bg-green-50 text-green-600 hover:bg-green-100 h-7 px-3 rounded-md border border-green-100 shadow-sm"
+              className="text-xs bg-teal/10 text-teal hover:bg-teal/20 h-7 px-3 rounded-md border border-teal/20 shadow-sm"
               onClick={handleEditEntrypointClick}
             >
               <span className="flex items-center">

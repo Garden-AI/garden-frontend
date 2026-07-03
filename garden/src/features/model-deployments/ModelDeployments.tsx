@@ -20,7 +20,7 @@ export interface ModelDeployment {
 }
 
 const statusColors = {
-    deployed: 'bg-green/30 text-darkgreen',
+    deployed: 'bg-teal/20 text-deepTeal',
     undeployed: 'bg-gray-200 text-black',
     error: 'bg-red-100 text-red-800',
 };
@@ -110,11 +110,11 @@ export const ModelDeployments = () => {
                         <div
                             key={deployment.id}
                             onClick={() => handleOpenDeployment(deployment)}
-                            className="w-full cursor-pointer rounded-xl border border-[#d6e9dd] bg-white hover:shadow-lg hover:ring-2 hover:ring-[#a5d6b1] transition px-5 py-4 flex flex-col gap-4 sm:flex-row sm:items-center justify-between"
+                            className="w-full cursor-pointer rounded-xl border border-teal/20 bg-white hover:shadow-lg hover:ring-2 hover:ring-teal/40 transition px-5 py-4 flex flex-col gap-4 sm:flex-row sm:items-center justify-between"
                         >
                             <div className="flex flex-col gap-1 w-full">
                                 <div className="flex items-center gap-3 flex-wrap">
-                                    <h3 className="text-base font-semibold text-[#1f3d2d]">{deployment.name}</h3>
+                                    <h3 className="text-base font-semibold text-darkSlate">{deployment.name}</h3>
                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusClass}`}>
                                         {status.charAt(0).toUpperCase() + status.slice(1)}
                                     </span>

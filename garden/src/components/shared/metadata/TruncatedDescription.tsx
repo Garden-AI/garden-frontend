@@ -24,7 +24,7 @@ const TruncatedDescription = ({ content, maxLength = 500 }: TruncatedDescription
         <div className="flex justify-end">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2"
+            className="text-teal hover:text-deepTeal text-sm font-medium mt-2"
           >
             {isExpanded ? 'Show Less' : 'Show More'}
           </button>

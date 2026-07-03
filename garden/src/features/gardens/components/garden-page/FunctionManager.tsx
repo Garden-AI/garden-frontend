@@ -232,14 +232,14 @@ const FunctionManager: React.FC<FunctionManagerProps> = ({
                       <TableRow 
                         key={deployment.id}
                         onClick={() => navigate(`/model-deployments/${deployment.id}`)}
-                        className="group cursor-pointer transition-all duration-200 ease-in-out hover:bg-[#eef5f1] border-y border-transparent hover:border-[#4FA86C]"
+                        className="group cursor-pointer transition-all duration-200 ease-in-out hover:bg-teal/5 border-y border-transparent hover:border-teal"
                       >
                         <TableCell className="text-[#1f3d2d font-semibold]">{deployment.name}</TableCell>
                         <TableCell className="text-right">
                           <Button
                             variant="outline"
                             size="sm"
-                            className="group-hover:bg-[#4FA86C] group-hover:text-white transition"
+                            className="group-hover:bg-teal group-hover:text-white transition"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate(`/model-deployments/${deployment.id}`)

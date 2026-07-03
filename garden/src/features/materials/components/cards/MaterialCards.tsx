@@ -62,7 +62,7 @@ export const PaperCard = ({
                 href={`https://doi.org/${paper.doi}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-blue-600 hover:underline text-xs"
+                className="flex-1 text-teal hover:underline text-xs"
               >
                 {paper.doi}
               </a>
@@ -145,7 +145,7 @@ export const DatasetCard = ({
                 href={`https://doi.org/${dataset.doi}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-blue-600 hover:underline text-xs"
+                className="flex-1 text-teal hover:underline text-xs"
               >
                 {dataset.doi}
               </a>
@@ -228,7 +228,7 @@ export const RepositoryCard = ({
                 href={repository.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-blue-600 hover:underline text-xs"
+                className="flex-1 text-teal hover:underline text-xs"
               >
                 {repository.url.replace(/^https?:\/\//, '')}
               </a>
@@ -327,7 +327,7 @@ export const NotebookCard = ({
                 href={notebook.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-blue-600 hover:underline text-xs"
+                className="flex-1 text-teal hover:underline text-xs"
               >
                 {notebook.url.replace(/^https?:\/\//, '')}
               </a>

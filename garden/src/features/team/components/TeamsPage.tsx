@@ -263,7 +263,7 @@ const TeamsPage = () => {
 
   return (
     <div className="font-display">
-      <div className="bg-darkgreen py-20 text-white ">
+      <div className="bg-darkSlate py-20 text-white ">
         <div className="px-4">
           <h1 className="mx-auto text-center font-serifDisplay text-5xl">Meet the Garden Team</h1>
           <p className="mx-auto mt-20 max-w-lg text-center">
@@ -273,7 +273,7 @@ const TeamsPage = () => {
         </div>
       </div>
       <div className="mx-10 mt-12 text-gray-800">
-        <h2 className="text-3xl underline decoration-green underline-offset-4">The Team</h2>
+        <h2 className="font-grotesk text-3xl font-bold text-gray-900 mb-2">The Team</h2>
       </div>
       <div className="mx-10 mt-4">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -282,7 +282,7 @@ const TeamsPage = () => {
           ))}
         </div>
         <div className="mt-12 text-gray-800">
-          <h1 className="text-3xl underline decoration-green underline-offset-4">
+          <h1 className="font-grotesk text-3xl font-bold text-gray-900 mb-2">
             Current Students
           </h1>
         </div>
@@ -292,7 +292,7 @@ const TeamsPage = () => {
           ))}
         </div>
         <div className="mt-12 text-gray-800">
-          <h1 className="text-3xl underline decoration-green underline-offset-4">Alumni</h1>
+          <h1 className="font-grotesk text-3xl font-bold text-gray-900 mb-2">Alumni</h1>
 
           <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {alums.map((student) => (

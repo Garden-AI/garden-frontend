@@ -25,8 +25,8 @@ export const FunctionTypeSelection: React.FC = () => {
         <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary">
           <CardHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-3 rounded-lg bg-blue-50">
-                <Cloud className="h-8 w-8 text-blue-600" />
+              <div className="p-3 rounded-lg bg-teal/10">
+                <Cloud className="h-8 w-8 text-teal" />
               </div>
               <CardTitle className="text-2xl">Modal Functions</CardTitle>
             </div>
@@ -49,8 +49,8 @@ export const FunctionTypeSelection: React.FC = () => {
         <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary">
           <CardHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-3 rounded-lg bg-green-50">
-                <Server className="h-8 w-8 text-green-600" />
+              <div className="p-3 rounded-lg bg-teal/10">
+                <Server className="h-8 w-8 text-teal" />
               </div>
               <CardTitle className="text-2xl">HPC Functions</CardTitle>
             </div>

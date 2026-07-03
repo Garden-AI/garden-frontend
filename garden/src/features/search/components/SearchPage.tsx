@@ -52,9 +52,9 @@ const SearchPage = () => {
   );
 
   return (
-    <div className="mt-8 min-h-screen px-4 font-display md:px-8">
+    <div className="mx-auto mt-8 min-h-screen w-full max-w-7xl px-4 font-inter md:px-8">
       <div className="flex flex-col space-y-3">
-        <h1 className="text-2xl font-medium">Search</h1>
+        <h1 className="font-grotesk text-3xl font-bold text-gray-900">Search</h1>
         <SearchForm query={query} setQuery={setQuery} />
       </div>
       <div className="relative mt-5 mb-6">

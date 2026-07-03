@@ -50,14 +50,14 @@ export const SearchResult = ({
   };
   return (
     <Card
-      className={`relative transition-colors hover:shadow-lg ${garden.is_archived ? "bg-gray-100" : "hover:bg-gray-50"}`}
+      className={`relative transition-colors hover:shadow-lg ${garden.is_archived ? "bg-gray-100" : "hover:bg-slate-50"}`}
     >
       <CardHeader
         className={`${showPublishedBanner || garden.is_archived || garden.doi_is_draft ? "pt-8" : ""}`}
       >
         {showPublishedBanner && (
           <div
-            style={{ backgroundColor: "#C2E6CA", color: "#11451F" }}
+            style={{ backgroundColor: "#d1faf5", color: "#055869" }}
             className="absolute left-0 top-0 w-full rounded-t-md px-4 py-1 text-center text-sm font-semibold shadow-sm"
           >
             Published
@@ -80,7 +80,7 @@ export const SearchResult = ({
               Draft
             </div>
           )}
-          <CardTitle className="line-clamp-2 text-xl font-bold transition-colors duration-300 hover:text-primary">
+          <CardTitle className="font-grotesk line-clamp-2 text-xl font-bold transition-colors duration-300 hover:text-teal">
             <Link to={`/garden/${encodeURIComponent(garden.doi)}`}>{garden.title}</Link>
           </CardTitle>
           <div className="flex items-center space-x-1  text-gray-600">
@@ -120,12 +120,15 @@ export const SearchResult = ({
           className={`text-balanced m-2 p-2 ${showMore ? "" : "line-clamp-3"}`}
           content={garden.description || "*No description available*"}
         />
-        <Button
-          onClick={handleShowMore}
-          className="bg-inherit text-xs text-black hover:bg-inherit hover:text-blue-400 hover:underline"
-        >
-          {showMore ? "Show Less" : "Show More"}
-        </Button>
+        {((garden.description?.length ?? 0) > 240 ||
+          (garden.description?.split("\n").length ?? 0) > 3) && (
+          <Button
+            onClick={handleShowMore}
+            className="bg-inherit text-xs font-medium text-teal hover:bg-inherit hover:text-deepTeal hover:underline"
+          >
+            {showMore ? "Show Less" : "Show More"}
+          </Button>
+        )}
       </div>
 
       {verbose && functions?.length > 0 && (
@@ -172,7 +175,7 @@ export const SearchResult = ({
                             <Badge
                               key={index}
                               variant="outline"
-                              className="cursor-default whitespace-nowrap bg-primary font-thin capitalize text-primary-foreground transition-colors hover:bg-primary/70"
+                              className="cursor-default whitespace-nowrap border-teal/30 bg-teal/10 font-medium capitalize text-deepTeal transition-colors hover:bg-teal/20"
                             >
                               {tag}
                             </Badge>
@@ -223,7 +226,7 @@ export const SearchResult = ({
               <Badge
                 key={tag}
                 variant="outline"
-                className="cursor-default bg-primary font-thin capitalize text-primary-foreground transition-colors hover:bg-primary/70"
+                className="cursor-default border-teal/30 bg-teal/10 font-medium capitalize text-deepTeal transition-colors hover:bg-teal/20"
               >
                 {tag}
               </Badge>

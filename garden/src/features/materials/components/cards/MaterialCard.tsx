@@ -57,7 +57,7 @@ export const BaseMaterialCard = ({
       <Card className="rounded-xl border border-gray-200 shadow-sm transition-all hover:shadow-md overflow-hidden group backdrop-blur-sm bg-white">
         <CardHeader className="pt-5 pb-2 bg-gradient-to-r from-white to-gray-50 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="text-green bg-green/10 p-2 rounded-lg flex-shrink-0">
+            <div className="text-teal bg-teal/10 p-2 rounded-lg flex-shrink-0">
               {icon}
             </div>
             <CardTitle className="font-medium text-lg text-gray-800 tracking-tight">
@@ -89,7 +89,7 @@ export const BaseMaterialCard = ({
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs text-gray-600 hover:text-green hover:bg-green/10 transition-colors h-7 px-2 rounded-md"
+                className="text-xs text-gray-600 hover:text-teal hover:bg-teal/10 transition-colors h-7 px-2 rounded-md"
                 onClick={onEditClick}
                 aria-label={`Edit ${materialType}`}
               >

@@ -118,10 +118,10 @@ export const ModalAppForm = ({
 
         {isDeploymentComplete ? (
           <div className="py-12">
-            <Alert className="mb-6 bg-green-50 border-green-200">
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
-              <AlertTitle className="text-green-800 font-bold">Deployment Successful!</AlertTitle>
-              <AlertDescription className="text-green-700">
+            <Alert className="mb-6 bg-teal/10 border-teal/20">
+              <CheckCircle2 className="h-5 w-5 text-teal" />
+              <AlertTitle className="text-deepTeal font-bold">Deployment Successful!</AlertTitle>
+              <AlertDescription className="text-teal">
                 Your Modal App has been successfully deployed and is ready to use.
               </AlertDescription>
             </Alert>

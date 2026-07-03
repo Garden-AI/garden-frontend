@@ -103,8 +103,8 @@ export const GardenTabbedSection = ({
           <CardContent className="pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="flex items-center text-lg font-medium">
-                  <FunctionSquare className="mr-2 h-5 w-5 text-green" />
+                <h3 className="font-grotesk flex items-center text-lg font-semibold">
+                  <FunctionSquare className="mr-2 h-5 w-5 text-teal" />
                   Functions
                 </h3>
 
@@ -138,8 +138,8 @@ export const GardenTabbedSection = ({
           <CardContent className="pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="flex items-center text-lg font-medium">
-                  <DatabaseIcon className="mr-2 h-5 w-5 text-green" />
+                <h3 className="font-grotesk flex items-center text-lg font-semibold">
+                  <DatabaseIcon className="mr-2 h-5 w-5 text-teal" />
                   Datasets
                 </h3>
 
@@ -182,8 +182,8 @@ export const GardenTabbedSection = ({
           <CardContent className="pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="flex items-center text-lg font-medium">
-                  <BookIcon className="mr-2 h-5 w-5 text-green" />
+                <h3 className="font-grotesk flex items-center text-lg font-semibold">
+                  <BookIcon className="mr-2 h-5 w-5 text-teal" />
                   Papers
                 </h3>
 
@@ -226,8 +226,8 @@ export const GardenTabbedSection = ({
           <CardContent className="pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="flex items-center text-lg font-medium">
-                  <CodeIcon className="mr-2 h-5 w-5 text-green" />
+                <h3 className="font-grotesk flex items-center text-lg font-semibold">
+                  <CodeIcon className="mr-2 h-5 w-5 text-teal" />
                   Code Repositories
                 </h3>
 
@@ -270,8 +270,8 @@ export const GardenTabbedSection = ({
           <CardContent className="pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="flex items-center text-lg font-medium">
-                  <ScrollTextIcon className="mr-2 h-5 w-5 text-green" />
+                <h3 className="font-grotesk flex items-center text-lg font-semibold">
+                  <ScrollTextIcon className="mr-2 h-5 w-5 text-teal" />
                   Notebooks
                 </h3>
 

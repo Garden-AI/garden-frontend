@@ -41,7 +41,7 @@ const GardenBox = ({ garden, allowEdits }: { garden: Garden, allowEdits: boolean
           <CardTitle className="text-ellipsis text-xl">{title}</CardTitle>
         </CardHeader>
         <MarkdownCardContent
-          className="flex-grow overflow-hidden"
+          className="flex-grow overflow-hidden [mask-image:linear-gradient(to_bottom,black_62%,transparent_98%)]"
           content={description || ""}
         />
         <CardFooter className="relative mt-auto flex flex-wrap gap-1">

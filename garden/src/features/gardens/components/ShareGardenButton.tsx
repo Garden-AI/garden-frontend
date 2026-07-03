@@ -20,7 +20,7 @@ export const ShareGardenButton = ({ garden }: { garden: Garden }) => {
         <TooltipProvider>
             <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
-                    <Button variant="ghost" size={"icon"} className="hover:text-green" onClick={handleClick}>
+                    <Button variant="ghost" size={"icon"} className="hover:text-teal" onClick={handleClick}>
                         <Clipboard />
                     </Button>
                 </TooltipTrigger>

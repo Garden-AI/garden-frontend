@@ -12,6 +12,8 @@ module.exports = {
     fontFamily: {
       display: ["Work Sans", "sans-serif"],
       serifDisplay: ["Noto Serif JP", "serif"],
+      grotesk: ["Space Grotesk", "sans-serif"],
+      inter: ["Inter", "sans-serif"],
     },
     container: {
       center: true,
@@ -22,6 +24,14 @@ module.exports = {
     },
     extend: {
       colors: {
+        // Design system v2 palette
+        teal: "#108981",
+        deepTeal: "#055869",
+        lime: "#A3E635",
+        darkSlate: "#0F172A",
+        slateGray: "#334155",
+        lightSlate: "#64748B",
+        // Legacy brand colors (kept for non-homepage compatibility)
         green: "#1E9941",
         brightgreen: "#2FB254",
         darkgreen: "#276E49",

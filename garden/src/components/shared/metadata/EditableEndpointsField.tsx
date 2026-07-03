@@ -100,7 +100,7 @@ const EditableEndpointsField = ({
             size="sm"
             onClick={handleSave}
             disabled={isSaving}
-            className="h-7 text-xs bg-blue-600 hover:bg-blue-700"
+            className="h-7 text-xs bg-teal hover:bg-deepTeal"
           >
             {isSaving ? (
               <>
@@ -147,7 +147,7 @@ const EditableEndpointsField = ({
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="text-green hover:text-darkgreen"
+                  className="text-teal hover:text-deepTeal"
                   aria-label={`Edit ${label.toLowerCase()}`}
                 >
                   <EditIcon className="h-3.5 w-3.5" />

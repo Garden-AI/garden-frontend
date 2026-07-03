@@ -50,7 +50,7 @@ const EditableTitle = ({ entity, ownsThisEntity, onUpdate }: EditableTitleProps)
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="text-xl md:text-2xl font-medium"
+          className="font-grotesk text-2xl md:text-3xl font-bold"
           placeholder="Title"
         />
         <div className="flex gap-2">
@@ -76,7 +76,7 @@ const EditableTitle = ({ entity, ownsThisEntity, onUpdate }: EditableTitleProps)
 
   return (
     <div className="flex items-center gap-2 group">
-      <h1 className="text-xl md:text-2xl font-medium">{entity.title}</h1>
+      <h1 className="font-grotesk text-2xl md:text-3xl font-bold text-gray-900">{entity.title}</h1>
       {ownsThisEntity && (
         <div className="flex items-center gap-1 h-8">
           <TooltipProvider delayDuration={150}>
@@ -84,7 +84,7 @@ const EditableTitle = ({ entity, ownsThisEntity, onUpdate }: EditableTitleProps)
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="text-green hover:text-darkgreen"
+                  className="text-teal hover:text-deepTeal"
                   aria-label="Edit title"
                 >
                   <EditIcon className="h-4 w-4" />

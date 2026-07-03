@@ -114,12 +114,12 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
             return (
               <div
                 key={compositeKey}
-                className="flex items-center rounded-full bg-[#e0f3e7] text-sm px-3 py-1 border border-[#b3dbc3]"
+                className="flex items-center rounded-full bg-teal/10 text-sm px-3 py-1 border border-teal/20"
               >
                 {func.title || func.function_name}
                 <button
                   onClick={() => handleFunctionToggle(func)}
-                  className="ml-2 text-[#2f5d41] hover:text-red-500"
+                  className="ml-2 text-deepTeal hover:text-red-500"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -133,7 +133,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
         <div className="mb-4">
           <button
             onClick={() => setIsConfirmClearOpen(true)}
-            className="text-sm text-[#2f5d41] bg-white hover:bg-[#f0f5f3] border border-[#b3dbc3] px-3 py-1 rounded-md shadow-sm transition flex items-center gap-1"
+            className="text-sm text-deepTeal bg-white hover:bg-teal/5 border border-teal/20 px-3 py-1 rounded-md shadow-sm transition flex items-center gap-1"
           >
             Clear all selected
           </button>
@@ -146,7 +146,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
           placeholder="Search functions..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full sm:w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5cae4f] mb-4"
+          className="w-full sm:w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal mb-4"
         />
       )}
 
@@ -196,8 +196,8 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                     }}
                     className={`group cursor-pointer transition-all duration-200 ease-in-out rounded-md
                       ${selectedFunctionIds.includes(compositeKey)
-                        ? "bg-[#e0f3e7] border-y border-[#5cae4f] shadow-sm"
-                        : "hover:bg-[#eef5f1]"}`}
+                        ? "bg-teal/10 border-y border-teal shadow-sm"
+                        : "hover:bg-teal/5"}`}
                   >
                     <TableCell className="w-1/12 text-center">
                       <Checkbox
@@ -226,7 +226,7 @@ const FunctionSelectionTable: React.FC<FunctionSelectionTableProps> = ({
                               e.stopPropagation();
                               toggleDescription(compositeKey);
                             }}
-                            className="mt-1 text-xs text-green hover:underline"
+                            className="mt-1 text-xs text-teal hover:underline"
                           >
                             {showFullDescriptionIds.includes(compositeKey) ? "Show less" : "Show more"}
                           </button>

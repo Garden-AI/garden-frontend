@@ -223,7 +223,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
-                    <DatabaseIcon className="h-5 w-5 mr-2 text-green" />
+                    <DatabaseIcon className="h-5 w-5 mr-2 text-teal" />
                     Datasets
                   </h3>
                   {ownsThisFunction && (
@@ -267,7 +267,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
-                    <BookIcon className="h-5 w-5 mr-2 text-green" />
+                    <BookIcon className="h-5 w-5 mr-2 text-teal" />
                     Papers
                   </h3>
                   {ownsThisFunction && (
@@ -311,7 +311,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
-                    <CodeIcon className="h-5 w-5 mr-2 text-green" />
+                    <CodeIcon className="h-5 w-5 mr-2 text-teal" />
                     Repositories
                   </h3>
                   {ownsThisFunction && (
@@ -355,7 +355,7 @@ const AssociatedMaterials = ({ resource, ownsThisFunction }: AssociatedMaterials
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-medium flex items-center">
-                    <ScrollTextIcon className="h-5 w-5 mr-2 text-green" />
+                    <ScrollTextIcon className="h-5 w-5 mr-2 text-teal" />
                     Notebooks
                   </h3>
                   {ownsThisFunction && (

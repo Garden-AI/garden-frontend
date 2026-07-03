@@ -64,7 +64,7 @@ export const CreateGardenFormFields = () => {
   return (
     <div className="space-y-12">
       {/* Informational Banner */}
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
+      <div className="rounded-lg border border-teal/20 bg-teal/5 p-4 text-sm text-darkSlate">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-info">
@@ -104,7 +104,7 @@ export const CreateGardenFormFields = () => {
             <div className="flex items-center gap-2">
               <FormLabel className="font-bold">Description</FormLabel>
               {field.value && (
-                <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                <span className="inline-flex items-center rounded-full bg-teal/10 px-2 py-1 text-xs font-medium text-teal">
                   Auto-generated
                 </span>
               )}
@@ -138,7 +138,7 @@ export const CreateGardenFormFields = () => {
             <div className="flex items-center gap-2">
               <FormLabel className="font-bold">Tags</FormLabel>
               {field.value.length > 0 && (
-                <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                <span className="inline-flex items-center rounded-full bg-teal/10 px-2 py-1 text-xs font-medium text-teal">
                   Auto-suggested
                 </span>
               )}

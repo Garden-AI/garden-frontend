@@ -61,7 +61,7 @@ const GardenDropdownMenu = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size={"icon"} className="hover:text-green">
+          <Button variant="ghost" size={"icon"} className="hover:text-teal">
             <EllipsisVertical />
           </Button>
         </DropdownMenuTrigger>

@@ -27,7 +27,7 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
-  const notebookIcon = <Book className="h-5 w-5 text-green" />;
+  const notebookIcon = <Book className="h-5 w-5 text-teal" />;
 
   // Ensure notebook has all required fields
   if (!notebook || !notebook.title || !notebook.url) {
@@ -139,7 +139,7 @@ export const NotebookCard: React.FC<NotebookCardProps> = ({
             href={notebook.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline truncate"
+            className="text-teal hover:underline truncate"
           >
             {notebook.url}
           </a>

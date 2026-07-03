@@ -24,7 +24,7 @@ const ModalFunctionBox = ({ modalFunction, gardenDoi }: ModalFunctionBoxProps) =
     >
       <CardHeader className="pt-5 pb-2 bg-gradient-to-r from-white to-gray-50 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="text-green bg-green/10 p-2 rounded-lg flex-shrink-0">
+          <div className="text-teal bg-teal/10 p-2 rounded-lg flex-shrink-0">
             <FunctionSquare className="h-4 w-4" />
           </div>
           <CardTitle className="font-medium text-lg text-gray-800 tracking-tight">
