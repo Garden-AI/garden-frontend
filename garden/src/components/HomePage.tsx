@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sprout, Container, Cpu, Atom, GitBranch } from "lucide-react";
+import { ArrowRight, Sprout, Container, Cpu, Atom, GitBranch, Cloud, BookOpen } from "lucide-react";
 import { useGlobusAuth } from "@globus/react-auth-context";
 import GardenBox from "@/features/gardens/components/GardenBox";
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
@@ -21,6 +21,33 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/shadcn/accordion";
+
+const runLanes = [
+  {
+    icon: Cloud,
+    name: "Modal cloud",
+    description:
+      "One click or a few lines of Python — models run on managed cloud GPUs with zero setup.",
+    detail: "Free monthly GPU quota for researchers",
+    badge: null,
+  },
+  {
+    icon: Cpu,
+    name: "Your HPC allocation",
+    description:
+      "Run at scale on research supercomputers through Globus Compute, using the allocation you already have.",
+    detail: "Polaris, Perlmutter, Delta, and more",
+    badge: null,
+  },
+  {
+    icon: BookOpen,
+    name: "The Almanac",
+    description:
+      "The top machine-learned interatomic potentials, pre-installed on HPC clusters and cataloged so the right model is easy to find.",
+    detail: "40+ curated MLIPs",
+    badge: "Coming soon",
+  },
+];
 
 const workflowSteps = [
   {
@@ -246,30 +273,40 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ── Science Needs More Than Chatbots ── */}
-      <section className="bg-slate-50 py-16">
+      {/* ── Run models where you work ── */}
+      <section className="py-20 bg-slate-50">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="font-grotesk text-3xl font-bold text-gray-900 mb-4">
-            Science needs more than chatbots
-          </h2>
-          <p className="text-lg text-gray-600 leading-relaxed max-w-3xl">
-            There are many great platforms for hosting chatbots. But you work in science, and you
-            want the best model for predicting{" "}
-            <Link to="/garden/10.26311/ep98-br79" className="text-teal hover:text-deepTeal hover:underline">
-              material tensile strength
-            </Link>{" "}
-            or the{" "}
-            <Link to="/garden/10.26311/hhwc-0v60" className="text-teal hover:text-deepTeal hover:underline">
-              behavior of neutron stars
-            </Link>
-            . Garden is the best place to find, share, and run specialized AI models for science.
-            (Scientific chatbots are welcome too.)
-          </p>
+          <div className="max-w-2xl mb-12">
+            <h2 className="font-grotesk text-3xl font-bold text-gray-900 mb-3">
+              Run models where you work
+            </h2>
+            <p className="text-lg text-gray-600">
+              Every model on Garden runs on demand — on managed cloud GPUs or the supercomputers
+              you already use.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-gray-200">
+            {runLanes.map(({ icon: Icon, name, description, detail, badge }) => (
+              <div
+                key={name}
+                className="py-6 first:pt-0 last:pb-0 border-t border-gray-200 first:border-t-0 md:border-t-0 md:py-2 md:px-8 md:first:pl-0 md:last:pr-0"
+              >
+                <div className="flex items-center gap-2.5 mb-3">
+                  <Icon className="text-teal flex-shrink-0" size={20} strokeWidth={1.8} />
+                  <h3 className="font-grotesk font-semibold text-gray-900 text-lg">{name}</h3>
+                  {badge && (
+                    <span className="rounded-full border border-teal/40 bg-teal/10 px-2 py-0.5 text-[11px] font-semibold text-deepTeal whitespace-nowrap">
+                      {badge}
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-3">{description}</p>
+                <p className="text-sm font-medium text-deepTeal">{detail}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
-
-      {/* ── Use Cases ── */}
-      <UseCasesSection />
 
       {/* ── Almanac of Matter Models + Rootstock ── */}
       <AlmanacSection />
@@ -302,6 +339,31 @@ const HomePage = () => {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </section>
+
+      {/* ── Science Needs More Than Chatbots ── */}
+      <section className="bg-slate-50 py-16">
+        <div className="mx-auto max-w-5xl px-6">
+          <h2 className="font-grotesk text-3xl font-bold text-gray-900 mb-4">
+            Science needs more than chatbots
+          </h2>
+          <p className="text-lg text-gray-600 leading-relaxed max-w-3xl">
+            There are many great platforms for hosting chatbots. But you work in science, and you
+            want the best model for predicting{" "}
+            <Link to="/garden/10.26311/ep98-br79" className="text-teal hover:text-deepTeal hover:underline">
+              material tensile strength
+            </Link>{" "}
+            or the{" "}
+            <Link to="/garden/10.26311/hhwc-0v60" className="text-teal hover:text-deepTeal hover:underline">
+              behavior of neutron stars
+            </Link>
+            . Garden is the best place to find, share, and run specialized AI models for science.
+            (Scientific chatbots are welcome too.)
+          </p>
+        </div>
+      </section>
+
+      {/* ── Use Cases ── */}
+      <UseCasesSection />
 
       {/* ── Reproducible Science ── */}
       <section className="py-16 bg-slate-50">
@@ -346,14 +408,11 @@ const HomePage = () => {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-4 py-5">
-                    <div className="rounded-lg border border-gray-200 bg-white p-5 space-y-3">
+                    <div className="rounded-lg border border-gray-200 bg-white p-5">
                       <p className="text-gray-700">
-                        Models are paired with the GPU they need to run effectively. Garden provides
-                        researchers free monthly GPU quotas to try out models.
-                      </p>
-                      <p className="text-gray-700">
-                        For large production runs, you can "bring your own compute" by applying HPC
-                        allocations or cloud credits.
+                        Models are paired with the GPU they need to run effectively — on Garden's
+                        free monthly quota, or at scale with your own HPC allocation or cloud
+                        credits.
                       </p>
                     </div>
                   </AccordionContent>
