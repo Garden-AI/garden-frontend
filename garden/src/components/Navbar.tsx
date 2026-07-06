@@ -3,7 +3,17 @@ import { useState, useEffect, useRef, RefObject } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/shadcn/separator";
 import { useGlobusAuth } from "@globus/react-auth-context";
-import { ChevronDown, ChevronUp, LogOut, Menu, Plus, User, BarChart3, Search, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  LogOut,
+  Menu,
+  Plus,
+  User,
+  BarChart3,
+  Search,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./shadcn/tooltip";
@@ -52,17 +62,15 @@ const Navbar = () => {
 
   const Links = [
     { name: "Explore", link: "/search" },
-    { name: "Use Cases", link: "/use-cases/mlips" },
-    { name: "Benchmarks", link: "/benchmarks" },
     { name: "Docs", link: "https://garden-ai.readthedocs.io/en/latest/" },
   ];
 
   return (
-    <div className="sticky top-0 left-0 z-10 w-full bg-white shadow-sm border-b border-gray-100">
-      <div className="flex items-center justify-between px-6 py-2 md:px-10 max-w-7xl mx-auto">
+    <div className="sticky left-0 top-0 z-50 w-full border-b border-gray-100 bg-white shadow-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 md:px-10">
         {/* Logo */}
         <div>
-          <Link to="/" className="py-1 flex items-center">
+          <Link to="/" className="flex items-center py-1">
             <img src="img/garden-logo-small.png" alt="Garden AI Logo" className="h-8" />
           </Link>
         </div>
@@ -73,7 +81,7 @@ const Navbar = () => {
             <Tooltip delayDuration={100}>
               <TooltipTrigger asChild>
                 <button
-                  className="hidden md:block p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+                  className="hidden rounded-md p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 md:block"
                   onClick={() => navigate("/search")}
                   aria-label="Search"
                 >
@@ -91,43 +99,47 @@ const Navbar = () => {
               key={link.name}
               to={link.link}
               target={link.name === "Docs" ? "_blank" : ""}
-              className="hidden md:block px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors no-underline whitespace-nowrap"
+              className="hidden whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-gray-600 no-underline transition-colors hover:bg-gray-50 hover:text-gray-900 md:block"
             >
               {link.name}
             </Link>
           ))}
 
-          <div className="ml-2 h-5 w-px bg-gray-200 hidden md:block" />
+          <div className="ml-2 hidden h-5 w-px bg-gray-200 md:block" />
 
           {/* Auth section */}
           <div
             onClick={auth.isAuthenticated ? toggleMenuDropdown : undefined}
-            className="relative flex items-center gap-2 ml-1"
+            className="relative ml-1 flex items-center gap-2"
             ref={dropdownRef}
           >
             {auth.isAuthenticated ? (
               <>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                <button className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100">
                   <User size={16} />
                   {openMenuDropdown ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </button>
                 <div
-                  className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 min-w-[200px] rounded-lg bg-white border border-gray-200 py-2 shadow-lg`}
+                  className={`absolute ${openMenuDropdown ? "block" : "hidden"} right-0 top-full z-50 mt-1 min-w-[200px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg`}
                 >
                   <div className="px-4 py-2 text-sm text-gray-500">{user?.email}</div>
                   <Separator className="my-1" />
-                  <div className="flex flex-row items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal cursor-pointer">
+                  <div className="flex cursor-pointer flex-row items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal">
                     <User size={15} />
-                    <Link to="/dashboard" className="no-underline">My Dashboard</Link>
+                    <Link to="/dashboard" className="no-underline">
+                      My Dashboard
+                    </Link>
                   </div>
                   {isSuperUser && (
-                    <div className="flex flex-row items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal cursor-pointer">
+                    <div className="flex cursor-pointer flex-row items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal">
                       <BarChart3 size={15} />
-                      <Link to="/metrics" className="no-underline">Metrics Dashboard</Link>
+                      <Link to="/metrics" className="no-underline">
+                        Metrics Dashboard
+                      </Link>
                     </div>
                   )}
                   <div
-                    className="flex flex-row items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal cursor-pointer"
+                    className="flex cursor-pointer flex-row items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal"
                     onClick={handleLogOut}
                   >
                     <LogOut size={15} />
@@ -138,13 +150,13 @@ const Navbar = () => {
             ) : (
               <>
                 <button
-                  className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
                   onClick={handleLogin}
                 >
                   Log In
                 </button>
                 <button
-                  className="px-4 py-1.5 text-sm font-semibold text-white bg-teal hover:bg-deepTeal rounded-md transition-colors"
+                  className="rounded-md bg-teal px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-deepTeal"
                   onClick={handleLogin}
                 >
                   Sign Up
@@ -157,7 +169,7 @@ const Navbar = () => {
             <Tooltip delayDuration={100}>
               <TooltipTrigger asChild>
                 <button
-                  className="ml-1 hidden md:block p-2 text-gray-500 hover:text-teal hover:bg-gray-100 rounded-md transition-colors"
+                  className="ml-1 hidden rounded-md p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-teal md:block"
                   onClick={() => navigate("/garden/create")}
                 >
                   <Plus size={18} />
@@ -171,7 +183,7 @@ const Navbar = () => {
 
           {/* Mobile menu toggle */}
           <button
-            className="md:hidden ml-1 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+            className="ml-1 rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
@@ -183,14 +195,14 @@ const Navbar = () => {
 
       {/* Mobile menu panel */}
       {mobileMenuOpen && (
-        <nav className="md:hidden border-t border-gray-100 bg-white px-4 py-3">
+        <nav className="border-t border-gray-100 bg-white px-4 py-3 md:hidden">
           {Links.map((link) => (
             <Link
               key={link.name}
               to={link.link}
               target={link.name === "Docs" ? "_blank" : ""}
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-2 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors no-underline"
+              className="block rounded-md px-2 py-2.5 text-sm font-medium text-gray-700 no-underline transition-colors hover:bg-gray-50 hover:text-gray-900"
             >
               {link.name}
             </Link>
@@ -198,7 +210,7 @@ const Navbar = () => {
           <Link
             to="/garden/create"
             onClick={() => setMobileMenuOpen(false)}
-            className="block px-2 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors no-underline"
+            className="block rounded-md px-2 py-2.5 text-sm font-medium text-gray-700 no-underline transition-colors hover:bg-gray-50 hover:text-gray-900"
           >
             Make a Garden
           </Link>
