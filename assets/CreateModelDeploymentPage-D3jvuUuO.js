@@ -1,0 +1,1 @@
+import{j as e}from"./index-Buc4mkP4.js";import{u as t,G as a}from"./GlobusGroupError-DYW-k5o2.js";const i=({form:o,onSuccess:d})=>{const{data:s}=t();return s!=null&&s.find(r=>r.id==="84d1669a-9d51-11ef-8d7c-1769556b58bd")?e.jsx("div",{className:"mx-auto max-w-6xl font-display",children:o}):e.jsx(a,{})};export{i as CreateModelDeploymentPage,i as default};

@@ -1,0 +1,1 @@
+import{j as e,aE as r}from"./index-Buc4mkP4.js";const a=({onSuccess:s})=>e.jsx(e.Fragment,{children:e.jsx(r,{showOverallProgress:!1,showSuccessScreen:!0,viewDeploymentsUrl:"/user?tab=model-deployments",onSuccess:s})});export{a as default};

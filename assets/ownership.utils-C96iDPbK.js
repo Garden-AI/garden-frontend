@@ -1,1 +1,0 @@
-import{S as l}from"./index-BfE6HcJQ.js";const a=(n,e,t)=>e&&t?[{label:"Home",link:"/"},{label:t.title,link:`/garden/${encodeURIComponent(e)}`},{label:n}]:[{label:"Home",link:"/"},{label:n}],r=n=>n?l.includes(n):!1,c=(n,e,t)=>!t||!n?!1:e===n||r(n),i=n=>r(n);export{i as c,a as g,c as o};
