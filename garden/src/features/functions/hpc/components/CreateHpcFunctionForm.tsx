@@ -61,7 +61,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
       const functions = parseHpcFunctions(text);
 
       if (functions.length === 0) {
-        toast.warning(`Loaded ${file.name}, but no @hog.function() decorated functions found`);
+        toast.warning(`Loaded ${file.name}, but no @hog.function() or @hog.method() decorated functions found`);
         setParsedFunctions([]);
       } else {
         // Create SelectedFunction objects with auto-generated titles
@@ -176,7 +176,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-1">
             <FormLabel>Upload groundhog-hpc Script</FormLabel>
-            <FormDescription>Upload a Python file containing @hog.function() decorated functions</FormDescription>
+            <FormDescription>Upload a Python file containing @hog.function() or @hog.method() decorated functions</FormDescription>
 
             {!functionCode ? (
               <div
@@ -307,7 +307,7 @@ export const CreateHpcFunctionForm: React.FC<CreateHpcFunctionFormProps> = ({ on
               <div className="border-b bg-gray-50 p-4">
                 <h3 className="text-lg font-semibold">Edit Function Details</h3>
                 <p className="text-sm text-gray-600">
-                  Found {parsedFunctions.length} @hog.function() decorated function{parsedFunctions.length > 1 ? 's' : ''}.
+                  Found {parsedFunctions.length} @hog.function() or @hog.method() decorated function{parsedFunctions.length > 1 ? 's' : ''}.
                   Select and customize the functions you want to create.
                 </p>
               </div>
